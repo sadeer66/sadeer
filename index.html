@@ -73,6 +73,11 @@
   .targetCursor::before{left:-6px;right:-6px;top:50%;height:1px;transform:translateY(-50%)}
   .targetCursor::after{top:-6px;bottom:-6px;left:50%;width:1px;transform:translateX(-50%)}
   .targetCursor .dot{position:absolute;width:3px;height:3px;background:#fff;border:1px solid #111;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)}
+  .targetCursor .wand{display:none;position:absolute;left:50%;top:13px;width:5px;height:58px;transform:translateX(-50%);border-radius:999px;background:linear-gradient(#e2e8f0,#94a3b8);border:1px solid rgba(15,23,42,.85);box-shadow:0 2px 5px rgba(0,0,0,.35)}
+  .targetCursor .wand::after{content:'';position:absolute;left:50%;bottom:-15px;width:22px;height:22px;transform:translateX(-50%);border-radius:50%;background:rgba(14,165,233,.26);border:2px solid rgba(255,255,255,.96);box-shadow:0 0 0 1px rgba(15,23,42,.9)}
+  .targetCursor.touchWand{width:30px;height:30px;border-width:2px}
+  .targetCursor.touchWand .dot{width:11px;height:11px;background:#0ea5e9;border:3px solid #fff;box-shadow:0 0 0 1.5px #111,0 1px 5px rgba(0,0,0,.45)}
+  .targetCursor.touchWand .wand{display:block}
   .mapViewport::-webkit-scrollbar{height:15px;width:15px}
   .mapViewport::-webkit-scrollbar-track{background:#172033;border-radius:10px}
   .mapViewport::-webkit-scrollbar-thumb{background:#60748d;border:3px solid #172033;border-radius:10px}
@@ -324,7 +329,7 @@
 </div>
 <div class="sidebarScrim" id="sidebarScrim"></div>
 
-<div class="targetCursor" id="targetCursor"><span class="dot"></span></div>
+<div class="targetCursor" id="targetCursor"><span class="dot"></span><span class="wand"></span></div>
 
 <div class="modalOverlay" id="scaleModal">
   <div class="modalCard">
@@ -382,6 +387,7 @@
 </div>
 
 <script>
+window.__V13_IPAD_FIX__=true;
 const canvas=document.getElementById('canvas');
 const ctx=canvas.getContext('2d');
 const stage=document.getElementById('stage');
@@ -676,13 +682,38 @@ function updateInteractionCursor(){
   if(!targeting) targetCursor.style.display='none';
   updatePanState();
 }
-function showTargetCursor(ev){
-  if(mode!=='calibrate'&&mode!=='measure'){targetCursor.style.display='none';return;}
+let v13LastPointerKind='';
+canvas.addEventListener('pointerdown',ev=>{v13LastPointerKind=ev.pointerType||'';},{capture:true});
+canvas.addEventListener('pointermove',ev=>{if(ev.pointerType)v13LastPointerKind=ev.pointerType;},{capture:true});
+
+function v13TouchDevice(){
+  return (navigator.maxTouchPoints||0)>0 ||
+    window.matchMedia('(pointer:coarse)').matches ||
+    ((/iPad|iPhone|Macintosh/i).test(navigator.userAgent) && (navigator.maxTouchPoints||0)>1);
+}
+function v13FingerEvent(ev){
+  if(ev && ev.pointerType) return ev.pointerType==='touch';
+  if(ev && ev.sourceCapabilities && typeof ev.sourceCapabilities.firesTouchEvents==='boolean') return ev.sourceCapabilities.firesTouchEvents;
+  return v13TouchDevice() && v13LastPointerKind==='touch';
+}
+function v13MeasurementClientPoint(ev){
   const r=canvas.getBoundingClientRect();
-  const inside=ev.clientX>=r.left&&ev.clientX<=r.right&&ev.clientY>=r.top&&ev.clientY<=r.bottom;
-  if(!inside){targetCursor.style.display='none';return;}
+  if((mode==='calibrate'||mode==='measure') && v13FingerEvent(ev)){
+    const offset=88;
+    return {x:ev.clientX,y:Math.max(r.top+18,ev.clientY-offset),touch:true};
+  }
+  return {x:ev.clientX,y:ev.clientY,touch:false};
+}
+function showTargetCursor(ev){
+  if(mode!=='calibrate'&&mode!=='measure'){targetCursor.style.display='none';targetCursor.classList.remove('touchWand');return;}
+  const r=canvas.getBoundingClientRect();
+  const fingerInside=ev.clientX>=r.left&&ev.clientX<=r.right&&ev.clientY>=r.top&&ev.clientY<=r.bottom;
+  const t=v13MeasurementClientPoint(ev);
+  const targetInside=t.x>=r.left&&t.x<=r.right&&t.y>=r.top&&t.y<=r.bottom;
+  if(!fingerInside||!targetInside){targetCursor.style.display='none';return;}
+  targetCursor.classList.toggle('touchWand',t.touch);
   targetCursor.style.display='block';
-  targetCursor.style.left=ev.clientX+'px';targetCursor.style.top=ev.clientY+'px';
+  targetCursor.style.left=t.x+'px';targetCursor.style.top=t.y+'px';
 }
 function clampPointToCanvas(p){return {x:clamp(p.x,0,canvas.width),y:clamp(p.y,0,canvas.height)};}
 
@@ -1029,7 +1060,8 @@ canvas.addEventListener('drop',e=>{
 
 function toCanvasPos(ev){
   const r=canvas.getBoundingClientRect();
-  return {x:(ev.clientX-r.left)*(canvas.width/r.width),y:(ev.clientY-r.top)*(canvas.height/r.height)}
+  const t=v13MeasurementClientPoint(ev);
+  return {x:(t.x-r.left)*(canvas.width/r.width),y:(t.y-r.top)*(canvas.height/r.height)}
 }
 
 function itemCorners(it){
@@ -1508,13 +1540,13 @@ function draw(){
 
 document.getElementById('calibrateBtn').onclick=()=>{
   if(!bgImage){alert('ارفع الخارطة أولاً.');return;}
-  selectedMeasureId=null;clearFurnitureSelection();pendingFurnitureDef=null;syncSelectedPanel();mode='calibrate';points=[];updateInteractionCursor();setStatus('المعايرة: حرّك علامة القنّاص وحدد النقطة الأولى ثم الثانية بدقة');draw();
+  selectedMeasureId=null;clearFurnitureSelection();pendingFurnitureDef=null;syncSelectedPanel();mode='calibrate';points=[];updateInteractionCursor();setStatus(v13TouchDevice()?'المعايرة: رأس العصا الأزرق هو نقطة التحديد الدقيقة — إصبعك يبقى بعيداً عنها':'المعايرة: حرّك علامة القنّاص وحدد النقطة الأولى ثم الثانية بدقة');draw();
 };
 document.getElementById('measureBtn').onclick=()=>{
   if(!bgImage){alert('ارفع الخارطة أولاً.');return;}
   document.getElementById('measureLayerToggle').checked=true;
   if(!pxPerCm){alert('عاير الخارطة أولاً ثم استخدم قياس المسافة.');return;}
-  measurements=measurements.filter(m=>m.pinned);selectedMeasureId=null;clearFurnitureSelection();pendingFurnitureDef=null;syncSelectedPanel();mode='measure';points=[];updateInteractionCursor();setStatus('القياس: حرّك علامة القنّاص وحدد النقطتين بدقة');draw();
+  measurements.forEach(m=>m.pinned=true);selectedMeasureId=null;clearFurnitureSelection();pendingFurnitureDef=null;syncSelectedPanel();mode='measure';points=[];updateInteractionCursor();setStatus(v13TouchDevice()?'القياس: رأس العصا الأزرق هو نقطة القياس الدقيقة — إصبعك يبقى أسفلها':'القياس: حرّك علامة القنّاص وحدد النقطتين بدقة');draw();
 };
 document.getElementById('resetScaleBtn').onclick=()=>{
   const ok = confirm('سيتم إعادة ضبط المقياس وحذف الأثاث وخطوط القياس الحالية مع إبقاء الخارطة. هل تريد المتابعة؟');
@@ -1543,7 +1575,10 @@ document.getElementById('applyCalBtn').onclick=()=>{
 function formatLength(cm){return cm>=100?`${(cm/100).toFixed(2)} م`:`${cm.toFixed(1)} سم`;}
 function drawArrowHead(x,y,ang,size){ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-size*Math.cos(ang-.5),y-size*Math.sin(ang-.5));ctx.lineTo(x-size*Math.cos(ang+.5),y-size*Math.sin(ang+.5));ctx.closePath();ctx.fill();}
 function drawMeasurements(){
-  if(!pxPerCm)return;const u=1/zoom;ctx.save();
+  if(!pxPerCm)return;
+  const u=1/zoom;
+  const touchScale=v13TouchDevice()?2:1;
+  ctx.save();
   for(const m of measurements){
     const selected=m.id===selectedMeasureId,{q1,q2}=measurementDisplay(m);
     const base=m.pinned?'#111111':'#4b5563';
@@ -1555,18 +1590,24 @@ function drawMeasurements(){
     ctx.setLineDash(m.pinned?[]:[4*u,4*u]);
     const ang=Math.atan2(q2.y-q1.y,q2.x-q1.x);
     ctx.beginPath();ctx.moveTo(q1.x,q1.y);ctx.lineTo(q2.x,q2.y);ctx.stroke();ctx.setLineDash([]);
-    drawArrowHead(q1.x,q1.y,ang+Math.PI,6.2*u);drawArrowHead(q2.x,q2.y,ang,6.2*u);
+    const arrowSize=6.2*u*(v13TouchDevice()?1.45:1);
+    drawArrowHead(q1.x,q1.y,ang+Math.PI,arrowSize);drawArrowHead(q2.x,q2.y,ang,arrowSize);
     const mx=(q1.x+q2.x)/2,my=(q1.y+q2.y)/2,label=formatLength(m.cm);
-    ctx.font=`bold ${11.5*u}px Tahoma`;const tw=ctx.measureText(label).width;const lh=19*u,pad=5.5*u;
+    const fontSize=11.5*touchScale*u;
+    const lh=19*touchScale*u,pad=5.5*touchScale*u;
+    ctx.font=`bold ${fontSize}px Tahoma`;
+    const tw=ctx.measureText(label).width;
     const bx=mx-tw/2-pad,by=my-lh/2,bw=tw+pad*2,bh=lh;
-    ctx.fillStyle='rgba(255,255,255,.90)';roundRectPath(bx,by,bw,bh,5*u);ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.94)';roundRectPath(bx,by,bw,bh,6*u);ctx.fill();
     if(selected){ctx.strokeStyle='rgba(0,0,0,.55)';ctx.lineWidth=.8*u;ctx.stroke();}
     ctx.fillStyle='#111';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,mx,my+.2*u);
-    const xs=11*u,xx=bx+bw+3*u,xy=my-xs/2;
-    ctx.fillStyle='rgba(255,255,255,.96)';ctx.strokeStyle='rgba(0,0,0,.55)';ctx.lineWidth=.7*u;
+    const xs=11*u*(v13TouchDevice()?1.7:1),xx=bx+bw+4*u,xy=my-xs/2;
+    ctx.fillStyle='rgba(255,255,255,.98)';ctx.strokeStyle='rgba(0,0,0,.62)';ctx.lineWidth=.8*u;
     ctx.beginPath();ctx.arc(xx+xs/2,xy+xs/2,xs/2,0,Math.PI*2);ctx.fill();ctx.stroke();
-    ctx.fillStyle='#111';ctx.font=`${9*u}px Arial`;ctx.fillText('×',xx+xs/2,xy+xs/2+.3*u);
-    m._labelBox={x:bx-2*u,y:by-2*u,w:bw+4*u,h:bh+4*u};m._deleteBox={x:xx-2*u,y:xy-2*u,w:xs+4*u,h:xs+4*u};
+    ctx.fillStyle='#111';ctx.font=`${9*u*(v13TouchDevice()?1.55:1)}px Arial`;ctx.fillText('×',xx+xs/2,xy+xs/2+.3*u);
+    const hitPad=v13TouchDevice()?8*u:2*u;
+    m._labelBox={x:bx-hitPad,y:by-hitPad,w:bw+hitPad*2,h:bh+hitPad*2};
+    m._deleteBox={x:xx-hitPad,y:xy-hitPad,w:xs+hitPad*2,h:xs+hitPad*2};
   }
   ctx.restore();
 }
