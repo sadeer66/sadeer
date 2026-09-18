@@ -1080,18 +1080,14 @@ function pointInPoly(p,poly){
 }
 function hitTest(p){if(!visibleFurniture())return null;for(let i=items.length-1;i>=0;i--)if(pointInPoly(p,itemCorners(items[i])))return items[i];return null}
 
-canvas.addEventListener('click',ev=>{
-  if(mode==='place'){
-    if(!pendingFurnitureDef)return;
-    const p=clampPointToCanvas(toCanvasPos(ev));
-    const def=pendingFurnitureDef;addItem(def,p.x,p.y);
-    pendingFurnitureDef=null;mode='select';updateInteractionCursor();
-    setStatus(`تم وضع ${def.name} في المكان المحدد`);draw();return;
+let v13SuppressTargetClickUntil=0;
+
+function v13CommitTargetPoint(p){
+  points.push(clampPointToCanvas(p));draw();
+  if(points.length===1){
+    setStatus('تم تسجيل النقطة الأولى — حرّك العصا إلى النقطة الثانية ثم ارفع إصبعك');
+    return;
   }
-  if(mode!=='calibrate' && mode!=='measure') return;
-  const p=toCanvasPos(ev);
-  points.push(p);draw();
-  if(points.length===1){ setStatus('تم تسجيل النقطة الأولى — وجّه علامة القنّاص بدقة إلى النقطة الثانية'); return; }
   if(points.length===2){
     if(mode==='calibrate'){
       const d=Math.hypot(points[1].x-points[0].x,points[1].y-points[0].y);
@@ -1101,14 +1097,37 @@ canvas.addEventListener('click',ev=>{
     }else{
       if(!pxPerCm){alert('يجب معايرة الخارطة أولاً.');points=[];mode='select';updateInteractionCursor();draw();return;}
       const before=cloneEditState();
-      const p1=points[0],p2=points[1];const d=Math.hypot(p2.x-p1.x,p2.y-p1.y),cm=d/pxPerCm;
-      measurements=measurements.filter(m=>m.pinned);
-      const m={id:randId(),p1:{...p1},p2:{...p2},cm,pinned:false,offsetX:0,offsetY:0};
+      const p1=points[0],p2=points[1];
+      const d=Math.hypot(p2.x-p1.x,p2.y-p1.y),cm=d/pxPerCm;
+      measurements.forEach(m=>m.pinned=true);
+      const m={id:randId(),p1:{...p1},p2:{...p2},cm,pinned:true,offsetX:0,offsetY:0};
       measurements.push(m);selectedMeasureId=m.id;clearFurnitureSelection();points=[];mode='select';updateInteractionCursor();syncSelectedPanel();
-      setStatus(`القياس ${formatLength(cm)} مؤقت — ثبته أو حرّكه ثم ثبته`);draw();commitHistory(before);
+      setStatus(`تم تثبيت القياس ${formatLength(cm)} — يمكنك أخذ قياس آخر`);draw();commitHistory(before);
     }
   }
+}
+
+canvas.addEventListener('click',ev=>{
+  if(mode==='place'){
+    if(!pendingFurnitureDef)return;
+    const p=clampPointToCanvas(toCanvasPos(ev));
+    const def=pendingFurnitureDef;addItem(def,p.x,p.y);
+    pendingFurnitureDef=null;mode='select';updateInteractionCursor();
+    setStatus(`تم وضع ${def.name} في المكان المحدد`);draw();return;
+  }
+  if(mode!=='calibrate' && mode!=='measure') return;
+  if(Date.now()<v13SuppressTargetClickUntil) return;
+  v13CommitTargetPoint(toCanvasPos(ev));
 });
+
+canvas.addEventListener('pointerup',ev=>{
+  if((mode!=='calibrate'&&mode!=='measure') || ev.pointerType!=='touch') return;
+  v13LastPointerKind='touch';
+  showTargetCursor(ev);
+  v13SuppressTargetClickUntil=Date.now()+900;
+  v13CommitTargetPoint(toCanvasPos(ev));
+  ev.preventDefault();
+},{capture:true});
 
 function pointToSegmentDistance(p,a,b){
   const vx=b.x-a.x,vy=b.y-a.y,wx=p.x-a.x,wy=p.y-a.y;
