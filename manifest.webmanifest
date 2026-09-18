@@ -1,0 +1,13 @@
+{
+  "name": "مخطط الأثاث - القصيرين",
+  "short_name": "مخطط الأثاث",
+  "description": "مخطط أثاث تفاعلي للآيباد والكمبيوتر.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f172a",
+  "theme_color": "#020617"
+}
