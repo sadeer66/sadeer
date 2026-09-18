@@ -1,4 +1,4 @@
-const CACHE_NAME = "furniture-planner-v13-ipad-1";
+const CACHE_NAME = "furniture-planner-v13-ipad-2";
 const APP_FILES = ["./","./index.html","./manifest.webmanifest","./v13-ipad-fix.js"];
 
 self.addEventListener("install", event => {
