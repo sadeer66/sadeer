@@ -1,4 +1,4 @@
-const CACHE_NAME = "furniture-planner-v22-map-labels";
+const CACHE_NAME = "furniture-planner-v24-label-single-tap";
 const CRITICAL = ['./', './index.html'];
 
 self.addEventListener('install', event => {
