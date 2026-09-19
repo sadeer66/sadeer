@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <title>تأثيثي — iPad و iPhone</title>
-<meta name="taatheethi-version" content="27-brand-toolbar-locks">
+<meta name="taatheethi-version" content="28-pdf-print-rights">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -18,7 +18,7 @@
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden}
-  .app{display:grid;grid-template-columns:340px 1fr;grid-template-rows:auto 1fr;height:100vh}
+  .app{display:grid;grid-template-columns:340px 1fr;grid-template-rows:auto 1fr auto;height:100vh}
   header{grid-column:1/3;background:#020617;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:8px 14px;gap:14px;min-height:112px}
   header h1{font-size:18px;margin:0}
   .status{font-size:13px;color:var(--muted)}
@@ -103,6 +103,7 @@
   .badge.off{background:#475569}
   .small{font-size:11px;color:#94a3b8}
   .footerNote{font-size:11px;color:#64748b;text-align:center;padding:4px 0 12px}
+  .appRights{grid-column:1/3;background:#020617;border-top:1px solid #1e293b;color:#94a3b8;text-align:center;font-size:11px;padding:6px 12px;line-height:1.35;direction:rtl}
   .palette{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}
   .swatch{width:100%;height:26px;border-radius:8px;border:1px solid #475569;cursor:pointer}
   .twoCols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -237,6 +238,7 @@
       <button id="saveBtn" class="optional">حفظ المشروع</button>
       <button id="exportBtn">تصدير PNG</button>
       <button id="printBtn">طباعة A3/A4</button>
+      <button id="pdfBtn"><span class="actionIcon">PDF</span>حفظ PDF</button>
     </div>
     <div class="toolbar toolbarRow workToolbar">
       <button id="sidebarToggle" class="ipadOnly primary">☰ المكتبة</button>
@@ -288,7 +290,6 @@
     <div class="archGrid" id="archLibrary"></div>
   </div>
 
-  <div class="footerNote">V27 — هوية الشركة + تنظيم الأشرطة + قفل القياسات والمسميات أثناء التأثيث.</div>
 </aside>
 
 <main>
@@ -362,6 +363,7 @@
     </div>
   </div>
 </main>
+  <div class="appRights">حقوق البرنامج © سدير ياسين — الهاتف: 07903827624</div>
 </div>
 <div class="sidebarScrim" id="sidebarScrim"></div>
 
@@ -424,8 +426,8 @@
 
 <div class="modalOverlay" id="printModal">
   <div class="modalCard">
-    <h3>طباعة المخطط</h3>
-    <p>أدخل بيانات المشروع واختر حجم الورق. ستظهر الخارطة مع شعارك ومعلومات الشركة المحفوظة في «معلوماتك» وشريط مقياس 1 متر.</p>
+    <h3 id="printDialogTitle">طباعة المخطط</h3>
+    <p id="printDialogDesc">أدخل بيانات المشروع واختر حجم الورق. ستظهر الخارطة مع شعارك ومعلومات الشركة المحفوظة في «معلوماتك» وشريط مقياس 1 متر.</p>
     <div class="printMeta">
       <div class="field wide"><label>اسم المشروع</label><input id="printProjectName" type="text" value="مشروع جديد"></div>
       <div class="field wide"><label>عنوان الخارطة</label><input id="printMapTitle" type="text" placeholder="مثال: قياسات، توزيع أثاث، الطابق الأرضي"></div>
@@ -434,7 +436,7 @@
       <div class="field"><label>حجم الورق</label><select id="printPaper"><option value="A4">A4</option><option value="A3">A3</option></select></div>
       <div class="field"><label>الاتجاه</label><select id="printOrientation"><option value="landscape">أفقي</option><option value="portrait">عمودي</option></select></div>
     </div>
-    <div class="printNote" style="margin-top:10px">الطباعة تنظف التحديدات المؤقتة وخطوط Snap والمسافات التلقائية، لكنها تُبقي القياسات المثبتة.</div>
+    <div class="printNote" id="printDialogNote" style="margin-top:10px">الطباعة تنظف التحديدات المؤقتة وخطوط Snap والمسافات التلقائية، لكنها تُبقي القياسات المثبتة.</div>
     <div class="modalActions"><button id="cancelPrintBtn">إلغاء</button><button id="doPrintBtn" class="primary">فتح الطباعة</button></div>
   </div>
 </div>
@@ -496,6 +498,9 @@ const libraryPreview=document.getElementById('libraryPreview');
 const deleteLibraryItemBtn=document.getElementById('deleteLibraryItemBtn');
 const archLibrary=document.getElementById('archLibrary');
 const printModal=document.getElementById('printModal');
+const printDialogTitle=document.getElementById('printDialogTitle');
+const printDialogDesc=document.getElementById('printDialogDesc');
+const printDialogNote=document.getElementById('printDialogNote');
 const printProjectName=document.getElementById('printProjectName');
 const printMapTitle=document.getElementById('printMapTitle');
 const printClient=document.getElementById('printClient');
@@ -2192,7 +2197,7 @@ document.getElementById('measureLockToggle').checked=false;document.getElementBy
 document.getElementById('newProjectBtn').onclick=()=>startNewProject(true);
 
 document.getElementById('saveBtn').onclick=()=>{
-  const project={version:27,projectMeta,brandInfo,bgData,pxPerCm,items,measurements,mapLabels,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
+  const project={version:28,projectMeta,brandInfo,bgData,pxPerCm,items,measurements,mapLabels,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
   download('furniture-project.json',JSON.stringify(project),'application/json')
 };
 
@@ -2316,26 +2321,83 @@ function downloadCanvasAsPng(outCanvas, filename='furniture-layout.png'){
     setTimeout(()=>URL.revokeObjectURL(url),1800);
   },'image/png');
 }
-function openPrintDialog(){
-  printProjectName.value=projectMeta.name||'مشروع جديد';printMapTitle.value=projectMeta.mapTitle||'';printClient.value=projectMeta.client||'';printLocation.value=projectMeta.location||'';printModal.style.display='flex';
+let printOutputMode='print';
+function openPrintDialog(outputMode='print'){
+  printOutputMode=outputMode;
+  const isPdf=outputMode==='pdf';
+  printProjectName.value=projectMeta.name||'مشروع جديد';printMapTitle.value=projectMeta.mapTitle||'';printClient.value=projectMeta.client||'';printLocation.value=projectMeta.location||'';
+  printDialogTitle.textContent=isPdf?'حفظ PDF':'طباعة المخطط';
+  printDialogDesc.textContent=isPdf?'أدخل بيانات المشروع واختر حجم الورق. سيتم إنشاء ملف PDF من صفحة واحدة بنفس الشعار والمحاذاة ومعلومات الشركة.':'أدخل بيانات المشروع واختر حجم الورق. ستظهر الخارطة مع شعارك ومعلومات الشركة المحفوظة في «معلوماتك» وشريط مقياس 1 متر.';
+  printDialogNote.textContent=isPdf?'سيتم حفظ PDF مباشرة بدون الحاجة إلى نافذة الطباعة.':'تُفتح نافذة الطباعة فور الضغط لتجنب حظر النوافذ المنبثقة على Safari في الآيباد.';
+  document.getElementById('doPrintBtn').textContent=isPdf?'حفظ PDF':'فتح الطباعة';
+  printModal.style.display='flex';
 }
-function openExportDialog(){
-  pngProjectName.value=projectMeta.name||'مشروع جديد';pngMapTitle.value=projectMeta.mapTitle||'';pngClient.value=projectMeta.client||'';pngLocation.value=projectMeta.location||'';
-  pngPaper.value=printPaper.value||'A4';pngOrientation.value=printOrientation.value||'landscape';pngBrandingToggle.checked=true;exportModal.style.display='flex';
+function paperPoints(paper,orient){
+  const p=paper==='A3'?{w:841.89,h:1190.55}:{w:595.28,h:841.89};
+  return orient==='landscape'?{w:p.h,h:p.w}:p;
 }
-document.getElementById('printBtn').onclick=openPrintDialog;
+function dataUrlBytes(dataUrl){
+  const base64=dataUrl.split(',')[1]||'';
+  const bin=atob(base64),out=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);
+  return out;
+}
+function canvasToPdfBlob(sheet,paper,orient){
+  const jpeg=dataUrlBytes(sheet.toDataURL('image/jpeg',0.95));
+  const pt=paperPoints(paper,orient);
+  const enc=new TextEncoder(),chunks=[];let length=0;const offsets=[0];
+  const pushBytes=b=>{chunks.push(b);length+=b.length;};
+  const pushText=s=>pushBytes(enc.encode(s));
+  pushText('%PDF-1.4\n%Ta2theethi\n');
+  const obj=(n,body)=>{offsets[n]=length;pushText(`${n} 0 obj\n${body}\nendobj\n`);};
+  obj(1,'<< /Type /Catalog /Pages 2 0 R >>');
+  obj(2,'<< /Type /Pages /Kids [3 0 R] /Count 1 >>');
+  obj(3,`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pt.w.toFixed(2)} ${pt.h.toFixed(2)}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>`);
+  offsets[4]=length;
+  pushText(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${sheet.width} /Height ${sheet.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpeg.length} >>\nstream\n`);
+  pushBytes(jpeg);pushText('\nendstream\nendobj\n');
+  const content=`q\n${pt.w.toFixed(2)} 0 0 ${pt.h.toFixed(2)} 0 0 cm\n/Im0 Do\nQ\n`;
+  obj(5,`<< /Length ${enc.encode(content).length} >>\nstream\n${content}endstream`);
+  const xref=length;
+  pushText('xref\n0 6\n0000000000 65535 f \n');
+  for(let i=1;i<=5;i++)pushText(String(offsets[i]).padStart(10,'0')+' 00000 n \n');
+  pushText(`trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`);
+  return new Blob(chunks,{type:'application/pdf'});
+}
+function downloadBlob(blob,filename){
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),2200);
+}
+document.getElementById('printBtn').onclick=()=>openPrintDialog('print');
+document.getElementById('pdfBtn').onclick=()=>openPrintDialog('pdf');
 document.getElementById('cancelPrintBtn').onclick=()=>printModal.style.display='none';
 document.getElementById('doPrintBtn').onclick=async()=>{
   projectMeta={name:printProjectName.value.trim()||'مشروع جديد',mapTitle:printMapTitle.value.trim(),client:printClient.value.trim(),location:printLocation.value.trim()};
   const paper=printPaper.value,orient=printOrientation.value;
+  if(printOutputMode==='pdf'){
+    try{
+      const sheet=await buildBrandedSheet({paper,orient,title:projectMeta.name,mapTitle:projectMeta.mapTitle,client:projectMeta.client,location:projectMeta.location});
+      const pdf=canvasToPdfBlob(sheet,paper,orient);
+      const safe=(projectMeta.name||'taatheethi').replace(/[\\/:*?"<>|]+/g,'-');
+      downloadBlob(pdf,`${safe}.pdf`);
+      printModal.style.display='none';setStatus('تم حفظ ملف PDF');
+    }catch(err){alert('تعذر إنشاء ملف PDF.');console.error(err);}
+    return;
+  }
+  // افتح نافذة الطباعة فوراً داخل نقرة المستخدم، قبل أي await، حتى لا يحظرها Safari.
+  const page=window.open('','_blank');
+  if(!page){alert('تعذر فتح نافذة الطباعة. تحقق من إعداد حظر النوافذ المنبثقة في Safari ثم حاول مرة أخرى.');return;}
+  page.document.write('<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...</body></html>');
+  page.document.close();
   try{
     const sheet=await buildBrandedSheet({paper,orient,title:projectMeta.name,mapTitle:projectMeta.mapTitle,client:projectMeta.client,location:projectMeta.location});
-    const page=window.open('','_blank');if(!page){alert('اسمح للمتصفح بفتح نافذة الطباعة ثم حاول مرة أخرى.');return;}
     const title=projectMeta.name.replace(/[<>]/g,'');
     const src=sheet.toDataURL('image/png');
-    page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>${title}</title><style>@page{size:${paper} ${orient};margin:0}html,body{margin:0;padding:0;background:#fff}body{display:flex;align-items:center;justify-content:center}img{display:block;width:100%;height:auto;page-break-inside:avoid}</style></head><body><img src="${src}"><script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>`);
+    page.document.open();
+    page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>${title}</title><style>@page{size:${paper} ${orient};margin:0}html,body{margin:0;padding:0;background:#fff;width:100%;height:100%}body{display:flex;align-items:center;justify-content:center}img{display:block;width:100%;height:100%;object-fit:contain;page-break-inside:avoid}</style></head><body><img src="${src}"><script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>`);
     page.document.close();printModal.style.display='none';setStatus('تم تجهيز صفحة الطباعة بشكل متوازن داخل الورقة');
-  }catch(err){alert('تعذر تجهيز صفحة الطباعة.');console.error(err);}
+  }catch(err){page.close();alert('تعذر تجهيز صفحة الطباعة.');console.error(err);}
 };
 
 document.getElementById('exportBtn').onclick=openExportDialog;
