@@ -1,4 +1,4 @@
-const CACHE_NAME = "furniture-planner-v25-print-png-branding-label-single-tap";
+const CACHE_NAME = "furniture-planner-v27-brand-toolbar-locks";
 const CRITICAL = ['./', './index.html'];
 
 self.addEventListener('install', event => {

@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <title>تأثيثي — iPad و iPhone</title>
-<meta name="taatheethi-version" content="17-fast-start">
+<meta name="taatheethi-version" content="27-brand-toolbar-locks">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -18,11 +18,18 @@
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden}
-  .app{display:grid;grid-template-columns:340px 1fr;grid-template-rows:64px 1fr;height:100vh}
-  header{grid-column:1/3;background:#020617;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 18px;gap:12px}
+  .app{display:grid;grid-template-columns:340px 1fr;grid-template-rows:auto 1fr;height:100vh}
+  header{grid-column:1/3;background:#020617;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:8px 14px;gap:14px;min-height:112px}
   header h1{font-size:18px;margin:0}
   .status{font-size:13px;color:var(--muted)}
+  .headerBrand{min-width:150px}
+  .toolbarStack{display:flex;flex-direction:column;gap:7px;flex:1;min-width:0}
   .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .toolbarRow{background:#07101f;border:1px solid #1e2c42;border-radius:11px;padding:6px 8px}
+  .toolbarRow.workToolbar{background:#091629;border-color:#28435f}
+  .workToolbar button,.workToolbar .btn{padding:11px 15px;min-height:44px;font-size:13px;font-weight:700}
+  .mainToolbar button,.mainToolbar .btn{padding:8px 11px;min-height:38px;font-size:12px}
+  #infoBtn{border-color:#0ea5e9;background:#0c4a6e}
   button,.btn,input,select{font:inherit}
   button,.btn{background:#1e293b;color:#fff;border:1px solid #334155;border-radius:9px;padding:9px 12px;cursor:pointer;transition:.15s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
   button:hover,.btn:hover{border-color:#64748b;background:#273449}
@@ -132,6 +139,10 @@
   .fcard .customMark{position:absolute;top:6px;right:6px;background:#0f766e;color:#fff;border-radius:999px;padding:2px 5px;font-size:9px;z-index:2}
   .genericThumb{width:100%;height:70px;margin:0 auto 6px;border-radius:8px;border:1px dashed #475569;display:flex;align-items:center;justify-content:center;font-size:11px;color:#cbd5e1;background:linear-gradient(145deg,#273449,#111827)}
   .libraryModalCard{width:min(560px,calc(100vw - 30px))}
+  .brandModalCard{width:min(590px,calc(100vw - 30px))}
+  .brandPreview{height:150px;border:1px dashed #475569;border-radius:12px;background:#f8fafc;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-top:8px;padding:10px}
+  .brandPreview img{max-width:100%;max-height:100%;object-fit:contain}
+  .brandPreview .noImage{color:#64748b;font-size:12px}
   .libraryPreview{height:120px;border:1px dashed #475569;border-radius:12px;background:#111827;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-top:8px}
   .libraryPreview img{max-width:100%;max-height:100%;object-fit:contain}
   .libraryPreview .noImage{font-size:12px;color:#64748b}
@@ -166,7 +177,8 @@
   @media(max-width:1180px){
     .app{grid-template-columns:300px 1fr}
     header{padding-inline:12px}
-    .toolbar{flex-wrap:nowrap;overflow-x:auto;max-width:72vw;padding-bottom:4px;scrollbar-width:thin}
+    .toolbarStack{max-width:calc(100vw - 185px)}
+    .toolbar{flex-wrap:nowrap;overflow-x:auto;max-width:100%;padding-bottom:4px;scrollbar-width:thin}
     .toolbar>*{flex:0 0 auto}
     .mapTopbar{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding:8px}
     .mapTopbar .group{flex-wrap:nowrap;flex:0 0 auto}
@@ -180,12 +192,13 @@
     header>div:first-child{min-width:132px}
     header h1{font-size:15px}
     .status{font-size:10px;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .toolbar{max-width:calc(100vw - 145px);gap:6px}
+    .toolbarStack{max-width:calc(100vw - 145px);gap:5px}
+    .toolbar{max-width:100%;gap:6px}
     .toolbar button,.toolbar .btn{padding:8px 10px;min-height:42px;font-size:12px}
     .ipadOnly{display:inline-flex}
-    aside{position:fixed;z-index:2500;right:0;top:calc(env(safe-area-inset-top) + 62px);bottom:env(safe-area-inset-bottom);width:min(360px,88vw);border-left:1px solid #34435b;box-shadow:-18px 0 50px rgba(0,0,0,.45);transform:translateX(105%);transition:transform .22s ease;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+    aside{position:fixed;z-index:2500;right:0;top:calc(env(safe-area-inset-top) + 112px);bottom:env(safe-area-inset-bottom);width:min(360px,88vw);border-left:1px solid #34435b;box-shadow:-18px 0 50px rgba(0,0,0,.45);transform:translateX(105%);transition:transform .22s ease;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
     aside.open{transform:translateX(0)}
-    .sidebarScrim{position:fixed;z-index:2400;inset:calc(env(safe-area-inset-top) + 62px) 0 env(safe-area-inset-bottom) 0;background:rgba(2,6,23,.48);display:none}
+    .sidebarScrim{position:fixed;z-index:2400;inset:calc(env(safe-area-inset-top) + 112px) 0 env(safe-area-inset-bottom) 0;background:rgba(2,6,23,.48);display:none}
     .sidebarScrim.show{display:block}
     main{grid-column:1;grid-row:2;padding:8px;min-width:0;min-height:0}
     .mapPanel{gap:7px}
@@ -202,30 +215,36 @@
   }
   @media(max-width:600px){
     header>div:first-child{display:none}
+    .toolbarStack{max-width:100vw;width:100%}
     .toolbar{max-width:100vw;width:100%}
-    aside{top:calc(env(safe-area-inset-top) + 58px)}
-    .sidebarScrim{inset:calc(env(safe-area-inset-top) + 58px) 0 env(safe-area-inset-bottom) 0}
+    aside{top:calc(env(safe-area-inset-top) + 104px)}
+    .sidebarScrim{inset:calc(env(safe-area-inset-top) + 104px) 0 env(safe-area-inset-bottom) 0}
   }
 </style>
 </head>
 <body>
 <div class="app">
 <header>
-  <div>
-    <h1>مخطط الأثاث</h1>
+  <div class="headerBrand">
+    <h1>تأثيثي</h1>
     <div class="status" id="status">ارفع مخططًا للبدء</div>
   </div>
-  <div class="toolbar">
-    <button id="sidebarToggle" class="ipadOnly primary">☰ المكتبة</button>
-    <button id="newProjectBtn" class="primary">مشروع جديد</button>
-    <label class="btn" for="fileInput"><span class="actionIcon">▣</span>رفع الخارطة</label><input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" />
-    <button id="calibrateBtn"><span class="actionIcon">⌖</span>معايرة القياس</button>
-    <button id="measureBtn"><span class="actionIcon">⟷</span>قياس مسافة</button>
-    <button id="addMapLabelBtn"><span class="actionIcon">✎</span>إضافة مسمى</button>
-    <button id="saveBtn" class="optional">حفظ المشروع</button>
-    <label class="btn optional" for="loadInput">فتح مشروع</label><input id="loadInput" type="file" accept="application/json" />
-    <button id="exportBtn">تصدير PNG</button>
-    <button id="printBtn">طباعة A4/A3</button>
+  <div class="toolbarStack">
+    <div class="toolbar toolbarRow mainToolbar">
+      <button id="infoBtn"><span class="actionIcon">●</span>معلوماتك</button>
+      <button id="newProjectBtn" class="primary">مشروع جديد</button>
+      <label class="btn optional" for="loadInput">فتح مشروع</label><input id="loadInput" type="file" accept="application/json" />
+      <button id="saveBtn" class="optional">حفظ المشروع</button>
+      <button id="exportBtn">تصدير PNG</button>
+      <button id="printBtn">طباعة A3/A4</button>
+    </div>
+    <div class="toolbar toolbarRow workToolbar">
+      <button id="sidebarToggle" class="ipadOnly primary">☰ المكتبة</button>
+      <label class="btn" for="fileInput"><span class="actionIcon">▣</span>رفع الخارطة</label><input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" />
+      <button id="calibrateBtn"><span class="actionIcon">⌖</span>معايرة القياس</button>
+      <button id="measureBtn"><span class="actionIcon">⟷</span>قياس مسافة</button>
+      <button id="addMapLabelBtn"><span class="actionIcon">✎</span>إضافة مسمى</button>
+    </div>
   </div>
 </header>
 
@@ -269,7 +288,7 @@
     <div class="archGrid" id="archLibrary"></div>
   </div>
 
-  <div class="footerNote">V16 — عصا القياس تسجّل النقطة عند رفع الإصبع + تكبير وتصغير بالإصبعين.</div>
+  <div class="footerNote">V27 — هوية الشركة + تنظيم الأشرطة + قفل القياسات والمسميات أثناء التأثيث.</div>
 </aside>
 
 <main>
@@ -284,6 +303,8 @@
         <label class="ctl"><input id="autoDimsToggle" type="checkbox" checked> مسافات تلقائية</label>
         <label class="ctl"><input id="multiSelectToggle" type="checkbox"> تحديد متعدد</label>
         <label class="ctl lockState"><input id="furnitureLockToggle" type="checkbox"> قفل الأثاث</label>
+        <label class="ctl lockState"><input id="measureLockToggle" type="checkbox"> قفل القياسات</label>
+        <label class="ctl lockState"><input id="mapLabelLockToggle" type="checkbox"> قفل المسميات</label>
         <label class="ctl lockState"><input id="mapLockToggle" type="checkbox"> قفل سحب الخارطة</label>
         <label class="ctl layerCtl"><input id="bgLayerToggle" type="checkbox" checked> الخارطة</label>
         <label class="ctl layerCtl"><input id="furnitureLayerToggle" type="checkbox" checked> الأثاث</label>
@@ -385,12 +406,29 @@
   </div>
 </div>
 
+<div class="modalOverlay" id="brandModal">
+  <div class="modalCard brandModalCard">
+    <h3>معلوماتك</h3>
+    <p>هذه المعلومات محفوظة في البرنامج وتظهر في شاشة البداية وأوراق الطباعة وPNG. الشعار يظهر بالأعلى، ومعلومات الشركة بشكل صغير أسفل الورقة.</p>
+    <div class="printMeta">
+      <div class="field wide"><label>اسم الشركة</label><input id="brandCompanyName" type="text" placeholder="اسم الشركة أو المكتب"></div>
+      <div class="field wide"><label>العنوان</label><input id="brandAddress" type="text" placeholder="عنوان الشركة"></div>
+      <div class="field wide"><label>الإيميل</label><input id="brandEmail" type="text" inputmode="email" placeholder="name@example.com"></div>
+      <div class="field wide"><label>الشعار</label><input id="brandLogoInput" type="file" accept="image/png,image/jpeg,image/webp"></div>
+    </div>
+    <div class="brandPreview" id="brandLogoPreview"><span class="noImage">لم يتم اختيار شعار بعد</span></div>
+    <div class="modalSubActions"><button id="removeBrandLogoBtn">إزالة الشعار المخصص</button></div>
+    <div class="modalActions"><button id="cancelBrandBtn">إلغاء</button><button id="saveBrandBtn" class="primary">حفظ معلوماتك</button></div>
+  </div>
+</div>
+
 <div class="modalOverlay" id="printModal">
   <div class="modalCard">
     <h3>طباعة المخطط</h3>
-    <p>أدخل بيانات المشروع واختر حجم الورق. ستظهر الخارطة مع الشعار وشريط مقياس 1 متر.</p>
+    <p>أدخل بيانات المشروع واختر حجم الورق. ستظهر الخارطة مع شعارك ومعلومات الشركة المحفوظة في «معلوماتك» وشريط مقياس 1 متر.</p>
     <div class="printMeta">
       <div class="field wide"><label>اسم المشروع</label><input id="printProjectName" type="text" value="مشروع جديد"></div>
+      <div class="field wide"><label>عنوان الخارطة</label><input id="printMapTitle" type="text" placeholder="مثال: قياسات، توزيع أثاث، الطابق الأرضي"></div>
       <div class="field"><label>العميل</label><input id="printClient" type="text" placeholder="اسم العميل"></div>
       <div class="field"><label>الموقع</label><input id="printLocation" type="text" placeholder="الموقع"></div>
       <div class="field"><label>حجم الورق</label><select id="printPaper"><option value="A4">A4</option><option value="A3">A3</option></select></div>
@@ -406,8 +444,9 @@
     <h3>تصدير PNG</h3>
     <p>يمكنك حفظ الخارطة كصورة عادية، أو إضافة الشعار ومعلومات المشروع بشكل اختياري داخل الصورة نفسها.</p>
     <div class="printMeta">
-      <div class="field wide"><label><input id="pngBrandingToggle" type="checkbox" checked style="width:auto;margin-left:8px"> إضافة الشعار ومعلومات المشروع داخل PNG</label></div>
+      <div class="field wide"><label><input id="pngBrandingToggle" type="checkbox" checked style="width:auto;margin-left:8px"> إضافة الشعار ومعلومات المشروع والشركة داخل PNG</label></div>
       <div class="field wide"><label>اسم المشروع</label><input id="pngProjectName" type="text" value="مشروع جديد"></div>
+      <div class="field wide"><label>عنوان الخارطة</label><input id="pngMapTitle" type="text" placeholder="مثال: قياسات، توزيع أثاث، الطابق الأرضي"></div>
       <div class="field"><label>العميل</label><input id="pngClient" type="text" placeholder="اسم العميل"></div>
       <div class="field"><label>الموقع</label><input id="pngLocation" type="text" placeholder="الموقع"></div>
       <div class="field"><label>حجم اللوحة</label><select id="pngPaper"><option value="A4">A4</option><option value="A3">A3</option></select></div>
@@ -458,6 +497,7 @@ const deleteLibraryItemBtn=document.getElementById('deleteLibraryItemBtn');
 const archLibrary=document.getElementById('archLibrary');
 const printModal=document.getElementById('printModal');
 const printProjectName=document.getElementById('printProjectName');
+const printMapTitle=document.getElementById('printMapTitle');
 const printClient=document.getElementById('printClient');
 const printLocation=document.getElementById('printLocation');
 const printPaper=document.getElementById('printPaper');
@@ -465,10 +505,18 @@ const printOrientation=document.getElementById('printOrientation');
 const exportModal=document.getElementById('exportModal');
 const pngBrandingToggle=document.getElementById('pngBrandingToggle');
 const pngProjectName=document.getElementById('pngProjectName');
+const pngMapTitle=document.getElementById('pngMapTitle');
 const pngClient=document.getElementById('pngClient');
 const pngLocation=document.getElementById('pngLocation');
 const pngPaper=document.getElementById('pngPaper');
 const pngOrientation=document.getElementById('pngOrientation');
+const brandModal=document.getElementById('brandModal');
+const brandCompanyName=document.getElementById('brandCompanyName');
+const brandAddress=document.getElementById('brandAddress');
+const brandEmail=document.getElementById('brandEmail');
+const brandLogoInput=document.getElementById('brandLogoInput');
+const brandLogoPreview=document.getElementById('brandLogoPreview');
+const removeBrandLogoBtn=document.getElementById('removeBrandLogoBtn');
 const flipDoorBtn=document.getElementById('flipDoorBtn');
 const sidebarToggle=document.getElementById('sidebarToggle');
 const sidebarScrim=document.getElementById('sidebarScrim');
@@ -548,7 +596,7 @@ function endTouchLibraryDrag(ev){
   }
   removeTouchDragGhost();
 }
-let projectMeta={name:'مشروع جديد',client:'',location:''};
+let projectMeta={name:'مشروع جديد',mapTitle:'',client:'',location:''};
 const architecture=[
   {id:'door80',name:'باب مفرد 80',w:80,h:10,type:'door',archType:'door',doorSwing:1,icon:'🚪'},
   {id:'door90',name:'باب مفرد 90',w:90,h:10,type:'door',archType:'door',doorSwing:1,icon:'🚪'},
@@ -605,6 +653,44 @@ function resolveAssetSrc(src){
 const promoLogoImage=new Image();
 promoLogoImage.onload=()=>draw();
 promoLogoImage.src=PROMO_LOGO_DATA;
+const BRAND_STORAGE_KEY='taatheethiBrandV1';
+function defaultBrandInfo(){return {companyName:'',address:'',email:'',logoData:''};}
+function loadBrandInfo(){
+  try{const raw=localStorage.getItem(BRAND_STORAGE_KEY);if(!raw)return defaultBrandInfo();return {...defaultBrandInfo(),...JSON.parse(raw)};}catch{return defaultBrandInfo();}
+}
+let brandInfo=loadBrandInfo();
+const companyLogoImage=new Image();
+companyLogoImage.onload=()=>draw();
+function refreshCompanyLogo(){
+  companyLogoImage.src=brandInfo.logoData||PROMO_LOGO_DATA;
+  renderBrandPreview();
+}
+function saveBrandInfoState(){
+  try{localStorage.setItem(BRAND_STORAGE_KEY,JSON.stringify(brandInfo));}catch(e){alert('تعذر حفظ معلومات الشركة. جرّب شعارًا أصغر.');}
+}
+function renderBrandPreview(){
+  if(!brandLogoPreview)return;
+  brandLogoPreview.innerHTML='';
+  const src=brandInfo.logoData||PROMO_LOGO_DATA;
+  if(src){const im=document.createElement('img');im.src=src;brandLogoPreview.appendChild(im);}
+  else{brandLogoPreview.innerHTML='<span class="noImage">لم يتم اختيار شعار بعد</span>';}
+}
+function openBrandDialog(){
+  brandCompanyName.value=brandInfo.companyName||'';brandAddress.value=brandInfo.address||'';brandEmail.value=brandInfo.email||'';brandLogoInput.value='';renderBrandPreview();brandModal.style.display='flex';
+}
+function resizeLogoFile(file){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();r.onerror=reject;r.onload=()=>{const im=new Image();im.onerror=reject;im.onload=()=>{const max=512,sc=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.naturalWidth*sc));c.height=Math.max(1,Math.round(im.naturalHeight*sc));const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);resolve(c.toDataURL('image/png'));};im.src=r.result;};r.readAsDataURL(file);
+  });
+}
+document.getElementById('infoBtn').onclick=openBrandDialog;
+document.getElementById('cancelBrandBtn').onclick=()=>brandModal.style.display='none';
+brandLogoInput.onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{brandInfo.logoData=await resizeLogoFile(f);renderBrandPreview();}catch{alert('تعذر قراءة الشعار. جرّب PNG أو JPG.');}};
+removeBrandLogoBtn.onclick=()=>{brandInfo.logoData='';brandLogoInput.value='';renderBrandPreview();};
+document.getElementById('saveBrandBtn').onclick=()=>{
+  brandInfo.companyName=brandCompanyName.value.trim();brandInfo.address=brandAddress.value.trim();brandInfo.email=brandEmail.value.trim();saveBrandInfoState();refreshCompanyLogo();brandModal.style.display='none';setStatus('تم حفظ معلوماتك وهوية الشركة');draw();
+};
+refreshCompanyLogo();
 
 const palette=['#c9a66b','#b4895b','#8d6e63','#b7b7a4','#c2b280','#8fa3bf','#8bb09c','#d0a5a5','#9e9e9e','#5f6f7a'];
 
@@ -1312,8 +1398,10 @@ function measurementDisplay(m){
   return {q1:{x:m.p1.x+ox,y:m.p1.y+oy},q2:{x:m.p2.x+ox,y:m.p2.y+oy}};
 }
 function pointInBox(p,b){return b&&p.x>=b.x&&p.x<=b.x+b.w&&p.y>=b.y&&p.y<=b.y+b.h;}
+function measurementsGloballyLocked(){return !!document.getElementById('measureLockToggle')?.checked;}
+function mapLabelsGloballyLocked(){return !!document.getElementById('mapLabelLockToggle')?.checked;}
 function hitTestMeasurement(p){
-  if(!visibleMeasurements())return null;
+  if(!visibleMeasurements()||measurementsGloballyLocked())return null;
   const tol=Math.max(5,8/zoom);
   for(let i=measurements.length-1;i>=0;i--){
     const m=measurements[i];
@@ -1325,6 +1413,7 @@ function hitTestMeasurement(p){
   return null;
 }
 function hitTestMapLabel(p){
+  if(mapLabelsGloballyLocked())return null;
   for(let i=mapLabels.length-1;i>=0;i--){
     const l=mapLabels[i];
     if(pointInBox(p,l._hitBox))return l;
@@ -1813,16 +1902,19 @@ function draw(){
     if(visibleBackground())ctx.drawImage(bgImage,0,0,canvas.width,canvas.height);
   }else{
     ctx.fillStyle='#f8fafc';ctx.fillRect(0,0,canvas.width,canvas.height);
-    if(promoLogoImage.complete && promoLogoImage.naturalWidth){
-      const maxW=Math.min(canvas.width*0.46,430),maxH=Math.min(canvas.height*0.58,430);
-      const sc=Math.min(maxW/promoLogoImage.naturalWidth,maxH/promoLogoImage.naturalHeight);
-      const w=promoLogoImage.naturalWidth*sc,h=promoLogoImage.naturalHeight*sc;
-      ctx.save();
-      ctx.shadowColor='rgba(0,0,0,.22)';ctx.shadowBlur=22;ctx.shadowOffsetY=8;
-      ctx.drawImage(promoLogoImage,(canvas.width-w)/2,(canvas.height-h)/2-18,w,h);
-      ctx.restore();
-      ctx.fillStyle='#334155';ctx.font='bold 18px Tahoma';ctx.textAlign='center';
-      ctx.fillText('ارفع الخارطة لبدء مشروع جديد',canvas.width/2,(canvas.height+h)/2+22);
+    const splashLogo=(companyLogoImage.complete&&companyLogoImage.naturalWidth)?companyLogoImage:promoLogoImage;
+    if(splashLogo.complete && splashLogo.naturalWidth){
+      const maxW=Math.min(canvas.width*0.42,390),maxH=Math.min(canvas.height*0.46,340);
+      const sc=Math.min(maxW/splashLogo.naturalWidth,maxH/splashLogo.naturalHeight);
+      const w=splashLogo.naturalWidth*sc,h=splashLogo.naturalHeight*sc;
+      const cy=canvas.height/2-42;
+      ctx.save();ctx.shadowColor='rgba(0,0,0,.18)';ctx.shadowBlur=18;ctx.shadowOffsetY=6;ctx.drawImage(splashLogo,(canvas.width-w)/2,cy-h/2,w,h);ctx.restore();
+      ctx.textAlign='center';
+      let ty=cy+h/2+30;
+      if(brandInfo.companyName){ctx.fillStyle='#0f172a';ctx.font='700 21px Tahoma';ctx.fillText(brandInfo.companyName,canvas.width/2,ty);ty+=27;}
+      const sub=[brandInfo.address,brandInfo.email].filter(Boolean).join('  •  ');
+      if(sub){ctx.fillStyle='#64748b';ctx.font='14px Tahoma';ctx.fillText(sub,canvas.width/2,ty);ty+=25;}
+      ctx.fillStyle='#334155';ctx.font='bold 17px Tahoma';ctx.fillText('ارفع الخارطة لبدء مشروع جديد',canvas.width/2,ty+5);
     }else{
       ctx.fillStyle='#64748b';ctx.font='22px Tahoma';ctx.textAlign='center';
       ctx.fillText('ارفع صورة الخارطة من الزر العلوي',canvas.width/2,canvas.height/2);
@@ -2014,10 +2106,10 @@ function syncSelectedPanel(){
 }
 
 let mapLabelEditBefore=null;
-mapLabelTextInput.oninput=()=>{const l=currentMapLabel();if(!l)return;l.text=mapLabelTextInput.value;mapLabelValue.textContent=l.text||'—';draw();};
-mapLabelTextInput.addEventListener('focus',()=>{if(currentMapLabel()&&!mapLabelEditBefore)mapLabelEditBefore=cloneEditState();});
+mapLabelTextInput.oninput=()=>{if(mapLabelsGloballyLocked())return;const l=currentMapLabel();if(!l)return;l.text=mapLabelTextInput.value;mapLabelValue.textContent=l.text||'—';draw();};
+mapLabelTextInput.addEventListener('focus',()=>{if(mapLabelsGloballyLocked()){mapLabelTextInput.blur();setStatus('المسميات مقفلة');return;}if(currentMapLabel()&&!mapLabelEditBefore)mapLabelEditBefore=cloneEditState();});
 mapLabelTextInput.addEventListener('change',()=>{const l=currentMapLabel();if(l){l.text=(l.text||'').trim()||'مسمى';mapLabelTextInput.value=l.text;mapLabelValue.textContent=l.text;draw();}commitHistory(mapLabelEditBefore);mapLabelEditBefore=null;});
-deleteMapLabelBtn.onclick=()=>{const l=currentMapLabel();if(!l)return;const before=cloneEditState();mapLabels=mapLabels.filter(x=>x.id!==l.id);selectedMapLabelId=null;syncSelectedPanel();draw();commitHistory(before);setStatus('تم حذف المسمى');};
+deleteMapLabelBtn.onclick=()=>{if(mapLabelsGloballyLocked()){setStatus('المسميات مقفلة');return;}const l=currentMapLabel();if(!l)return;const before=cloneEditState();mapLabels=mapLabels.filter(x=>x.id!==l.id);selectedMapLabelId=null;syncSelectedPanel();draw();commitHistory(before);setStatus('تم حذف المسمى');};
 
 [selName,selW,selH,selRot,selColor].forEach(el=>el.oninput=()=>{
   const ids=getSelectedIds(),it=current();if(ids.length!==1||!canEditItem(it))return;
@@ -2057,12 +2149,14 @@ document.getElementById('dupBtn').onclick=()=>{
   for(const it of list){const n={...it,id:randId(),x:it.x+20,y:it.y+20,locked:false};items.push(n);newIds.push(n.id);}
   setSelection(newIds,newIds[newIds.length-1]);syncSelectedPanel();draw();commitHistory(before);setStatus(`تم نسخ ${newIds.length} قطعة`);
 };
-pinMeasureBtn.onclick=()=>{const m=currentMeasure();if(!m)return;const before=cloneEditState();m.pinned=!m.pinned;syncSelectedPanel();draw();commitHistory(before);setStatus(m.pinned?'تم تثبيت القياس على الخارطة':'أصبح القياس مؤقتًا');};
-document.getElementById('deleteMeasureBtn').onclick=()=>{if(!selectedMeasureId)return;const before=cloneEditState();measurements=measurements.filter(m=>m.id!==selectedMeasureId);selectedMeasureId=null;syncSelectedPanel();draw();commitHistory(before);setStatus('تم حذف القياس');};
+pinMeasureBtn.onclick=()=>{if(measurementsGloballyLocked()){setStatus('القياسات مقفلة');return;}const m=currentMeasure();if(!m)return;const before=cloneEditState();m.pinned=!m.pinned;syncSelectedPanel();draw();commitHistory(before);setStatus(m.pinned?'تم تثبيت القياس على الخارطة':'أصبح القياس مؤقتًا');};
+document.getElementById('deleteMeasureBtn').onclick=()=>{if(measurementsGloballyLocked()){setStatus('القياسات مقفلة');return;}if(!selectedMeasureId)return;const before=cloneEditState();measurements=measurements.filter(m=>m.id!==selectedMeasureId);selectedMeasureId=null;syncSelectedPanel();draw();commitHistory(before);setStatus('تم حذف القياس');};
 ['gridToggle','dimsToggle','labelsToggle','shadowToggle','autoDimsToggle','bgLayerToggle','furnitureLayerToggle','measureLayerToggle'].forEach(id=>document.getElementById(id).onchange=()=>{if(id==='furnitureLayerToggle'&&!document.getElementById(id).checked){clearFurnitureSelection();syncSelectedPanel();}if(id==='measureLayerToggle'&&!document.getElementById(id).checked){selectedMeasureId=null;syncSelectedPanel();}draw();});
 document.getElementById('snapToggle').onchange=()=>{snapGuides=[];draw();setStatus(document.getElementById('snapToggle').checked?'تم تشغيل Snap':'تم إيقاف Snap — الحركة حرة');};
 document.getElementById('multiSelectToggle').onchange=()=>setStatus(document.getElementById('multiSelectToggle').checked?'التحديد المتعدد مفعّل — اضغط القطع لإضافتها أو إزالتها':'التحديد العادي مفعّل');
 document.getElementById('furnitureLockToggle').onchange=()=>{syncSelectedPanel();draw();setStatus(document.getElementById('furnitureLockToggle').checked?'تم قفل حركة وتعديل الأثاث':'تم فتح الأثاث للتعديل');};
+document.getElementById('measureLockToggle').onchange=()=>{if(measurementsGloballyLocked())selectedMeasureId=null;syncSelectedPanel();draw();setStatus(measurementsGloballyLocked()?'تم قفل القياسات — ستبقى ظاهرة ولن تعيق التأثيث':'تم فتح القياسات للتعديل');};
+document.getElementById('mapLabelLockToggle').onchange=()=>{if(mapLabelsGloballyLocked())selectedMapLabelId=null;syncSelectedPanel();draw();setStatus(mapLabelsGloballyLocked()?'تم قفل المسميات — ستبقى ظاهرة ولن تعيق التأثيث':'تم فتح المسميات للتعديل');};
 document.getElementById('mapLockToggle').onchange=()=>setStatus(document.getElementById('mapLockToggle').checked?'تم قفل سحب الخارطة — استخدم أشرطة التمرير':'تم فتح سحب الخارطة بالماوس');
 document.getElementById('selectAllBtn').onclick=()=>{if(!visibleFurniture())return;setSelection(items.map(x=>x.id),items.at(-1)?.id||null);syncSelectedPanel();draw();setStatus(`تم تحديد ${items.length} قطعة`);};
 document.getElementById('undoBtn').onclick=doUndo;document.getElementById('redoBtn').onclick=doRedo;
@@ -2090,14 +2184,15 @@ function startNewProject(ask=true){
   canvas.width=1100;canvas.height=750;zoom=1;measureDisplayScale=1;mapLabelDisplayScale=1;
   document.getElementById('zoomRange').value=100;document.getElementById('zoomLabel').textContent='100%';measureSizeRange.value=100;measureSizeLabel.textContent='100%';mapLabelSizeRange.value=100;mapLabelSizeValue.textContent='100%';
   document.getElementById('fileInput').value='';document.getElementById('loadInput').value='';
+document.getElementById('measureLockToggle').checked=false;document.getElementById('mapLabelLockToggle').checked=false;
   scaleModal.style.display='none';targetCursor.style.display='none';hideLiveMeasureBadge();
   updateScaleUI();updateStageSize();updateInteractionCursor();syncSelectedPanel();draw();centerStage();
-  projectMeta={name:'مشروع جديد',client:'',location:''};setStatus('مشروع جديد — ارفع الخارطة للبدء');
+  projectMeta={name:'مشروع جديد',mapTitle:'',client:'',location:''};setStatus('مشروع جديد — ارفع الخارطة للبدء');
 }
 document.getElementById('newProjectBtn').onclick=()=>startNewProject(true);
 
 document.getElementById('saveBtn').onclick=()=>{
-  const project={version:25,projectMeta,bgData,pxPerCm,items,measurements,mapLabels,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
+  const project={version:27,projectMeta,brandInfo,bgData,pxPerCm,items,measurements,mapLabels,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
   download('furniture-project.json',JSON.stringify(project),'application/json')
 };
 
@@ -2107,7 +2202,8 @@ document.getElementById('loadInput').onchange=e=>{
   r.onload=()=>{
     try{
       const p=JSON.parse(r.result);
-      projectMeta={name:p.projectMeta?.name||'مشروع جديد',client:p.projectMeta?.client||'',location:p.projectMeta?.location||''};
+      projectMeta={name:p.projectMeta?.name||'مشروع جديد',mapTitle:p.projectMeta?.mapTitle||'',client:p.projectMeta?.client||'',location:p.projectMeta?.location||''};
+      if(p.brandInfo){brandInfo={...defaultBrandInfo(),...p.brandInfo};saveBrandInfoState();refreshCompanyLogo();}
       if(Array.isArray(p.library)&&p.library.length&&confirm('ملف المشروع يحتوي على مكتبة أثاث محفوظة معه. هل تريد تحميل هذه المكتبة أيضًا؟')){
         furniture=p.library.map((x,i)=>({id:x.id||`project_${i}_${Date.now()}`,name:x.name||'قطعة',w:+x.w||100,h:+x.h||60,src:x.src||null,category:x.category||'أخرى',color:x.color||'#bfa781',isCustom:x.isCustom!==false}));
         saveLibraryState();activeCategory='الكل';buildCategoryButtons();renderLibrary();
@@ -2120,7 +2216,7 @@ document.getElementById('loadInput').onchange=e=>{
       selectedId=null;selectedIds=[];undoStack=[];redoStack=[];updateHistoryButtons();
       updateScaleUI();
       if(p.view){
-        const vm={grid:'gridToggle',dims:'dimsToggle',labels:'labelsToggle',shadow:'shadowToggle',snap:'snapToggle',autoDims:'autoDimsToggle',bg:'bgLayerToggle',furniture:'furnitureLayerToggle',measures:'measureLayerToggle'};
+        const vm={grid:'gridToggle',dims:'dimsToggle',labels:'labelsToggle',shadow:'shadowToggle',snap:'snapToggle',autoDims:'autoDimsToggle',bg:'bgLayerToggle',furniture:'furnitureLayerToggle',measures:'measureLayerToggle',measureLock:'measureLockToggle',mapLabelLock:'mapLabelLockToggle'};
         for(const [k,id] of Object.entries(vm))if(k in p.view)document.getElementById(id).checked=!!p.view[k];
       }
       if(p.zoom){zoom=p.zoom;document.getElementById('zoomRange').value=Math.round(zoom*100);document.getElementById('zoomLabel').textContent=Math.round(zoom*100)+'%';}
@@ -2160,7 +2256,7 @@ function loadDataImage(src){
     const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=src;
   });
 }
-async function buildBrandedSheet({paper='A4',orient='landscape',title='',client='',location='',planCanvas=null}){
+async function buildBrandedSheet({paper='A4',orient='landscape',title='',mapTitle='',client='',location='',planCanvas=null}){
   const plan=planCanvas||captureCleanPlanCanvas();
   const size=paperPixels(paper,orient);
   const sheet=document.createElement('canvas');sheet.width=size.w;sheet.height=size.h;
@@ -2177,12 +2273,13 @@ async function buildBrandedSheet({paper='A4',orient='landscape',title='',client=
   const scale=Math.min(planAreaW/plan.width,planAreaH/plan.height);
   const drawW=plan.width*scale, drawH=plan.height*scale;
   const drawX=Math.round((sheet.width-drawW)/2), drawY=Math.round(planTop+(planAreaH-drawH)/2);
-  const logo=await loadDataImage(PRINT_LOGO_DATA);
+  const logo=await loadDataImage(brandInfo.logoData||PRINT_LOGO_DATA);
   const logoMaxW=Math.round(sheet.width*0.14), logoMaxH=Math.round(headH*0.68);
   const logoScale=Math.min(logoMaxW/logo.width, logoMaxH/logo.height);
   const logoW=logo.width*logoScale, logoH=logo.height*logoScale;
   const logoX=margin, logoY=margin+Math.round((headH-logoH)/2);
   c.drawImage(logo,logoX,logoY,logoW,logoH);
+  if(brandInfo.companyName){c.fillStyle='#334155';c.textAlign='left';c.font=`600 ${Math.round(headH*0.10)}px Tahoma,Arial,sans-serif`;c.fillText(brandInfo.companyName,logoX,margin+headH-Math.round(headH*0.08));}
   c.strokeStyle='#111';c.lineWidth=Math.max(2,Math.round(sheet.width/900));
   c.beginPath();c.moveTo(margin,margin+headH);c.lineTo(sheet.width-margin,margin+headH);c.stroke();
   c.fillStyle='#111';
@@ -2190,7 +2287,7 @@ async function buildBrandedSheet({paper='A4',orient='landscape',title='',client=
   c.font=`700 ${Math.round(headH*0.28)}px Tahoma,Arial,sans-serif`;
   c.fillText(title||'مشروع جديد', sheet.width/2, margin+Math.round(headH*0.34));
   c.font=`${Math.round(headH*0.17)}px Tahoma,Arial,sans-serif`;
-  c.fillText('مخطط توزيع الأثاث والعناصر المعمارية', sheet.width/2, margin+Math.round(headH*0.66));
+  if(mapTitle)c.fillText(mapTitle, sheet.width/2, margin+Math.round(headH*0.66));
   const metaX=sheet.width-margin;
   const metaStartY=margin+Math.round(headH*0.23);
   c.textAlign='right';
@@ -2204,9 +2301,11 @@ async function buildBrandedSheet({paper='A4',orient='landscape',title='',client=
   for(const line of metaLines){ c.fillText(line, metaX, lineY); lineY += Math.round(headH*0.18); }
   c.drawImage(plan, drawX, drawY, drawW, drawH);
   c.fillStyle='#555';
-  c.font=`${Math.round(footH*0.42)}px Tahoma,Arial,sans-serif`;
-  c.textAlign='left';c.fillText('القصيرين للعمارة والتعمير', margin, sheet.height-margin+Math.round(footH*0.1));
-  c.textAlign='right';c.fillText(`${paper} — ${orient==='landscape'?'أفقي':'عمودي'}`, sheet.width-margin, sheet.height-margin+Math.round(footH*0.1));
+  const companyLine=[brandInfo.companyName,brandInfo.address,brandInfo.email].filter(Boolean).join('  •  ');
+  const footerY=sheet.height-margin+Math.round(footH*0.08);
+  c.font=`${Math.round(footH*0.34)}px Tahoma,Arial,sans-serif`;
+  if(companyLine){c.textAlign='center';c.fillText(companyLine,sheet.width/2,footerY);}
+  c.textAlign='right';c.font=`${Math.round(footH*0.30)}px Tahoma,Arial,sans-serif`;c.fillText(`${paper} — ${orient==='landscape'?'أفقي':'عمودي'}`, sheet.width-margin, footerY);
   return sheet;
 }
 function downloadCanvasAsPng(outCanvas, filename='furniture-layout.png'){
@@ -2218,19 +2317,19 @@ function downloadCanvasAsPng(outCanvas, filename='furniture-layout.png'){
   },'image/png');
 }
 function openPrintDialog(){
-  printProjectName.value=projectMeta.name||'مشروع جديد';printClient.value=projectMeta.client||'';printLocation.value=projectMeta.location||'';printModal.style.display='flex';
+  printProjectName.value=projectMeta.name||'مشروع جديد';printMapTitle.value=projectMeta.mapTitle||'';printClient.value=projectMeta.client||'';printLocation.value=projectMeta.location||'';printModal.style.display='flex';
 }
 function openExportDialog(){
-  pngProjectName.value=projectMeta.name||'مشروع جديد';pngClient.value=projectMeta.client||'';pngLocation.value=projectMeta.location||'';
+  pngProjectName.value=projectMeta.name||'مشروع جديد';pngMapTitle.value=projectMeta.mapTitle||'';pngClient.value=projectMeta.client||'';pngLocation.value=projectMeta.location||'';
   pngPaper.value=printPaper.value||'A4';pngOrientation.value=printOrientation.value||'landscape';pngBrandingToggle.checked=true;exportModal.style.display='flex';
 }
 document.getElementById('printBtn').onclick=openPrintDialog;
 document.getElementById('cancelPrintBtn').onclick=()=>printModal.style.display='none';
 document.getElementById('doPrintBtn').onclick=async()=>{
-  projectMeta={name:printProjectName.value.trim()||'مشروع جديد',client:printClient.value.trim(),location:printLocation.value.trim()};
+  projectMeta={name:printProjectName.value.trim()||'مشروع جديد',mapTitle:printMapTitle.value.trim(),client:printClient.value.trim(),location:printLocation.value.trim()};
   const paper=printPaper.value,orient=printOrientation.value;
   try{
-    const sheet=await buildBrandedSheet({paper,orient,title:projectMeta.name,client:projectMeta.client,location:projectMeta.location});
+    const sheet=await buildBrandedSheet({paper,orient,title:projectMeta.name,mapTitle:projectMeta.mapTitle,client:projectMeta.client,location:projectMeta.location});
     const page=window.open('','_blank');if(!page){alert('اسمح للمتصفح بفتح نافذة الطباعة ثم حاول مرة أخرى.');return;}
     const title=projectMeta.name.replace(/[<>]/g,'');
     const src=sheet.toDataURL('image/png');
@@ -2242,10 +2341,10 @@ document.getElementById('doPrintBtn').onclick=async()=>{
 document.getElementById('exportBtn').onclick=openExportDialog;
 document.getElementById('cancelExportBtn').onclick=()=>exportModal.style.display='none';
 document.getElementById('doExportBtn').onclick=async()=>{
-  projectMeta={name:pngProjectName.value.trim()||'مشروع جديد',client:pngClient.value.trim(),location:pngLocation.value.trim()};
+  projectMeta={name:pngProjectName.value.trim()||'مشروع جديد',mapTitle:pngMapTitle.value.trim(),client:pngClient.value.trim(),location:pngLocation.value.trim()};
   try{
     if(pngBrandingToggle.checked){
-      const sheet=await buildBrandedSheet({paper:pngPaper.value,orient:pngOrientation.value,title:projectMeta.name,client:projectMeta.client,location:projectMeta.location});
+      const sheet=await buildBrandedSheet({paper:pngPaper.value,orient:pngOrientation.value,title:projectMeta.name,mapTitle:projectMeta.mapTitle,client:projectMeta.client,location:projectMeta.location});
       downloadCanvasAsPng(sheet,'furniture-layout-branded.png');
       setStatus('تم تصدير PNG مع الشعار ومعلومات العميل');
     }else{
@@ -2273,6 +2372,7 @@ window.addEventListener('keydown',e=>{
   if(editing)return;
   const activeMapLabel=currentMapLabel();
   if(activeMapLabel){
+    if(mapLabelsGloballyLocked()){setStatus('المسميات مقفلة');return;}
     const step=e.shiftKey?10:2;let before=null,changed=false;
     if(['Delete','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))before=cloneEditState();
     if(e.key==='Delete'){mapLabels=mapLabels.filter(x=>x.id!==activeMapLabel.id);selectedMapLabelId=null;changed=true;}
