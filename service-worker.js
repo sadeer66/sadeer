@@ -1,4 +1,4 @@
-const CACHE_NAME = "furniture-planner-v30-furniture-schedule-visible-pdf-rights";
+const CACHE_NAME = "furniture-planner-v31-visible-controls-guide";
 const CRITICAL = ['./', './index.html'];
 
 self.addEventListener('install', event => {

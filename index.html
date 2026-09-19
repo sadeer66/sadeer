@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <title>تأثيثي — iPad و iPhone</title>
-<meta name="taatheethi-version" content="30-furniture-schedule-visibility">
+<meta name="taatheethi-version" content="31-visible-controls-live-furniture-guide">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -168,6 +168,22 @@
   .lockState{color:#fde68a}
   .layerCtl{border-style:dashed!important}
 
+  /* V31: أزرار العرض الأساسية ظاهرة دائماً ولا تحتاج سحب الشريط على iPad */
+  .quickDisplayBar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#071525;border:1px solid #2b4b68;border-radius:12px;padding:7px 9px;flex:0 0 auto}
+  .quickDisplayBar .quickTitle{font-size:11px;color:#9fc7e8;font-weight:700;margin-inline-end:2px}
+  .quickDisplayBar .quickToggle{min-height:36px;padding:7px 11px;background:#0b5f85;border-color:#1686b6;font-size:11px;font-weight:700}
+  .quickDisplayBar .quickToggle.isOff{background:#1e293b;border-color:#475569;color:#cbd5e1;opacity:.82}
+  .quickDisplayBar .quickToggle .eyeMark{font-size:13px;margin-inline-end:5px;color:#bae6fd}
+  .quickDisplayBar .quickToggle.isOff .eyeMark{color:#94a3b8}
+  .mapTopbar .legacyDisplayToggle{display:none!important}
+  /* V31: دليل الأثاث شريط مستقل أسفل الخارطة وليس داخل منطقة التمرير */
+  .usedFurniturePanel{width:100%;min-width:0;max-height:188px;overflow:hidden;margin:0;padding:9px 10px;flex:0 0 auto;border-color:#6b829b;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+  .usedFurnitureTitle{font-size:12px;margin-bottom:7px;padding-bottom:5px}
+  .usedFurnitureGrid{display:flex;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;gap:8px;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  .usedFurnitureCard{flex:0 0 138px;width:138px;min-height:126px;padding:6px 16px 6px 6px}
+  .usedFurnitureCard .ufThumb{height:67px}
+  .usedFurnitureCard .ufThumb img{max-width:84px;max-height:59px}
+
   .archGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.archCard{background:#172033;border:1px solid #2b3a52;border-radius:10px;padding:9px;cursor:grab;text-align:center}.archCard:hover{border-color:#38bdf8}.archCard b{display:block;font-size:12px}.archCard span{font-size:10px;color:#94a3b8}.archIcon{font-size:24px;line-height:1.1;display:block;margin-bottom:4px}.printMeta{display:grid;grid-template-columns:1fr 1fr;gap:8px}.printMeta .wide{grid-column:1/3}.printNote{font-size:11px;color:#94a3b8;line-height:1.6}.doorOnly{display:none}
 
   .ipadOnly{display:none}
@@ -222,6 +238,12 @@
     main{grid-column:1;grid-row:2;padding:8px;min-width:0;min-height:0}
     .appRights{grid-column:1;grid-row:3;font-size:10px;min-height:30px;padding:6px 8px}
     .mapPanel{gap:7px}
+    .quickDisplayBar{gap:5px;padding:5px 6px;flex-wrap:nowrap;overflow-x:auto}
+    .quickDisplayBar .quickTitle{display:none}
+    .quickDisplayBar .quickToggle{min-height:38px;padding:7px 9px;font-size:10.5px;flex:0 0 auto}
+    .usedFurniturePanel{max-height:158px;padding:7px 8px}
+    .usedFurnitureCard{flex-basis:124px;width:124px;min-height:112px}
+    .usedFurnitureCard .ufThumb{height:56px}
     .mapTopbar{border-radius:11px;padding:6px;gap:6px}
     .mapTopbar .ctl,.mapTopbar .miniBtn{font-size:11px;padding:7px 9px;min-height:40px}
     .mapTopbar .zoomBox{padding:4px 6px;min-height:40px}
@@ -314,6 +336,13 @@
 
 <main>
   <div class="mapPanel">
+    <div class="quickDisplayBar" id="quickDisplayBar">
+      <span class="quickTitle">العرض السريع:</span>
+      <button id="quickMeasuresBtn" class="quickToggle"><span class="eyeMark">●</span>إخفاء القياسات</button>
+      <button id="quickLabelsBtn" class="quickToggle"><span class="eyeMark">●</span>إخفاء المسميات</button>
+      <button id="quickArrowsBtn" class="quickToggle"><span class="eyeMark">●</span>إخفاء أسهم القياس</button>
+      <button id="quickFurnitureGuideBtn" class="quickToggle"><span class="eyeMark">●</span>إخفاء دليل الأثاث</button>
+    </div>
     <div class="mapTopbar">
       <div class="group">
         <label class="ctl"><input id="gridToggle" type="checkbox" checked> شبكة 50 سم</label>
@@ -329,10 +358,10 @@
         <label class="ctl lockState"><input id="mapLockToggle" type="checkbox"> قفل سحب الخارطة</label>
         <label class="ctl layerCtl"><input id="bgLayerToggle" type="checkbox" checked> الخارطة</label>
         <label class="ctl layerCtl"><input id="furnitureLayerToggle" type="checkbox" checked> الأثاث</label>
-        <label class="ctl layerCtl"><input id="measureLayerToggle" type="checkbox" checked> إظهار القياسات</label>
-        <label class="ctl layerCtl"><input id="mapLabelLayerToggle" type="checkbox" checked> إظهار المسميات</label>
-        <label class="ctl layerCtl"><input id="measureArrowsToggle" type="checkbox" checked> أسهم القياس</label>
-        <label class="ctl layerCtl"><input id="furnitureSummaryToggle" type="checkbox" checked> دليل الأثاث</label>
+        <label class="ctl layerCtl legacyDisplayToggle"><input id="measureLayerToggle" type="checkbox" checked> إظهار القياسات</label>
+        <label class="ctl layerCtl legacyDisplayToggle"><input id="mapLabelLayerToggle" type="checkbox" checked> إظهار المسميات</label>
+        <label class="ctl layerCtl legacyDisplayToggle"><input id="measureArrowsToggle" type="checkbox" checked> أسهم القياس</label>
+        <label class="ctl layerCtl legacyDisplayToggle"><input id="furnitureSummaryToggle" type="checkbox" checked> دليل الأثاث</label>
       </div>
       <div class="group">
         <button id="undoBtn" class="miniBtn" disabled>↶ تراجع</button>
@@ -350,10 +379,10 @@
       <div class="canvasWrap">
         <div class="stage" id="stage"><canvas id="canvas" width="1100" height="750"></canvas></div>
       </div>
-      <div class="usedFurniturePanel" id="usedFurniturePanel">
-        <div class="usedFurnitureTitle">الأثاث المستخدم في الخارطة</div>
-        <div class="usedFurnitureGrid" id="usedFurnitureGrid"></div>
-      </div>
+    </div>
+    <div class="usedFurniturePanel" id="usedFurniturePanel">
+      <div class="usedFurnitureTitle">الأثاث المستخدم في الخارطة — المقاسات الفعلية للقطع المستخدمة</div>
+      <div class="usedFurnitureGrid" id="usedFurnitureGrid"></div>
     </div>
     <div class="bottomInspector" id="selectedPanel" style="display:none">
       <div class="selectedTitle"><span>القطعة:</span><strong id="selectedTitle">—</strong></div>
@@ -942,7 +971,6 @@ function updateStageSize(){
   stage.style.height=displayH+'px';
   canvas.style.width=displayW+'px';
   canvas.style.height=displayH+'px';
-  if(usedFurniturePanel)usedFurniturePanel.style.width=Math.max(420,displayW)+'px';
 }
 
 function resizeToImage(img){
@@ -2225,7 +2253,31 @@ document.getElementById('dupBtn').onclick=()=>{
 };
 pinMeasureBtn.onclick=()=>{if(measurementsGloballyLocked()){setStatus('القياسات مقفلة');return;}const m=currentMeasure();if(!m)return;const before=cloneEditState();m.pinned=!m.pinned;syncSelectedPanel();draw();commitHistory(before);setStatus(m.pinned?'تم تثبيت القياس على الخارطة':'أصبح القياس مؤقتًا');};
 document.getElementById('deleteMeasureBtn').onclick=()=>{if(measurementsGloballyLocked()){setStatus('القياسات مقفلة');return;}if(!selectedMeasureId)return;const before=cloneEditState();measurements=measurements.filter(m=>m.id!==selectedMeasureId);selectedMeasureId=null;syncSelectedPanel();draw();commitHistory(before);setStatus('تم حذف القياس');};
-['gridToggle','dimsToggle','labelsToggle','shadowToggle','autoDimsToggle','bgLayerToggle','furnitureLayerToggle','measureLayerToggle','mapLabelLayerToggle','measureArrowsToggle','furnitureSummaryToggle'].forEach(id=>document.getElementById(id).onchange=()=>{if(id==='furnitureLayerToggle'&&!document.getElementById(id).checked){clearFurnitureSelection();syncSelectedPanel();}if(id==='measureLayerToggle'&&!document.getElementById(id).checked){selectedMeasureId=null;syncSelectedPanel();}if(id==='mapLabelLayerToggle'&&!document.getElementById(id).checked){selectedMapLabelId=null;syncSelectedPanel();}draw();});
+function syncQuickDisplayButtons(){
+  const specs=[
+    ['quickMeasuresBtn','measureLayerToggle','القياسات'],
+    ['quickLabelsBtn','mapLabelLayerToggle','المسميات'],
+    ['quickArrowsBtn','measureArrowsToggle','أسهم القياس'],
+    ['quickFurnitureGuideBtn','furnitureSummaryToggle','دليل الأثاث']
+  ];
+  for(const [btnId,checkId,label] of specs){
+    const btn=document.getElementById(btnId),check=document.getElementById(checkId);if(!btn||!check)continue;
+    const on=!!check.checked;btn.classList.toggle('isOff',!on);
+    btn.innerHTML=`<span class="eyeMark">${on?'●':'○'}</span>${on?'إخفاء':'إظهار'} ${label}`;
+    btn.setAttribute('aria-pressed',on?'true':'false');
+  }
+}
+function bindQuickToggle(btnId,checkId){
+  const btn=document.getElementById(btnId),check=document.getElementById(checkId);if(!btn||!check)return;
+  btn.onclick=()=>{check.checked=!check.checked;check.dispatchEvent(new Event('change',{bubbles:true}));};
+}
+bindQuickToggle('quickMeasuresBtn','measureLayerToggle');
+bindQuickToggle('quickLabelsBtn','mapLabelLayerToggle');
+bindQuickToggle('quickArrowsBtn','measureArrowsToggle');
+bindQuickToggle('quickFurnitureGuideBtn','furnitureSummaryToggle');
+syncQuickDisplayButtons();
+
+['gridToggle','dimsToggle','labelsToggle','shadowToggle','autoDimsToggle','bgLayerToggle','furnitureLayerToggle','measureLayerToggle','mapLabelLayerToggle','measureArrowsToggle','furnitureSummaryToggle'].forEach(id=>document.getElementById(id).onchange=()=>{if(id==='furnitureLayerToggle'&&!document.getElementById(id).checked){clearFurnitureSelection();syncSelectedPanel();}if(id==='measureLayerToggle'&&!document.getElementById(id).checked){selectedMeasureId=null;syncSelectedPanel();}if(id==='mapLabelLayerToggle'&&!document.getElementById(id).checked){selectedMapLabelId=null;syncSelectedPanel();}syncQuickDisplayButtons();draw();});
 document.getElementById('snapToggle').onchange=()=>{snapGuides=[];draw();setStatus(document.getElementById('snapToggle').checked?'تم تشغيل Snap':'تم إيقاف Snap — الحركة حرة');};
 document.getElementById('multiSelectToggle').onchange=()=>setStatus(document.getElementById('multiSelectToggle').checked?'التحديد المتعدد مفعّل — اضغط القطع لإضافتها أو إزالتها':'التحديد العادي مفعّل');
 document.getElementById('furnitureLockToggle').onchange=()=>{syncSelectedPanel();draw();setStatus(document.getElementById('furnitureLockToggle').checked?'تم قفل حركة وتعديل الأثاث':'تم فتح الأثاث للتعديل');};
@@ -2258,7 +2310,7 @@ function startNewProject(ask=true){
   canvas.width=1100;canvas.height=750;zoom=1;measureDisplayScale=1;mapLabelDisplayScale=1;
   document.getElementById('zoomRange').value=100;document.getElementById('zoomLabel').textContent='100%';measureSizeRange.value=100;measureSizeLabel.textContent='100%';mapLabelSizeRange.value=100;mapLabelSizeValue.textContent='100%';
   document.getElementById('fileInput').value='';document.getElementById('loadInput').value='';
-document.getElementById('measureLockToggle').checked=false;document.getElementById('mapLabelLockToggle').checked=false;document.getElementById('measureLayerToggle').checked=true;document.getElementById('mapLabelLayerToggle').checked=true;document.getElementById('measureArrowsToggle').checked=true;document.getElementById('furnitureSummaryToggle').checked=true;
+document.getElementById('measureLockToggle').checked=false;document.getElementById('mapLabelLockToggle').checked=false;document.getElementById('measureLayerToggle').checked=true;document.getElementById('mapLabelLayerToggle').checked=true;document.getElementById('measureArrowsToggle').checked=true;document.getElementById('furnitureSummaryToggle').checked=true;syncQuickDisplayButtons();
   scaleModal.style.display='none';targetCursor.style.display='none';hideLiveMeasureBadge();
   updateScaleUI();updateStageSize();updateInteractionCursor();syncSelectedPanel();draw();centerStage();
   projectMeta={name:'مشروع جديد',mapTitle:'',client:'',location:''};setStatus('مشروع جديد — ارفع الخارطة للبدء');
@@ -2266,7 +2318,7 @@ document.getElementById('measureLockToggle').checked=false;document.getElementBy
 document.getElementById('newProjectBtn').onclick=()=>startNewProject(true);
 
 document.getElementById('saveBtn').onclick=()=>{
-  const project={version:30,projectMeta,brandInfo,bgData,pxPerCm,items,measurements,mapLabels,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:document.getElementById('mapLabelLayerToggle').checked,measureArrows:document.getElementById('measureArrowsToggle').checked,furnitureSummary:document.getElementById('furnitureSummaryToggle').checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
+  const project={version:31,projectMeta,brandInfo,bgData,pxPerCm,items,measurements,mapLabels,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:document.getElementById('mapLabelLayerToggle').checked,measureArrows:document.getElementById('measureArrowsToggle').checked,furnitureSummary:document.getElementById('furnitureSummaryToggle').checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
   download('furniture-project.json',JSON.stringify(project),'application/json')
 };
 
@@ -2291,7 +2343,7 @@ document.getElementById('loadInput').onchange=e=>{
       updateScaleUI();
       if(p.view){
         const vm={grid:'gridToggle',dims:'dimsToggle',labels:'labelsToggle',shadow:'shadowToggle',snap:'snapToggle',autoDims:'autoDimsToggle',bg:'bgLayerToggle',furniture:'furnitureLayerToggle',measures:'measureLayerToggle',mapLabels:'mapLabelLayerToggle',measureArrows:'measureArrowsToggle',furnitureSummary:'furnitureSummaryToggle',measureLock:'measureLockToggle',mapLabelLock:'mapLabelLockToggle'};
-        for(const [k,id] of Object.entries(vm))if(k in p.view)document.getElementById(id).checked=!!p.view[k];
+        for(const [k,id] of Object.entries(vm))if(k in p.view)document.getElementById(id).checked=!!p.view[k];syncQuickDisplayButtons();
       }
       if(p.zoom){zoom=p.zoom;document.getElementById('zoomRange').value=Math.round(zoom*100);document.getElementById('zoomLabel').textContent=Math.round(zoom*100)+'%';}
       measureDisplayScale=clamp(Number(p.measureDisplayScale)||1,0.4,2);measureSizeRange.value=Math.round(measureDisplayScale*100);measureSizeLabel.textContent=Math.round(measureDisplayScale*100)+'%';
