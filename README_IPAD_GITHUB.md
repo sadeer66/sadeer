@@ -71,3 +71,7 @@
 ## V34
 - دليل الأثاث يعكس لون القطعة المستخدم على الخارطة، بما في ذلك الألوان المعدلة.
 - القطعة نفسها بألوان مختلفة تظهر كبطاقات مستقلة في الدليل.
+
+
+## V35
+- Added a 90° furniture rotation button next to the existing rotation controls.

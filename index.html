@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <title>تأثيثي — iPad و iPhone</title>
-<meta name="taatheethi-version" content="34-guide-matches-furniture-color">
+<meta name="taatheethi-version" content="35-rotate-90">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -378,6 +378,7 @@
       <label class="inlineField">الدوران ° <input id="selRot" type="number" step="1"></label>
       <label class="inlineField">لون القطعة <input id="selColor" type="color"></label>
       <label class="inlineField"><input id="selTintEnabled" type="checkbox"> استبدال اللون الأساسي</label>
+      <button id="rotate90" class="bottomBtn">↻ 90°</button>
       <button id="rotate45" class="bottomBtn">45°</button>
       <button id="rotate180" class="bottomBtn">180°</button>
       <button id="rotate360" class="bottomBtn">0/360°</button>
@@ -2239,7 +2240,7 @@ function syncSelectedPanel(){
   flipDoorBtn.style.display=(!multi&&it&&(it.archType==='door'||it.archType==='doubleDoor'))?'':'none';
   const disableSingle=multi||!canEditItem(it);
   [selName,selW,selH,selRot,selColor,selTintEnabled].forEach(el=>el.disabled=disableSingle);
-  ['rotate45','rotate180','rotate360','dupBtn','deleteBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=furnitureGloballyLocked();});
+  ['rotate90','rotate45','rotate180','rotate360','dupBtn','deleteBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=furnitureGloballyLocked();});
 }
 
 let mapLabelEditBefore=null;
@@ -2267,6 +2268,7 @@ function applyToSelection(fn,statusText){
   const before=cloneEditState();list.forEach(fn);syncSelectedPanel();draw();commitHistory(before);if(statusText)setStatus(statusText);return true;
 }
 function addRotationAngle(a){applyToSelection(it=>{it.rot=((it.rot+a)%360+360)%360;},`تم تدوير المحدد ${a}°`);}
+document.getElementById('rotate90').onclick=()=>addRotationAngle(90);
 document.getElementById('rotate45').onclick=()=>addRotationAngle(45);
 document.getElementById('rotate180').onclick=()=>addRotationAngle(180);
 document.getElementById('rotate360').onclick=()=>applyToSelection(it=>{it.rot=0;},'تمت إعادة الدوران إلى 0°');
@@ -2334,7 +2336,7 @@ document.getElementById('measureLockToggle').checked=false;document.getElementBy
 document.getElementById('newProjectBtn').onclick=()=>startNewProject(true);
 
 document.getElementById('saveBtn').onclick=()=>{
-  const project={version:34,projectMeta,brandInfo,bgData,pxPerCm,items,measurements,mapLabels,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
+  const project={version:35,projectMeta,brandInfo,bgData,pxPerCm,items,measurements,mapLabels,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
   download('furniture-project.json',JSON.stringify(project),'application/json')
 };
 
