@@ -1,4 +1,4 @@
-const CACHE_NAME = "furniture-planner-v21-live-preview-measure-slider";
+const CACHE_NAME = "furniture-planner-v22-map-labels";
 const CRITICAL = ['./', './index.html'];
 
 self.addEventListener('install', event => {
