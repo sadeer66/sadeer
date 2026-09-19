@@ -291,6 +291,7 @@
         <button id="fitBtn" class="miniBtn">ملاءمة للشاشة</button>
         <button id="actualBtn" class="miniBtn">100%</button>
         <div class="zoomBox"><button id="zoomOutBtn" class="miniBtn zoomStep" title="تصغير">−</button><span class="small">تكبير</span><input id="zoomRange" type="range" min="40" max="300" value="100" style="width:190px"><span id="zoomLabel" class="small">100%</span><button id="zoomInBtn" class="miniBtn zoomStep" title="تكبير">+</button></div>
+        <div class="zoomBox" title="يغيّر حجم جميع أرقام القياسات على الخارطة وفي PNG والطباعة"><span class="small">حجم القياسات</span><input id="measureSizeRange" type="range" min="40" max="200" step="10" value="100" style="width:150px"><span id="measureSizeLabel" class="small">100%</span></div>
       </div>
     </div>
     <div class="mapViewport" id="mainScroll" title="عند التكبير: اسحب مكانًا فارغًا بالماوس أو الإصبع لتحريك الخارطة">
@@ -318,7 +319,7 @@
     </div>
     <div class="bottomInspector measureInspector" id="measurePanel" style="display:none">
       <div class="selectedTitle"><span>القياس المحدد:</span><strong class="measureValue" id="measureValue">—</strong></div>
-      <span class="measureHint" id="measureHint">القياسات ثابتة بالنسبة إلى الخارطة وتكبر وتصغر معها، وتبقى ظاهرة في PNG والطباعة بالحجم نفسه نسبةً إلى المخطط.</span>
+      <span class="measureHint" id="measureHint">استخدم شريط «حجم القياسات» للتحكم يدويًا بحجم جميع الأرقام. نفس الحجم يظهر في PNG والطباعة.</span>
       <button id="pinMeasureBtn" class="bottomBtn">تثبيت القياس</button>
       <button id="deleteMeasureBtn" class="bottomBtn danger">حذف القياس</button>
     </div>
@@ -436,9 +437,11 @@ const sidebarScrim=document.getElementById('sidebarScrim');
 const sidebarEl=document.querySelector('aside');
 const zoomInBtn=document.getElementById('zoomInBtn');
 const zoomOutBtn=document.getElementById('zoomOutBtn');
+const measureSizeRange=document.getElementById('measureSizeRange');
+const measureSizeLabel=document.getElementById('measureSizeLabel');
 
 
-let bgImage=null,bgData=null,items=[],selectedId=null,selectedIds=[],selectedMeasureId=null,pxPerCm=null,mode='select',points=[],drag=null,panDrag=null,measureDrag=null,zoom=1,measurements=[],pendingCalDistancePx=null,pendingFurnitureDef=null,libraryDragActive=false;
+let bgImage=null,bgData=null,items=[],selectedId=null,selectedIds=[],selectedMeasureId=null,pxPerCm=null,mode='select',points=[],drag=null,panDrag=null,measureDrag=null,zoom=1,measureDisplayScale=1,measurements=[],pendingCalDistancePx=null,pendingFurnitureDef=null,libraryDragActive=false;
 let undoStack=[],redoStack=[],snapGuides=[],inspectorEditBefore=null;
 let touchLibraryDrag=null,touchDragGhost=null;
 let activeCanvasTouches=new Map(),pinchState=null,suppressCanvasClickUntil=0,aimingTouchId=null;
@@ -1737,6 +1740,7 @@ document.getElementById('applyCalBtn').onclick=()=>{
   pxPerCm=candidate;scaleModal.style.display='none';pendingCalDistancePx=null;points=[];mode='select';updateInteractionCursor();updateScaleUI();setStatus('تم اعتماد المقياس بنجاح');draw();
 };
 function formatLength(cm){return cm>=100?`${(cm/100).toFixed(2)} م`:`${cm.toFixed(1)} سم`;}
+function formatMeasureNumber(cm){return cm>=100?(cm/100).toFixed(2):cm.toFixed(1);}
 function drawArrowHead(x,y,ang,size){ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-size*Math.cos(ang-.5),y-size*Math.sin(ang-.5));ctx.lineTo(x-size*Math.cos(ang+.5),y-size*Math.sin(ang+.5));ctx.closePath();ctx.fill();}
 function boxesOverlap(a,b,gap=0){
   return !!a&&!!b&&a.x-gap<b.x+b.w&&a.x+a.w+gap>b.x&&a.y-gap<b.y+b.h&&a.y+a.h+gap>b.y;
@@ -1744,71 +1748,73 @@ function boxesOverlap(a,b,gap=0){
 function drawMeasurements(){
   if(!pxPerCm)return;
   const touch=isTouchDevice();
-  // V19: القياسات مرتبطة بالخريطة نفسها، لا بحجم الشاشة أو نسبة الـ Zoom.
-  // لذلك تصغر وتكبر مع الخريطة، وتظهر في PNG والطباعة بنسبة ثابتة دائماً.
   const shortSide=Math.max(1,Math.min(canvas.width,canvas.height));
-  const labelPx=clamp(Math.round(shortSide*0.034),24,31);
-  const labelH=Math.round(labelPx*1.42);
-  const pad=Math.round(labelPx*0.34);
-  const deleteSize=Math.round(labelPx*0.78);
-  const lineW=clamp(shortSide/430,1.7,2.5);
-  const arrowSize=clamp(shortSide/95,7,10);
+  const s=clamp(measureDisplayScale||1,0.4,2);
+  // V20: الحجم يدوي ومستقل عن Zoom. القيمة نفسها تستخدم في العرض وPNG والطباعة.
+  const labelPx=clamp(Math.round(shortSide*0.026*s),10,60);
+  const padX=Math.max(2,Math.round(labelPx*0.09));
+  const padY=Math.max(1,Math.round(labelPx*0.06));
+  const labelH=labelPx+padY*2;
+  const deleteSize=clamp(Math.round(labelPx*0.78),12,34);
+  const lineW=clamp((shortSide/520)*s,1,5);
+  const arrowSize=clamp((shortSide/120)*s,4,18);
   const occupiedLabels=[];
   ctx.save();
   for(const m of measurements){
     const selected=m.id===selectedMeasureId,{q1,q2}=measurementDisplay(m);
     const base=m.pinned?'#111111':'#374151';
     if((m.offsetX||0)!==0 || (m.offsetY||0)!==0){
-      ctx.strokeStyle='rgba(17,17,17,.42)';ctx.lineWidth=1.2;ctx.setLineDash([3,3]);
+      ctx.strokeStyle='rgba(17,17,17,.42)';ctx.lineWidth=Math.max(1,lineW*.55);ctx.setLineDash([3,3]);
       ctx.beginPath();ctx.moveTo(m.p1.x,m.p1.y);ctx.lineTo(q1.x,q1.y);ctx.moveTo(m.p2.x,m.p2.y);ctx.lineTo(q2.x,q2.y);ctx.stroke();ctx.setLineDash([]);
     }
-    ctx.strokeStyle=base;ctx.fillStyle=base;ctx.lineWidth=selected?lineW+0.8:lineW;
+    ctx.strokeStyle=base;ctx.fillStyle=base;ctx.lineWidth=selected?lineW+0.7:lineW;
     ctx.setLineDash(m.pinned?[]:[5,5]);
     const ang=Math.atan2(q2.y-q1.y,q2.x-q1.x);
     ctx.beginPath();ctx.moveTo(q1.x,q1.y);ctx.lineTo(q2.x,q2.y);ctx.stroke();ctx.setLineDash([]);
     drawArrowHead(q1.x,q1.y,ang+Math.PI,arrowSize);drawArrowHead(q2.x,q2.y,ang,arrowSize);
 
-    const baseMx=(q1.x+q2.x)/2,baseMy=(q1.y+q2.y)/2,label=formatLength(m.cm);
+    const baseMx=(q1.x+q2.x)/2,baseMy=(q1.y+q2.y)/2,label=formatMeasureNumber(m.cm);
     ctx.font=`700 ${labelPx}px Tahoma,Arial,sans-serif`;
-    const tw=ctx.measureText(label).width,bw=tw+pad*2,bh=labelH;
+    const tw=ctx.measureText(label).width,bw=tw+padX*2,bh=labelH;
     const showDelete=selected;
     const xs=showDelete?deleteSize:0;
     const nx=-Math.sin(ang),ny=Math.cos(ang);
-    const step=bh+8;
-    const levels=[0,1,-1,2,-2,3,-3,4,-4,5,-5,6,-6];
-    let mx=baseMx,my=baseMy,bx=mx-bw/2,by=my-bh/2,xx=bx+bw+4,xy=my-xs/2,reserve=null;
+    const step=bh+Math.max(4,Math.round(labelPx*.18));
+    const levels=[0,1,-1,2,-2,3,-3,4,-4,5,-5,6,-6,7,-7];
+    let mx=baseMx,my=baseMy,bx=mx-bw/2,by=my-bh/2,xx=bx+bw+3,xy=my-xs/2,reserve=null;
     for(const lv of levels){
       let cx=baseMx+nx*step*lv,cy=baseMy+ny*step*lv;
-      cx=clamp(cx,bw/2+5,canvas.width-bw/2-xs-15);
-      cy=clamp(cy,bh/2+5,canvas.height-bh/2-5);
-      const cbx=cx-bw/2,cby=cy-bh/2,cxx=cbx+bw+4,cxy=cy-xs/2;
-      const box={x:cbx-4,y:cby-4,w:bw+xs+14,h:Math.max(bh,xs||0)+8};
-      if(!occupiedLabels.some(o=>boxesOverlap(box,o,4))){mx=cx;my=cy;bx=cbx;by=cby;xx=cxx;xy=cxy;reserve=box;break;}
+      cx=clamp(cx,bw/2+4,canvas.width-bw/2-xs-12);
+      cy=clamp(cy,bh/2+4,canvas.height-bh/2-4);
+      const cbx=cx-bw/2,cby=cy-bh/2,cxx=cbx+bw+3,cxy=cy-xs/2;
+      const box={x:cbx-2,y:cby-2,w:bw+xs+8,h:Math.max(bh,xs||0)+4};
+      if(!occupiedLabels.some(o=>boxesOverlap(box,o,2))){mx=cx;my=cy;bx=cbx;by=cby;xx=cxx;xy=cxy;reserve=box;break;}
     }
-    if(!reserve)reserve={x:bx-4,y:by-4,w:bw+xs+14,h:Math.max(bh,xs||0)+8};
+    if(!reserve)reserve={x:bx-2,y:by-2,w:bw+xs+8,h:Math.max(bh,xs||0)+4};
     occupiedLabels.push(reserve);
     if(Math.hypot(mx-baseMx,my-baseMy)>3){
-      ctx.strokeStyle='rgba(17,17,17,.48)';ctx.lineWidth=1.1;ctx.setLineDash([3,2]);
+      ctx.strokeStyle='rgba(17,17,17,.48)';ctx.lineWidth=Math.max(1,lineW*.5);ctx.setLineDash([3,2]);
       ctx.beginPath();ctx.moveTo(baseMx,baseMy);ctx.lineTo(mx,my);ctx.stroke();ctx.setLineDash([]);
     }
 
-    ctx.shadowColor='rgba(0,0,0,.16)';ctx.shadowBlur=3;ctx.shadowOffsetY=1;
-    ctx.fillStyle='rgba(255,255,255,.96)';roundRectPath(bx,by,bw,bh,6);ctx.fill();
+    // خلفية ضيقة جدًا حول الرقم فقط.
+    ctx.shadowColor='rgba(0,0,0,.12)';ctx.shadowBlur=Math.max(1,2*s);ctx.shadowOffsetY=Math.max(.5,1*s);
+    ctx.fillStyle='rgba(255,255,255,.94)';roundRectPath(bx,by,bw,bh,Math.max(2,4*s));ctx.fill();
     ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
-    ctx.strokeStyle=selected?'#0284c7':'#111827';ctx.lineWidth=selected?2:1.15;roundRectPath(bx,by,bw,bh,6);ctx.stroke();
-    ctx.fillStyle='#050505';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`700 ${labelPx}px Tahoma,Arial,sans-serif`;ctx.fillText(label,mx,my+.4);
+    ctx.strokeStyle=selected?'#0284c7':'#111827';ctx.lineWidth=selected?Math.max(1.5,1.7*s):Math.max(.8,1*s);roundRectPath(bx,by,bw,bh,Math.max(2,4*s));ctx.stroke();
+    ctx.fillStyle='#050505';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`700 ${labelPx}px Tahoma,Arial,sans-serif`;ctx.fillText(label,mx,my+.2);
 
     if(showDelete){
-      ctx.fillStyle='rgba(255,255,255,.99)';ctx.strokeStyle='#111827';ctx.lineWidth=1.2;
+      ctx.fillStyle='rgba(255,255,255,.99)';ctx.strokeStyle='#111827';ctx.lineWidth=Math.max(1,1.1*s);
       ctx.beginPath();ctx.arc(xx+xs/2,xy+xs/2,xs/2,0,Math.PI*2);ctx.fill();ctx.stroke();
-      ctx.fillStyle='#050505';ctx.font=`700 ${Math.max(14,Math.round(labelPx*.55))}px Arial`;ctx.fillText('×',xx+xs/2,xy+xs/2+.3);
+      ctx.fillStyle='#050505';ctx.font=`700 ${Math.max(11,Math.round(labelPx*.55))}px Arial`;ctx.fillText('×',xx+xs/2,xy+xs/2+.2);
       const hitPad=touch?Math.max(8,9/zoom):5;
       m._deleteBox={x:xx-hitPad,y:xy-hitPad,w:xs+hitPad*2,h:xs+hitPad*2};
     }else{
       m._deleteBox=null;
     }
-    // مساحة اللمس تبقى مريحة حتى عند تصغير الخريطة، من دون تكبير الشكل المرئي نفسه.
-    const hitPad=touch?Math.max(7,10/zoom):5;
+    // مساحة لمس مريحة منفصلة عن الحجم المرئي.
+    const hitPad=touch?Math.max(8,11/zoom):5;
     m._labelBox={x:bx-hitPad,y:by-hitPad,w:bw+hitPad*2,h:bh+hitPad*2};
   }
   ctx.restore();
@@ -1841,7 +1847,7 @@ function syncSelectedPanel(){
   const multiInfo=document.getElementById('multiSelectionInfo'),lockBtn=document.getElementById('lockItemBtn');
   if(m){
     selectedPanel.style.display='none';selectedEmpty.style.display='none';measurePanel.style.display='flex';
-    measureValue.textContent=formatLength(m.cm);
+    measureValue.textContent=formatMeasureNumber(m.cm);
     document.getElementById('measureHint').textContent=m.pinned?'اسحب القياس المختار بحرية إلى المكان المناسب. الرقم مرتبط بالخريطة ويكبر ويصغر معها، و× تظهر للقياس المحدد فقط.':'هذا القياس مؤقت؛ حرّكه بحرية للمكان المناسب ثم ثبته أو احذفه.';
     pinMeasureBtn.textContent=m.pinned?'إلغاء التثبيت':'تثبيت القياس';
     return;
@@ -1910,6 +1916,7 @@ document.getElementById('mapLockToggle').onchange=()=>setStatus(document.getElem
 document.getElementById('selectAllBtn').onclick=()=>{if(!visibleFurniture())return;setSelection(items.map(x=>x.id),items.at(-1)?.id||null);syncSelectedPanel();draw();setStatus(`تم تحديد ${items.length} قطعة`);};
 document.getElementById('undoBtn').onclick=doUndo;document.getElementById('redoBtn').onclick=doRedo;
 document.getElementById('zoomRange').oninput=e=>{ setZoomPercent(+e.target.value); };
+measureSizeRange.oninput=e=>{measureDisplayScale=clamp((+e.target.value||100)/100,0.4,2);measureSizeLabel.textContent=Math.round(measureDisplayScale*100)+'%';draw();};
 zoomInBtn?.addEventListener('click',()=>{setZoomPercent(Math.min(300,Math.round(zoom*100)+10));});
 zoomOutBtn?.addEventListener('click',()=>{setZoomPercent(Math.max(40,Math.round(zoom*100)-10));});
 document.getElementById('fitBtn').onclick=fitToViewport;
@@ -1928,8 +1935,8 @@ function startNewProject(ask=true){
   if(ask&&hasWork&&!confirm('بدء مشروع جديد؟ سيتم مسح الخارطة والأثاث والقياسات الحالية، بينما ستبقى مكتبة الأثاث المحفوظة كما هي.'))return;
   bgImage=null;bgData=null;items=[];measurements=[];selectedId=null;selectedIds=[];selectedMeasureId=null;pxPerCm=null;undoStack=[];redoStack=[];updateHistoryButtons();
   mode='select';points=[];drag=null;panDrag=null;measureDrag=null;pendingCalDistancePx=null;pendingFurnitureDef=null;
-  canvas.width=1100;canvas.height=750;zoom=1;
-  document.getElementById('zoomRange').value=100;document.getElementById('zoomLabel').textContent='100%';
+  canvas.width=1100;canvas.height=750;zoom=1;measureDisplayScale=1;
+  document.getElementById('zoomRange').value=100;document.getElementById('zoomLabel').textContent='100%';measureSizeRange.value=100;measureSizeLabel.textContent='100%';
   document.getElementById('fileInput').value='';document.getElementById('loadInput').value='';
   scaleModal.style.display='none';targetCursor.style.display='none';
   updateScaleUI();updateStageSize();updateInteractionCursor();syncSelectedPanel();draw();centerStage();
@@ -1938,7 +1945,7 @@ function startNewProject(ask=true){
 document.getElementById('newProjectBtn').onclick=()=>startNewProject(true);
 
 document.getElementById('saveBtn').onclick=()=>{
-  const project={version:19,projectMeta,bgData,pxPerCm,items,measurements,zoom,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
+  const project={version:20,projectMeta,bgData,pxPerCm,items,measurements,zoom,measureDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
   download('furniture-project.json',JSON.stringify(project),'application/json')
 };
 
@@ -1964,6 +1971,7 @@ document.getElementById('loadInput').onchange=e=>{
         for(const [k,id] of Object.entries(vm))if(k in p.view)document.getElementById(id).checked=!!p.view[k];
       }
       if(p.zoom){zoom=p.zoom;document.getElementById('zoomRange').value=Math.round(zoom*100);document.getElementById('zoomLabel').textContent=Math.round(zoom*100)+'%';}
+      measureDisplayScale=clamp(Number(p.measureDisplayScale)||1,0.4,2);measureSizeRange.value=Math.round(measureDisplayScale*100);measureSizeLabel.textContent=Math.round(measureDisplayScale*100)+'%';
       if(p.bgData){
         const img=new Image();
         img.onload=()=>{

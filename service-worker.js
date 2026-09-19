@@ -1,4 +1,4 @@
-const CACHE_NAME = "furniture-planner-v19-map-fixed-measures";
+const CACHE_NAME = "furniture-planner-v20-measure-slider";
 const CRITICAL = ['./', './index.html'];
 
 self.addEventListener('install', event => {
