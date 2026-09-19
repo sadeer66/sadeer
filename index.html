@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <title>تأثيثي — iPad و iPhone</title>
-<meta name="taatheethi-version" content="32-light-guide-display-controls">
+<meta name="taatheethi-version" content="33-compact-guide-controls-export">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -159,31 +159,29 @@
 
   .archGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.archCard{background:#172033;border:1px solid #2b3a52;border-radius:10px;padding:9px;cursor:grab;text-align:center}.archCard:hover{border-color:#38bdf8}.archCard b{display:block;font-size:12px}.archCard span{font-size:10px;color:#94a3b8}.archIcon{font-size:24px;line-height:1.1;display:block;margin-bottom:4px}.printMeta{display:grid;grid-template-columns:1fr 1fr;gap:8px}.printMeta .wide{grid-column:1/3}.printNote{font-size:11px;color:#94a3b8;line-height:1.6}.doorOnly{display:none}
 
-  .quickDisplayBar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;background:#071525;border:1px solid #2b4b68;border-radius:12px;padding:6px;flex:0 0 auto}
-  .quickDisplayBar .quickToggle{min-height:38px;padding:7px 9px;background:#0b5f85;border-color:#1686b6;font-size:11px;font-weight:700;white-space:nowrap}
-  .quickDisplayBar .quickToggle.isOff{background:#1e293b;border-color:#475569;color:#cbd5e1;opacity:.86}
-  .quickDisplayBar .eyeMark{font-size:13px;margin-inline-end:5px;color:#bae6fd}
-  .quickDisplayBar .quickToggle.isOff .eyeMark{color:#94a3b8}
-  .usedFurniturePanel{display:none;background:#f8fafc;color:#0f172a;border:1px solid #94a3b8;border-radius:12px;padding:7px 9px;flex:0 0 auto;direction:rtl}
-  .usedFurnitureHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;font-size:12px;font-weight:700}
-  .usedFurnitureHead .small{color:#64748b}
-  .usedFurnitureGrid{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding:2px 1px 5px;direction:rtl;scrollbar-width:thin}
-  .usedFurnitureCard{position:relative;flex:0 0 142px;height:112px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;padding:5px 7px 6px;text-align:center;direction:rtl}
-  .usedFurnitureCard .ufName{font-size:10.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
-  .usedFurnitureCard .ufThumb{height:58px;display:flex;align-items:center;justify-content:center}
-  .usedFurnitureCard .ufThumb img{max-width:88px;max-height:54px;object-fit:contain;display:block}
-  .usedFurnitureCard .ufGeneric{width:74px;height:42px;border:1px solid #64748b;border-radius:7px;display:block}
-  .usedFurnitureCard .ufDims{display:flex;align-items:center;justify-content:center;gap:8px;font-size:9.5px;font-weight:700;color:#334155;white-space:nowrap}
-  .usedFurnitureCard .ufQty{position:absolute;top:5px;left:5px;background:#0f766e;color:#fff;border-radius:999px;padding:2px 6px;font-size:9px;font-weight:700}
-  @media(max-width:900px){
-    .quickDisplayBar{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:5px}
-    .quickDisplayBar .quickToggle{font-size:10px;padding:6px 5px;min-height:36px}
-    .usedFurniturePanel{padding:6px 7px}
-    .usedFurnitureCard{flex-basis:128px;height:104px}
-    .usedFurnitureCard .ufThumb{height:52px}
-  }
-  @media(max-width:560px){
-    .quickDisplayBar{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .displayState{color:#bfdbfe;border-style:dashed!important}
+  .usedFurniturePanel{display:none;background:#f8fafc;color:#0f172a;border:1px solid #94a3b8;border-radius:10px;padding:5px 7px;flex:0 0 auto;direction:rtl;max-height:108px;overflow:hidden}
+  .usedFurnitureHead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;font-size:10.5px;font-weight:700;line-height:1.2}
+  .usedFurnitureHead .small{color:#64748b;font-size:9px}
+  .usedFurnitureGrid{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding:1px 1px 3px;direction:rtl;scrollbar-width:thin}
+  .usedFurnitureCard{position:relative;flex:0 0 112px;height:78px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;padding:3px 5px 4px;text-align:center;direction:rtl}
+  .usedFurnitureCard .ufName{font-size:9px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:1px;line-height:1.15}
+  .usedFurnitureCard .ufThumb{height:38px;display:flex;align-items:center;justify-content:center}
+  .usedFurnitureCard .ufThumb img{max-width:65px;max-height:34px;object-fit:contain;display:block}
+  .usedFurnitureCard .ufGeneric{width:54px;height:30px;border:1px solid #64748b;border-radius:6px;display:block}
+  .usedFurnitureCard .ufDims{display:flex;align-items:center;justify-content:center;gap:6px;font-size:8px;font-weight:700;color:#334155;white-space:nowrap;line-height:1.1}
+  .usedFurnitureCard .ufQty{position:absolute;top:3px;left:3px;background:#0f766e;color:#fff;border-radius:999px;padding:1px 4px;font-size:7.5px;font-weight:700}
+  @media (hover:none) and (pointer:coarse) and (orientation:landscape){
+    .usedFurniturePanel{max-height:92px;padding:4px 6px}
+    .usedFurnitureHead{font-size:9.5px;margin-bottom:3px}
+    .usedFurnitureHead .small{font-size:8px}
+    .usedFurnitureCard{flex-basis:102px;height:67px;padding:3px 4px}
+    .usedFurnitureCard .ufName{font-size:8.3px}
+    .usedFurnitureCard .ufThumb{height:31px}
+    .usedFurnitureCard .ufThumb img{max-width:56px;max-height:28px}
+    .usedFurnitureCard .ufDims{font-size:7.3px;gap:4px}
+    #selectedEmpty{min-height:34px!important;padding:4px 7px!important;border-radius:9px!important}
+    #selectedEmpty .mutedMsg{font-size:9.5px!important;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
   }
   .ipadOnly{display:none}
   .sidebarScrim{display:none}
@@ -342,9 +340,12 @@
         <label class="ctl lockState"><input id="measureLockToggle" type="checkbox"> قفل القياسات</label>
         <label class="ctl lockState"><input id="mapLabelLockToggle" type="checkbox"> قفل المسميات</label>
         <label class="ctl lockState"><input id="mapLockToggle" type="checkbox"> قفل سحب الخارطة</label>
-        <label class="ctl layerCtl"><input id="bgLayerToggle" type="checkbox" checked> الخارطة</label>
-        <label class="ctl layerCtl"><input id="furnitureLayerToggle" type="checkbox" checked> الأثاث</label>
-        <label class="ctl layerCtl"><input id="measureLayerToggle" type="checkbox" checked> القياسات</label>
+        <label class="ctl layerCtl"><input id="bgLayerToggle" type="checkbox" checked> إظهار الخارطة</label>
+        <label class="ctl layerCtl"><input id="furnitureLayerToggle" type="checkbox" checked> إظهار الأثاث</label>
+        <label class="ctl displayState"><input id="measureLayerToggle" type="checkbox" checked> إظهار القياسات</label>
+        <label class="ctl displayState"><input id="mapLabelLayerToggle" type="checkbox" checked> إظهار المسميات</label>
+        <label class="ctl displayState"><input id="measureArrowsToggle" type="checkbox" checked> إظهار أسهم القياس</label>
+        <label class="ctl displayState"><input id="furnitureSummaryToggle" type="checkbox" checked> إظهار دليل الأثاث</label>
       </div>
       <div class="group">
         <button id="undoBtn" class="miniBtn" disabled>↶ تراجع</button>
@@ -357,15 +358,6 @@
         <div class="zoomBox" title="يغيّر حجم جميع أرقام القياسات على الخارطة وفي PNG والطباعة"><span class="small">حجم القياسات</span><input id="measureSizeRange" type="range" min="40" max="200" step="10" value="100" style="width:150px"><span id="measureSizeLabel" class="small">100%</span></div>
         <div class="zoomBox" title="يغيّر حجم جميع مسميات الخارطة دفعة واحدة، ويظهر نفس الحجم في PNG والطباعة"><span class="small">حجم المسميات</span><input id="mapLabelSizeRange" type="range" min="40" max="200" step="10" value="100" style="width:150px"><span id="mapLabelSizeValue" class="small">100%</span></div>
       </div>
-    </div>
-    <div class="quickDisplayBar" id="quickDisplayBar">
-      <button id="quickMeasuresBtn" class="quickToggle"><span class="eyeMark">●</span>القياسات</button>
-      <button id="quickLabelsBtn" class="quickToggle"><span class="eyeMark">●</span>المسميات</button>
-      <button id="quickArrowsBtn" class="quickToggle"><span class="eyeMark">●</span>أسهم القياس</button>
-      <button id="quickFurnitureGuideBtn" class="quickToggle"><span class="eyeMark">●</span>دليل الأثاث</button>
-      <input id="mapLabelLayerToggle" type="checkbox" checked hidden>
-      <input id="measureArrowsToggle" type="checkbox" checked hidden>
-      <input id="furnitureSummaryToggle" type="checkbox" checked hidden>
     </div>
     <div class="mapViewport" id="mainScroll" title="عند التكبير: اسحب مكانًا فارغًا بالماوس أو الإصبع لتحريك الخارطة">
       <div class="canvasWrap">
@@ -1974,15 +1966,7 @@ function syncUsedFurniturePanel(force=false){
   }
   usedFurnitureGrid.replaceChildren(frag);
 }
-function syncQuickDisplayButtons(){
-  const pairs=[
-    ['quickMeasuresBtn',visibleMeasurements(),'القياسات'],
-    ['quickLabelsBtn',visibleMapLabels(),'المسميات'],
-    ['quickArrowsBtn',measureArrowsVisible(),'أسهم القياس'],
-    ['quickFurnitureGuideBtn',furnitureSummaryVisible(),'دليل الأثاث']
-  ];
-  for(const [id,on,label] of pairs){const b=document.getElementById(id);if(!b)continue;b.classList.toggle('isOff',!on);b.innerHTML=`<span class="eyeMark">${on?'●':'○'}</span>${on?'إخفاء':'إظهار'} ${label}`;}
-}
+function syncQuickDisplayButtons(){}
 
 function drawMapLabels(){
   if(!mapLabels.length)return;
@@ -2262,13 +2246,10 @@ document.getElementById('dupBtn').onclick=()=>{
 };
 pinMeasureBtn.onclick=()=>{if(measurementsGloballyLocked()){setStatus('القياسات مقفلة');return;}const m=currentMeasure();if(!m)return;const before=cloneEditState();m.pinned=!m.pinned;syncSelectedPanel();draw();commitHistory(before);setStatus(m.pinned?'تم تثبيت القياس على الخارطة':'أصبح القياس مؤقتًا');};
 document.getElementById('deleteMeasureBtn').onclick=()=>{if(measurementsGloballyLocked()){setStatus('القياسات مقفلة');return;}if(!selectedMeasureId)return;const before=cloneEditState();measurements=measurements.filter(m=>m.id!==selectedMeasureId);selectedMeasureId=null;syncSelectedPanel();draw();commitHistory(before);setStatus('تم حذف القياس');};
-document.getElementById('quickMeasuresBtn').onclick=()=>{document.getElementById('measureLayerToggle').checked=!document.getElementById('measureLayerToggle').checked;if(!visibleMeasurements())selectedMeasureId=null;syncSelectedPanel();syncQuickDisplayButtons();draw();};
-document.getElementById('quickLabelsBtn').onclick=()=>{mapLabelLayerToggle.checked=!mapLabelLayerToggle.checked;if(!visibleMapLabels())selectedMapLabelId=null;syncSelectedPanel();syncQuickDisplayButtons();draw();};
-document.getElementById('quickArrowsBtn').onclick=()=>{measureArrowsToggle.checked=!measureArrowsToggle.checked;syncQuickDisplayButtons();draw();};
-document.getElementById('quickFurnitureGuideBtn').onclick=()=>{furnitureSummaryToggle.checked=!furnitureSummaryToggle.checked;syncQuickDisplayButtons();scheduleUsedFurnitureSync(true);};
 mapLabelLayerToggle.onchange=()=>{if(!visibleMapLabels())selectedMapLabelId=null;syncSelectedPanel();syncQuickDisplayButtons();draw();};
 measureArrowsToggle.onchange=()=>{syncQuickDisplayButtons();draw();};
 furnitureSummaryToggle.onchange=()=>{syncQuickDisplayButtons();scheduleUsedFurnitureSync(true);};
+document.getElementById('measureLayerToggle').addEventListener('change',()=>{if(!visibleMeasurements())selectedMeasureId=null;syncSelectedPanel();draw();});
 
 ['gridToggle','dimsToggle','labelsToggle','shadowToggle','autoDimsToggle','bgLayerToggle','furnitureLayerToggle','measureLayerToggle'].forEach(id=>document.getElementById(id).onchange=()=>{if(id==='furnitureLayerToggle'&&!document.getElementById(id).checked){clearFurnitureSelection();syncSelectedPanel();}if(id==='measureLayerToggle'&&!document.getElementById(id).checked){selectedMeasureId=null;syncSelectedPanel();}if(id==='measureLayerToggle')syncQuickDisplayButtons();draw();});
 document.getElementById('snapToggle').onchange=()=>{snapGuides=[];draw();setStatus(document.getElementById('snapToggle').checked?'تم تشغيل Snap':'تم إيقاف Snap — الحركة حرة');};
@@ -2311,7 +2292,7 @@ document.getElementById('measureLockToggle').checked=false;document.getElementBy
 document.getElementById('newProjectBtn').onclick=()=>startNewProject(true);
 
 document.getElementById('saveBtn').onclick=()=>{
-  const project={version:32,projectMeta,brandInfo,bgData,pxPerCm,items,measurements,mapLabels,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
+  const project={version:33,projectMeta,brandInfo,bgData,pxPerCm,items,measurements,mapLabels,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
   download('furniture-project.json',JSON.stringify(project),'application/json')
 };
 
@@ -2379,36 +2360,40 @@ async function renderFurnitureScheduleCanvas(targetWidth){
   const groups=usedFurnitureGroups();
   if(!furnitureSummaryVisible()||!groups.length)return null;
   const width=Math.max(600,Math.round(targetWidth||1100));
-  const cols=Math.min(groups.length,width>=1500?6:width>=1000?5:4);
-  const pad=Math.round(width*0.012),gap=Math.max(8,Math.round(width*0.007));
-  const titleH=Math.max(34,Math.round(width*0.028));
-  const cardW=Math.floor((width-pad*2-gap*(cols-1))/cols);
-  const cardH=Math.max(118,Math.min(170,Math.round(cardW*0.68)));
+  const pad=Math.max(10,Math.round(width*0.010));
+  const gap=Math.max(7,Math.round(width*0.006));
+  const titleH=Math.max(26,Math.min(38,Math.round(width*0.020)));
+  // V33: بطاقات التصدير صغيرة وثابتة نسبيًا، ولا تتمدد عند وجود قطعة واحدة فقط.
+  const desiredCardW=Math.max(145,Math.min(205,Math.round(width*0.13)));
+  const cols=Math.max(1,Math.min(groups.length,Math.floor((width-pad*2+gap)/(desiredCardW+gap))));
+  const cardW=Math.min(desiredCardW,Math.floor((width-pad*2-gap*(cols-1))/cols));
+  const cardH=Math.max(82,Math.min(108,Math.round(cardW*0.52)));
   const rows=Math.ceil(groups.length/cols);
   const height=pad+titleH+gap+rows*cardH+(rows-1)*gap+pad;
   const out=document.createElement('canvas');out.width=width;out.height=height;const c=out.getContext('2d');
-  c.fillStyle='#f8fafc';c.fillRect(0,0,width,height);c.strokeStyle='#64748b';c.lineWidth=Math.max(1,width/1000);c.strokeRect(1,1,width-2,height-2);
-  c.fillStyle='#0f172a';c.textAlign='right';c.textBaseline='middle';c.font=`700 ${Math.max(16,Math.round(width*0.017))}px Tahoma,Arial,sans-serif`;c.fillText('الأثاث المستخدم في الخارطة',width-pad,pad+titleH/2);
-  c.strokeStyle='#cbd5e1';c.beginPath();c.moveTo(pad,pad+titleH);c.lineTo(width-pad,pad+titleH);c.stroke();
+  c.fillStyle='#fbfdff';c.fillRect(0,0,width,height);c.strokeStyle='#cbd5e1';c.lineWidth=1;c.strokeRect(1,1,width-2,height-2);
+  c.fillStyle='#334155';c.textAlign='right';c.textBaseline='middle';c.font=`700 ${Math.max(12,Math.min(18,Math.round(width*0.011)))}px Tahoma,Arial,sans-serif`;c.fillText('الأثاث المستخدم',width-pad,pad+titleH/2);
+  c.strokeStyle='#e2e8f0';c.beginPath();c.moveTo(pad,pad+titleH);c.lineTo(width-pad,pad+titleH);c.stroke();
   const imgs=await Promise.all(groups.map(async g=>{if(!g.src)return null;try{return await loadDataImage(resolveAssetSrc(g.src));}catch{return null;}}));
   for(let i=0;i<groups.length;i++){
     const g=groups[i],row=Math.floor(i/cols),col=i%cols;
-    const x=pad+col*(cardW+gap),y=pad+titleH+gap+row*(cardH+gap);
-    c.fillStyle='#fff';c.strokeStyle='#cbd5e1';c.lineWidth=1.2;c.beginPath();c.roundRect(x,y,cardW,cardH,10);c.fill();c.stroke();
-    c.fillStyle='#0f172a';c.textAlign='center';c.textBaseline='middle';c.font=`700 ${Math.max(11,Math.round(cardW*0.055))}px Tahoma,Arial,sans-serif`;
-    let nm=String(g.name||'قطعة');while(nm.length>2&&c.measureText(nm).width>cardW-25)nm=nm.slice(0,-1);if(nm!==g.name)nm+='…';c.fillText(nm,x+cardW/2,y+18);
-    if(g.count>1){c.fillStyle='#0f766e';c.beginPath();c.roundRect(x+7,y+7,34,20,10);c.fill();c.fillStyle='#fff';c.font='700 11px Tahoma';c.fillText('×'+g.count,x+24,y+17);}
-    const imgArea={x:x+24,y:y+31,w:cardW-48,h:cardH-64},im=imgs[i];
+    const x=width-pad-cardW-col*(cardW+gap),y=pad+titleH+gap+row*(cardH+gap);
+    c.fillStyle='#fff';c.strokeStyle='#d6dee8';c.lineWidth=1;c.beginPath();c.roundRect(x,y,cardW,cardH,7);c.fill();c.stroke();
+    const namePx=Math.max(9,Math.min(13,Math.round(cardW*0.065)));
+    c.fillStyle='#0f172a';c.textAlign='center';c.textBaseline='middle';c.font=`700 ${namePx}px Tahoma,Arial,sans-serif`;
+    let nm=String(g.name||'قطعة');while(nm.length>2&&c.measureText(nm).width>cardW-18)nm=nm.slice(0,-1);if(nm!==g.name)nm+='…';c.fillText(nm,x+cardW/2,y+13);
+    if(g.count>1){c.fillStyle='#0f766e';c.beginPath();c.roundRect(x+5,y+5,28,16,8);c.fill();c.fillStyle='#fff';c.font='700 9px Tahoma';c.fillText('×'+g.count,x+19,y+13);}
+    const imgArea={x:x+18,y:y+24,w:cardW-36,h:cardH-48},im=imgs[i];
     if(im){const sc=Math.min(imgArea.w/im.width,imgArea.h/im.height);const iw=im.width*sc,ih=im.height*sc;c.drawImage(im,imgArea.x+(imgArea.w-iw)/2,imgArea.y+(imgArea.h-ih)/2,iw,ih);}
-    else{c.fillStyle=g.color||'#e2e8f0';c.strokeStyle='#64748b';c.beginPath();c.roundRect(imgArea.x+imgArea.w*.18,imgArea.y+imgArea.h*.22,imgArea.w*.64,imgArea.h*.56,7);c.fill();c.stroke();}
-    c.fillStyle='#0f172a';c.font=`700 ${Math.max(10,Math.round(cardW*0.05))}px Tahoma,Arial,sans-serif`;c.textAlign='center';c.fillText(`↔ ${formatCardCm(g.w)}    ↕ ${formatCardCm(g.h)}`,x+cardW/2,y+cardH-15);
+    else{c.fillStyle=g.color||'#e2e8f0';c.strokeStyle='#64748b';c.beginPath();c.roundRect(imgArea.x+imgArea.w*.22,imgArea.y+imgArea.h*.2,imgArea.w*.56,imgArea.h*.58,5);c.fill();c.stroke();}
+    c.fillStyle='#334155';c.font=`700 ${Math.max(8,Math.min(11,Math.round(cardW*0.055)))}px Tahoma,Arial,sans-serif`;c.textAlign='center';c.fillText(`${formatCardCm(g.w)} × ${formatCardCm(g.h)} سم`,x+cardW/2,y+cardH-10);
   }
   return out;
 }
 async function buildPlanWithFurnitureSchedule(){
   const plan=captureCleanPlanCanvas(),schedule=await renderFurnitureScheduleCanvas(plan.width);
   if(!schedule)return plan;
-  const gap=Math.max(12,Math.round(plan.width*0.012));
+  const gap=Math.max(7,Math.round(plan.width*0.007));
   const out=document.createElement('canvas');out.width=Math.max(plan.width,schedule.width);out.height=plan.height+gap+schedule.height;const c=out.getContext('2d');
   c.fillStyle='#fff';c.fillRect(0,0,out.width,out.height);c.drawImage(plan,(out.width-plan.width)/2,0);c.drawImage(schedule,(out.width-schedule.width)/2,plan.height+gap);return out;
 }
@@ -2427,7 +2412,7 @@ async function buildBrandedSheet({paper='A4',orient='landscape',title='',mapTitl
   const planAreaW=sheet.width-margin*2;
   const schedule=await renderFurnitureScheduleCanvas(planAreaW);
   let scheduleW=0,scheduleH=0;
-  if(schedule){const maxScheduleH=(planBottom-planTop)*0.26,sc=Math.min(1,planAreaW/schedule.width,maxScheduleH/schedule.height);scheduleW=schedule.width*sc;scheduleH=schedule.height*sc;}
+  if(schedule){const maxScheduleH=(planBottom-planTop)*0.15,sc=Math.min(1,planAreaW/schedule.width,maxScheduleH/schedule.height);scheduleW=schedule.width*sc;scheduleH=schedule.height*sc;}
   const scheduleGap=scheduleH?gap:0;
   const planAreaH=Math.max(80,planBottom-planTop-scheduleH-scheduleGap);
   const scale=Math.min(planAreaW/plan.width,planAreaH/plan.height);
