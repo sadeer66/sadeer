@@ -79,6 +79,9 @@
   .targetCursor.touchWand{width:30px;height:30px;border-width:2px}
   .targetCursor.touchWand .dot{width:7px;height:7px;background:#0ea5e9;border:2px solid #fff;box-shadow:0 0 0 1px #111}
   .targetCursor.touchWand .wand{display:block}
+  .targetCursor .liveMeasure{display:none;position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);background:rgba(255,255,255,.96);color:#0f172a;border:1px solid rgba(14,165,233,.7);border-radius:999px;padding:4px 8px;font:700 13px/1 Tahoma,Arial,sans-serif;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+  .targetCursor.touchWand .liveMeasure{left:calc(100% + 12px);top:24px;transform:none;font-size:14px;padding:5px 9px}
+  .actionIcon{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;margin-inline-start:0;margin-inline-end:6px;color:#38bdf8;font-weight:700;font-size:15px}
   .mapViewport::-webkit-scrollbar{height:15px;width:15px}
   .mapViewport::-webkit-scrollbar-track{background:#172033;border-radius:10px}
   .mapViewport::-webkit-scrollbar-thumb{background:#60748d;border:3px solid #172033;border-radius:10px}
@@ -213,9 +216,9 @@
   <div class="toolbar">
     <button id="sidebarToggle" class="ipadOnly primary">☰ المكتبة</button>
     <button id="newProjectBtn" class="primary">مشروع جديد</button>
-    <label class="btn" for="fileInput">رفع الخارطة</label><input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" />
-    <button id="calibrateBtn">معايرة القياس</button>
-    <button id="measureBtn">قياس مسافة</button>
+    <label class="btn" for="fileInput"><span class="actionIcon">▣</span>رفع الخارطة</label><input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" />
+    <button id="calibrateBtn"><span class="actionIcon">⌖</span>معايرة القياس</button>
+    <button id="measureBtn"><span class="actionIcon">⟷</span>قياس مسافة</button>
     <button id="saveBtn" class="optional">حفظ المشروع</button>
     <label class="btn optional" for="loadInput">فتح مشروع</label><input id="loadInput" type="file" accept="application/json" />
     <button id="exportBtn">تصدير PNG</button>
@@ -331,7 +334,7 @@
 </div>
 <div class="sidebarScrim" id="sidebarScrim"></div>
 
-<div class="targetCursor" id="targetCursor"><span class="dot"></span><span class="wand"></span></div>
+<div class="targetCursor" id="targetCursor"><span class="dot"></span><span class="wand"></span><span class="liveMeasure" id="liveMeasureBadge"></span></div>
 
 <div class="modalOverlay" id="scaleModal">
   <div class="modalCard">
@@ -413,6 +416,7 @@ const calValue=document.getElementById('calValue');
 const calUnit=document.getElementById('calUnit');
 const calPreview=document.getElementById('calPreview');
 const targetCursor=document.getElementById('targetCursor');
+const liveMeasureBadge=document.getElementById('liveMeasureBadge');
 const libraryModal=document.getElementById('libraryModal');
 const libraryModalTitle=document.getElementById('libraryModalTitle');
 const libEditName=document.getElementById('libEditName');
@@ -691,30 +695,41 @@ function shade(hex,f){
   return `rgb(${adj(c.r)},${adj(c.g)},${adj(c.b)})`;
 }
 function linearFill(x1,y1,x2,y2,c1,c2){ const g=ctx.createLinearGradient(x1,y1,x2,y2); g.addColorStop(0,c1); g.addColorStop(1,c2); return g; }
+function hideLiveMeasureBadge(){if(liveMeasureBadge)liveMeasureBadge.style.display='none';}
+function updateLiveMeasureBadge(ev){
+  if(!liveMeasureBadge)return;
+  if(mode!=='measure' || points.length!==1 || !pxPerCm){hideLiveMeasureBadge();return;}
+  const p=targetingCanvasPos(ev);
+  const p1=points[0];
+  const cm=Math.hypot(p.x-p1.x,p.y-p1.y)/pxPerCm;
+  liveMeasureBadge.textContent=formatMeasureNumber(cm);
+  liveMeasureBadge.style.display='block';
+}
 function updateInteractionCursor(){
   const targeting=mode==='calibrate'||mode==='measure';
   mainScroll.classList.toggle('targeting',targeting);
   mainScroll.classList.toggle('placing',mode==='place');
-  if(!targeting) targetCursor.style.display='none';
+  if(!targeting){targetCursor.style.display='none';hideLiveMeasureBadge();}
   updatePanState();
 }
 function showTargetCursor(ev){
-  if(mode!=='calibrate'&&mode!=='measure'){targetCursor.style.display='none';targetCursor.classList.remove('touchWand');return;}
+  if(mode!=='calibrate'&&mode!=='measure'){targetCursor.style.display='none';targetCursor.classList.remove('touchWand');hideLiveMeasureBadge();return;}
   const r=canvas.getBoundingClientRect();
   const t=targetClientPoint(ev);
   const fingerInside=ev.clientX>=r.left&&ev.clientX<=r.right&&ev.clientY>=r.top&&ev.clientY<=r.bottom;
   const targetInside=t.x>=r.left&&t.x<=r.right&&t.y>=r.top&&t.y<=r.bottom;
-  if(!fingerInside||!targetInside){targetCursor.style.display='none';return;}
+  if(!fingerInside||!targetInside){targetCursor.style.display='none';hideLiveMeasureBadge();return;}
   targetCursor.classList.toggle('touchWand',t.touchWand);
   targetCursor.style.display='block';
   targetCursor.style.left=t.x+'px';targetCursor.style.top=t.y+'px';
+  updateLiveMeasureBadge(ev);
 }
 function clampPointToCanvas(p){return {x:clamp(p.x,0,canvas.width),y:clamp(p.y,0,canvas.height)};}
 
 
 function resetScale(keepItems=false){
   pxPerCm=null;
-  points=[];
+  points=[];hideLiveMeasureBadge();
   measurements=[];selectedMeasureId=null;
   mode='select';pendingFurnitureDef=null;
   updateInteractionCursor();
@@ -1212,7 +1227,7 @@ function commitTargetPoint(ev){
       const p1=points[0],p2=points[1];const d=Math.hypot(p2.x-p1.x,p2.y-p1.y),cm=d/pxPerCm;
       const m={id:randId(),p1:{...p1},p2:{...p2},cm,pinned:false,offsetX:0,offsetY:0};
       measurements.push(m);selectedMeasureId=m.id;clearFurnitureSelection();points=[];mode='select';updateInteractionCursor();syncSelectedPanel();
-      setStatus(`القياس ${formatLength(cm)} مؤقت — ثبته أو حرّكه ثم ثبته`);draw();commitHistory(before);
+      setStatus(`القياس ${formatMeasureNumber(cm)} مؤقت — ثبته أو حرّكه ثم ثبته`);draw();commitHistory(before);
     }
   }
   return true;
@@ -1355,7 +1370,7 @@ canvas.addEventListener('pointermove',ev=>{
   }
   if(panDrag){mainScroll.scrollLeft=panDrag.left-(ev.clientX-panDrag.x);mainScroll.scrollTop=panDrag.top-(ev.clientY-panDrag.y);ev.preventDefault();}
 });
-canvas.addEventListener('pointerleave',()=>{if(mode==='calibrate'||mode==='measure')targetCursor.style.display='none';});
+canvas.addEventListener('pointerleave',()=>{if(mode==='calibrate'||mode==='measure'){targetCursor.style.display='none';hideLiveMeasureBadge();}});
 function endPointer(ev){
   if(ev?.pointerType==='touch'){
     const wasPinching=!!pinchState;
@@ -1364,7 +1379,7 @@ function endPointer(ev){
       suppressCanvasClickUntil=Date.now()+700;
       if(activeCanvasTouches.size<2)pinchState=null;
       aimingTouchId=null;
-      drag=null;panDrag=null;measureDrag=null;snapGuides=[];mainScroll.classList.remove('panning');draw();return;
+      drag=null;panDrag=null;measureDrag=null;snapGuides=[];mainScroll.classList.remove('panning');if(mode!=='measure'||points.length!==1)hideLiveMeasureBadge();draw();return;
     }
     // V16: رأس العصا هو نقطة القياس الفعلية. حرّك العصا بالإصبع وارفعه لتسجيل النقطة.
     if(ev.type!=='pointercancel' && aimingTouchId===ev.pointerId && (mode==='calibrate'||mode==='measure')){
@@ -1373,13 +1388,14 @@ function endPointer(ev){
       suppressCanvasClickUntil=Date.now()+700;
       commitTargetPoint(ev);
       targetCursor.style.display='none';
+      hideLiveMeasureBadge();
       ev.preventDefault();
       return;
     }
     if(aimingTouchId===ev.pointerId)aimingTouchId=null;
   }
   if(drag&&drag.moved)commitHistory(drag.before);if(measureDrag&&measureDrag.moved)commitHistory(measureDrag.before);
-  drag=null;panDrag=null;measureDrag=null;snapGuides=[];mainScroll.classList.remove('panning');draw();
+  drag=null;panDrag=null;measureDrag=null;snapGuides=[];mainScroll.classList.remove('panning');if(mode!=='measure'||points.length!==1)hideLiveMeasureBadge();draw();
 }
 canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointercancel',endPointer);
 function drawGrid(){
@@ -1713,7 +1729,7 @@ document.getElementById('measureBtn').onclick=()=>{
   if(!bgImage){alert('ارفع الخارطة أولاً.');return;}
   document.getElementById('measureLayerToggle').checked=true;
   if(!pxPerCm){alert('عاير الخارطة أولاً ثم استخدم قياس المسافة.');return;}
-  measurements.forEach(m=>m.pinned=true);selectedMeasureId=null;clearFurnitureSelection();pendingFurnitureDef=null;syncSelectedPanel();mode='measure';points=[];updateInteractionCursor();setStatus(isTouchDevice()?'القياس: أمسك مقبض العصا، حرّك رأسها للنقطة المطلوبة ثم ارفع إصبعك — كرر للنقطة الثانية':'القياس: حرّك علامة القنّاص وحدد النقطتين بدقة');draw();
+  measurements.forEach(m=>m.pinned=true);selectedMeasureId=null;clearFurnitureSelection();pendingFurnitureDef=null;syncSelectedPanel();mode='measure';points=[];updateInteractionCursor();setStatus(isTouchDevice()?'القياس: بعد النقطة الأولى سيظهر لك القياس الموقت قرب العصا؛ حرّكها حتى تصل للرقم الدقيق ثم ارفع إصبعك للنقطة الثانية':'القياس: بعد النقطة الأولى سيظهر قياس موقت مع حركة المؤشر حتى تحدد النقطة الثانية بدقة');draw();
 };
 document.getElementById('resetScaleBtn').onclick=()=>{
   const ok = confirm('سيتم إعادة ضبط المقياس وحذف الأثاث وخطوط القياس الحالية مع إبقاء الخارطة. هل تريد المتابعة؟');
@@ -1729,7 +1745,7 @@ function updateCalPreview(){
   calPreview.textContent=`سيكون 1 متر ≈ ${(candidate*100).toFixed(1)} بكسل`;
 }
 calValue.oninput=updateCalPreview;calUnit.onchange=updateCalPreview;
-document.getElementById('cancelCalBtn').onclick=()=>{scaleModal.style.display='none';pendingCalDistancePx=null;points=[];mode='select';updateInteractionCursor();setStatus('تم إلغاء المعايرة');draw();};
+document.getElementById('cancelCalBtn').onclick=()=>{scaleModal.style.display='none';pendingCalDistancePx=null;points=[];hideLiveMeasureBadge();mode='select';updateInteractionCursor();setStatus('تم إلغاء المعايرة');draw();};
 document.getElementById('applyCalBtn').onclick=()=>{
   const val=parseFloat(calValue.value||0);const cm=calUnit.value==='m'?val*100:val;
   if(!(cm>0) || !pendingCalDistancePx){alert('أدخل مسافة صحيحة.');return;}
@@ -1737,7 +1753,7 @@ document.getElementById('applyCalBtn').onclick=()=>{
   if(!isFinite(candidate)||candidate<=0){alert('تعذر حساب المقياس.');return;}
   const test=170*candidate;
   if(test>canvas.width*0.95){alert('المقياس الناتج كبير جدًا. تحقق من الرقم والوحدة.');return;}
-  pxPerCm=candidate;scaleModal.style.display='none';pendingCalDistancePx=null;points=[];mode='select';updateInteractionCursor();updateScaleUI();setStatus('تم اعتماد المقياس بنجاح');draw();
+  pxPerCm=candidate;scaleModal.style.display='none';pendingCalDistancePx=null;points=[];hideLiveMeasureBadge();mode='select';updateInteractionCursor();updateScaleUI();setStatus('تم اعتماد المقياس بنجاح');draw();
 };
 function formatLength(cm){return cm>=100?`${(cm/100).toFixed(2)} م`:`${cm.toFixed(1)} سم`;}
 function formatMeasureNumber(cm){return cm>=100?(cm/100).toFixed(2):cm.toFixed(1);}
@@ -1938,14 +1954,14 @@ function startNewProject(ask=true){
   canvas.width=1100;canvas.height=750;zoom=1;measureDisplayScale=1;
   document.getElementById('zoomRange').value=100;document.getElementById('zoomLabel').textContent='100%';measureSizeRange.value=100;measureSizeLabel.textContent='100%';
   document.getElementById('fileInput').value='';document.getElementById('loadInput').value='';
-  scaleModal.style.display='none';targetCursor.style.display='none';
+  scaleModal.style.display='none';targetCursor.style.display='none';hideLiveMeasureBadge();
   updateScaleUI();updateStageSize();updateInteractionCursor();syncSelectedPanel();draw();centerStage();
   projectMeta={name:'مشروع جديد',client:'',location:''};setStatus('مشروع جديد — ارفع الخارطة للبدء');
 }
 document.getElementById('newProjectBtn').onclick=()=>startNewProject(true);
 
 document.getElementById('saveBtn').onclick=()=>{
-  const project={version:20,projectMeta,bgData,pxPerCm,items,measurements,zoom,measureDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
+  const project={version:21,projectMeta,bgData,pxPerCm,items,measurements,zoom,measureDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
   download('furniture-project.json',JSON.stringify(project),'application/json')
 };
 
