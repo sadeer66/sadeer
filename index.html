@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <title>تأثيثي — iPad و iPhone</title>
-<meta name="taatheethi-version" content="33-compact-guide-controls-export">
+<meta name="taatheethi-version" content="34-guide-matches-furniture-color">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -168,6 +168,7 @@
   .usedFurnitureCard .ufName{font-size:9px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:1px;line-height:1.15}
   .usedFurnitureCard .ufThumb{height:38px;display:flex;align-items:center;justify-content:center}
   .usedFurnitureCard .ufThumb img{max-width:65px;max-height:34px;object-fit:contain;display:block}
+  .usedFurnitureCard .ufThumb canvas{max-width:65px;max-height:34px;width:65px;height:34px;object-fit:contain;display:block}
   .usedFurnitureCard .ufGeneric{width:54px;height:30px;border:1px solid #64748b;border-radius:6px;display:block}
   .usedFurnitureCard .ufDims{display:flex;align-items:center;justify-content:center;gap:6px;font-size:8px;font-weight:700;color:#334155;white-space:nowrap;line-height:1.1}
   .usedFurnitureCard .ufQty{position:absolute;top:3px;left:3px;background:#0f766e;color:#fff;border-radius:999px;padding:1px 4px;font-size:7.5px;font-weight:700}
@@ -1934,8 +1935,9 @@ function usedFurnitureGroups(){
   for(const it of items){
     if(it.archType)continue;
     const w=Math.max(1,Number(it.w)||0),h=Math.max(1,Number(it.h)||0);
-    const key=[it.name||'قطعة',w.toFixed(2),h.toFixed(2),it.src||'',it.color||''].join('|');
-    if(!map.has(key))map.set(key,{name:it.name||'قطعة',w,h,src:it.src||null,color:it.color||'#cbd5e1',count:0});
+    const tintEnabled=!!it.tintEnabled;
+    const key=[it.name||'قطعة',w.toFixed(2),h.toFixed(2),it.src||'',it.color||'',tintEnabled?1:0].join('|');
+    if(!map.has(key))map.set(key,{name:it.name||'قطعة',w,h,src:it.src||null,color:it.color||'#cbd5e1',tintEnabled,count:0});
     map.get(key).count++;
   }
   return [...map.values()];
@@ -1947,21 +1949,61 @@ function scheduleUsedFurnitureSync(force=false){
   if(usedFurnitureTimer)clearTimeout(usedFurnitureTimer);
   usedFurnitureTimer=setTimeout(()=>{usedFurnitureTimer=null;syncUsedFurniturePanel(force);},140);
 }
+async function makeFurnitureGuideVisual(g){
+  if(!g?.src)return null;
+  const baseSrc=resolveAssetSrc(g.src);
+  if(!g.tintEnabled || !String(g.src).startsWith('assets/furniture/')){
+    try{return await loadDataImage(baseSrc);}catch{return null;}
+  }
+  try{
+    const stem=String(g.src).split('/').pop().replace(/\.png$/i,'');
+    const [base,neutral,shadeIm]=await Promise.all([
+      loadDataImage(baseSrc),
+      loadDataImage(resolveAssetSrc(`assets/furniture_layers/${stem}_neutral.png`)),
+      loadDataImage(resolveAssetSrc(`assets/furniture_layers/${stem}_shade.png`))
+    ]);
+    const off=document.createElement('canvas');off.width=base.naturalWidth||base.width;off.height=base.naturalHeight||base.height;
+    const oc=off.getContext('2d');
+    oc.clearRect(0,0,off.width,off.height);
+    oc.fillStyle=g.color||'#bfa781';oc.fillRect(0,0,off.width,off.height);
+    oc.globalCompositeOperation='destination-in';oc.drawImage(shadeIm,0,0,off.width,off.height);
+    oc.globalCompositeOperation='multiply';oc.drawImage(shadeIm,0,0,off.width,off.height);
+    oc.globalCompositeOperation='source-over';oc.drawImage(neutral,0,0,off.width,off.height);
+    oc.globalCompositeOperation='source-over';
+    return off;
+  }catch{
+    try{return await loadDataImage(baseSrc);}catch{return null;}
+  }
+}
+async function paintFurnitureGuideThumb(canvasEl,g){
+  if(!canvasEl)return;
+  const c=canvasEl.getContext('2d');c.clearRect(0,0,canvasEl.width,canvasEl.height);
+  const visual=await makeFurnitureGuideVisual(g);
+  if(!visual){
+    c.fillStyle=g.color||'#e2e8f0';c.strokeStyle='#64748b';c.lineWidth=1;
+    c.beginPath();c.roundRect(11,5,48,24,5);c.fill();c.stroke();return;
+  }
+  const vw=visual.width||visual.naturalWidth||1,vh=visual.height||visual.naturalHeight||1;
+  const sc=Math.min(canvasEl.width/vw,canvasEl.height/vh)*0.94;
+  const dw=vw*sc,dh=vh*sc;
+  c.drawImage(visual,(canvasEl.width-dw)/2,(canvasEl.height-dh)/2,dw,dh);
+}
 function syncUsedFurniturePanel(force=false){
   if(!usedFurniturePanel||!usedFurnitureGrid)return;
   const groups=usedFurnitureGroups();
   const show=furnitureSummaryVisible()&&groups.length>0;
   usedFurniturePanel.style.display=show?'block':'none';
   if(!show){usedFurnitureGrid.innerHTML='';usedFurnitureSignature='';return;}
-  const sig=JSON.stringify(groups.map(g=>[g.name,g.w,g.h,g.src,g.color,g.count]));
+  const sig=JSON.stringify(groups.map(g=>[g.name,g.w,g.h,g.src,g.color,g.tintEnabled?1:0,g.count]));
   if(!force&&sig===usedFurnitureSignature)return;
   usedFurnitureSignature=sig;
   const frag=document.createDocumentFragment();
   for(const g of groups){
     const card=document.createElement('div');card.className='usedFurnitureCard';
     const qty=g.count>1?`<span class="ufQty">×${g.count}</span>`:'';
-    const thumb=g.src?`<img loading="lazy" decoding="async" src="${resolveAssetSrc(g.src)}" alt="">`:`<span class="ufGeneric" style="background:${g.color||'#e2e8f0'}"></span>`;
+    const thumb=g.src?`<canvas class="ufGuideCanvas" width="70" height="36"></canvas>`:`<span class="ufGeneric" style="background:${g.color||'#e2e8f0'}"></span>`;
     card.innerHTML=`${qty}<div class="ufName">${escapeHtml(g.name)}</div><div class="ufThumb">${thumb}</div><div class="ufDims"><span>↔ ${formatCardCm(g.w)}</span><span>↕ ${formatCardCm(g.h)}</span></div>`;
+    if(g.src){const cv=card.querySelector('.ufGuideCanvas');paintFurnitureGuideThumb(cv,g);}
     frag.appendChild(card);
   }
   usedFurnitureGrid.replaceChildren(frag);
@@ -2292,7 +2334,7 @@ document.getElementById('measureLockToggle').checked=false;document.getElementBy
 document.getElementById('newProjectBtn').onclick=()=>startNewProject(true);
 
 document.getElementById('saveBtn').onclick=()=>{
-  const project={version:33,projectMeta,brandInfo,bgData,pxPerCm,items,measurements,mapLabels,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
+  const project={version:34,projectMeta,brandInfo,bgData,pxPerCm,items,measurements,mapLabels,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
   download('furniture-project.json',JSON.stringify(project),'application/json')
 };
 
@@ -2374,7 +2416,7 @@ async function renderFurnitureScheduleCanvas(targetWidth){
   c.fillStyle='#fbfdff';c.fillRect(0,0,width,height);c.strokeStyle='#cbd5e1';c.lineWidth=1;c.strokeRect(1,1,width-2,height-2);
   c.fillStyle='#334155';c.textAlign='right';c.textBaseline='middle';c.font=`700 ${Math.max(12,Math.min(18,Math.round(width*0.011)))}px Tahoma,Arial,sans-serif`;c.fillText('الأثاث المستخدم',width-pad,pad+titleH/2);
   c.strokeStyle='#e2e8f0';c.beginPath();c.moveTo(pad,pad+titleH);c.lineTo(width-pad,pad+titleH);c.stroke();
-  const imgs=await Promise.all(groups.map(async g=>{if(!g.src)return null;try{return await loadDataImage(resolveAssetSrc(g.src));}catch{return null;}}));
+  const imgs=await Promise.all(groups.map(async g=>g.src?await makeFurnitureGuideVisual(g):null));
   for(let i=0;i<groups.length;i++){
     const g=groups[i],row=Math.floor(i/cols),col=i%cols;
     const x=width-pad-cardW-col*(cardW+gap),y=pad+titleH+gap+row*(cardH+gap);
