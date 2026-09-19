@@ -1,4 +1,4 @@
-const CACHE_NAME = "furniture-planner-v28-pdf-print-rights";
+const CACHE_NAME = "furniture-planner-v29-visible-pdf-rights";
 const CRITICAL = ['./', './index.html'];
 
 self.addEventListener('install', event => {
