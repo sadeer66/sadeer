@@ -401,6 +401,23 @@
   </div>
 </div>
 
+<div class="modalOverlay" id="exportModal">
+  <div class="modalCard">
+    <h3>تصدير PNG</h3>
+    <p>يمكنك حفظ الخارطة كصورة عادية، أو إضافة الشعار ومعلومات المشروع بشكل اختياري داخل الصورة نفسها.</p>
+    <div class="printMeta">
+      <div class="field wide"><label><input id="pngBrandingToggle" type="checkbox" checked style="width:auto;margin-left:8px"> إضافة الشعار ومعلومات المشروع داخل PNG</label></div>
+      <div class="field wide"><label>اسم المشروع</label><input id="pngProjectName" type="text" value="مشروع جديد"></div>
+      <div class="field"><label>العميل</label><input id="pngClient" type="text" placeholder="اسم العميل"></div>
+      <div class="field"><label>الموقع</label><input id="pngLocation" type="text" placeholder="الموقع"></div>
+      <div class="field"><label>حجم اللوحة</label><select id="pngPaper"><option value="A4">A4</option><option value="A3">A3</option></select></div>
+      <div class="field"><label>الاتجاه</label><select id="pngOrientation"><option value="landscape">أفقي</option><option value="portrait">عمودي</option></select></div>
+    </div>
+    <div class="printNote" style="margin-top:10px">إذا ألغيت الخيار أعلاه فسيتم حفظ الخارطة فقط. وإذا أبقيته مفعلاً فسيتم حفظها بنفس تنسيق الشعار ومعلومات العميل والموقع بشكل مرتب ومتوازن.</div>
+    <div class="modalActions"><button id="cancelExportBtn">إلغاء</button><button id="doExportBtn" class="primary">حفظ PNG</button></div>
+  </div>
+</div>
+
 <script>
 const canvas=document.getElementById('canvas');
 const ctx=canvas.getContext('2d');
@@ -445,6 +462,13 @@ const printClient=document.getElementById('printClient');
 const printLocation=document.getElementById('printLocation');
 const printPaper=document.getElementById('printPaper');
 const printOrientation=document.getElementById('printOrientation');
+const exportModal=document.getElementById('exportModal');
+const pngBrandingToggle=document.getElementById('pngBrandingToggle');
+const pngProjectName=document.getElementById('pngProjectName');
+const pngClient=document.getElementById('pngClient');
+const pngLocation=document.getElementById('pngLocation');
+const pngPaper=document.getElementById('pngPaper');
+const pngOrientation=document.getElementById('pngOrientation');
 const flipDoorBtn=document.getElementById('flipDoorBtn');
 const sidebarToggle=document.getElementById('sidebarToggle');
 const sidebarScrim=document.getElementById('sidebarScrim');
@@ -2073,7 +2097,7 @@ function startNewProject(ask=true){
 document.getElementById('newProjectBtn').onclick=()=>startNewProject(true);
 
 document.getElementById('saveBtn').onclick=()=>{
-  const project={version:24,projectMeta,bgData,pxPerCm,items,measurements,mapLabels,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
+  const project={version:25,projectMeta,bgData,pxPerCm,items,measurements,mapLabels,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
   download('furniture-project.json',JSON.stringify(project),'application/json')
 };
 
@@ -2118,42 +2142,119 @@ document.getElementById('loadInput').onchange=e=>{
 };
 
 
-function captureCleanPlan(){
+function captureCleanPlanCanvas(){
   const oldIds=selectedIds.slice(),oldId=selectedId,oldMeasure=selectedMeasureId,oldMapLabel=selectedMapLabelId,oldGuides=snapGuides.slice();
   const auto=document.getElementById('autoDimsToggle'),oldAuto=auto.checked;
   clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;snapGuides=[];auto.checked=false;draw();
   const out=document.createElement('canvas');out.width=canvas.width;out.height=canvas.height;const oc=out.getContext('2d');oc.drawImage(canvas,0,0);
   if(pxPerCm){const len=100*pxPerCm,x=28,y=out.height-34;oc.strokeStyle='#111';oc.fillStyle='#111';oc.lineWidth=Math.max(2,out.width/900);oc.beginPath();oc.moveTo(x,y);oc.lineTo(x+len,y);oc.stroke();oc.beginPath();oc.moveTo(x,y-7);oc.lineTo(x,y+7);oc.moveTo(x+len,y-7);oc.lineTo(x+len,y+7);oc.stroke();oc.font=`bold ${Math.max(12,out.width/95)}px Tahoma`;oc.textAlign='center';oc.fillText('1 متر',x+len/2,y-10);}
   selectedIds=oldIds;selectedId=oldId;selectedMeasureId=oldMeasure;selectedMapLabelId=oldMapLabel;snapGuides=oldGuides;auto.checked=oldAuto;draw();
-  return out.toDataURL('image/png');
+  return out;
+}
+function paperPixels(paper,orient){
+  const portrait=paper==='A3'?{w:1754,h:2480}:{w:1240,h:1754};
+  return orient==='landscape'?{w:portrait.h,h:portrait.w}:{w:portrait.w,h:portrait.h};
+}
+function loadDataImage(src){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=src;
+  });
+}
+async function buildBrandedSheet({paper='A4',orient='landscape',title='',client='',location='',planCanvas=null}){
+  const plan=planCanvas||captureCleanPlanCanvas();
+  const size=paperPixels(paper,orient);
+  const sheet=document.createElement('canvas');sheet.width=size.w;sheet.height=size.h;
+  const c=sheet.getContext('2d');
+  c.fillStyle='#fff';c.fillRect(0,0,sheet.width,sheet.height);
+  const margin=Math.round(Math.min(sheet.width,sheet.height)*0.035);
+  const headH=Math.round(sheet.height*0.125);
+  const footH=Math.round(sheet.height*0.05);
+  const gap=Math.round(sheet.height*0.014);
+  const planTop=margin+headH+gap;
+  const planBottom=sheet.height-margin-footH-gap;
+  const planAreaW=sheet.width-margin*2;
+  const planAreaH=planBottom-planTop;
+  const scale=Math.min(planAreaW/plan.width,planAreaH/plan.height);
+  const drawW=plan.width*scale, drawH=plan.height*scale;
+  const drawX=Math.round((sheet.width-drawW)/2), drawY=Math.round(planTop+(planAreaH-drawH)/2);
+  const logo=await loadDataImage(PRINT_LOGO_DATA);
+  const logoMaxW=Math.round(sheet.width*0.14), logoMaxH=Math.round(headH*0.68);
+  const logoScale=Math.min(logoMaxW/logo.width, logoMaxH/logo.height);
+  const logoW=logo.width*logoScale, logoH=logo.height*logoScale;
+  const logoX=margin, logoY=margin+Math.round((headH-logoH)/2);
+  c.drawImage(logo,logoX,logoY,logoW,logoH);
+  c.strokeStyle='#111';c.lineWidth=Math.max(2,Math.round(sheet.width/900));
+  c.beginPath();c.moveTo(margin,margin+headH);c.lineTo(sheet.width-margin,margin+headH);c.stroke();
+  c.fillStyle='#111';
+  c.textAlign='center';
+  c.font=`700 ${Math.round(headH*0.28)}px Tahoma,Arial,sans-serif`;
+  c.fillText(title||'مشروع جديد', sheet.width/2, margin+Math.round(headH*0.34));
+  c.font=`${Math.round(headH*0.17)}px Tahoma,Arial,sans-serif`;
+  c.fillText('مخطط توزيع الأثاث والعناصر المعمارية', sheet.width/2, margin+Math.round(headH*0.66));
+  const metaX=sheet.width-margin;
+  const metaStartY=margin+Math.round(headH*0.23);
+  c.textAlign='right';
+  c.font=`${Math.round(headH*0.15)}px Tahoma,Arial,sans-serif`;
+  let lineY=metaStartY;
+  const metaLines=[];
+  if(client)metaLines.push(`العميل: ${client}`);
+  if(location)metaLines.push(`الموقع: ${location}`);
+  metaLines.push(`الحالة: ${pxPerCm?'المقياس معاير':'غير معاير'}`);
+  metaLines.push(`التاريخ: ${new Date().toLocaleDateString('ar-IQ')}`);
+  for(const line of metaLines){ c.fillText(line, metaX, lineY); lineY += Math.round(headH*0.18); }
+  c.drawImage(plan, drawX, drawY, drawW, drawH);
+  c.fillStyle='#555';
+  c.font=`${Math.round(footH*0.42)}px Tahoma,Arial,sans-serif`;
+  c.textAlign='left';c.fillText('القصيرين للعمارة والتعمير', margin, sheet.height-margin+Math.round(footH*0.1));
+  c.textAlign='right';c.fillText(`${paper} — ${orient==='landscape'?'أفقي':'عمودي'}`, sheet.width-margin, sheet.height-margin+Math.round(footH*0.1));
+  return sheet;
+}
+function downloadCanvasAsPng(outCanvas, filename='furniture-layout.png'){
+  outCanvas.toBlob(blob=>{
+    if(!blob){alert('تعذر إنشاء ملف PNG.');return;}
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');
+    a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1800);
+  },'image/png');
 }
 function openPrintDialog(){
   printProjectName.value=projectMeta.name||'مشروع جديد';printClient.value=projectMeta.client||'';printLocation.value=projectMeta.location||'';printModal.style.display='flex';
 }
+function openExportDialog(){
+  pngProjectName.value=projectMeta.name||'مشروع جديد';pngClient.value=projectMeta.client||'';pngLocation.value=projectMeta.location||'';
+  pngPaper.value=printPaper.value||'A4';pngOrientation.value=printOrientation.value||'landscape';pngBrandingToggle.checked=true;exportModal.style.display='flex';
+}
 document.getElementById('printBtn').onclick=openPrintDialog;
 document.getElementById('cancelPrintBtn').onclick=()=>printModal.style.display='none';
-document.getElementById('doPrintBtn').onclick=()=>{
+document.getElementById('doPrintBtn').onclick=async()=>{
   projectMeta={name:printProjectName.value.trim()||'مشروع جديد',client:printClient.value.trim(),location:printLocation.value.trim()};
-  const plan=captureCleanPlan(),paper=printPaper.value,orient=printOrientation.value;
-  const page=window.open('','_blank');if(!page){alert('اسمح للمتصفح بفتح نافذة الطباعة ثم حاول مرة أخرى.');return;}
-  const title=projectMeta.name.replace(/[<>]/g,'');const client=projectMeta.client.replace(/[<>]/g,'');const loc=projectMeta.location.replace(/[<>]/g,'');
-  page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>${title}</title><style>@page{size:${paper} ${orient};margin:10mm}*{box-sizing:border-box}body{font-family:Tahoma,Arial;margin:0;color:#111}.head{display:grid;grid-template-columns:140px 1fr 180px;gap:14px;align-items:center;border-bottom:2px solid #111;padding-bottom:8px}.logo{max-width:130px;max-height:65px}.title{text-align:center}.title h1{font-size:20px;margin:0 0 6px}.meta{font-size:11px;line-height:1.8}.plan{height:calc(100vh - 115px);display:flex;align-items:center;justify-content:center;padding-top:8px}.plan img{max-width:100%;max-height:100%;object-fit:contain}.foot{position:fixed;bottom:3mm;left:10mm;right:10mm;font-size:9px;color:#555;display:flex;justify-content:space-between}</style></head><body><div class="head"><img class="logo" src="${PRINT_LOGO_DATA}"><div class="title"><h1>${title}</h1><div>مخطط توزيع الأثاث والعناصر المعمارية</div></div><div class="meta">${client?`العميل: ${client}<br>`:''}${loc?`الموقع: ${loc}<br>`:''}الحالة: ${pxPerCm?'المقياس معاير':'غير معاير'}<br>التاريخ: ${new Date().toLocaleDateString('ar-IQ')}</div></div><div class="plan"><img src="${plan}"></div><div class="foot"><span>القصيرين للعمارة والتعمير</span><span>${paper} — ${orient==='landscape'?'أفقي':'عمودي'}</span></div><script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>`);
-  page.document.close();printModal.style.display='none';setStatus('تم تجهيز صفحة الطباعة');
+  const paper=printPaper.value,orient=printOrientation.value;
+  try{
+    const sheet=await buildBrandedSheet({paper,orient,title:projectMeta.name,client:projectMeta.client,location:projectMeta.location});
+    const page=window.open('','_blank');if(!page){alert('اسمح للمتصفح بفتح نافذة الطباعة ثم حاول مرة أخرى.');return;}
+    const title=projectMeta.name.replace(/[<>]/g,'');
+    const src=sheet.toDataURL('image/png');
+    page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>${title}</title><style>@page{size:${paper} ${orient};margin:0}html,body{margin:0;padding:0;background:#fff}body{display:flex;align-items:center;justify-content:center}img{display:block;width:100%;height:auto;page-break-inside:avoid}</style></head><body><img src="${src}"><script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>`);
+    page.document.close();printModal.style.display='none';setStatus('تم تجهيز صفحة الطباعة بشكل متوازن داخل الورقة');
+  }catch(err){alert('تعذر تجهيز صفحة الطباعة.');console.error(err);}
 };
 
-document.getElementById('exportBtn').onclick=()=>{
-  const oldSelected=selectedId,oldSelectedIds=getSelectedIds(),oldMeasure=selectedMeasureId,oldMapLabel=selectedMapLabelId,oldMode=mode,oldPoints=points.slice();
+document.getElementById('exportBtn').onclick=openExportDialog;
+document.getElementById('cancelExportBtn').onclick=()=>exportModal.style.display='none';
+document.getElementById('doExportBtn').onclick=async()=>{
+  projectMeta={name:pngProjectName.value.trim()||'مشروع جديد',client:pngClient.value.trim(),location:pngLocation.value.trim()};
   try{
-    clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;mode='select';points=[];draw();
-    canvas.toBlob(blob=>{
-      setSelection(oldSelectedIds,oldSelected);selectedMeasureId=oldMeasure;selectedMapLabelId=oldMapLabel;mode=oldMode;points=oldPoints;draw();
-      if(!blob){alert('تعذر إنشاء ملف PNG.');return;}
-      const url=URL.createObjectURL(blob);const a=document.createElement('a');
-      a.href=url;a.download='furniture-layout.png';document.body.appendChild(a);a.click();a.remove();
-      setTimeout(()=>URL.revokeObjectURL(url),1500);setStatus('تم تصدير صورة PNG');
-    },'image/png');
+    if(pngBrandingToggle.checked){
+      const sheet=await buildBrandedSheet({paper:pngPaper.value,orient:pngOrientation.value,title:projectMeta.name,client:projectMeta.client,location:projectMeta.location});
+      downloadCanvasAsPng(sheet,'furniture-layout-branded.png');
+      setStatus('تم تصدير PNG مع الشعار ومعلومات العميل');
+    }else{
+      const plan=captureCleanPlanCanvas();
+      downloadCanvasAsPng(plan,'furniture-layout.png');
+      setStatus('تم تصدير PNG للخارطة فقط');
+    }
+    exportModal.style.display='none';
   }catch(err){
-    setSelection(oldSelectedIds,oldSelected);selectedMeasureId=oldMeasure;selectedMapLabelId=oldMapLabel;mode=oldMode;points=oldPoints;draw();
     alert('تعذر تصدير PNG.');console.error(err);
   }
 };
