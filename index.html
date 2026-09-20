@@ -1959,6 +1959,59 @@ function drawGeneric(it,w,h){
   ctx.fillStyle=rgba('#ffffff',0.18); roundRectPath(-w*0.26,-h*0.18,w*0.52,h*0.36,10);ctx.fill();
 }
 
+function premiumShadow(){if(document.getElementById('shadowToggle').checked){ctx.shadowColor='rgba(0,0,0,.22)';ctx.shadowBlur=12;ctx.shadowOffsetY=3;}}
+function clearPremiumShadow(){ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;}
+function drawPremiumPanel(it,w,h,r=8){
+  premiumShadow();roundRectPath(-w/2,-h/2,w,h,r);ctx.fillStyle=linearFill(-w/2,-h/2,w/2,h/2,shade(it.color||'#bfa781',.25),shade(it.color||'#bfa781',-.18));ctx.strokeStyle='rgba(45,55,65,.9)';ctx.lineWidth=1.6;ctx.fill();ctx.stroke();clearPremiumShadow();
+}
+function drawSectionalPremium(it,w,h){
+  const c=it.color||'#c9b9a8',r=Math.min(14,Math.min(w,h)*.08);premiumShadow();
+  roundRectPath(-w/2,-h/2,w,h*.42,r);ctx.fillStyle=linearFill(0,-h/2,0,h/2,shade(c,.22),shade(c,-.12));ctx.fill();
+  roundRectPath(w*.18,-h/2,w*.32,h,r);ctx.fill();clearPremiumShadow();
+  ctx.strokeStyle=shade(c,-.32);ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-w*.16,-h*.47);ctx.lineTo(-w*.16,-h*.12);ctx.moveTo(w*.16,-h*.47);ctx.lineTo(w*.16,-h*.12);ctx.stroke();
+  drawPillow(-w*.34,-h*.27,w*.12,h*.13,shade(c,.35));drawPillow(w*.34,-h*.27,w*.12,h*.13,shade(c,.28));
+}
+function drawChaisePremium(it,w,h){drawPremiumPanel(it,w,h,Math.min(16,w*.18));ctx.fillStyle=shade(it.color||'#bfa781',.34);roundRectPath(-w*.34,-h*.32,w*.68,h*.22,10);ctx.fill();ctx.fillStyle=shade(it.color||'#bfa781',-.15);roundRectPath(-w*.42,-h*.48,w*.84,h*.12,8);ctx.fill();}
+function drawOttomanPremium(it,w,h,round=false){premiumShadow();if(round){ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.48,0,Math.PI*2);}else roundRectPath(-w/2,-h/2,w,h,Math.min(14,Math.min(w,h)*.2));ctx.fillStyle=linearFill(-w/2,-h/2,w/2,h/2,shade(it.color,.26),shade(it.color,-.16));ctx.fill();ctx.strokeStyle=shade(it.color,-.35);ctx.lineWidth=1.3;ctx.stroke();clearPremiumShadow();}
+function drawRoundTablePremium(it,w,h){const r=Math.min(w,h)*.47;premiumShadow();ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fillStyle=linearFill(-r,-r,r,r,shade(it.color,.24),shade(it.color,-.18));ctx.fill();ctx.strokeStyle=shade(it.color,-.35);ctx.lineWidth=1.3;ctx.stroke();clearPremiumShadow();ctx.beginPath();ctx.arc(0,0,r*.72,0,Math.PI*2);ctx.strokeStyle=rgba('#ffffff',.28);ctx.stroke();}
+function drawSideTableSquarePremium(it,w,h){drawPremiumPanel(it,w,h,6);ctx.strokeStyle=rgba('#ffffff',.28);ctx.strokeRect(-w*.32,-h*.32,w*.64,h*.64);}
+function drawNestingTablesPremium(it,w,h){ctx.save();ctx.translate(-w*.12,h*.07);drawRoundTablePremium(it,w*.62,h*.72);ctx.restore();ctx.save();ctx.translate(w*.22,-h*.10);drawRoundTablePremium({...it,color:shade(it.color,.18)},w*.55,h*.62);ctx.restore();}
+function drawTvWallPremium(it,w,h){const hh=Math.max(h,6);premiumShadow();roundRectPath(-w/2,-hh/2,w,hh,3);ctx.fillStyle='#11161c';ctx.fill();ctx.strokeStyle='#424b54';ctx.lineWidth=1;ctx.stroke();clearPremiumShadow();ctx.fillStyle='rgba(255,255,255,.32)';ctx.fillRect(-w*.36,-1,w*.72,1);}
+function drawDiningRoundPremium(it,w,h){drawRoundTablePremium(it,w*.68,h*.68);const r=Math.min(w,h)*.43;for(let a=0;a<Math.PI*2;a+=Math.PI/2){ctx.save();ctx.translate(Math.cos(a)*r,Math.sin(a)*r);ctx.rotate(a+Math.PI/2);drawPremiumPanel({...it,color:shade(it.color,.22)},w*.15,h*.19,5);ctx.restore();}}
+function drawDiningOvalPremium(it,w,h,glass=false){premiumShadow();ctx.beginPath();ctx.ellipse(0,0,w*.34,h*.34,0,0,Math.PI*2);ctx.fillStyle=glass?'rgba(155,211,224,.58)':linearFill(-w/2,0,w/2,0,shade(it.color,.23),shade(it.color,-.16));ctx.fill();ctx.strokeStyle=glass?'rgba(73,124,139,.85)':shade(it.color,-.35);ctx.lineWidth=1.5;ctx.stroke();clearPremiumShadow();for(const sx of [-.36,-.12,.12,.36])for(const sy of [-.42,.42]){ctx.save();ctx.translate(w*sx,h*sy);drawPremiumPanel({...it,color:'#bbb5ad'},w*.15,h*.15,5);ctx.restore();}}
+function drawBarStoolPremium(it,w,h){drawRoundTablePremium(it,w*.72,h*.72);ctx.strokeStyle=shade(it.color,-.4);ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(-w*.22,h*.20);ctx.lineTo(-w*.32,h*.42);ctx.moveTo(w*.22,h*.20);ctx.lineTo(w*.32,h*.42);ctx.stroke();}
+function drawMeetingTablePremium(it,w,h){premiumShadow();ctx.beginPath();ctx.ellipse(0,0,w*.38,h*.34,0,0,Math.PI*2);ctx.fillStyle=linearFill(-w/2,0,w/2,0,shade(it.color,.22),shade(it.color,-.16));ctx.fill();ctx.strokeStyle=shade(it.color,-.35);ctx.stroke();clearPremiumShadow();for(const sx of [-.30,0,.30])for(const sy of [-.43,.43]){ctx.save();ctx.translate(w*sx,h*sy);drawPremiumPanel({...it,color:'#6d7074'},w*.13,h*.15,5);ctx.restore();}}
+function drawDresserPremium(it,w,h){drawPremiumPanel(it,w,h,6);ctx.strokeStyle=shade(it.color,-.33);ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(0,-h/2);ctx.lineTo(0,h/2);ctx.moveTo(-w/2,-h*.15);ctx.lineTo(w/2,-h*.15);ctx.moveTo(-w/2,h*.18);ctx.lineTo(w/2,h*.18);ctx.stroke();ctx.fillStyle='#2f3439';for(const x of [-w*.22,w*.22])for(const y of [-h*.32,0,h*.32])ctx.fillRect(x-2,y-1,4,2);}
+function drawBookcasePremium(it,w,h){drawPremiumPanel(it,w,h,4);ctx.strokeStyle=shade(it.color,-.38);ctx.lineWidth=1;for(let x=-w*.32;x<=w*.32;x+=w*.16){ctx.beginPath();ctx.moveTo(x,-h*.38);ctx.lineTo(x,h*.38);ctx.stroke();}ctx.fillStyle='#d5ccb9';for(let i=0;i<7;i++)ctx.fillRect(-w*.36+i*w*.11,-h*.26+(i%2)*h*.18,w*.07,h*.12);}
+function drawRugPremium(it,w,h,round=false){ctx.save();ctx.globalAlpha=.92;ctx.fillStyle=it.color;ctx.strokeStyle=shade(it.color,-.22);ctx.lineWidth=1.2;if(round){ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.48,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.38,0,Math.PI*2);ctx.setLineDash([5,4]);ctx.strokeStyle=shade(it.color,.28);ctx.stroke();}else{roundRectPath(-w/2,-h/2,w,h,8);ctx.fill();ctx.stroke();roundRectPath(-w*.42,-h*.38,w*.84,h*.76,6);ctx.setLineDash([5,4]);ctx.strokeStyle=shade(it.color,.28);ctx.stroke();}ctx.setLineDash([]);ctx.restore();}
+function drawPlantPremium(it,w,h){const r=Math.min(w,h);ctx.save();ctx.fillStyle='#8a6847';ctx.beginPath();ctx.arc(0,0,r*.18,0,Math.PI*2);ctx.fill();for(let i=0;i<10;i++){ctx.save();ctx.rotate(i*Math.PI/5);ctx.fillStyle=i%2?shade(it.color,.15):shade(it.color,-.08);ctx.beginPath();ctx.ellipse(0,-r*.22,r*.09,r*.28,0,0,Math.PI*2);ctx.fill();ctx.restore();}ctx.restore();}
+function drawWallMirrorPremium(it,w,h){const hh=Math.max(h,6);premiumShadow();roundRectPath(-w/2,-hh/2,w,hh,3);ctx.fillStyle='rgba(176,220,230,.85)';ctx.fill();ctx.strokeStyle='#647985';ctx.stroke();clearPremiumShadow();ctx.fillStyle='rgba(255,255,255,.65)';ctx.fillRect(-w*.35,-1,w*.42,1);}
+function drawBasketPremium(it,w,h){drawRoundTablePremium(it,w,h);ctx.save();ctx.strokeStyle=shade(it.color,.34);ctx.globalAlpha=.5;for(const rr of [.26,.38]){ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*rr,0,Math.PI*2);ctx.stroke();}ctx.restore();}
+function drawCushionPremium(it,w,h){drawPremiumPanel(it,w,h,Math.min(12,w*.24));ctx.strokeStyle=shade(it.color,.25);ctx.globalAlpha=.55;ctx.beginPath();ctx.moveTo(-w*.35,-h*.35);ctx.quadraticCurveTo(0,-h*.15,w*.35,-h*.35);ctx.moveTo(-w*.35,h*.35);ctx.quadraticCurveTo(0,h*.15,w*.35,h*.35);ctx.stroke();ctx.globalAlpha=1;}
+function drawFridgePremium(it,w,h){drawPremiumPanel(it,w,h,5);const n=Math.max(1,Math.min(3,it.doors||1));ctx.strokeStyle=shade(it.color,-.35);ctx.lineWidth=1.3;for(let i=1;i<n;i++){ctx.beginPath();ctx.moveTo(-w/2+w*i/n,-h*.46);ctx.lineTo(-w/2+w*i/n,h*.46);ctx.stroke();}ctx.fillStyle=shade(it.color,-.48);for(let i=0;i<n;i++)ctx.fillRect(-w/2+w*(i+.5)/n-1,-h*.28,2,h*.22);ctx.fillStyle='rgba(255,255,255,.25)';ctx.fillRect(-w*.37,-h*.36,w*.50,2);}
+function drawKitchenBasePremium(it,w,h){drawPremiumPanel(it,w,h,4);ctx.fillStyle=rgba('#ffffff',.24);ctx.fillRect(-w*.46,-h*.45,w*.92,h*.08);ctx.strokeStyle=shade(it.color,-.33);ctx.lineWidth=1.1;ctx.beginPath();ctx.moveTo(0,-h*.38);ctx.lineTo(0,h*.42);ctx.stroke();if(it.module==='sink'){ctx.fillStyle='#dfe6e9';roundRectPath(-w*.28,-h*.22,w*.56,h*.42,6);ctx.fill();ctx.strokeStyle='#7b8991';ctx.stroke();ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.04,0,Math.PI*2);ctx.fillStyle='#65747d';ctx.fill();}else if(it.module==='cooktop'){ctx.fillStyle='#23282c';roundRectPath(-w*.32,-h*.28,w*.64,h*.56,5);ctx.fill();ctx.strokeStyle='#79838a';ctx.lineWidth=1;for(const x of [-w*.15,w*.15])for(const y of [-h*.14,h*.14]){ctx.beginPath();ctx.arc(x,y,Math.min(w,h)*.08,0,Math.PI*2);ctx.stroke();}}else if(it.module==='drawers'){ctx.strokeStyle=shade(it.color,-.35);for(const y of [-h*.18,h*.08,h*.33]){ctx.beginPath();ctx.moveTo(-w*.42,y);ctx.lineTo(w*.42,y);ctx.stroke();}}}
+function drawKitchenWallPremium(it,w,h){drawPremiumPanel(it,w,h,4);const n=Math.max(1,Math.min(3,it.doors||1));ctx.strokeStyle=shade(it.color,-.34);ctx.lineWidth=1;for(let i=1;i<n;i++){ctx.beginPath();ctx.moveTo(-w/2+w*i/n,-h*.42);ctx.lineTo(-w/2+w*i/n,h*.42);ctx.stroke();}}
+function drawKitchenCornerPremium(it,w,h){premiumShadow();ctx.fillStyle=linearFill(-w/2,-h/2,w/2,h/2,shade(it.color,.22),shade(it.color,-.14));ctx.strokeStyle=shade(it.color,-.35);ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-w/2,-h/2);ctx.lineTo(w/2,-h/2);ctx.lineTo(w/2,-h*.14);ctx.lineTo(-w*.14,-h*.14);ctx.lineTo(-w*.14,h/2);ctx.lineTo(-w/2,h/2);ctx.closePath();ctx.fill();ctx.stroke();clearPremiumShadow();}
+function drawKitchenLPremium(it,w,h){premiumShadow();ctx.fillStyle=linearFill(-w/2,-h/2,w/2,h/2,shade(it.color,.22),shade(it.color,-.14));ctx.strokeStyle=shade(it.color,-.35);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-w/2,-h/2);ctx.lineTo(w/2,-h/2);ctx.lineTo(w/2,-h*.24);ctx.lineTo(-w*.24,-h*.24);ctx.lineTo(-w*.24,h/2);ctx.lineTo(-w/2,h/2);ctx.closePath();ctx.fill();ctx.stroke();clearPremiumShadow();}
+function drawKitchenIslandSink(it,w,h){drawPremiumPanel(it,w,h,6);ctx.fillStyle='#e5e9ea';roundRectPath(-w*.22,-h*.22,w*.44,h*.44,7);ctx.fill();ctx.strokeStyle='#7b8b94';ctx.stroke();ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.035,0,Math.PI*2);ctx.fillStyle='#596971';ctx.fill();}
+function drawRangeHoodPremium(it,w,h){drawPremiumPanel(it,w,h,5);ctx.fillStyle=shade(it.color,-.35);roundRectPath(-w*.22,-h*.34,w*.44,h*.68,5);ctx.fill();ctx.strokeStyle='rgba(255,255,255,.45)';for(let y=-h*.2;y<=h*.2;y+=h*.13){ctx.beginPath();ctx.moveTo(-w*.16,y);ctx.lineTo(w*.16,y);ctx.stroke();}}
+function drawDishwasherPremium(it,w,h){drawPremiumPanel(it,w,h,5);ctx.fillStyle=shade(it.color,-.36);ctx.fillRect(-w*.38,-h*.34,w*.76,h*.12);ctx.fillStyle='#1f252a';ctx.beginPath();ctx.arc(w*.24,-h*.28,Math.min(w,h)*.045,0,Math.PI*2);ctx.fill();}
+function drawOvenPremium(it,w,h){drawPremiumPanel(it,w,h,5);ctx.fillStyle='#20262b';roundRectPath(-w*.32,-h*.24,w*.64,h*.48,5);ctx.fill();ctx.strokeStyle='#7d878f';for(const x of [-w*.15,w*.15])for(const y of [-h*.14,h*.14]){ctx.beginPath();ctx.arc(x,y,Math.min(w,h)*.07,0,Math.PI*2);ctx.stroke();}}
+function drawBathtubPremium(it,w,h){premiumShadow();roundRectPath(-w/2,-h/2,w,h,Math.min(h*.48,28));ctx.fillStyle='#eef2f3';ctx.fill();ctx.strokeStyle='#7f8d95';ctx.lineWidth=1.3;ctx.stroke();clearPremiumShadow();roundRectPath(-w*.42,-h*.34,w*.84,h*.68,Math.min(h*.34,22));ctx.fillStyle='rgba(191,220,229,.72)';ctx.fill();ctx.beginPath();ctx.arc(w*.30,0,Math.min(w,h)*.035,0,Math.PI*2);ctx.fillStyle='#65737b';ctx.fill();}
+function drawShowerPremium(it,w,h){ctx.save();ctx.globalAlpha=.8;drawPremiumPanel({...it,color:'#d9e7ea'},w,h,4);ctx.globalAlpha=1;ctx.strokeStyle='#829ba4';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(-w*.42,-h*.42);ctx.lineTo(w*.42,h*.42);ctx.moveTo(w*.42,-h*.42);ctx.lineTo(-w*.42,h*.42);ctx.stroke();ctx.beginPath();ctx.arc(w*.32,h*.30,Math.min(w,h)*.05,0,Math.PI*2);ctx.fillStyle='#687780';ctx.fill();ctx.restore();}
+function drawToiletPremium(it,w,h){premiumShadow();roundRectPath(-w*.30,-h*.48,w*.60,h*.28,6);ctx.fillStyle='#edf1f2';ctx.fill();ctx.strokeStyle='#87959d';ctx.stroke();ctx.beginPath();ctx.ellipse(0,h*.12,w*.38,h*.34,0,0,Math.PI*2);ctx.fill();ctx.stroke();clearPremiumShadow();ctx.beginPath();ctx.ellipse(0,h*.12,w*.20,h*.20,0,0,Math.PI*2);ctx.fillStyle='rgba(184,218,227,.7)';ctx.fill();}
+function drawVanityPremium(it,w,h){drawPremiumPanel(it,w,h,5);ctx.beginPath();ctx.ellipse(0,0,w*.28,h*.30,0,0,Math.PI*2);ctx.fillStyle='#edf1f2';ctx.fill();ctx.strokeStyle='#7d8b93';ctx.stroke();ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.04,0,Math.PI*2);ctx.fillStyle='#64727a';ctx.fill();}
+function drawGlassPartitionPremium(it,w,h){const n=Math.max(2,it.panels||2),th=Math.max(h,5);ctx.save();ctx.fillStyle='rgba(128,204,224,.23)';ctx.strokeStyle='rgba(71,142,160,.9)';ctx.lineWidth=1.3;ctx.fillRect(-w/2,-th/2,w,th);ctx.strokeRect(-w/2,-th/2,w,th);for(let i=1;i<n;i++){const x=-w/2+w*i/n;ctx.beginPath();ctx.moveTo(x,-th/2);ctx.lineTo(x,th/2);ctx.stroke();}ctx.fillStyle='#4e6670';for(let i=0;i<n;i++)ctx.fillRect(-w/2+w*(i+.5)/n-1,-1,2,2);ctx.restore();}
+function drawWasherDryerPremium(it,w,h,isDryer=false){drawPremiumPanel(it,w,h,5);ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.30,0,Math.PI*2);ctx.fillStyle=isDryer?'#4b555e':'#35434e';ctx.fill();ctx.strokeStyle='#d8e0e4';ctx.lineWidth=3;ctx.stroke();ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.17,0,Math.PI*2);ctx.fillStyle='rgba(134,171,190,.55)';ctx.fill();ctx.fillStyle='#23292e';ctx.fillRect(-w*.32,-h*.40,w*.64,h*.10);}
+function drawLaundrySinkPremium(it,w,h){drawPremiumPanel(it,w,h,5);roundRectPath(-w*.30,-h*.30,w*.60,h*.60,7);ctx.fillStyle='#e8eff1';ctx.fill();ctx.strokeStyle='#7c8c94';ctx.stroke();ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.04,0,Math.PI*2);ctx.fillStyle='#60717a';ctx.fill();}
+function drawSplitIndoorPremium(it,w,h){premiumShadow();roundRectPath(-w/2,-h/2,w,h,Math.min(12,h*.35));ctx.fillStyle=linearFill(0,-h/2,0,h/2,shade(it.color,.18),shade(it.color,-.08));ctx.fill();ctx.strokeStyle='#8f9aa1';ctx.stroke();clearPremiumShadow();ctx.strokeStyle='#717d85';ctx.globalAlpha=.55;for(let y=h*.12;y<h*.36;y+=h*.08){ctx.beginPath();ctx.moveTo(-w*.36,y);ctx.lineTo(w*.36,y);ctx.stroke();}ctx.globalAlpha=1;ctx.fillStyle='#4aa0d0';ctx.beginPath();ctx.arc(w*.34,-h*.18,Math.min(w,h)*.045,0,Math.PI*2);ctx.fill();}
+function drawSplitOutdoorPremium(it,w,h){drawPremiumPanel(it,w,h,5);const r=Math.min(w,h)*.34;ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fillStyle='#59636b';ctx.fill();ctx.strokeStyle='#c4ccd1';ctx.lineWidth=2;ctx.stroke();ctx.beginPath();ctx.arc(0,0,r*.7,0,Math.PI*2);ctx.stroke();for(let a=0;a<Math.PI;a+=Math.PI/4){ctx.beginPath();ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r);ctx.lineTo(-Math.cos(a)*r,-Math.sin(a)*r);ctx.stroke();}}
+function drawWaterHeaterPremium(it,w,h){premiumShadow();roundRectPath(-w*.38,-h/2,w*.76,h,Math.min(w*.35,20));ctx.fillStyle=linearFill(-w/2,0,w/2,0,shade(it.color,.18),shade(it.color,-.10));ctx.fill();ctx.strokeStyle='#8d979e';ctx.stroke();clearPremiumShadow();ctx.beginPath();ctx.arc(0,h*.31,Math.min(w,h)*.045,0,Math.PI*2);ctx.fillStyle='#d4554b';ctx.fill();ctx.beginPath();ctx.arc(w*.16,h*.31,Math.min(w,h)*.045,0,Math.PI*2);ctx.fillStyle='#4f91c7';ctx.fill();}
+function drawWaterTankPremium(it,w,h){const r=Math.min(w,h)*.47;premiumShadow();ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fillStyle=linearFill(-r,-r,r,r,shade(it.color,.18),shade(it.color,-.22));ctx.fill();ctx.strokeStyle='#20262b';ctx.stroke();clearPremiumShadow();for(const rr of [.72,.43]){ctx.beginPath();ctx.arc(0,0,r*rr,0,Math.PI*2);ctx.strokeStyle='rgba(255,255,255,.22)';ctx.lineWidth=2;ctx.stroke();}}
+function drawCarPremium(it,w,h,suv=false){const bodyW=w*.72,bodyH=h*.92;premiumShadow();roundRectPath(-bodyW/2,-bodyH/2,bodyW,bodyH,Math.min(bodyW*.23,24));ctx.fillStyle=linearFill(-bodyW/2,0,bodyW/2,0,shade(it.color,.18),shade(it.color,-.20));ctx.fill();ctx.strokeStyle=shade(it.color,-.42);ctx.lineWidth=1.6;ctx.stroke();clearPremiumShadow();ctx.fillStyle='rgba(91,121,139,.78)';roundRectPath(-bodyW*.34,-bodyH*.30,bodyW*.68,bodyH*.20,Math.min(10,bodyW*.09));ctx.fill();roundRectPath(-bodyW*.34,bodyH*.10,bodyW*.68,bodyH*.20,Math.min(10,bodyW*.09));ctx.fill();ctx.fillStyle='#1f2429';const wh=bodyH*.20,ww=Math.max(3,w*.06);for(const sx of [-1,1])for(const sy of [-.28,.28]){roundRectPath(sx*(bodyW/2+ww*.15)-ww/2,sy*bodyH-wh/2,ww,wh,3);ctx.fill();}if(suv){ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=2;ctx.strokeRect(-bodyW*.22,-bodyH*.07,bodyW*.44,bodyH*.14);}ctx.fillStyle='rgba(255,255,255,.2)';ctx.fillRect(-bodyW*.28,-bodyH*.38,bodyW*.56,2);}
+function drawCeilingFanPremium(it,w,h){const r=Math.min(w,h);ctx.save();ctx.fillStyle=it.color;for(let a=0;a<Math.PI*2;a+=Math.PI/2){ctx.save();ctx.rotate(a);roundRectPath(-r*.08,-r*.48,r*.16,r*.40,r*.08);ctx.fill();ctx.restore();}ctx.beginPath();ctx.arc(0,0,r*.10,0,Math.PI*2);ctx.fillStyle=shade(it.color,-.18);ctx.fill();ctx.restore();}
+function drawCeilingLightPremium(it,w,h,spot=false){const r=Math.min(w,h)*.48;ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fillStyle=it.color;ctx.fill();ctx.strokeStyle=shade(it.color,-.25);ctx.stroke();ctx.beginPath();ctx.arc(0,0,r*(spot?0.45:0.65),0,Math.PI*2);ctx.fillStyle='rgba(255,249,222,.82)';ctx.fill();}
+
 
 function getTintedSprite(src,color){
   const key=src+'|'+color;
@@ -2043,18 +2096,67 @@ function drawItem(it){
   if(it.flipX||it.flipY)ctx.scale(it.flipX?-1:1,it.flipY?-1:1);
   if(it.archType==='door')drawDoor(it,w,h); else if(it.archType==='doubleDoor')drawDoubleDoor(it,w,h); else if(it.archType==='window')drawWindow(it,w,h); else if(it.archType==='opening')drawOpening(it,w,h); else if(it.src){ drawSprite(it,w,h); } else switch(it.type){
     case 'sofa': drawSofa(it,w,h); break;
+    case 'sectional': drawSectionalPremium(it,w,h); break;
     case 'armchair': drawArmchair(it,w,h); break;
+    case 'chaise': drawChaisePremium(it,w,h); break;
+    case 'ottoman': drawOttomanPremium(it,w,h,false); break;
+    case 'ottomanRound': drawOttomanPremium(it,w,h,true); break;
     case 'coffee': drawCoffee(it,w,h); break;
+    case 'coffeeRound': drawRoundTablePremium(it,w,h); break;
+    case 'sideTable': drawRoundTablePremium(it,w,h); break;
+    case 'sideTableSquare': drawSideTableSquarePremium(it,w,h); break;
+    case 'nestingTables': drawNestingTablesPremium(it,w,h); break;
+    case 'tvWall': drawTvWallPremium(it,w,h); break;
     case 'dining': drawDining(it,w,h); break;
+    case 'diningRound': drawDiningRoundPremium(it,w,h); break;
+    case 'diningOval': drawDiningOvalPremium(it,w,h,false); break;
+    case 'diningGlass': drawDiningOvalPremium(it,w,h,true); break;
     case 'diningChair': drawDiningChair(it,w,h); break;
+    case 'barStool': drawBarStoolPremium(it,w,h); break;
     case 'bed': drawBed(it,w,h); break;
     case 'wardrobe': drawWardrobe(it,w,h); break;
     case 'nightstand': drawNightstand(it,w,h); break;
+    case 'dresserPremium': drawDresserPremium(it,w,h); break;
     case 'desk': drawDesk(it,w,h); break;
     case 'officeChair': drawOfficeChair(it,w,h); break;
+    case 'meetingTable': drawMeetingTablePremium(it,w,h); break;
+    case 'bookcasePremium': drawBookcasePremium(it,w,h); break;
+    case 'rugRect': drawRugPremium(it,w,h,false); break;
+    case 'rugRound': drawRugPremium(it,w,h,true); break;
+    case 'plant': drawPlantPremium(it,w,h); break;
+    case 'wallMirror': drawWallMirrorPremium(it,w,h); break;
+    case 'basket': drawBasketPremium(it,w,h); break;
+    case 'cushion': drawCushionPremium(it,w,h); break;
+    case 'fridgePremium': drawFridgePremium(it,w,h); break;
+    case 'kitchenBasePremium': drawKitchenBasePremium(it,w,h); break;
+    case 'kitchenWallPremium': drawKitchenWallPremium(it,w,h); break;
+    case 'kitchenCornerPremium': drawKitchenCornerPremium(it,w,h); break;
+    case 'kitchenLPremium': drawKitchenLPremium(it,w,h); break;
+    case 'island': drawIsland(it,w,h); break;
+    case 'kitchenIslandSink': drawKitchenIslandSink(it,w,h); break;
+    case 'rangeHood': drawRangeHoodPremium(it,w,h); break;
+    case 'dishwasherPremium': drawDishwasherPremium(it,w,h); break;
+    case 'ovenPremium': drawOvenPremium(it,w,h); break;
+    case 'bathtubPremium': drawBathtubPremium(it,w,h); break;
+    case 'showerPremium': drawShowerPremium(it,w,h); break;
+    case 'toiletPremium': drawToiletPremium(it,w,h); break;
+    case 'vanityPremium': drawVanityPremium(it,w,h); break;
+    case 'glassPartition': drawGlassPartitionPremium(it,w,h); break;
+    case 'washerPremium': drawWasherDryerPremium(it,w,h,false); break;
+    case 'dryerPremium': drawWasherDryerPremium(it,w,h,true); break;
+    case 'laundrySinkPremium': drawLaundrySinkPremium(it,w,h); break;
+    case 'utilityCabinetPremium': drawDresserPremium(it,w,h); break;
+    case 'splitIndoor': drawSplitIndoorPremium(it,w,h); break;
+    case 'splitOutdoor': drawSplitOutdoorPremium(it,w,h); break;
+    case 'waterHeater': drawWaterHeaterPremium(it,w,h); break;
+    case 'waterTank': drawWaterTankPremium(it,w,h); break;
+    case 'carSedan': drawCarPremium(it,w,h,false); break;
+    case 'carSUV': drawCarPremium(it,w,h,true); break;
+    case 'ceilingFanPremium': drawCeilingFanPremium(it,w,h); break;
+    case 'ceilingLightPremium': drawCeilingLightPremium(it,w,h,false); break;
+    case 'spotPremium': drawCeilingLightPremium(it,w,h,true); break;
     case 'tvunit': drawTvUnit(it,w,h); break;
     case 'shelf': drawShelf(it,w,h); break;
-    case 'island': drawIsland(it,w,h); break;
     case 'fridge': drawFridge(it,w,h); break;
     default: drawGeneric(it,w,h); break;
   }
