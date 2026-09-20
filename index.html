@@ -13,7 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <title>تأثيثي — iPad و iPhone</title>
-<meta name="taatheethi-version" content="46.1-toponly-professional">
+<meta name="taatheethi-version" content="46.2-visible-bounds-aspect-fix">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -1251,12 +1251,55 @@ function saveLibraryState(){
 let furniture=loadSavedLibrary();
 
 const spriteImages={};
+const spriteVisibleBounds={};
 const tintLayers={};
 const tintedCache=new Map();
+
+// V46.2: detect the real visible object inside each transparent asset.
+// This removes the large square canvas margins before mapping it to the
+// furniture's real-world width/depth, preventing the "stretched" look.
+function computeSpriteVisibleBounds(im,src){
+  if(!im||!im.naturalWidth||!im.naturalHeight||spriteVisibleBounds[src])return;
+  try{
+    const maxScan=320;
+    const scale=Math.min(1,maxScan/Math.max(im.naturalWidth,im.naturalHeight));
+    const sw=Math.max(1,Math.round(im.naturalWidth*scale));
+    const sh=Math.max(1,Math.round(im.naturalHeight*scale));
+    const c=document.createElement('canvas');c.width=sw;c.height=sh;
+    const x=c.getContext('2d',{willReadFrequently:true});
+    x.clearRect(0,0,sw,sh);x.drawImage(im,0,0,sw,sh);
+    const d=x.getImageData(0,0,sw,sh).data;
+    let minX=sw,minY=sh,maxX=-1,maxY=-1;
+    for(let yy=0;yy<sh;yy++){
+      for(let xx=0;xx<sw;xx++){
+        const a=d[(yy*sw+xx)*4+3];
+        if(a>10){
+          if(xx<minX)minX=xx;if(xx>maxX)maxX=xx;
+          if(yy<minY)minY=yy;if(yy>maxY)maxY=yy;
+        }
+      }
+    }
+    if(maxX>=minX&&maxY>=minY){
+      // Small breathing room so shadows / rounded edges are never clipped.
+      const pad=Math.max(2,Math.round(Math.max(maxX-minX,maxY-minY)*.025));
+      minX=Math.max(0,minX-pad);minY=Math.max(0,minY-pad);
+      maxX=Math.min(sw-1,maxX+pad);maxY=Math.min(sh-1,maxY+pad);
+      spriteVisibleBounds[src]={
+        x:minX/scale,y:minY/scale,
+        w:(maxX-minX+1)/scale,h:(maxY-minY+1)/scale
+      };
+    }else spriteVisibleBounds[src]={x:0,y:0,w:im.naturalWidth,h:im.naturalHeight};
+  }catch(e){
+    spriteVisibleBounds[src]={x:0,y:0,w:im.naturalWidth,h:im.naturalHeight};
+  }
+}
 function ensureSpriteForDef(def){
   if(!def||!def.src)return;
   if(!spriteImages[def.src]){
-    const im=new Image();im.src=resolveAssetSrc(def.src);im.onload=()=>draw();spriteImages[def.src]=im;
+    const im=new Image();
+    im.onload=()=>{computeSpriteVisibleBounds(im,def.src);draw();};
+    im.src=resolveAssetSrc(def.src);
+    spriteImages[def.src]=im;
   }
   if(def.src.startsWith('assets/furniture/')&&!tintLayers[def.src]){
     const stem=def.src.split('/').pop().replace(/\.png$/,'');
@@ -2282,10 +2325,15 @@ function getTintedSprite(src,color){
 function drawSprite(it,w,h){
   const im=it.src?spriteImages[it.src]:null;
   if(!im || !im.complete || !im.naturalWidth){drawGeneric(it,w,h);return;}
+  if(!spriteVisibleBounds[it.src])computeSpriteVisibleBounds(im,it.src);
+  const b=spriteVisibleBounds[it.src]||{x:0,y:0,w:im.naturalWidth,h:im.naturalHeight};
   const shadowOn=document.getElementById('shadowToggle').checked;
-  if(shadowOn){ctx.shadowColor='rgba(0,0,0,.22)';ctx.shadowBlur=10;ctx.shadowOffsetY=3;}
+  if(shadowOn){ctx.shadowColor='rgba(0,0,0,.18)';ctx.shadowBlur=Math.max(5,Math.min(10,Math.min(w,h)*.08));ctx.shadowOffsetY=Math.max(1,Math.min(3,h*.025));}
   const shown=it.tintEnabled?getTintedSprite(it.src,it.color||'#bfa781'):im;
-  ctx.drawImage(shown||im,-w/2,-h/2,w,h);
+  // Map ONLY the visible furniture body to its true physical footprint.
+  // 96% leaves a tiny natural margin and prevents contact with selection edges.
+  const dw=w*.96,dh=h*.96;
+  ctx.drawImage(shown||im,b.x,b.y,b.w,b.h,-dw/2,-dh/2,dw,dh);
   ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
 }
 function drawSelectionOutline(w,h){
