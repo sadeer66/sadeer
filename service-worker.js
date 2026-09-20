@@ -1,4 +1,4 @@
-const CACHE_NAME = "furniture-planner-v36-photoshop-tools";
+const CACHE_NAME = "furniture-planner-v37-premium-library";
 const CRITICAL = ['./', './index.html'];
 
 self.addEventListener('install', event => {
