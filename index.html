@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <title>تأثيثي — iPad و iPhone</title>
-<meta name="taatheethi-version" content="35-rotate-90">
+<meta name="taatheethi-version" content="36-photoshop-icons">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -256,58 +256,176 @@
     .sidebarScrim{inset:calc(env(safe-area-inset-top) + 104px) 0 env(safe-area-inset-bottom) 0}
   }
 
-/* ===== V41 FINAL TOOL LAYOUT ===== */
-:root{--v41-tool:48px;--v41-icon:27px;--v41-gap:6px}
-header{min-height:116px!important;padding:7px 10px!important;display:flex!important;align-items:flex-start!important;gap:10px!important;flex-wrap:nowrap!important}
-.headerBrand{flex:0 0 135px!important;min-width:135px!important;padding-top:5px!important}
-.headerBrand h1{font-size:29px!important;margin:0 0 5px!important;line-height:1!important}
-.status{font-size:10.5px!important;max-width:130px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
-.toolbarStack{flex:1 1 auto!important;min-width:0!important;max-width:none!important;display:flex!important;flex-direction:column!important;gap:6px!important}
-.toolbarRow.mainToolbar{height:58px!important;min-height:58px!important;width:100%!important;display:flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:var(--v41-gap)!important;padding:5px 7px!important;background:#111820!important;border:1px solid #344151!important;border-radius:11px!important;overflow:hidden!important}
-.workToolbar,.mapTopbar{display:none!important}
-.v41Icon,.v41Toggle,.v41Mini{width:var(--v41-tool)!important;height:var(--v41-tool)!important;min-width:var(--v41-tool)!important;min-height:var(--v41-tool)!important;flex:0 0 var(--v41-tool)!important;padding:0!important;border-radius:9px!important;background:linear-gradient(180deg,#252c34,#171c22)!important;border:1px solid #485462!important;color:#f4f7fb!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;position:relative!important;cursor:pointer!important;box-shadow:inset 0 1px rgba(255,255,255,.03)!important}
-.v41Icon:hover,.v41Toggle:hover,.v41Mini:hover{background:linear-gradient(180deg,#33404c,#202832)!important;border-color:#78afe4!important}
-.v41Icon svg,.v41Toggle svg,.v41Mini svg{width:var(--v41-icon)!important;height:var(--v41-icon)!important;stroke:currentColor!important;fill:none!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;pointer-events:none!important}
-.v41Toggle input{position:absolute!important;opacity:0!important;width:1px!important;height:1px!important;pointer-events:none!important}
-.v41Toggle:has(input:checked){background:linear-gradient(180deg,#314d69,#22374c)!important;border-color:#79b4ee!important;color:#fff!important}
-.v41Mini:disabled,.v41Icon:disabled{opacity:.35!important;cursor:not-allowed!important}
-.v41Pdf{color:#e4fff8!important}
-.v41SliderRow{height:45px!important;min-height:45px!important;width:100%!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;padding:5px 7px!important;background:#0c1420!important;border:1px solid #29384b!important;border-radius:10px!important;overflow:hidden!important}
-.v41SliderBox{height:34px!important;min-height:34px!important;display:flex!important;align-items:center!important;gap:6px!important;padding:3px 8px!important;background:#101d2d!important;border:1px solid #354a63!important;border-radius:9px!important;white-space:nowrap!important;flex:0 1 33%!important;min-width:0!important}
-.v41SliderBox .v41SliderTitle{font-size:10px!important;color:#bdcce0!important;white-space:nowrap!important}
-.v41SliderBox input[type=range]{min-width:70px!important;width:100%!important;max-width:170px!important;accent-color:#198cf4!important}
-.v41SliderBox .v41Value{font-size:10px!important;color:#fff!important;min-width:36px!important;text-align:center!important}
-.v41SliderBox button{width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;padding:0!important;border-radius:7px!important;background:#13243a!important;border:1px solid #405a78!important;color:#fff!important;font-size:19px!important;line-height:1!important}
 
-.mapPanel{position:relative!important;padding-left:67px!important}
-#v41FurnitureToolbar{position:absolute!important;left:7px!important;top:7px!important;z-index:55!important;width:52px!important;display:flex!important;flex-direction:column!important;align-items:center!important;gap:5px!important;padding:6px 5px!important;background:linear-gradient(180deg,#151c24,#0e141b)!important;border:1px solid #354454!important;border-radius:12px!important;box-shadow:0 10px 28px rgba(0,0,0,.35)!important;max-height:calc(100% - 14px)!important;overflow-y:auto!important;overflow-x:hidden!important;scrollbar-width:none!important}
-#v41FurnitureToolbar::-webkit-scrollbar{display:none!important}
-.v41LeftBtn{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;padding:0!important;border-radius:9px!important;background:linear-gradient(180deg,#252d36,#181e25)!important;border:1px solid #465463!important;color:#f6f8fb!important;display:flex!important;align-items:center!important;justify-content:center!important;position:relative!important}
-.v41LeftBtn:hover:not(:disabled){background:linear-gradient(180deg,#334456,#202d3a)!important;border-color:#78afe4!important}
-.v41LeftBtn svg{width:25px!important;height:25px!important;stroke:currentColor!important;fill:none!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;pointer-events:none!important}
-.v41LeftBtn:disabled{opacity:.28!important;cursor:not-allowed!important}
-.v41LeftBtn.active{background:linear-gradient(180deg,#31516f,#21384e)!important;border-color:#7cbbf6!important}
-.v41LeftBtn.danger{background:linear-gradient(180deg,#57282d,#38191d)!important;border-color:#813b44!important}
-.v41LeftBtn.colorBtn:after{content:'';position:absolute;left:6px;right:6px;bottom:4px;height:5px;border-radius:99px;background:var(--v41color,#bfa781)}
-.v41ToolDivider{width:28px;height:1px;background:#354454;margin:1px 0}
+  /* V36 — Photoshop-inspired icon toolbar */
+  .psIconTool,.psIconToggle{
+    width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;
+    padding:0!important;border-radius:9px!important;background:linear-gradient(180deg,#242a31,#171b20)!important;
+    border:1px solid #414851!important;color:#eef4fa!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 1px 2px rgba(0,0,0,.32);
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;position:relative;flex:0 0 42px!important;
+  }
+  .psIconTool:hover,.psIconToggle:hover{background:linear-gradient(180deg,#303840,#20262c)!important;border-color:#6a7785!important}
+  .psIconTool svg,.psIconToggle svg{width:24px;height:24px;display:block;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+  .psIconTool.primary{background:linear-gradient(180deg,#2e465f,#233548)!important;border-color:#72a7dc!important;box-shadow:inset 0 0 0 1px rgba(126,180,235,.16)}
+  .psIconTool:disabled{opacity:.34!important;filter:saturate(.45);cursor:not-allowed}
+  .psIconTool.psPdf{color:#d6fbf3!important}
+  .toolbarRow{gap:5px!important;padding:5px 7px!important;background:#11161c!important;border-color:#303741!important;border-radius:10px!important}
+  .workToolbar{background:#151b22!important}
+  header{min-height:100px}
+  .mainToolbar,.workToolbar{overflow-x:auto;scrollbar-width:thin}
 
-#selectedPanel .bottomBtn,#selectedPanel #rotate90,#selectedPanel #rotate45,#selectedPanel #rotate180,#selectedPanel #rotate360,#selectedPanel #flipDoorBtn,#selectedPanel #lockItemBtn,#selectedPanel #dupBtn,#selectedPanel #deselectBtn,#selectedPanel #deleteBtn{display:none!important}
+  .mapTopbar .psIconToggle{
+    width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;flex-basis:38px!important;
+    border-radius:8px!important;background:linear-gradient(180deg,#222831,#171c22)!important;border-color:#3d4652!important;
+  }
+  .mapTopbar .psIconToggle svg{width:21px;height:21px}
+  .psIconToggle input{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important;margin:0!important}
+  .psIconToggle:has(input:checked){background:linear-gradient(180deg,#314b67,#22364b)!important;border-color:#79afe6!important;color:#fff!important;box-shadow:inset 0 0 0 1px rgba(121,175,230,.22),0 0 0 1px rgba(0,0,0,.25)}
+  .psIconToggle.lockState:has(input:checked){background:linear-gradient(180deg,#604a22,#3f311a)!important;border-color:#d4a84c!important;color:#fff5d1!important}
+  .psIconToggle.layerCtl{border-style:dashed!important}
+  .mapTopbar .psMiniIcon{width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;padding:0!important;font-size:0!important;border-radius:8px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;background:linear-gradient(180deg,#222831,#171c22)!important;border:1px solid #3d4652!important}
+  .mapTopbar .psMiniIcon svg{width:21px;height:21px;stroke:#eef4fa;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .mapTopbar .psMiniIcon:hover{background:linear-gradient(180deg,#303840,#20262c)!important;border-color:#6a7785!important}
+  .mapTopbar .psMiniIcon:disabled{opacity:.33!important}
 
-@media(max-width:1180px){
-  :root{--v41-tool:42px;--v41-icon:23px;--v41-gap:4px}
-  header{min-height:106px!important}.headerBrand{flex-basis:105px!important;min-width:105px!important}.headerBrand h1{font-size:25px!important}.status{max-width:102px!important;font-size:9px!important}
-  .toolbarRow.mainToolbar{height:51px!important;min-height:51px!important;padding:4px 5px!important}
-  .v41SliderRow{height:42px!important;min-height:42px!important}.v41SliderBox{height:31px!important;padding:2px 6px!important}.v41SliderBox .v41SliderTitle{font-size:9px!important}.v41SliderBox input[type=range]{min-width:55px!important;max-width:120px!important}
-  .mapPanel{padding-left:58px!important}#v41FurnitureToolbar{left:5px!important;top:6px!important;width:46px!important;padding:5px 4px!important;gap:4px!important}.v41LeftBtn{width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important}.v41LeftBtn svg{width:22px!important;height:22px!important}
-}
-@media(max-width:760px){
-  :root{--v41-tool:33px;--v41-icon:19px;--v41-gap:3px}
-  header{min-height:92px!important;padding:5px 5px!important;gap:5px!important}.headerBrand{flex-basis:72px!important;min-width:72px!important}.headerBrand h1{font-size:21px!important}.status{display:none!important}
-  .toolbarRow.mainToolbar{height:41px!important;min-height:41px!important;padding:3px 4px!important;border-radius:8px!important}.v41Icon,.v41Toggle,.v41Mini{border-radius:7px!important}
-  .v41SliderRow{height:38px!important;min-height:38px!important;padding:3px 4px!important;gap:4px!important}.v41SliderBox{height:29px!important;min-height:29px!important;padding:2px 4px!important;gap:3px!important}.v41SliderBox .v41SliderTitle{font-size:8px!important}.v41SliderBox .v41Value{font-size:8px!important;min-width:28px!important}.v41SliderBox input[type=range]{min-width:35px!important;max-width:80px!important}.v41SliderBox button{width:25px!important;height:25px!important;min-width:25px!important;min-height:25px!important;font-size:16px!important}
-  .mapPanel{padding-left:48px!important}#v41FurnitureToolbar{left:3px!important;top:4px!important;width:39px!important;padding:4px 3px!important;gap:3px!important;border-radius:9px!important}.v41LeftBtn{width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important;border-radius:7px!important}.v41LeftBtn svg{width:19px!important;height:19px!important}.v41ToolDivider{width:22px!important}
-  .phoneOptional{display:none!important}
-}
+  .bottomInspector .psBottomIcon{
+    width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;padding:0!important;font-size:0!important;
+    border-radius:8px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;background:linear-gradient(180deg,#232a32,#181d23)!important;border:1px solid #44505d!important;
+  }
+  .bottomInspector .psBottomIcon svg{width:22px;height:22px;stroke:#f3f6fa;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+  .bottomInspector .psBottomIcon:hover{border-color:#78aee4!important;background:linear-gradient(180deg,#2d3e51,#202b38)!important}
+  .bottomInspector .psBottomIcon.danger{background:linear-gradient(180deg,#4a2226,#32171a)!important;border-color:#74343b!important}
+  #lockItemBtn,#pinMeasureBtn,#deleteMeasureBtn,#deleteMapLabelBtn{
+    width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;padding:0!important;font-size:0!important;
+    border-radius:8px!important;background-repeat:no-repeat!important;background-position:center!important;background-size:22px 22px!important;
+  }
+  #lockItemBtn{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f3f6fa' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='10' width='12' height='10' rx='2'/%3E%3Cpath d='M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10'/%3E%3C/svg%3E")!important}
+  #pinMeasureBtn{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f3f6fa' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 3h6l-1 6 3 3H7l3-3-1-6Z'/%3E%3Cpath d='M12 12v9'/%3E%3C/svg%3E")!important}
+  #deleteMeasureBtn,#deleteMapLabelBtn{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16'/%3E%3Cpath d='M9 7V4h6v3'/%3E%3Cpath d='M7 7l1 13h8l1-13'/%3E%3Cpath d='M10 11v5M14 11v5'/%3E%3C/svg%3E")!important}
+  #deleteMeasureBtn,#deleteMapLabelBtn{background-color:#4b2025!important;border-color:#7a313a!important}
+  .psIconTool:focus-visible,.psIconToggle:focus-visible,.psMiniIcon:focus-visible,.psBottomIcon:focus-visible{outline:2px solid #8fc7ff!important;outline-offset:2px}
+
+  @media(max-width:900px){
+    header{min-height:92px!important}
+    .psIconTool{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;flex-basis:40px!important}
+    .psIconTool svg{width:22px;height:22px}
+    .toolbarStack{gap:4px!important}
+    aside{top:calc(env(safe-area-inset-top) + 96px)!important}
+    .sidebarScrim{inset:calc(env(safe-area-inset-top) + 96px) 0 env(safe-area-inset-bottom) 0!important}
+  }
+  @media(max-width:600px){
+    aside{top:calc(env(safe-area-inset-top) + 96px)!important}
+    .sidebarScrim{inset:calc(env(safe-area-inset-top) + 96px) 0 env(safe-area-inset-bottom) 0!important}
+  }
+
+
+  .floatingItemToolbar{
+    position:absolute;z-index:25;display:none;flex-direction:column;gap:6px;padding:7px;
+    background:linear-gradient(180deg,rgba(18,24,31,.98),rgba(12,17,23,.96));border:1px solid #334155;border-radius:12px;
+    box-shadow:0 12px 30px rgba(0,0,0,.36);backdrop-filter:blur(4px);width:46px;align-items:center;
+  }
+  .floatingItemToolbar .floatToolBtn{
+    width:32px;height:32px;min-width:32px;min-height:32px;padding:0;border-radius:8px;border:1px solid #465260;
+    background:linear-gradient(180deg,#242c36,#171d25);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#f5f7fb;
+  }
+  .floatingItemToolbar .floatToolBtn:hover{background:linear-gradient(180deg,#304152,#1f2c39);border-color:#7cb0e3}
+  .floatingItemToolbar .floatToolBtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+  .floatingItemToolbar .floatToolBtn.danger{background:linear-gradient(180deg,#51252a,#34161a);border-color:#7c343b}
+  .floatingItemToolbar .floatToolBtn.colorChip{position:relative;overflow:hidden}
+  .floatingItemToolbar .floatToolBtn.colorChip::after{content:'';position:absolute;inset:auto 5px 4px 5px;height:4px;border-radius:999px;background:var(--chipColor,#bfa781)}
+  .floatingItemToolbar .floatDivider{width:22px;height:1px;background:#334155;margin:1px 0}
+  .floatingItemToolbar.itemHiddenState{border-color:#7c5e2d}
+  .floatingItemToolbar.itemHiddenState .floatHideBtn{background:linear-gradient(180deg,#5f4a24,#392b16);border-color:#d1aa52;color:#fff6d5}
+
+  /* V38 layout cleanup */
+  header{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:64px!important;padding:8px 10px!important}
+  .headerBrand{min-width:auto!important;flex:0 0 auto}
+  .headerBrand h1{font-size:28px!important;margin:0 0 4px 0}
+  .status{font-size:12px!important;max-width:230px}
+  .toolbarStack{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-end!important;max-width:none!important;flex:1 1 auto;gap:8px!important}
+  .mainToolbar{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;align-items:center!important;justify-content:flex-end!important;gap:6px!important}
+  .workToolbar{display:none!important}
+  .mainToolbar::-webkit-scrollbar{height:8px}
+  .mainToolbar::-webkit-scrollbar-thumb{background:#334155;border-radius:99px}
+  .toolbarRow.mainToolbar{padding:6px 8px!important}
+  .mainToolbar .psIconTool{flex:0 0 42px!important}
+  .mapTopbar .group{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+  #selectedPanel .bottomBtn,#selectedPanel .psBottomIcon,#selectedPanel #lockItemBtn,#selectedPanel #flipDoorBtn,#selectedPanel #dupBtn,#selectedPanel #deleteBtn,#selectedPanel #deselectBtn,#selectedPanel #rotate90,#selectedPanel #rotate45,#selectedPanel #rotate180,#selectedPanel #rotate360{display:none!important}
+  #selectedPanel{gap:10px!important}
+  #selectedPanel .inlineField{margin-inline-start:0!important}
+  @media(max-width:1100px){
+    header{flex-wrap:wrap;align-items:flex-start!important}
+    .toolbarStack{width:100%;justify-content:flex-start!important}
+  }
+
+  /* V39 unified top bar + fixed left toolbar */
+  main{position:relative}
+  .mapPanel{position:relative}
+  header{display:flex;align-items:center;gap:10px;min-height:78px!important;padding:8px 10px!important;flex-wrap:nowrap!important}
+  .headerBrand{flex:0 0 auto;min-width:auto!important;display:flex;flex-direction:column;align-items:flex-end}
+  .headerBrand h1{font-size:30px!important;line-height:1;margin:0 0 4px 0}
+  .status{font-size:11px!important;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .toolbarStack{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-end!important;gap:8px!important;max-width:none!important;flex:1 1 auto}
+  .toolbarRow.mainToolbar{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:flex-start!important;overflow-x:auto!important;overflow-y:hidden!important;gap:7px!important;padding:8px 10px!important;scrollbar-width:thin}
+  .toolbarRow.mainToolbar::-webkit-scrollbar{height:8px}
+  .toolbarRow.mainToolbar::-webkit-scrollbar-thumb{background:#334155;border-radius:999px}
+  .workToolbar,.mapTopbar{display:none!important}
+  .psIconTool,.psIconToggle{width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;flex:0 0 48px!important;border-radius:10px!important}
+  .psIconTool svg,.psIconToggle svg{width:26px!important;height:26px!important}
+  .psMiniIcon{width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;border-radius:10px!important}
+  .psMiniIcon svg{width:26px!important;height:26px!important}
+  .zoomBox{display:inline-flex!important;align-items:center;gap:8px;background:#0b1422;border:1px solid #2e405a;border-radius:12px;padding:7px 10px;flex:0 0 auto}
+  .zoomBox .small{font-size:11px!important;white-space:nowrap}
+  .zoomBox input[type="range"]{width:105px!important}
+
+  .floatingItemToolbar{position:absolute!important;left:10px!important;top:10px!important;z-index:40;display:flex!important;flex-direction:column;gap:7px;padding:8px;width:52px;align-items:center;border-radius:12px;background:linear-gradient(180deg,rgba(18,24,31,.98),rgba(12,17,23,.96));border:1px solid #334155;box-shadow:0 12px 28px rgba(0,0,0,.35)}
+  .floatingItemToolbar .floatToolBtn{width:48px;height:48px;min-width:48px;min-height:48px;border-radius:10px;border:1px solid #465260;background:linear-gradient(180deg,#242c36,#171d25);display:flex;align-items:center;justify-content:center;color:#f5f7fb;padding:0}
+  .floatingItemToolbar .floatToolBtn svg{width:26px;height:26px}
+  .floatingItemToolbar .floatToolBtn:disabled{opacity:.35;filter:saturate(.4);cursor:not-allowed}
+  .floatingItemToolbar .floatDivider{width:30px;height:1px;background:#334155;margin:1px 0}
+  .floatingItemToolbar .floatToolBtn:hover:not(:disabled){background:linear-gradient(180deg,#304152,#1f2c39);border-color:#7cb0e3}
+  .floatingItemToolbar .floatToolBtn.danger{background:linear-gradient(180deg,#51252a,#34161a);border-color:#7c343b}
+  .floatingItemToolbar .floatToolBtn.colorChip::after{height:5px;left:6px;right:6px;bottom:5px}
+  .floatingItemToolbar.inactive{opacity:.92}
+
+  #selectedPanel .bottomBtn,#selectedPanel .psBottomIcon,#selectedPanel #lockItemBtn,#selectedPanel #flipDoorBtn,#selectedPanel #dupBtn,#selectedPanel #deleteBtn,#selectedPanel #deselectBtn,#selectedPanel #rotate90,#selectedPanel #rotate45,#selectedPanel #rotate180,#selectedPanel #rotate360{display:none!important}
+
+  @media (max-width:1100px){
+    header{min-height:72px!important;padding:7px 8px!important}
+    .headerBrand h1{font-size:26px!important}
+    .psIconTool,.psIconToggle,.psMiniIcon{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;flex-basis:44px!important}
+    .psIconTool svg,.psIconToggle svg,.psMiniIcon svg{width:24px!important;height:24px!important}
+    .floatingItemToolbar{left:8px!important;top:8px!important;width:48px;padding:6px}
+    .floatingItemToolbar .floatToolBtn{width:44px;height:44px;min-width:44px;min-height:44px}
+    .floatingItemToolbar .floatToolBtn svg{width:24px;height:24px}
+    .zoomBox input[type="range"]{width:88px!important}
+  }
+  @media (max-width:700px){
+    header{gap:6px!important}
+    .status{display:none!important}
+    .headerBrand h1{font-size:22px!important}
+    .psIconTool,.psIconToggle,.psMiniIcon{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;flex-basis:40px!important}
+    .psIconTool svg,.psIconToggle svg,.psMiniIcon svg{width:22px!important;height:22px!important}
+    .floatingItemToolbar{left:6px!important;top:6px!important;width:44px;padding:5px}
+    .floatingItemToolbar .floatToolBtn{width:40px;height:40px;min-width:40px;min-height:40px}
+    .floatingItemToolbar .floatToolBtn svg{width:22px;height:22px}
+    .zoomBox{padding:6px 8px}
+    .zoomBox input[type="range"]{width:72px!important}
+  }
+
+  /* V42 cleanup */
+  .sliderToolbar{display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 12px;background:#0f1724;border-bottom:1px solid #263446;overflow-x:auto;scrollbar-width:thin}
+  .sliderToolbar::-webkit-scrollbar{height:8px}.sliderToolbar::-webkit-scrollbar-thumb{background:#334155;border-radius:999px}
+  .sliderToolbar .zoomBox{margin:0!important}
+  .toolbarRow.mainToolbar{overflow-x:auto!important;justify-content:center!important}
+  .psIconTool,.psIconToggle,.psMiniIcon{width:50px!important;height:50px!important;min-width:50px!important;min-height:50px!important;flex-basis:50px!important}
+  .psIconTool svg,.psIconToggle svg,.psMiniIcon svg{width:28px!important;height:28px!important}
+  .floatingItemToolbar{left:12px!important;top:14px!important;width:56px!important;gap:6px!important;padding:8px 6px!important}
+  .floatingItemToolbar .floatToolBtn{width:50px!important;height:50px!important;min-width:50px!important;min-height:50px!important}
+  .floatingItemToolbar .floatToolBtn svg{width:27px!important;height:27px!important}
+  .floatingItemToolbar .floatDivider{display:none!important}
+  @media (max-width:1100px){.psIconTool,.psIconToggle,.psMiniIcon{width:46px!important;height:46px!important;min-width:46px!important;min-height:46px!important;flex-basis:46px!important}.psIconTool svg,.psIconToggle svg,.psMiniIcon svg{width:25px!important;height:25px!important}.floatingItemToolbar{width:52px!important}.floatingItemToolbar .floatToolBtn{width:46px!important;height:46px!important;min-width:46px!important;min-height:46px!important}.floatingItemToolbar .floatToolBtn svg{width:24px!important;height:24px!important}}
+  @media (max-width:700px){.sliderToolbar{justify-content:flex-start;padding:6px 8px}.psIconTool,.psIconToggle,.psMiniIcon{width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;flex-basis:42px!important}.psIconTool svg,.psIconToggle svg,.psMiniIcon svg{width:22px!important;height:22px!important}.floatingItemToolbar{left:6px!important;top:8px!important;width:46px!important;padding:5px!important}.floatingItemToolbar .floatToolBtn{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important}.floatingItemToolbar .floatToolBtn svg{width:22px!important;height:22px!important}}
 
 </style>
 </head>
@@ -337,6 +455,7 @@ header{min-height:116px!important;padding:7px 10px!important;display:flex!import
     </div>
   </div>
 </header>
+<div id="toolbarSliders" class="toolbar toolbarRow sliderToolbar"></div>
 
 <aside>
   <div class="section">
@@ -416,7 +535,26 @@ header{min-height:116px!important;padding:7px 10px!important;display:flex!import
     </div>
     <div class="mapViewport" id="mainScroll" title="عند التكبير: اسحب مكانًا فارغًا بالماوس أو الإصبع لتحريك الخارطة">
       <div class="canvasWrap">
-        <div class="stage" id="stage"><canvas id="canvas" width="1100" height="750"></canvas></div>
+        <div class="stage" id="stage"><canvas id="canvas" width="1100" height="750"></canvas>
+        <div id="floatingItemToolbar" class="floatingItemToolbar" aria-label="أدوات الأثاث">
+          <button id="floatMoveBtn" class="floatToolBtn" title="سحب وتحريك"></button>
+          <button id="floatMultiBtn" class="floatToolBtn" title="تحديد متعدد"></button>
+          <button id="floatScaleUpBtn" class="floatToolBtn" title="تكبير القطعة"></button>
+          <button id="floatScaleDownBtn" class="floatToolBtn" title="تصغير القطعة"></button>
+          <button id="floatRotateBtn" class="floatToolBtn" title="تدوير 90°"></button>
+          <button id="floatResetRotBtn" class="floatToolBtn" title="إعادة الدوران"></button>
+          <button id="floatColorBtn" class="floatToolBtn colorChip" title="تلوين القطعة"></button>
+          <button id="floatHideBtn" class="floatToolBtn floatHideBtn" title="إظهار / إخفاء القطعة"></button>
+          <button id="floatDimsBtn" class="floatToolBtn" title="إظهار القياسات"></button>
+          <button id="floatLabelsBtn" class="floatToolBtn" title="إظهار المسميات"></button>
+          <button id="floatSnapBtn" class="floatToolBtn" title="Snap"></button>
+          <button id="floatSummaryBtn" class="floatToolBtn" title="دليل الأثاث"></button>
+          <button id="floatDupBtn" class="floatToolBtn" title="نسخ القطعة"></button>
+          <button id="floatLockBtn" class="floatToolBtn" title="قفل / فتح القطعة"></button>
+          <button id="floatDeselectBtn" class="floatToolBtn" title="إلغاء التحديد"></button>
+          <button id="floatDeleteBtn" class="floatToolBtn danger" title="حذف القطعة"></button>
+          <input id="floatColorInput" type="color" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px" value="#bfa781">
+        </div></div>
       </div>
     </div>
     <div class="usedFurniturePanel" id="usedFurniturePanel">
@@ -437,7 +575,7 @@ header{min-height:116px!important;padding:7px 10px!important;display:flex!import
       <button id="rotate180" class="bottomBtn">180°</button>
       <button id="rotate360" class="bottomBtn">0/360°</button>
       <button id="flipDoorBtn" class="bottomBtn doorOnly">عكس فتح الباب</button>
-      <button id="lockItemBtn" class="bottomBtn">🔓 قفل</button>
+      <button id="lockItemBtn" class="bottomBtn" title="قفل / فتح القطعة المحددة" aria-label="قفل / فتح القطعة المحددة">🔓 قفل</button>
       <button id="dupBtn" class="bottomBtn">نسخ</button>
       <button id="deselectBtn" class="bottomBtn">إلغاء التحديد</button>
       <button id="deleteBtn" class="bottomBtn danger">حذف</button>
@@ -445,14 +583,14 @@ header{min-height:116px!important;padding:7px 10px!important;display:flex!import
     <div class="bottomInspector measureInspector" id="measurePanel" style="display:none">
       <div class="selectedTitle"><span>القياس المحدد:</span><strong class="measureValue" id="measureValue">—</strong></div>
       <span class="measureHint" id="measureHint">استخدم شريط «حجم القياسات» للتحكم يدويًا بحجم جميع الأرقام. نفس الحجم يظهر في PNG والطباعة.</span>
-      <button id="pinMeasureBtn" class="bottomBtn">تثبيت القياس</button>
-      <button id="deleteMeasureBtn" class="bottomBtn danger">حذف القياس</button>
+      <button id="pinMeasureBtn" class="bottomBtn" title="تثبيت / إلغاء تثبيت القياس" aria-label="تثبيت / إلغاء تثبيت القياس">تثبيت القياس</button>
+      <button id="deleteMeasureBtn" class="bottomBtn danger" title="حذف القياس" aria-label="حذف القياس">حذف القياس</button>
     </div>
     <div class="bottomInspector mapLabelInspector" id="mapLabelPanel" style="display:none">
       <div class="selectedTitle"><span>المسمى المحدد:</span><strong class="mapLabelValue" id="mapLabelValue">—</strong></div>
       <label class="inlineField">النص <input id="mapLabelTextInput" type="text" maxlength="80"></label>
       <span class="measureHint">اسحب المسمى على الخارطة لتغيير مكانه. شريط «حجم المسميات» يغيّر حجم الجميع معًا.</span>
-      <button id="deleteMapLabelBtn" class="bottomBtn danger">حذف المسمى</button>
+      <button id="deleteMapLabelBtn" class="bottomBtn danger" title="حذف المسمى" aria-label="حذف المسمى">حذف المسمى</button>
     </div>
     <div class="bottomInspector" id="selectedEmpty">
       <span class="mutedMsg">على iPad: اضغط القطعة ثم المس مكان وضعها، أو اسحبها من مقبض ⠿ إلى الخارطة. عند التكبير اسحب مكانًا فارغًا لتحريك الخارطة.</span>
@@ -1051,6 +1189,7 @@ function setZoomPercent(v){
   document.getElementById('zoomRange').value=Math.round(zoom*100);
   document.getElementById('zoomLabel').textContent=Math.round(zoom*100)+'%';
   updatePanState();
+  updateFloatingItemToolbar();
 }
 function touchPair(){
   const pts=[...activeCanvasTouches.values()];
@@ -1925,11 +2064,13 @@ function drawWindow(it,w,h){
 }
 function drawOpening(it,w,h){const u=1/zoom;ctx.save();ctx.strokeStyle='#111827';ctx.lineWidth=1.5*u;ctx.setLineDash([6*u,4*u]);ctx.beginPath();ctx.moveTo(-w/2,0);ctx.lineTo(w/2,0);ctx.stroke();ctx.setLineDash([]);ctx.restore();}
 function drawItem(it){
-  if(it.hidden)return;
+  const selected=isItemSelected(it.id);
+  if(it.hidden && !selected)return;
   const w=it.w*pxPerCm,h=it.h*pxPerCm;
   const showLabels=document.getElementById('labelsToggle').checked;
   const showDims=document.getElementById('dimsToggle').checked;
   ctx.save();
+  if(it.hidden)ctx.globalAlpha=.18;
   ctx.translate(it.x,it.y);
   ctx.rotate(it.rot*Math.PI/180);
   if(it.archType==='door')drawDoor(it,w,h); else if(it.archType==='doubleDoor')drawDoubleDoor(it,w,h); else if(it.archType==='window')drawWindow(it,w,h); else if(it.archType==='opening')drawOpening(it,w,h); else if(it.src){ drawSprite(it,w,h); } else switch(it.type){
@@ -1949,10 +2090,10 @@ function drawItem(it){
     case 'fridge': drawFridge(it,w,h); break;
     default: drawGeneric(it,w,h); break;
   }
-  if(isItemSelected(it.id)){const sh=(it.archType==='door'||it.archType==='doubleDoor')?w:h;drawSelectionOutline(w,sh);if(it.locked)drawLockMarker(w,sh);}
+  if(selected){const sh=(it.archType==='door'||it.archType==='doubleDoor')?w:h;drawSelectionOutline(w,sh);if(it.locked)drawLockMarker(w,sh);}
   ctx.restore();
 
-  if(showLabels || showDims){
+  if((showLabels || showDims) && !it.hidden){
     const lines=[];
     if(showLabels)lines.push(it.name);
     if(showDims)lines.push(`${Math.round(it.w)} × ${Math.round(it.h)} سم`);
@@ -1989,7 +2130,7 @@ function drawMode(){
 function usedFurnitureGroups(){
   const map=new Map();
   for(const it of items){
-    if(it.archType)continue;
+    if(it.archType||it.hidden)continue;
     const w=Math.max(1,Number(it.w)||0),h=Math.max(1,Number(it.h)||0);
     const tintEnabled=!!it.tintEnabled;
     const key=[it.name||'قطعة',w.toFixed(2),h.toFixed(2),it.src||'',it.color||'',tintEnabled?1:0].join('|');
@@ -2118,6 +2259,7 @@ function draw(){
   if(visibleMapLabels())drawMapLabels();
   drawMode();
   scheduleUsedFurnitureSync();
+  updateFloatingItemToolbar();
 }
 
 document.getElementById('addMapLabelBtn').onclick=()=>{
@@ -2271,11 +2413,13 @@ function syncSelectedPanel(){
   const ml=currentMapLabel(),m=currentMeasure(),ids=getSelectedIds(),list=selectedItems(),it=current();
   const multiInfo=document.getElementById('multiSelectionInfo'),lockBtn=document.getElementById('lockItemBtn');
   if(ml){
+    updateFloatingItemToolbar();
     selectedPanel.style.display='none';measurePanel.style.display='none';selectedEmpty.style.display='none';mapLabelPanel.style.display='flex';
     mapLabelValue.textContent=ml.text;mapLabelTextInput.value=ml.text;return;
   }
   mapLabelPanel.style.display='none';
   if(m){
+    updateFloatingItemToolbar();
     selectedPanel.style.display='none';selectedEmpty.style.display='none';measurePanel.style.display='flex';
     measureValue.textContent=formatMeasureNumber(m.cm);
     document.getElementById('measureHint').textContent=m.pinned?'اسحب القياس المختار بحرية إلى المكان المناسب. الرقم مرتبط بالخريطة ويكبر ويصغر معها، و× تظهر للقياس المحدد فقط.':'هذا القياس مؤقت؛ حرّكه بحرية للمكان المناسب ثم ثبته أو احذفه.';
@@ -2283,7 +2427,7 @@ function syncSelectedPanel(){
     return;
   }
   measurePanel.style.display='none';
-  if(!ids.length||!it){selectedPanel.style.display='none';selectedEmpty.style.display='flex';if(multiInfo)multiInfo.style.display='none';return}
+  if(!ids.length||!it){selectedPanel.style.display='none';selectedEmpty.style.display='flex';if(multiInfo)multiInfo.style.display='none';updateFloatingItemToolbar();return}
   selectedPanel.style.display='flex';selectedEmpty.style.display='none';
   const multi=ids.length>1;
   if(multiInfo){multiInfo.style.display=multi?'inline-flex':'none';multiInfo.textContent=`${ids.length} قطع محددة`;}
@@ -2296,6 +2440,44 @@ function syncSelectedPanel(){
   const disableSingle=multi||!canEditItem(it);
   [selName,selW,selH,selRot,selColor,selTintEnabled].forEach(el=>el.disabled=disableSingle);
   ['rotate90','rotate45','rotate180','rotate360','dupBtn','deleteBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=furnitureGloballyLocked();});
+  updateFloatingItemToolbar();
+}
+
+
+const floatingItemToolbar=document.getElementById('floatingItemToolbar');
+const floatColorInput=document.getElementById('floatColorInput');
+function currentSingleSelectedItem(){
+  if(selectedMeasureId||selectedMapLabelId)return null;
+  const ids=getSelectedIds();
+  if(ids.length!==1)return null;
+  return current();
+}
+function updateFloatingItemToolbar(){
+  if(!floatingItemToolbar)return;
+  const host=document.querySelector('.mapPanel');
+  if(host && floatingItemToolbar.parentElement!==host)host.appendChild(floatingItemToolbar);
+  floatingItemToolbar.style.display='flex';
+  floatingItemToolbar.style.left=window.innerWidth<700?'6px':'12px';
+  floatingItemToolbar.style.top=window.innerWidth<700?'8px':'14px';
+  const it=currentSingleSelectedItem();
+  const hasSelection=!!it && visibleFurniture();
+  const buttons=[...floatingItemToolbar.querySelectorAll('button.floatToolBtn')];
+  buttons.forEach(btn=>{
+    const globalOnly=['floatMultiBtn','floatDimsBtn','floatLabelsBtn','floatSnapBtn','floatSummaryBtn'];
+    btn.disabled = globalOnly.includes(btn.id) ? false : !hasSelection;
+  });
+  floatingItemToolbar.classList.toggle('itemHiddenState', !!(it&&it.hidden));
+  const colorBtn=document.getElementById('floatColorBtn');
+  if(colorBtn)colorBtn.style.setProperty('--chipColor',it?.color||'#bfa781');
+}
+function toggleHiddenForSelection(){
+  if(furnitureGloballyLocked()){setStatus('الأثاث مقفل من الشريط العلوي');return;}
+  const list=selectedItems().filter(it=>!it.locked);if(!list.length){setStatus('القطع المحددة مقفلة');return;}
+  const before=cloneEditState();
+  const shouldHide=list.some(it=>!it.hidden);
+  list.forEach(it=>it.hidden=shouldHide);
+  syncSelectedPanel();draw();commitHistory(before);
+  setStatus(shouldHide?'تم إخفاء القطعة المحددة':'تم إظهار القطعة المحددة');
 }
 
 let mapLabelEditBefore=null;
@@ -2343,6 +2525,16 @@ document.getElementById('dupBtn').onclick=()=>{
   for(const it of list){const n={...it,id:randId(),x:it.x+20,y:it.y+20,locked:false};items.push(n);newIds.push(n.id);}
   setSelection(newIds,newIds[newIds.length-1]);syncSelectedPanel();draw();commitHistory(before);setStatus(`تم نسخ ${newIds.length} قطعة`);
 };
+
+document.getElementById('floatHideBtn')?.addEventListener('click',toggleHiddenForSelection);
+document.getElementById('floatScaleUpBtn')?.addEventListener('click',()=>applyToSelection(it=>{it.w=Math.max(1,Math.round(it.w*1.05));it.h=Math.max(1,Math.round(it.h*1.05));},'تم تكبير القطعة المحددة'));
+document.getElementById('floatScaleDownBtn')?.addEventListener('click',()=>applyToSelection(it=>{it.w=Math.max(1,Math.round(it.w*0.95));it.h=Math.max(1,Math.round(it.h*0.95));},'تم تصغير القطعة المحددة'));
+document.getElementById('floatRotateBtn')?.addEventListener('click',()=>addRotationAngle(90));
+document.getElementById('floatDupBtn')?.addEventListener('click',()=>document.getElementById('dupBtn').click());
+document.getElementById('floatLockBtn')?.addEventListener('click',()=>document.getElementById('lockItemBtn').click());
+document.getElementById('floatDeleteBtn')?.addEventListener('click',()=>document.getElementById('deleteBtn').click());
+document.getElementById('floatColorBtn')?.addEventListener('click',()=>{const it=currentSingleSelectedItem();if(!it||!canEditItem(it))return;floatColorInput.value=it.color||'#bfa781';floatColorInput.click();});
+floatColorInput?.addEventListener('input',()=>{const it=currentSingleSelectedItem();if(!it||!canEditItem(it))return;const before=cloneEditState();it.color=floatColorInput.value;if(it.src)it.tintEnabled=true;syncSelectedPanel();draw();commitHistory(before);setStatus('تم تلوين القطعة المحددة');});
 pinMeasureBtn.onclick=()=>{if(measurementsGloballyLocked()){setStatus('القياسات مقفلة');return;}const m=currentMeasure();if(!m)return;const before=cloneEditState();m.pinned=!m.pinned;syncSelectedPanel();draw();commitHistory(before);setStatus(m.pinned?'تم تثبيت القياس على الخارطة':'أصبح القياس مؤقتًا');};
 document.getElementById('deleteMeasureBtn').onclick=()=>{if(measurementsGloballyLocked()){setStatus('القياسات مقفلة');return;}if(!selectedMeasureId)return;const before=cloneEditState();measurements=measurements.filter(m=>m.id!==selectedMeasureId);selectedMeasureId=null;syncSelectedPanel();draw();commitHistory(before);setStatus('تم حذف القياس');};
 mapLabelLayerToggle.onchange=()=>{if(!visibleMapLabels())selectedMapLabelId=null;syncSelectedPanel();syncQuickDisplayButtons();draw();};
@@ -2714,154 +2906,133 @@ if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.se
 </script>
 
 
-<script id="v41FinalUI">
+<script id="v36PhotoshopIcons">
 (()=>{
-  const S=b=>`<svg viewBox="0 0 24 24" aria-hidden="true">${b}</svg>`;
+  const S=(body)=>`<svg viewBox="0 0 24 24" aria-hidden="true">${body}</svg>`;
   const I={
-    new:S('<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5M12 11v6M9 14h6"/>'),
-    open:S('<path d="M3 7h7l2 2h9l-2 10H3z"/><path d="M3 7V5h7l2 2"/>'),
+    info:S('<circle cx="12" cy="12" r="9"/><path d="M12 10v7M12 7h.01"/>'),
+    filePlus:S('<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5M12 11v6M9 14h6"/>'),
+    folder:S('<path d="M3 7h7l2 2h9v10H3z"/><path d="M3 7V5h7l2 2"/>'),
     save:S('<path d="M5 4h12l2 2v14H5z"/><path d="M8 4v6h8V4M8 20v-7h8v7"/>'),
-    pdf:S('<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M8 16h2a2 2 0 0 0 0-4H8v6M14 18v-6h1.5a3 3 0 0 1 0 6H14"/>'),
-    png:S('<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="9" r="1.5"/><path d="m5 17 4-4 3 3 2-2 5 5"/>'),
+    image:S('<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="9" r="1.5"/><path d="m5 17 4-4 3 3 2-2 5 5"/>'),
     print:S('<path d="M7 8V4h10v4M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v6H7z"/>'),
+    pdf:S('<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M8.5 16h1.5a1.5 1.5 0 1 0 0-3H8.5v5M13 18v-5h1.4a2.5 2.5 0 0 1 0 5H13M18 13h-2v5M16 15h1.7"/>'),
+    library:S('<path d="M5 8h14v11H5z"/><path d="M8 8V5h8v3M9 19v-5h6v5"/><path d="M7 11h10"/>'),
     upload:S('<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 16V8M9 11l3-3 3 3"/>'),
     target:S('<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>'),
     ruler:S('<path d="m5 17 12-12 3 3-12 12z"/><path d="m9 13 2 2M12 10l2 2M15 7l2 2"/>'),
-    textPlus:S('<path d="M5 5h12M11 5v14M8 19h6"/><path d="M19 12v6M16 15h6"/>'),
+    text:S('<path d="M5 5h14M12 5v14M8 19h8"/>'),
     grid:S('<rect x="4" y="4" width="16" height="16"/><path d="M10 4v16M16 4v16M4 10h16M4 16h16"/>'),
-    map:S('<path d="M4 6 9 4l6 2 5-2v14l-5 2-6-2-5 2Z"/><path d="M9 4v14M15 6v14"/>'),
-    measureEye:S('<path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z"/><circle cx="12" cy="12" r="2.4"/><path d="M5 19h14M7 17v4M17 17v4"/>'),
-    textEye:S('<path d="M4 6h9M8.5 6v7M6 13h5"/><path d="M12 16s2.5-3 5-3 5 3 5 3-2.5 3-5 3-5-3-5-3Z"/><circle cx="17" cy="16" r="1"/>'),
-    summary:S('<rect x="5" y="5" width="14" height="14"/><path d="M8 9h8M8 12h5M8 15h7"/>'),
-    fit:S('<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/><rect x="8" y="8" width="8" height="8"/>'),
+    dims:S('<path d="M5 7v10M19 7v10M5 12h14"/><path d="m8 9-3 3 3 3M16 9l3 3-3 3"/>'),
+    tag:S('<path d="M4 7v10h16V7z"/><path d="M8 11h8M8 14h5"/>'),
+    shadow:S('<rect x="5" y="5" width="11" height="11"/><path d="M8 8h11v11H8"/>'),
+    magnet:S('<path d="M7 4v8a5 5 0 0 0 10 0V4"/><path d="M7 8h4M13 8h4"/>'),
+    auto:S('<path d="M5 7v10M19 7v10M5 12h14"/><path d="m8 9-3 3 3 3M16 9l3 3-3 3"/><circle cx="12" cy="12" r="1.4"/>'),
+    select:S('<path d="M5 8V5h3M16 5h3v3M19 16v3h-3M8 19H5v-3"/><rect x="9" y="9" width="6" height="6"/>'),
+    lock:S('<rect x="6" y="10" width="12" height="10" rx="2"/><path d="M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10"/>'),
+    panlock:S('<path d="M6 14V9a2 2 0 0 1 4 0v3M10 12V7a2 2 0 0 1 4 0v5M14 12V9a2 2 0 0 1 4 0v5"/><path d="M6 13 4.5 12a1.5 1.5 0 0 0-2 2.2l3.7 5A4.5 4.5 0 0 0 9.8 21H15a5 5 0 0 0 5-5v-2"/>'),
+    eye:S('<path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z"/><circle cx="12" cy="12" r="2.5"/>'),
+    arrows:S('<path d="M5 12h14M8 9l-3 3 3 3M16 9l3 3-3 3"/>'),
+    summary:S('<path d="M5 5h14v14H5z"/><path d="M8 9h8M8 12h5M8 15h7"/>'),
     undo:S('<path d="M9 7 5 11l4 4"/><path d="M5 11h7a6 6 0 0 1 6 6"/>'),
     redo:S('<path d="m15 7 4 4-4 4"/><path d="M19 11h-7a6 6 0 0 0-6 6"/>'),
-    info:S('<circle cx="12" cy="12" r="9"/><path d="M12 10v7M12 7h.01"/>'),
-    move:S('<path d="M12 3v18M3 12h18"/><path d="m9 6 3-3 3 3M9 18l3 3 3-3M6 9l-3 3 3 3M18 9l3 3-3 3"/>'),
-    scaleUp:S('<rect x="5" y="5" width="14" height="14" rx="2"/><path d="M12 8v8M8 12h8"/>'),
-    scaleDown:S('<rect x="5" y="5" width="14" height="14" rx="2"/><path d="M8 12h8"/>'),
-    rot90:S('<path d="M6 15a7 7 0 1 0 2-7"/><path d="M5 5v5h5"/><path d="M14 13h5v5"/>'),
-    rot45:S('<path d="M6 15a7 7 0 1 0 2-7"/><path d="M5 5v5h5"/><path d="m15 12 4 4-4 4-4-4z"/>'),
-    reset:S('<path d="M6 8a7 7 0 1 1-1 7"/><path d="M6 4v4h4"/>'),
-    palette:S('<path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 0-4h-1a2 2 0 0 1 0-4h3a4 4 0 0 0 0-8Z"/><circle cx="8" cy="9" r="1"/><circle cx="11" cy="7" r="1"/><circle cx="15" cy="8" r="1"/>'),
-    eye:S('<path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z"/><circle cx="12" cy="12" r="2.5"/>'),
-    tag:S('<path d="M4 7v10h16V7z"/><path d="M8 11h8M8 14h5"/>'),
-    dims:S('<path d="M5 7v10M19 7v10M5 12h14"/><path d="m8 9-3 3 3 3M16 9l3 3-3 3"/>'),
-    magnet:S('<path d="M7 4v8a5 5 0 0 0 10 0V4"/><path d="M7 8h4M13 8h4"/>'),
-    front:S('<rect x="8" y="8" width="11" height="11"/><path d="M5 16V5h11"/>'),
-    back:S('<rect x="5" y="5" width="11" height="11"/><path d="M8 19h11V8"/>'),
     selectAll:S('<rect x="7" y="7" width="10" height="10"/><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4"/>'),
-    lock:S('<rect x="6" y="10" width="12" height="10" rx="2"/><path d="M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10"/>'),
+    clear:S('<path d="M5 7h14M9 7V4h6v3M8 7l1 13h6l1-13"/><path d="M11 11v5M13 11v5"/>'),
+    fit:S('<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/><rect x="8" y="8" width="8" height="8"/>'),
+    actual:S('<rect x="5" y="5" width="14" height="14"/><path d="M9 9v6M8 10l1-1M12 12h3"/>'),
+    rotate90:S('<path d="M6 15a7 7 0 1 0 2-7"/><path d="M5 5v5h5"/><rect x="12" y="12" width="6" height="6"/>'),
+    rotate45:S('<path d="M6 15a7 7 0 1 0 2-7"/><path d="M5 5v5h5"/><path d="m13 12 4 4-4 4-4-4z"/>'),
+    rotate180:S('<path d="M5 12a7 7 0 0 1 12-5"/><path d="m17 4 1 4-4-1"/><path d="M19 12a7 7 0 0 1-12 5"/><path d="m7 20-1-4 4 1"/>'),
+    reset:S('<path d="M6 8a7 7 0 1 1-1 7"/><path d="M6 4v4h4"/>'),
+    flip:S('<path d="M12 4v16"/><path d="m10 7-5 5 5 5M14 7l5 5-5 5"/>'),
     copy:S('<rect x="8" y="8" width="11" height="11"/><rect x="5" y="5" width="11" height="11"/>'),
-    deselect:S('<path d="M6 6l12 12M18 6 6 18"/><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/>'),
-    trash:S('<path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/>')
+    close:S('<path d="M6 6l12 12M18 6 6 18"/>'),
+    trash:S('<path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/>'),
+    plusBox:S('<rect x="5" y="5" width="14" height="14" rx="2"/><path d="M12 8v8M8 12h8"/>'),
+    minusBox:S('<rect x="5" y="5" width="14" height="14" rx="2"/><path d="M8 12h8"/>'),
+    palette:S('<path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 0-4h-1a2 2 0 0 1 0-4h3a4 4 0 0 0 0-8Z"/><circle cx="7.5" cy="10" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="14.5" cy="7.5" r="1"/>'),
+    move:S('<path d="M12 3v18M3 12h18"/><path d="m12 3-2 2m2-2 2 2M3 12l2-2m-2 2 2 2M12 21l-2-2m2 2 2-2M21 12l-2-2m2 2-2 2"/>'),
+    boxSelect:S('<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M3 9V5h4M15 5h4v4M19 15v4h-4M9 19H5v-4"/>'),
+    resetRot:S('<path d="M6 8a7 7 0 1 1-1 7"/><path d="M6 4v4h4"/><path d="M12 9v6"/>'),
+    tags:S('<path d="M5 7h10l4 5-4 5H5z"/><circle cx="8.5" cy="12" r="1"/>'),
+    clip:S('<path d="M9 8v8a3 3 0 1 0 6 0V7a4 4 0 1 0-8 0v9a5 5 0 1 0 10 0V8"/>'),
+    layers2:S('<path d="m12 4 8 4-8 4-8-4 8-4Z"/><path d="m4 12 8 4 8-4"/><path d="m4 16 8 4 8-4"/>'),
+    map:S('<path d="M4 6 9 4l6 2 5-2v14l-5 2-6-2-5 2Z"/><path d="M9 4v14M15 6v14"/>'),
+    sofa:S('<path d="M5 11a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4H5Z"/><path d="M7 9V8a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1"/><path d="M6 15v2M18 15v2"/>'),
+    gridNums:S('<rect x="4" y="4" width="16" height="16"/><path d="M10 4v16M16 4v16M4 10h16M4 16h16"/><path d="M7 8h.01M13 8h.01M7 14h.01"/>'),
+    rulerLock:S('<path d="m5 17 12-12 3 3-12 12z"/><path d="m9 13 2 2M12 10l2 2"/><rect x="4" y="4" width="7" height="6" rx="1.5"/><path d="M6 4V3.5a1.5 1.5 0 0 1 3 0V4"/>'),
+    textLock:S('<path d="M5 5h14M12 5v14M8 19h8"/><rect x="15" y="13" width="6" height="6" rx="1.5"/><path d="M16.5 13v-1a1.5 1.5 0 0 1 3 0v1"/>'),
+    sofaLock:S('<path d="M4 11a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4H4Z"/><path d="M6 9V8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"/><rect x="15" y="3" width="6" height="6" rx="1.5"/><path d="M16.5 3V2.5a1.5 1.5 0 0 1 3 0V3"/>'),
+    mapLockIcon:S('<path d="M4 6 9 4l6 2 5-2v9"/><path d="M9 4v8M15 6v4"/><rect x="14" y="12" width="7" height="7" rx="1.5"/><path d="M15.5 12v-1a2 2 0 0 1 4 0v1"/>'),
+    measureText:S('<path d="M5 7v10M19 7v10M5 12h14"/><path d="m8 9-3 3 3 3M16 9l3 3-3 3"/><path d="M10 5h4"/>')
   };
+  function iconize(el,icon,label,extra=''){
+    if(!el)return;el.classList.add('psIconTool');if(extra)el.classList.add(extra);el.title=label;el.setAttribute('aria-label',label);el.dataset.psLabel=label;el.innerHTML=I[icon]||I.info;
+  }
+  function mini(id,icon,label){const el=document.getElementById(id);if(!el)return;el.classList.add('psMiniIcon');el.title=label;el.setAttribute('aria-label',label);el.innerHTML=I[icon]||I.info;}
+  function bottom(id,icon,label){const el=document.getElementById(id);if(!el)return;el.classList.add('psBottomIcon');el.title=label;el.setAttribute('aria-label',label);el.innerHTML=I[icon]||I.info;}
+  function toggle(id,icon,label){const input=document.getElementById(id);if(!input)return;const el=input.closest('label');if(!el)return;el.classList.add('psIconToggle');el.title=label;el.setAttribute('aria-label',label);if(input.parentNode!==el)el.appendChild(input);el.innerHTML='';el.appendChild(input);el.insertAdjacentHTML('beforeend',I[icon]||I.info);}
 
-  const icon=(el,key,title,cls='v41Icon')=>{if(!el)return;el.classList.add(cls);el.title=title;el.setAttribute('aria-label',title);el.innerHTML=I[key]||I.info;};
-  const toggle=(id,key,title)=>{const input=document.getElementById(id);if(!input)return null;const lab=input.closest('label');if(!lab)return null;lab.classList.add('v41Toggle');lab.title=title;lab.setAttribute('aria-label',title);lab.innerHTML='';lab.appendChild(input);lab.insertAdjacentHTML('beforeend',I[key]);return lab;};
+  iconize(document.getElementById('infoBtn'),'info','معلوماتك');
+  iconize(document.getElementById('newProjectBtn'),'filePlus','مشروع جديد');
+  iconize(document.querySelector('label[for="loadInput"]'),'folder','فتح مشروع');
+  iconize(document.getElementById('saveBtn'),'save','حفظ المشروع');
+  iconize(document.getElementById('exportBtn'),'image','تصدير PNG');
+  iconize(document.getElementById('printBtn'),'print','طباعة A3 / A4');
+  iconize(document.getElementById('pdfBtn'),'pdf','حفظ PDF','psPdf');
+  iconize(document.getElementById('sidebarToggle'),'library','مكتبة الأثاث');
+  iconize(document.querySelector('label[for="fileInput"]'),'upload','رفع الخارطة');
+  iconize(document.getElementById('calibrateBtn'),'target','معايرة القياس');
+  iconize(document.getElementById('measureBtn'),'ruler','قياس مسافة');
+  iconize(document.getElementById('addMapLabelBtn'),'text','إضافة مسمى');
 
-  // Preserve file inputs outside rows before rebuilding the toolbar.
-  let dock=document.getElementById('v41HiddenDock');
-  if(!dock){dock=document.createElement('div');dock.id='v41HiddenDock';dock.style.display='none';document.body.appendChild(dock);}
-  const loadInput=document.getElementById('loadInput'), fileInput=document.getElementById('fileInput');
-  if(loadInput)dock.appendChild(loadInput); if(fileInput)dock.appendChild(fileInput);
+  [
+    ['gridToggle','gridNums','الشبكة 50 سم'],['dimsToggle','dims','قياسات القطع'],['labelsToggle','tag','أسماء القطع'],
+    ['shadowToggle','shadow','التظليل'],['snapToggle','magnet','Snap'],['autoDimsToggle','auto','المسافات التلقائية'],
+    ['multiSelectToggle','select','التحديد المتعدد'],['furnitureLockToggle','sofaLock','قفل الأثاث'],['measureLockToggle','rulerLock','قفل القياسات'],
+    ['mapLabelLockToggle','textLock','قفل المسميات'],['mapLockToggle','mapLockIcon','قفل سحب الخارطة'],['bgLayerToggle','map','إظهار / إخفاء الخارطة'],
+    ['furnitureLayerToggle','sofa','إظهار / إخفاء الأثاث'],['measureLayerToggle','ruler','إظهار / إخفاء القياسات'],
+    ['mapLabelLayerToggle','text','إظهار / إخفاء المسميات'],['measureArrowsToggle','arrows','إظهار / إخفاء أسهم القياس'],
+    ['furnitureSummaryToggle','summary','إظهار / إخفاء دليل الأثاث']
+  ].forEach(x=>toggle(...x));
 
-  const top=document.querySelector('.mainToolbar');
+  mini('undoBtn','undo','تراجع');mini('redoBtn','redo','إعادة');mini('selectAllBtn','selectAll','تحديد كل الأثاث');
+  mini('clearMeasuresBtn','clear','مسح كل القياسات');mini('fitBtn','fit','ملاءمة للشاشة');mini('actualBtn','actual','عرض 100%');
+  bottom('rotate90','rotate90','دوران 90°');bottom('rotate45','rotate45','دوران 45°');bottom('rotate180','rotate180','دوران 180°');bottom('rotate360','reset','إعادة الدوران 0°');
+  bottom('flipDoorBtn','flip','عكس فتح الباب');bottom('dupBtn','copy','نسخ القطعة');bottom('deselectBtn','close','إلغاء التحديد');bottom('deleteBtn','trash','حذف القطعة');
+  const f=(id,icon,label)=>{const el=document.getElementById(id);if(!el)return;el.title=label;el.setAttribute('aria-label',label);el.innerHTML=I[icon]||I.info;};
+  f('floatMoveBtn','move','سحب وتحريك');f('floatMultiBtn','boxSelect','تحديد متعدد');f('floatScaleUpBtn','plusBox','تكبير القطعة');f('floatScaleDownBtn','minusBox','تصغير القطعة');f('floatRotateBtn','rotate90','تدوير 90°');f('floatResetRotBtn','resetRot','إعادة الدوران');f('floatColorBtn','palette','تلوين القطعة');f('floatHideBtn','eye','إظهار / إخفاء القطعة');f('floatDimsBtn','ruler','إظهار القياسات');f('floatLabelsBtn','tags','إظهار المسميات');f('floatSnapBtn','clip','Snap');f('floatSummaryBtn','layers2','دليل الأثاث');f('floatDupBtn','copy','نسخ القطعة');f('floatLockBtn','lock','قفل / فتح القطعة');f('floatDeselectBtn','close','إلغاء التحديد');f('floatDeleteBtn','trash','حذف القطعة');
+  const main=document.querySelector('.mainToolbar');
+  const sliderBar=document.getElementById('toolbarSliders');
   const work=document.querySelector('.workToolbar');
   const mapBar=document.querySelector('.mapTopbar');
-  const stack=document.querySelector('.toolbarStack');
-  if(!top||!stack)return;
-
-  const loadLabel=document.querySelector('label[for="loadInput"]');
-  const fileLabel=document.querySelector('label[for="fileInput"]');
-  const openBtn=document.createElement('button');openBtn.id='v41OpenBtn';
-  const uploadBtn=document.createElement('button');uploadBtn.id='v41UploadBtn';
-  icon(document.getElementById('newProjectBtn'),'new','مشروع جديد');
-  icon(openBtn,'open','فتح مشروع');
-  icon(document.getElementById('saveBtn'),'save','حفظ المشروع');
-  icon(document.getElementById('pdfBtn'),'pdf','حفظ PDF','v41Icon');document.getElementById('pdfBtn')?.classList.add('v41Pdf','phoneOptional');
-  icon(document.getElementById('exportBtn'),'png','تصدير PNG');
-  icon(document.getElementById('printBtn'),'print','طباعة A3 / A4','v41Icon');document.getElementById('printBtn')?.classList.add('phoneOptional');
-  icon(uploadBtn,'upload','رفع الخارطة');
-  icon(document.getElementById('calibrateBtn'),'target','معايرة القياس');
-  icon(document.getElementById('measureBtn'),'ruler','قياس مسافة');
-  icon(document.getElementById('addMapLabelBtn'),'textPlus','إضافة مسمى');
-  icon(document.getElementById('fitBtn'),'fit','ملاءمة للشاشة','v41Mini');
-  icon(document.getElementById('undoBtn'),'undo','تراجع','v41Mini');
-  icon(document.getElementById('redoBtn'),'redo','إعادة','v41Mini');
-  icon(document.getElementById('infoBtn'),'info','معلوماتك','v41Mini');document.getElementById('infoBtn')?.classList.add('phoneOptional');
-  const gridLab=toggle('gridToggle','grid','الشبكة 50 سم');
-  const bgLab=toggle('bgLayerToggle','map','إظهار / إخفاء الخارطة');
-  const measLab=toggle('measureLayerToggle','measureEye','إظهار / إخفاء القياسات');
-  const labelsLab=toggle('mapLabelLayerToggle','textEye','إظهار / إخفاء مسميات الخارطة');
-  const summaryLab=toggle('furnitureSummaryToggle','summary','إظهار / إخفاء دليل الأثاث');
-  [gridLab,bgLab,measLab,labelsLab,summaryLab,document.getElementById('fitBtn')].filter(Boolean).forEach(n=>n.classList.add('phoneOptional'));
-
-  // One clean top row. No hidden inputs are destroyed.
-  top.innerHTML='';
-  [document.getElementById('newProjectBtn'),openBtn,document.getElementById('saveBtn'),document.getElementById('pdfBtn'),document.getElementById('exportBtn'),document.getElementById('printBtn'),uploadBtn,document.getElementById('calibrateBtn'),document.getElementById('measureBtn'),document.getElementById('addMapLabelBtn'),gridLab,bgLab,measLab,labelsLab,summaryLab,document.getElementById('fitBtn'),document.getElementById('undoBtn'),document.getElementById('redoBtn'),document.getElementById('infoBtn')].filter(Boolean).forEach(n=>top.appendChild(n));
-
-  // Explicit real buttons for file pickers. These are independent of label/for behavior.
-  if(loadLabel)loadLabel.style.display='none';
-  if(fileLabel)fileLabel.style.display='none';
-  openBtn.onclick=e=>{e.preventDefault();e.stopPropagation();if(!loadInput)return;loadInput.value='';loadInput.click();};
-  uploadBtn.onclick=e=>{e.preventDefault();e.stopPropagation();if(!fileInput)return;fileInput.value='';fileInput.click();};
-
-  // Second row: ONLY the three size/zoom sliders.
-  let sliderRow=document.getElementById('v41SliderRow');
-  if(!sliderRow){sliderRow=document.createElement('div');sliderRow.id='v41SliderRow';sliderRow.className='v41SliderRow';stack.appendChild(sliderRow);}
-  sliderRow.innerHTML='';
-  const box=(title,nodes,valueEl)=>{const b=document.createElement('div');b.className='v41SliderBox';const t=document.createElement('span');t.className='v41SliderTitle';t.textContent=title;b.appendChild(t);nodes.filter(Boolean).forEach(n=>b.appendChild(n));if(valueEl){valueEl.classList.add('v41Value');b.appendChild(valueEl);}sliderRow.appendChild(b);};
-  box('تكبير',[document.getElementById('zoomOutBtn'),document.getElementById('zoomRange'),document.getElementById('zoomInBtn')],document.getElementById('zoomLabel'));
-  box('حجم القياسات',[document.getElementById('measureSizeRange')],document.getElementById('measureSizeLabel'));
-  box('حجم المسميات',[document.getElementById('mapLabelSizeRange')],document.getElementById('mapLabelSizeValue'));
-  if(work)work.style.display='none'; if(mapBar)mapBar.style.display='none';
-
-  // Fixed left furniture toolbar with the fuller Photoshop-like set.
-  const panel=document.querySelector('.mapPanel');
-  let left=document.getElementById('v41FurnitureToolbar');
-  if(!left){left=document.createElement('div');left.id='v41FurnitureToolbar';panel?.prepend(left);}
-  const mk=(id,key,title,handler,kind='selection')=>{const b=document.createElement('button');b.id=id;b.className='v41LeftBtn';b.title=title;b.setAttribute('aria-label',title);b.dataset.kind=kind;b.innerHTML=I[key];b.onclick=handler;left.appendChild(b);return b;};
-  const div=()=>{const d=document.createElement('div');d.className='v41ToolDivider';left.appendChild(d);};
-  left.innerHTML='';
-  mk('v41Move','move','تحديد وتحريك',()=>{mode='select';points=[];pendingFurnitureDef=null;updateInteractionCursor();setStatus('أداة التحديد والتحريك');},'global');
-  mk('v41ScaleUp','scaleUp','تكبير القطعة 5%',()=>applyToSelection(it=>{it.w=Math.max(1,it.w*1.05);it.h=Math.max(1,it.h*1.05);},'تم تكبير القطعة'));
-  mk('v41ScaleDown','scaleDown','تصغير القطعة 5%',()=>applyToSelection(it=>{it.w=Math.max(1,it.w*.95);it.h=Math.max(1,it.h*.95);},'تم تصغير القطعة'));
-  mk('v41Rot90','rot90','دوران 90°',()=>addRotationAngle(90));
-  mk('v41Rot45','rot45','دوران 45°',()=>addRotationAngle(45));
-  mk('v41ResetRot','reset','إعادة الدوران 0°',()=>applyToSelection(it=>{it.rot=0;},'تمت إعادة الدوران'));
-  div();
-  const colorBtn=mk('v41Color','palette','تلوين القطعة',()=>{const list=selectedItems().filter(it=>!it.locked);if(!list.length)return;v41ColorInput.value=list.at(-1)?.color||'#bfa781';v41ColorInput.click();});colorBtn.classList.add('colorBtn');
-  mk('v41Hide','eye','إظهار / إخفاء القطعة المحددة',()=>{const list=selectedItems();const before=cloneEditState();if(!list.length){const hidden=items.filter(it=>it.hidden);if(!hidden.length){setStatus('لا توجد قطع مخفية');return;}hidden.forEach(it=>it.hidden=false);draw();commitHistory(before);setStatus('تم إظهار كل القطع المخفية');syncV41Left();return;}const hide=list.some(it=>!it.hidden);list.forEach(it=>it.hidden=hide);draw();commitHistory(before);syncV41Left();setStatus(hide?'تم إخفاء القطعة المحددة':'تم إظهار القطعة المحددة');},'global');
-  mk('v41Names','tag','إظهار / إخفاء أسماء الأثاث',()=>{const t=document.getElementById('labelsToggle');t.checked=!t.checked;t.dispatchEvent(new Event('change',{bubbles:true}));syncV41Left();},'global');
-  mk('v41Dims','dims','إظهار / إخفاء قياسات الأثاث',()=>{const t=document.getElementById('dimsToggle');t.checked=!t.checked;t.dispatchEvent(new Event('change',{bubbles:true}));syncV41Left();},'global');
-  mk('v41Snap','magnet','تشغيل / إيقاف Snap',()=>{const t=document.getElementById('snapToggle');t.checked=!t.checked;t.dispatchEvent(new Event('change',{bubbles:true}));syncV41Left();},'global');
-  div();
-  mk('v41Front','front','إحضار القطعة للأمام',()=>{const list=selectedItems();if(!list.length)return;const before=cloneEditState();const ids=new Set(list.map(x=>x.id));items=[...items.filter(x=>!ids.has(x.id)),...list];draw();commitHistory(before);});
-  mk('v41Back','back','إرسال القطعة للخلف',()=>{const list=selectedItems();if(!list.length)return;const before=cloneEditState();const ids=new Set(list.map(x=>x.id));items=[...list,...items.filter(x=>!ids.has(x.id))];draw();commitHistory(before);});
-  mk('v41SelectAll','selectAll','تحديد كل الأثاث',()=>document.getElementById('selectAllBtn')?.click(),'global');
-  mk('v41Lock','lock','قفل / فتح القطعة المحددة',()=>document.getElementById('lockItemBtn')?.click());
-  mk('v41Copy','copy','نسخ القطعة المحددة',()=>document.getElementById('dupBtn')?.click());
-  mk('v41Deselect','deselect','إلغاء التحديد',()=>document.getElementById('deselectBtn')?.click(),'global');
-  const del=mk('v41Delete','trash','حذف القطعة المحددة',()=>document.getElementById('deleteBtn')?.click());del.classList.add('danger');
-  const v41ColorInput=document.createElement('input');v41ColorInput.type='color';v41ColorInput.style.cssText='position:absolute;opacity:0;pointer-events:none;width:1px;height:1px';left.appendChild(v41ColorInput);
-  v41ColorInput.oninput=()=>{const list=selectedItems().filter(it=>!it.locked);if(!list.length)return;const before=cloneEditState();list.forEach(it=>{it.color=v41ColorInput.value;if(it.src)it.tintEnabled=true;});draw();commitHistory(before);syncSelectedPanel();};
-
-  // Wrap selection sync so toolbar state follows the selected furniture.
-  const oldSync=syncSelectedPanel;
-  const syncV41Left=()=>{
-    const list=selectedItems();const has=list.length>0;const locked=has&&list.every(it=>it.locked);const globalLock=furnitureGloballyLocked();
-    left.querySelectorAll('.v41LeftBtn').forEach(b=>{if(b.dataset.kind==='selection')b.disabled=!has||globalLock;});
-    document.getElementById('v41Color')?.style.setProperty('--v41color',list.at(-1)?.color||'#bfa781');
-    document.getElementById('v41Names')?.classList.toggle('active',!!document.getElementById('labelsToggle')?.checked);
-    document.getElementById('v41Dims')?.classList.toggle('active',!!document.getElementById('dimsToggle')?.checked);
-    document.getElementById('v41Snap')?.classList.toggle('active',!!document.getElementById('snapToggle')?.checked);
-    document.getElementById('v41Lock')?.classList.toggle('active',locked);
-  };
-  window.syncV41Left=syncV41Left;
-  syncSelectedPanel=function(){oldSync();syncV41Left();};
-  ['labelsToggle','dimsToggle','snapToggle','furnitureLockToggle'].forEach(id=>document.getElementById(id)?.addEventListener('change',syncV41Left));
-  syncV41Left();
+  const openProjectEl=document.querySelector('label[for="loadInput"]');
+  if(openProjectEl){openProjectEl.addEventListener('click',e=>{e.preventDefault();document.getElementById('loadInput').click();});}
+  if(main){
+    const fileNodes=[document.querySelector('#newProjectBtn'),openProjectEl,document.querySelector('#saveBtn'),document.querySelector('#pdfBtn'),document.querySelector('#exportBtn'),document.querySelector('#printBtn'),document.querySelector('label[for="fileInput"]'),document.querySelector('#calibrateBtn'),document.querySelector('#measureBtn'),document.querySelector('#addMapLabelBtn'),document.querySelector('#infoBtn')].filter(Boolean);
+    const toggleNodes=['#gridToggle','#dimsToggle','#labelsToggle','#shadowToggle','#snapToggle','#autoDimsToggle','#multiSelectToggle','#furnitureLockToggle','#measureLockToggle','#mapLabelLockToggle','#mapLockToggle','#bgLayerToggle','#furnitureLayerToggle','#measureLayerToggle','#mapLabelLayerToggle','#measureArrowsToggle','#furnitureSummaryToggle'].map(sel=>document.querySelector(sel)?.closest('label')).filter(Boolean);
+    const actionNodes=['#selectAllBtn','#clearMeasuresBtn','#fitBtn','#actualBtn','#undoBtn','#redoBtn'].map(sel=>document.querySelector(sel)).filter(Boolean);
+    const mkBox=(labelText,nodes)=>{const box=document.createElement('div');box.className='zoomBox';const label=document.createElement('span');label.className='small';label.textContent=labelText;box.appendChild(label);nodes.forEach(n=>box.appendChild(n));return box;};
+    const zoomOut=document.querySelector('#zoomOutBtn'),zoomRange=document.querySelector('#zoomRange'),zoomIn=document.querySelector('#zoomInBtn');
+    const measureRange=document.querySelector('#measureSizeRange'),labelRange=document.querySelector('#mapLabelSizeRange');
+    main.innerHTML='';
+    [...fileNodes,...toggleNodes,...actionNodes].forEach(n=>main.appendChild(n));
+    if(sliderBar){sliderBar.innerHTML='';
+      if(zoomOut&&zoomRange&&zoomIn){const v=document.createElement('span');v.className='small';const sync=()=>v.textContent=Math.round(+zoomRange.value||100)+'%';zoomRange.addEventListener('input',sync);sync();sliderBar.appendChild(mkBox('تكبير',[zoomOut,zoomRange,v,zoomIn]));}
+      if(measureRange){const v=document.createElement('span');v.className='small';const sync=()=>v.textContent=Math.round(+measureRange.value||100)+'%';measureRange.addEventListener('input',sync);sync();sliderBar.appendChild(mkBox('حجم القياسات',[measureRange,v]));}
+      if(labelRange){const v=document.createElement('span');v.className='small';const sync=()=>v.textContent=Math.round(+labelRange.value||100)+'%';labelRange.addEventListener('input',sync);sync();sliderBar.appendChild(mkBox('حجم المسميات',[labelRange,v]));}
+    }
+  }
+  if(work)work.style.display='none';
+  if(mapBar)mapBar.style.display='none';
+  document.getElementById('floatMoveBtn')?.addEventListener('click',()=>setStatus('اسحب القطعة المحددة لتحريكها'));
+  document.getElementById('floatMultiBtn')?.addEventListener('click',()=>{const c=document.getElementById('multiSelectToggle'); if(c){c.checked=!c.checked; c.dispatchEvent(new Event('change',{bubbles:true})); draw();}});
+  document.getElementById('floatResetRotBtn')?.addEventListener('click',()=>document.getElementById('rotate360')?.click());
+  document.getElementById('floatDimsBtn')?.addEventListener('click',()=>{const c=document.getElementById('dimsToggle'); if(c){c.checked=!c.checked; c.dispatchEvent(new Event('change',{bubbles:true})); draw();}});
+  document.getElementById('floatLabelsBtn')?.addEventListener('click',()=>{const c=document.getElementById('labelsToggle'); if(c){c.checked=!c.checked; c.dispatchEvent(new Event('change',{bubbles:true})); draw();}});
+  document.getElementById('floatSnapBtn')?.addEventListener('click',()=>{const c=document.getElementById('snapToggle'); if(c){c.checked=!c.checked; c.dispatchEvent(new Event('change',{bubbles:true})); draw();}});
+  document.getElementById('floatSummaryBtn')?.addEventListener('click',()=>{const c=document.getElementById('furnitureSummaryToggle'); if(c){c.checked=!c.checked; c.dispatchEvent(new Event('change',{bubbles:true})); draw();}});
+  document.getElementById('floatDeselectBtn')?.addEventListener('click',()=>document.getElementById('deselectBtn')?.click());
 })();
 </script>
 
