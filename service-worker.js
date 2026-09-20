@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v38-toolbar-layout-fix";
+const CACHE_NAME = "taatheethi-v39-unified-topbar-lefttoolbar";
 const CRITICAL = ['./', './index.html'];
 
 self.addEventListener('install', event => {
