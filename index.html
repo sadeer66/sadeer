@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <title>تأثيثي — iPad و iPhone</title>
-<meta name="taatheethi-version" content="38-toolbar-visible">
+<meta name="taatheethi-version" content="39-toolbar-watchdog">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -2955,6 +2955,8 @@ function syncFurnitureToolPalette(){
   if(dimBtn)dimBtn.classList.toggle('active',!!document.getElementById('dimsToggle').checked);
   if(labelBtn)labelBtn.classList.toggle('active',!!document.getElementById('labelsToggle').checked);
   if(snapBtn)snapBtn.classList.toggle('active',!!document.getElementById('snapToggle').checked);
+  furnitureToolPalette.style.visibility='visible';
+  furnitureToolPalette.style.opacity='1';
 }
 function showSizeFlyout(){
   const it=current();if(!it||getSelectedIds().length!==1){setStatus('اختر قطعة واحدة للتحجيم');return;}
@@ -3008,7 +3010,27 @@ furnitureToolPalette.addEventListener('click',e=>{
 document.addEventListener('pointerdown',e=>{if(!e.target.closest('#furnitureToolPalette')&&!e.target.closest('#furnitureToolFlyout'))closeFurnitureFlyout();});
 const _syncSelectedPanelV36=syncSelectedPanel;
 syncSelectedPanel=function(){_syncSelectedPanelV36();syncFurnitureToolPalette();};
-['dimsToggle','labelsToggle','snapToggle','furnitureLayerToggle'].forEach(id=>document.getElementById(id)?.addEventListener('change',syncFurnitureToolPalette));
+
+function enforceFurnitureToolPaletteVisibility(){
+  const ids=getSelectedIds();
+  const it=current();
+  const shouldShow=!!(ids.length&&it&&!selectedMeasureId&&!selectedMapLabelId&&visibleFurniture());
+  if(shouldShow){
+    furnitureToolPalette.classList.add('show');
+    furnitureToolPalette.style.setProperty('display','flex','important');
+    furnitureToolPalette.style.setProperty('visibility','visible','important');
+    furnitureToolPalette.style.setProperty('opacity','1','important');
+    furnitureToolPalette.style.pointerEvents='auto';
+    positionFurnitureToolPalette();
+  }else{
+    furnitureToolPalette.classList.remove('show');
+    furnitureToolPalette.style.setProperty('display','none','important');
+  }
+}
+['dimsToggle','labelsToggle','snapToggle','furnitureLayerToggle'].forEach(id=>document.getElementById(id)?.addEventListener('change',()=>{syncFurnitureToolPalette();enforceFurnitureToolPaletteVisibility();}));
+canvas.addEventListener('pointerup',()=>requestAnimationFrame(enforceFurnitureToolPaletteVisibility),true);
+canvas.addEventListener('click',()=>requestAnimationFrame(enforceFurnitureToolPaletteVisibility),true);
+setInterval(enforceFurnitureToolPaletteVisibility,350);
 
 buildArchitectureLibrary();
 updateScaleUI();
@@ -3020,7 +3042,7 @@ updateHistoryButtons();
 syncQuickDisplayButtons();
 scheduleUsedFurnitureSync(true);
 draw();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=39').then(r=>r.update()).catch(()=>{}));}
 </script>
 
 </body>
