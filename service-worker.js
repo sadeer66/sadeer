@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v45-2-library-migration";
+const CACHE_NAME = "taatheethi-v45-3-clean-topviews";
 
 self.addEventListener('install', event => {
   self.skipWaiting();
