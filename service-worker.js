@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v45-1-flat-assets-fix";
+const CACHE_NAME = "taatheethi-v45-2-library-migration";
 
 self.addEventListener('install', event => {
   self.skipWaiting();
