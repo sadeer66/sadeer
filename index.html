@@ -2,6 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#020617" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -10,7 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <title>تأثيثي — iPad و iPhone</title>
-<meta name="taatheethi-version" content="43-stable-icon-layout">
+<meta name="taatheethi-version" content="44-layout-reset">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -256,78 +259,116 @@
     .sidebarScrim{inset:calc(env(safe-area-inset-top) + 104px) 0 env(safe-area-inset-bottom) 0}
   }
 
-/* ===== V43: stable icon-only shell. Core V35 layout preserved ===== */
+/* ===== V44: stable two-bar layout, core V35 geometry untouched ===== */
 header{
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) 150px!important;
-  grid-template-rows:auto!important;
+  display:flex!important;
+  flex-direction:row!important;
   align-items:center!important;
-  min-height:118px!important;
+  justify-content:space-between!important;
+  min-height:116px!important;
   padding:8px 12px!important;
   gap:10px!important;
   overflow:visible!important;
 }
-.headerBrand{grid-column:2!important;grid-row:1!important;min-width:0!important;text-align:right!important;align-self:center!important}
-.headerBrand h1{font-size:26px!important;margin:0 0 5px!important;line-height:1!important}
-.headerBrand .status{font-size:10px!important;max-width:145px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.headerBrand{
+  flex:0 0 150px!important;
+  min-width:0!important;
+  text-align:right!important;
+  align-self:center!important;
+}
+.headerBrand h1{font-size:27px!important;margin:0 0 5px!important;line-height:1!important}
+.headerBrand .status{font-size:10px!important;max-width:145px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
 .toolbarStack{display:none!important}
-#modernToolbarArea{grid-column:1!important;grid-row:1!important;min-width:0;display:flex;flex-direction:column;gap:7px;direction:rtl}
-#modernTopToolbar{display:flex;align-items:center;justify-content:flex-start;gap:6px;flex-wrap:nowrap;min-width:0;overflow:hidden;padding:5px 6px;border:1px solid #303b4a;background:#11161c;border-radius:11px}
-.modernIconBtn{width:46px;height:46px;min-width:46px;min-height:46px;flex:0 0 46px;padding:0!important;border-radius:9px!important;background:linear-gradient(180deg,#242b33,#171c22)!important;border:1px solid #46515d!important;color:#f3f6fa!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;position:relative}
+#modernToolbarArea{
+  flex:1 1 auto!important;
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:7px!important;
+  direction:rtl!important;
+}
+#modernTopToolbar{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:6px!important;
+  flex-wrap:nowrap!important;
+  min-width:0!important;
+  overflow:hidden!important;
+  padding:5px 6px!important;
+  border:1px solid #303b4a!important;
+  background:#11161c!important;
+  border-radius:11px!important;
+}
+.modernIconBtn{
+  width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;
+  flex:0 0 48px!important;padding:0!important;border-radius:10px!important;
+  background:linear-gradient(180deg,#242b33,#171c22)!important;border:1px solid #46515d!important;
+  color:#f3f6fa!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  position:relative!important;cursor:pointer!important
+}
 .modernIconBtn:hover{background:linear-gradient(180deg,#303a44,#202730)!important;border-color:#7caee0!important}
-.modernIconBtn.active{background:linear-gradient(180deg,#31516f,#21374c)!important;border-color:#79b2ea!important;box-shadow:inset 0 0 0 1px rgba(121,178,234,.18)}
-.modernIconBtn:disabled{opacity:.32!important;filter:saturate(.45);cursor:not-allowed}
-.modernIconBtn svg{width:26px;height:26px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.modernIconBtn.active{background:linear-gradient(180deg,#31516f,#21374c)!important;border-color:#79b2ea!important;box-shadow:inset 0 0 0 1px rgba(121,178,234,.18)!important}
+.modernIconBtn:disabled{opacity:.32!important;filter:saturate(.45)!important;cursor:not-allowed!important}
+.modernIconBtn svg{width:27px!important;height:27px!important;display:block!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;pointer-events:none!important}
 .modernIconBtn.pdfIcon{color:#d9fff5!important}
 .modernIconBtn.dangerIcon{background:linear-gradient(180deg,#4d2227,#32171a)!important;border-color:#7b343d!important}
-#modernSliderRow{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:7px;min-width:0;direction:rtl}
-.modernSliderBox{height:37px;min-width:0;display:flex;align-items:center;gap:6px;padding:4px 7px;border:1px solid #304058;background:#0b1524;border-radius:10px;overflow:hidden}
-.modernSliderBox .sliderGlyph{width:20px;height:20px;min-width:20px;display:flex;align-items:center;justify-content:center;color:#d9e8f7}
-.modernSliderBox .sliderGlyph svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.modernSliderBox input[type=range]{min-width:40px;flex:1;width:auto!important}
-.modernSliderBox .sliderValue{font-size:9px;color:#c7d2e0;min-width:31px;text-align:center;direction:ltr}
-.modernSliderBox .zoomStep{width:29px!important;height:29px!important;min-width:29px!important;min-height:29px!important;padding:0!important;border-radius:7px!important;font-size:18px!important;display:flex!important;align-items:center!important;justify-content:center!important}
+#modernSliderRow{
+  display:grid!important;
+  grid-template-columns:1.25fr 1fr 1fr!important;
+  gap:8px!important;
+  min-width:0!important;
+  direction:rtl!important;
+}
+.modernSliderBox{
+  height:38px!important;min-width:0!important;display:flex!important;align-items:center!important;gap:7px!important;
+  padding:4px 8px!important;border:1px solid #304058!important;background:#0b1524!important;border-radius:10px!important;overflow:hidden!important
+}
+.modernSliderBox .sliderGlyph{width:21px!important;height:21px!important;min-width:21px!important;display:flex!important;align-items:center!important;justify-content:center!important;color:#d9e8f7!important}
+.modernSliderBox .sliderGlyph svg{width:20px!important;height:20px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+.modernSliderBox input[type=range]{min-width:40px!important;flex:1 1 auto!important;width:auto!important}
+.modernSliderBox .sliderValue{font-size:10px!important;color:#c7d2e0!important;min-width:34px!important;text-align:center!important;direction:ltr!important}
+.modernSliderBox .zoomStep{width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;padding:0!important;border-radius:7px!important;font-size:18px!important;display:flex!important;align-items:center!important;justify-content:center!important}
 .mapTopbar{display:none!important}
 
+main{position:relative!important}
 #furnitureIconToolbar{
-  position:absolute;z-index:80;left:10px;top:10px;
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  width:48px;max-height:calc(100% - 20px);overflow-y:auto;overflow-x:hidden;
-  padding:5px;background:linear-gradient(180deg,rgba(17,22,28,.98),rgba(10,15,21,.97));
-  border:1px solid #34414f;border-radius:11px;box-shadow:0 10px 26px rgba(0,0,0,.38);
-  direction:ltr;scrollbar-width:none
+  position:absolute!important;z-index:80!important;
+  left:8px!important;right:auto!important;inset-inline-start:auto!important;inset-inline-end:auto!important;
+  top:8px!important;bottom:8px!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;gap:4px!important;
+  width:52px!important;overflow-y:auto!important;overflow-x:hidden!important;
+  padding:5px!important;background:linear-gradient(180deg,rgba(17,22,28,.98),rgba(10,15,21,.97))!important;
+  border:1px solid #34414f!important;border-radius:11px!important;box-shadow:0 10px 26px rgba(0,0,0,.38)!important;
+  direction:ltr!important;scrollbar-width:none!important
 }
-#furnitureIconToolbar::-webkit-scrollbar{display:none}
-#furnitureIconToolbar .modernIconBtn{width:38px;height:38px;min-width:38px;min-height:38px;flex:0 0 38px;border-radius:8px!important}
-#furnitureIconToolbar .modernIconBtn svg{width:22px;height:22px}
-#furnitureIconToolbar .toolSep{width:24px;height:1px;min-height:1px;background:#394654;margin:1px 0}
+#furnitureIconToolbar::-webkit-scrollbar{display:none!important}
+#furnitureIconToolbar .modernIconBtn{width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;flex:0 0 42px!important;border-radius:8px!important}
+#furnitureIconToolbar .modernIconBtn svg{width:24px!important;height:24px!important}
+#furnitureIconToolbar .toolSep{width:27px!important;height:1px!important;min-height:1px!important;background:#394654!important;margin:1px 0!important}
 #furnitureIconToolbar .colorState::after{content:'';position:absolute;left:5px;right:5px;bottom:4px;height:4px;border-radius:99px;background:var(--tool-color,#bfa781)}
 #selectedPanel .bottomBtn,#selectedPanel #rotate90,#selectedPanel #rotate45,#selectedPanel #rotate180,#selectedPanel #rotate360,#selectedPanel #flipDoorBtn,#selectedPanel #lockItemBtn,#selectedPanel #dupBtn,#selectedPanel #deselectBtn,#selectedPanel #deleteBtn{display:none!important}
 
-@media(max-width:1200px){
-  header{grid-template-columns:minmax(0,1fr) 118px!important;min-height:108px!important;padding:7px 8px!important;gap:7px!important}
-  .headerBrand h1{font-size:23px!important}.headerBrand .status{max-width:112px!important;font-size:9px!important}
-  #modernTopToolbar{gap:4px;padding:4px}
-  .modernIconBtn{width:38px;height:38px;min-width:38px;min-height:38px;flex-basis:38px;border-radius:8px!important}.modernIconBtn svg{width:22px;height:22px}
-  #modernSliderRow{gap:5px}.modernSliderBox{height:34px;padding:3px 5px;gap:4px}.modernSliderBox .sliderValue{font-size:8px;min-width:27px}
-  #furnitureIconToolbar{left:7px;top:7px;width:44px;padding:4px;gap:3px}.modernSliderBox .zoomStep{width:27px!important;height:27px!important;min-width:27px!important;min-height:27px!important}
-  #furnitureIconToolbar .modernIconBtn{width:35px;height:35px;min-width:35px;min-height:35px;flex-basis:35px}#furnitureIconToolbar .modernIconBtn svg{width:20px;height:20px}
+@media(max-width:1100px){
+  header{min-height:108px!important;padding:7px 8px!important;gap:7px!important}
+  .headerBrand{flex-basis:112px!important}.headerBrand h1{font-size:23px!important}.headerBrand .status{max-width:106px!important;font-size:9px!important}
+  #modernTopToolbar{gap:4px!important;padding:4px!important}
+  .modernIconBtn{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;flex-basis:40px!important}.modernIconBtn svg{width:23px!important;height:23px!important}
+  #modernSliderRow{gap:5px!important}.modernSliderBox{height:34px!important;padding:3px 5px!important;gap:4px!important}.modernSliderBox .sliderValue{font-size:8px!important;min-width:27px!important}
+  #furnitureIconToolbar{left:6px!important;right:auto!important;width:47px!important;padding:4px!important;gap:3px!important}
+  #furnitureIconToolbar .modernIconBtn{width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;flex-basis:38px!important}
+  #furnitureIconToolbar .modernIconBtn svg{width:21px!important;height:21px!important}
 }
-@media(max-width:900px){
-  header{grid-template-columns:minmax(0,1fr) 94px!important;min-height:102px!important;padding:6px!important}
-  .headerBrand h1{font-size:21px!important}.headerBrand .status{font-size:8px!important;max-width:90px!important}
-  #modernTopToolbar{overflow-x:auto!important;scrollbar-width:none;justify-content:flex-start}
-  #modernTopToolbar::-webkit-scrollbar{display:none}
-  #modernSliderRow{grid-template-columns:1.2fr 1fr 1fr!important}
-  aside{top:calc(env(safe-area-inset-top) + 102px)!important}
-}
-@media(max-width:600px){
-  header{grid-template-columns:minmax(0,1fr) 65px!important;min-height:94px!important;padding:5px!important;gap:4px!important}
-  .headerBrand h1{font-size:18px!important}.headerBrand .status{display:none!important}
-  .modernIconBtn{width:34px;height:34px;min-width:34px;min-height:34px;flex-basis:34px}.modernIconBtn svg{width:20px;height:20px}
-  #modernSliderRow{gap:3px}.modernSliderBox{height:31px;padding:2px 4px}.modernSliderBox .sliderGlyph{display:none}.modernSliderBox .sliderValue{font-size:7px;min-width:24px}.modernSliderBox .zoomStep{width:25px!important;height:25px!important;min-width:25px!important;min-height:25px!important;font-size:15px!important}
-  #furnitureIconToolbar{left:5px;top:5px;width:40px;padding:3px;gap:2px}#furnitureIconToolbar .modernIconBtn{width:32px;height:32px;min-width:32px;min-height:32px;flex-basis:32px}#furnitureIconToolbar .modernIconBtn svg{width:18px;height:18px}
-  aside{top:calc(env(safe-area-inset-top) + 94px)!important}
+@media(max-width:700px){
+  header{min-height:96px!important;padding:5px!important;gap:4px!important}
+  .headerBrand{flex-basis:64px!important}.headerBrand h1{font-size:18px!important}.headerBrand .status{display:none!important}
+  .modernIconBtn{width:33px!important;height:33px!important;min-width:33px!important;min-height:33px!important;flex-basis:33px!important}.modernIconBtn svg{width:19px!important;height:19px!important}
+  #modernTopToolbar .secondaryTop{display:none!important}
+  #modernSliderRow{gap:3px!important;grid-template-columns:1.2fr 1fr 1fr!important}
+  .modernSliderBox{height:31px!important;padding:2px 4px!important}.modernSliderBox .sliderGlyph{display:none!important}.modernSliderBox .sliderValue{font-size:7px!important;min-width:24px!important}.modernSliderBox .zoomStep{width:25px!important;height:25px!important;min-width:25px!important;min-height:25px!important;font-size:15px!important}
+  #furnitureIconToolbar{left:4px!important;right:auto!important;top:5px!important;bottom:5px!important;width:42px!important;padding:3px!important;gap:2px!important}
+  #furnitureIconToolbar .modernIconBtn{width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;flex-basis:34px!important}
+  #furnitureIconToolbar .modernIconBtn svg{width:19px!important;height:19px!important}
 }
 
 </style>
@@ -2732,13 +2773,18 @@ updateHistoryButtons();
 syncQuickDisplayButtons();
 scheduleUsedFurnitureSync(true);
 draw();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
+// V44: service worker registration disabled to prevent stale GitHub Pages UI.
 </script>
 
-<script id="v43StableIconShell">
+<script id="v44StableIconShell">
 (()=>{
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{}));
+  }
+  if('caches' in window){window.addEventListener('load',()=>caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k)))).catch(()=>{}));}
+
   const svg=(body)=>`<svg viewBox="0 0 24 24" aria-hidden="true">${body}</svg>`;
-  const icons={
+  const I={
     info:svg('<circle cx="12" cy="12" r="9"/><path d="M12 10v7M12 7h.01"/>'),
     newfile:svg('<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5M12 11v6M9 14h6"/>'),
     folder:svg('<path d="M3 7h7l2 2h9v10H3z"/><path d="M3 7V5h7l2 2"/>'),
@@ -2751,17 +2797,13 @@ if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.se
     ruler:svg('<path d="m5 17 12-12 3 3-12 12z"/><path d="m9 13 2 2M12 10l2 2M15 7l2 2"/>'),
     text:svg('<path d="M5 5h14M12 5v14M8 19h8"/>'),
     grid:svg('<rect x="4" y="4" width="16" height="16"/><path d="M10 4v16M16 4v16M4 10h16M4 16h16"/>'),
-    map:svg('<path d="M4 6 9 4l6 2 5-2v14l-5 2-6-2-5 2Z"/><path d="M9 4v14M15 6v14"/>'),
-    sofa:svg('<path d="M5 11a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4H5Z"/><path d="M7 9V8a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1"/><path d="M6 15v2M18 15v2"/>'),
-    rulerEye:svg('<path d="m4 17 8-8 3 3-8 8z"/><path d="M12 5s2.4-3 5.5-3S23 5 23 5s-2.4 3-5.5 3S12 5 12 5Z"/><circle cx="17.5" cy="5" r="1.2"/>'),
-    textEye:svg('<path d="M4 5h8M8 5v9M5 14h6"/><path d="M13 15s2-3 5-3 5 3 5 3-2 3-5 3-5-3-5-3Z"/><circle cx="18" cy="15" r="1.2"/>'),
     fit:svg('<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/><rect x="8" y="8" width="8" height="8"/>'),
     actual:svg('<rect x="5" y="5" width="14" height="14"/><path d="M9 9v6M8 10l1-1M12 12h3"/>'),
     undo:svg('<path d="M9 7 5 11l4 4"/><path d="M5 11h7a6 6 0 0 1 6 6"/>'),
     redo:svg('<path d="m15 7 4 4-4 4"/><path d="M19 11h-7a6 6 0 0 0-6 6"/>'),
-    library:svg('<path d="M5 8h14v11H5z"/><path d="M8 8V5h8v3M9 19v-5h6v5"/><path d="M7 11h10"/>'),
     move:svg('<path d="M12 3v18M3 12h18"/><path d="m12 3-2 2m2-2 2 2M3 12l2-2m-2 2 2 2M12 21l-2-2m2 2 2-2M21 12l-2-2m2 2-2 2"/>'),
     select:svg('<path d="M5 8V5h3M16 5h3v3M19 16v3h-3M8 19H5v-3"/><rect x="9" y="9" width="6" height="6"/>'),
+    selectAll:svg('<rect x="7" y="7" width="10" height="10"/><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4"/>'),
     plus:svg('<rect x="5" y="5" width="14" height="14" rx="2"/><path d="M12 8v8M8 12h8"/>'),
     minus:svg('<rect x="5" y="5" width="14" height="14" rx="2"/><path d="M8 12h8"/>'),
     rotate:svg('<path d="M6 15a7 7 0 1 0 2-7"/><path d="M5 5v5h5"/><rect x="12" y="12" width="6" height="6"/>'),
@@ -2773,52 +2815,51 @@ if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.se
     tag:svg('<path d="M4 7v10h16V7z"/><path d="M8 11h8M8 14h5"/>'),
     magnet:svg('<path d="M7 4v8a5 5 0 0 0 10 0V4"/><path d="M7 8h4M13 8h4"/>'),
     auto:svg('<path d="M5 7v10M19 7v10M5 12h14"/><path d="m8 9-3 3 3 3M16 9l3 3-3 3"/><circle cx="12" cy="12" r="1.4"/>'),
+    shadow:svg('<rect x="5" y="5" width="11" height="11"/><path d="M8 8h11v11H8"/>'),
     lock:svg('<rect x="6" y="10" width="12" height="10" rx="2"/><path d="M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10"/>'),
     copy:svg('<rect x="8" y="8" width="11" height="11"/><rect x="5" y="5" width="11" height="11"/>'),
     close:svg('<path d="M6 6l12 12M18 6 6 18"/>'),
-    selectAll:svg('<rect x="7" y="7" width="10" height="10"/><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4"/>'),
     layers:svg('<path d="m12 4 8 4-8 4-8-4 8-4Z"/><path d="m4 12 8 4 8-4"/><path d="m4 16 8 4 8-4"/>'),
-    trash:svg('<path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/>'),
-    shadow:svg('<rect x="5" y="5" width="11" height="11"/><path d="M8 8h11v11H8"/>')
+    trash:svg('<path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/>')
   };
+
   const top=document.getElementById('modernTopToolbar');
   const left=document.getElementById('furnitureIconToolbar');
   const sliders=document.getElementById('modernSliderRow');
-  const makeBtn=(id,ic,title,fn,cls='')=>{const b=document.createElement('button');b.type='button';b.id=id;b.className='modernIconBtn '+cls;b.title=title;b.setAttribute('aria-label',title);b.innerHTML=icons[ic]||icons.info;b.addEventListener('click',fn);return b;};
-  const click=(id)=>document.getElementById(id)?.click();
-  const toggle=(id)=>{const c=document.getElementById(id);if(!c)return;c.checked=!c.checked;c.dispatchEvent(new Event('change',{bubbles:true}));syncStates();};
-  const sep=()=>{const s=document.createElement('div');s.className='toolSep';return s;};
+  if(!top||!left||!sliders)return;
+  top.innerHTML=''; left.innerHTML=''; sliders.innerHTML='';
 
-  // Keep file inputs outside hidden original toolbar so file pickers always work.
-  const loadInput=document.getElementById('loadInput'),fileInput=document.getElementById('fileInput');
-  if(loadInput)document.body.appendChild(loadInput);if(fileInput)document.body.appendChild(fileInput);
+  const loadInput=document.getElementById('loadInput');
+  const fileInput=document.getElementById('fileInput');
+  if(loadInput)document.body.appendChild(loadInput);
+  if(fileInput)document.body.appendChild(fileInput);
 
-  const topDefs=[
-    ['topNew','newfile','مشروع جديد',()=>click('newProjectBtn')],
-    ['topOpen','folder','فتح مشروع',()=>loadInput?.click()],
-    ['topSave','save','حفظ المشروع',()=>click('saveBtn')],
-    ['topPdf','pdf','حفظ PDF',()=>click('pdfBtn'),'pdfIcon'],
-    ['topPng','image','تصدير PNG',()=>click('exportBtn')],
-    ['topPrint','print','طباعة A3 / A4',()=>click('printBtn')],
-    ['topUpload','upload','رفع الخارطة',()=>fileInput?.click()],
-    ['topInfo','info','معلوماتك',()=>click('infoBtn')],
-    ['topCalibrate','target','معايرة القياس',()=>click('calibrateBtn')],
-    ['topMeasure','ruler','قياس مسافة',()=>click('measureBtn')],
-    ['topLabel','text','إضافة مسمى',()=>click('addMapLabelBtn')],
-    ['topGrid','grid','الشبكة',()=>toggle('gridToggle')],
-    ['topMap','map','إظهار / إخفاء الخارطة',()=>toggle('bgLayerToggle')],
-    ['topFurniture','sofa','إظهار / إخفاء الأثاث',()=>toggle('furnitureLayerToggle')],
-    ['topMeasures','rulerEye','إظهار / إخفاء القياسات',()=>toggle('measureLayerToggle')],
-    ['topLabels','textEye','إظهار / إخفاء المسميات',()=>toggle('mapLabelLayerToggle')],
-    ['topFit','fit','ملاءمة للشاشة',()=>click('fitBtn')],
-    ['topActual','actual','عرض 100%',()=>click('actualBtn')],
-    ['topUndo','undo','تراجع',()=>click('undoBtn')],
-    ['topRedo','redo','إعادة',()=>click('redoBtn')]
+  const button=(id,icon,title,fn,cls='')=>{const b=document.createElement('button');b.type='button';b.id=id;b.className='modernIconBtn '+cls;b.title=title;b.setAttribute('aria-label',title);b.innerHTML=I[icon]||I.info;b.addEventListener('click',fn);return b;};
+  const label=(id,icon,title,forId,cls='')=>{const l=document.createElement('label');l.id=id;l.className='modernIconBtn '+cls;l.title=title;l.setAttribute('aria-label',title);l.htmlFor=forId;l.innerHTML=I[icon]||I.info;return l;};
+  const click=id=>document.getElementById(id)?.click();
+  const toggle=id=>{const c=document.getElementById(id);if(!c)return;c.checked=!c.checked;c.dispatchEvent(new Event('change',{bubbles:true}));syncStates();};
+
+  const topNodes=[
+    button('v44New','newfile','مشروع جديد',()=>click('newProjectBtn')),
+    label('v44Open','folder','فتح مشروع','loadInput'),
+    button('v44Save','save','حفظ المشروع',()=>click('saveBtn')),
+    button('v44Pdf','pdf','حفظ PDF',()=>click('pdfBtn'),'pdfIcon'),
+    button('v44Png','image','تصدير PNG',()=>click('exportBtn')),
+    button('v44Print','print','طباعة A3 / A4',()=>click('printBtn')),
+    label('v44Upload','upload','رفع الخارطة','fileInput'),
+    button('v44Info','info','معلوماتك',()=>click('infoBtn'),'secondaryTop'),
+    button('v44Calibrate','target','معايرة القياس',()=>click('calibrateBtn')),
+    button('v44Measure','ruler','قياس مسافة',()=>click('measureBtn')),
+    button('v44Label','text','إضافة مسمى',()=>click('addMapLabelBtn')),
+    button('v44Grid','grid','الشبكة',()=>toggle('gridToggle'),'secondaryTop'),
+    button('v44Fit','fit','ملاءمة للشاشة',()=>click('fitBtn'),'secondaryTop'),
+    button('v44Actual','actual','عرض 100%',()=>click('actualBtn'),'secondaryTop'),
+    button('v44Undo','undo','تراجع',()=>click('undoBtn')),
+    button('v44Redo','redo','إعادة',()=>click('redoBtn'))
   ];
-  topDefs.forEach(d=>top.appendChild(makeBtn(...d)));
-  const libBtn=makeBtn('topLibrary','library','مكتبة الأثاث',()=>click('sidebarToggle'));libBtn.classList.add('ipadOnly');top.appendChild(libBtn);
+  topNodes.forEach(n=>top.appendChild(n));
 
-  const sliderBox=(iconKey,nodes,valueEl)=>{const box=document.createElement('div');box.className='modernSliderBox';const g=document.createElement('span');g.className='sliderGlyph';g.innerHTML=icons[iconKey];box.appendChild(g);nodes.filter(Boolean).forEach(n=>box.appendChild(n));if(valueEl){valueEl.classList.add('sliderValue');box.appendChild(valueEl);}return box;};
+  const sliderBox=(icon,nodes,value)=>{const box=document.createElement('div');box.className='modernSliderBox';const g=document.createElement('span');g.className='sliderGlyph';g.innerHTML=I[icon];box.appendChild(g);nodes.filter(Boolean).forEach(n=>box.appendChild(n));if(value){value.classList.add('sliderValue');box.appendChild(value);}return box;};
   const zOut=document.getElementById('zoomOutBtn'),zRange=document.getElementById('zoomRange'),zVal=document.getElementById('zoomLabel'),zIn=document.getElementById('zoomInBtn');
   const mRange=document.getElementById('measureSizeRange'),mVal=document.getElementById('measureSizeLabel');
   const lRange=document.getElementById('mapLabelSizeRange'),lVal=document.getElementById('mapLabelSizeValue');
@@ -2826,52 +2867,51 @@ if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.se
   sliders.appendChild(sliderBox('ruler',[mRange],mVal));
   sliders.appendChild(sliderBox('text',[lRange],lVal));
 
+  const sep=()=>{const s=document.createElement('div');s.className='toolSep';return s;};
   const leftDefs=[
-    ['leftMove','move','تحريك / وضع التحديد',()=>{try{mode='select';pendingFurnitureDef=null;updateInteractionCursor?.();setStatus?.('وضع تحريك الأثاث');}catch(e){}}],
-    ['leftMulti','select','تحديد متعدد',()=>toggle('multiSelectToggle')],
-    ['leftPlus','plus','تكبير القطعة 5%',()=>{if(typeof applyToSelection==='function')applyToSelection(it=>{it.w=Math.max(1,it.w*1.05);it.h=Math.max(1,it.h*1.05);},'تم تكبير القطعة');}],
-    ['leftMinus','minus','تصغير القطعة 5%',()=>{if(typeof applyToSelection==='function')applyToSelection(it=>{it.w=Math.max(1,it.w*.95);it.h=Math.max(1,it.h*.95);},'تم تصغير القطعة');}],
-    ['leftRotate90','rotate','دوران 90°',()=>click('rotate90')],
-    ['leftRotate45','rotate45','دوران 45°',()=>click('rotate45')],
-    ['leftReset','reset','إعادة الدوران',()=>click('rotate360')],
-    ['leftColor','palette','تلوين القطعة',()=>{const it=(typeof current==='function'?current():null);if(!it)return;const picker=document.getElementById('v43ColorPicker');picker.value=it.color||'#bfa781';picker.click();},'colorState'],
-    ['leftEye','eye','إخفاء / إظهار القطعة',()=>toggleSelectedVisibility()],
-    ['leftDims','dims','قياسات القطعة',()=>toggle('dimsToggle')],
-    ['leftNames','tag','أسماء القطع',()=>toggle('labelsToggle')],
-    ['leftSnap','magnet','Snap',()=>toggle('snapToggle')],
-    ['leftAuto','auto','المسافات التلقائية',()=>toggle('autoDimsToggle')],
-    ['leftShadow','shadow','تظليل الأثاث',()=>toggle('shadowToggle')],
-    ['leftLock','lock','قفل / فتح المحدد',()=>click('lockItemBtn')],
-    ['leftCopy','copy','نسخ المحدد',()=>click('dupBtn')],
-    ['leftDeselect','close','إلغاء التحديد',()=>click('deselectBtn')],
-    ['leftSelectAll','selectAll','تحديد كل الأثاث',()=>click('selectAllBtn')],
-    ['leftSummary','layers','دليل الأثاث',()=>toggle('furnitureSummaryToggle')],
-    ['leftDelete','trash','حذف المحدد',()=>click('deleteBtn'),'dangerIcon']
+    ['lMove','move','تحريك الأثاث',()=>{try{mode='select';pendingFurnitureDef=null;updateInteractionCursor?.();setStatus?.('وضع تحريك الأثاث');}catch(e){}}],
+    ['lMulti','select','تحديد متعدد',()=>toggle('multiSelectToggle')],
+    ['lAll','selectAll','تحديد كل الأثاث',()=>click('selectAllBtn')],
+    ['lPlus','plus','تكبير القطعة 5%',()=>{if(typeof applyToSelection==='function')applyToSelection(it=>{it.w=Math.max(1,it.w*1.05);it.h=Math.max(1,it.h*1.05);},'تم تكبير القطعة');}],
+    ['lMinus','minus','تصغير القطعة 5%',()=>{if(typeof applyToSelection==='function')applyToSelection(it=>{it.w=Math.max(1,it.w*.95);it.h=Math.max(1,it.h*.95);},'تم تصغير القطعة');}],
+    ['lRot90','rotate','دوران 90°',()=>click('rotate90')],
+    ['lRot45','rotate45','دوران 45°',()=>click('rotate45')],
+    ['lReset','reset','إعادة الدوران',()=>click('rotate360')],
+    ['lColor','palette','تلوين القطعة',()=>{const it=(typeof current==='function'?current():null);if(!it)return;const p=document.getElementById('v44Color');p.value=it.color||'#bfa781';p.click();},'colorState'],
+    ['lEye','eye','إخفاء / إظهار القطعة',()=>toggleSelectedVisibility()],
+    ['lDims','dims','قياسات القطعة',()=>toggle('dimsToggle')],
+    ['lNames','tag','أسماء القطع',()=>toggle('labelsToggle')],
+    ['lSnap','magnet','Snap',()=>toggle('snapToggle')],
+    ['lAuto','auto','المسافات التلقائية',()=>toggle('autoDimsToggle')],
+    ['lShadow','shadow','تظليل الأثاث',()=>toggle('shadowToggle')],
+    ['lLock','lock','قفل / فتح المحدد',()=>click('lockItemBtn')],
+    ['lCopy','copy','نسخ المحدد',()=>click('dupBtn')],
+    ['lDeselect','close','إلغاء التحديد',()=>click('deselectBtn')],
+    ['lSummary','layers','دليل الأثاث',()=>toggle('furnitureSummaryToggle')],
+    ['lDelete','trash','حذف المحدد',()=>click('deleteBtn'),'dangerIcon']
   ];
-  leftDefs.forEach((d,i)=>{if([2,8,14,19].includes(i))left.appendChild(sep());left.appendChild(makeBtn(...d));});
-  const picker=document.createElement('input');picker.type='color';picker.id='v43ColorPicker';picker.style.cssText='position:fixed;left:-100px;top:-100px;opacity:0;width:1px;height:1px';document.body.appendChild(picker);
-  picker.addEventListener('input',()=>{const it=(typeof current==='function'?current():null);if(!it)return;const src=document.getElementById('selColor');src.value=picker.value;src.dispatchEvent(new Event('input',{bubbles:true}));src.dispatchEvent(new Event('change',{bubbles:true}));syncStates();});
+  leftDefs.forEach((d,i)=>{if([3,9,15,19].includes(i))left.appendChild(sep());left.appendChild(button(...d));});
 
-  // Small visibility extension without changing the core project model.
+  const picker=document.createElement('input');picker.type='color';picker.id='v44Color';picker.style.cssText='position:fixed;left:-100px;top:-100px;opacity:0;width:1px;height:1px';document.body.appendChild(picker);
+  picker.addEventListener('input',()=>{const it=(typeof current==='function'?current():null);if(!it)return;const src=document.getElementById('selColor');if(!src)return;src.value=picker.value;src.dispatchEvent(new Event('input',{bubbles:true}));src.dispatchEvent(new Event('change',{bubbles:true}));syncStates();});
+
   const originalDrawItem=typeof drawItem==='function'?drawItem:null;
   if(originalDrawItem){window.drawItem=function(it){if(it?.uiHidden&&!isItemSelected(it.id))return;if(it?.uiHidden){ctx.save();ctx.globalAlpha=.16;originalDrawItem(it);ctx.restore();}else originalDrawItem(it);};}
-  const originalHitTest=typeof hitTest==='function'?hitTest:null;
-  if(originalHitTest){window.hitTest=function(p){if(!visibleFurniture())return null;for(let i=items.length-1;i>=0;i--){if(items[i]?.uiHidden)continue;if(pointInPoly(p,itemCorners(items[i])))return items[i];}return null;};}
-  function toggleSelectedVisibility(){const list=typeof selectedItems==='function'?selectedItems():[];if(list.length){const hide=list.some(it=>!it.uiHidden);list.forEach(it=>it.uiHidden=hide);draw();setStatus?.(hide?'تم إخفاء المحدد — اضغط العين لإظهاره':'تم إظهار المحدد');}else{let changed=false;items.forEach(it=>{if(it.uiHidden){it.uiHidden=false;changed=true;}});if(changed){draw();setStatus?.('تم إظهار كل القطع المخفية');}}syncStates();}
+  function toggleSelectedVisibility(){const list=typeof selectedItems==='function'?selectedItems():[];if(list.length){const hide=list.some(it=>!it.uiHidden);list.forEach(it=>it.uiHidden=hide);draw();setStatus?.(hide?'تم إخفاء المحدد':'تم إظهار المحدد');}else{let changed=false;items.forEach(it=>{if(it.uiHidden){it.uiHidden=false;changed=true;}});if(changed){draw();setStatus?.('تم إظهار القطع المخفية');}}syncStates();}
 
-  const checkMap={topGrid:'gridToggle',topMap:'bgLayerToggle',topFurniture:'furnitureLayerToggle',topMeasures:'measureLayerToggle',topLabels:'mapLabelLayerToggle',leftMulti:'multiSelectToggle',leftDims:'dimsToggle',leftNames:'labelsToggle',leftSnap:'snapToggle',leftAuto:'autoDimsToggle',leftShadow:'shadowToggle',leftSummary:'furnitureSummaryToggle'};
+  const checkMap={v44Grid:'gridToggle',lMulti:'multiSelectToggle',lDims:'dimsToggle',lNames:'labelsToggle',lSnap:'snapToggle',lAuto:'autoDimsToggle',lShadow:'shadowToggle',lSummary:'furnitureSummaryToggle'};
   function syncStates(){
     Object.entries(checkMap).forEach(([bid,cid])=>{const b=document.getElementById(bid),c=document.getElementById(cid);if(b&&c)b.classList.toggle('active',!!c.checked);});
     const has=typeof getSelectedIds==='function'&&getSelectedIds().length>0;
-    ['leftPlus','leftMinus','leftRotate90','leftRotate45','leftReset','leftColor','leftLock','leftCopy','leftDeselect','leftDelete'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=!has;});
-    const it=typeof current==='function'?current():null;const col=document.getElementById('leftColor');if(col)col.style.setProperty('--tool-color',it?.color||'#bfa781');
-    const ub=document.getElementById('topUndo'),rb=document.getElementById('topRedo');const uo=document.getElementById('undoBtn'),ro=document.getElementById('redoBtn');if(ub&&uo)ub.disabled=uo.disabled;if(rb&&ro)rb.disabled=ro.disabled;
+    ['lPlus','lMinus','lRot90','lRot45','lReset','lColor','lEye','lLock','lCopy','lDeselect','lDelete'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=!has;});
+    const it=typeof current==='function'?current():null;const c=document.getElementById('lColor');if(c)c.style.setProperty('--tool-color',it?.color||'#bfa781');
+    const u=document.getElementById('v44Undo'),r=document.getElementById('v44Redo'),uo=document.getElementById('undoBtn'),ro=document.getElementById('redoBtn');if(u&&uo)u.disabled=uo.disabled;if(r&&ro)r.disabled=ro.disabled;
   }
-  ['gridToggle','bgLayerToggle','furnitureLayerToggle','measureLayerToggle','mapLabelLayerToggle','multiSelectToggle','dimsToggle','labelsToggle','snapToggle','autoDimsToggle','shadowToggle','furnitureSummaryToggle'].forEach(id=>document.getElementById(id)?.addEventListener('change',syncStates));
+  ['gridToggle','multiSelectToggle','dimsToggle','labelsToggle','snapToggle','autoDimsToggle','shadowToggle','furnitureSummaryToggle'].forEach(id=>document.getElementById(id)?.addEventListener('change',syncStates));
   document.getElementById('canvas')?.addEventListener('pointerup',()=>requestAnimationFrame(syncStates));
   document.addEventListener('keyup',()=>requestAnimationFrame(syncStates));
-  const mo=new MutationObserver(syncStates);['selectedPanel','selectedEmpty'].forEach(id=>{const e=document.getElementById(id);if(e)mo.observe(e,{attributes:true,attributeFilter:['style']});});
-  window.addEventListener('resize',syncStates);syncStates();
+  window.addEventListener('resize',syncStates);
+  syncStates();
 })();
 </script>
 
