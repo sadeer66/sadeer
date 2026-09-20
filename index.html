@@ -533,7 +533,7 @@
 <div class="modalOverlay" id="printModal">
   <div class="modalCard">
     <h3 id="printDialogTitle">طباعة المخطط</h3>
-    <p id="printDialogDesc">أدخل بيانات المشروع واختر حجم الورق. ستظهر الخارطة مع شعارك ومعلومات الشركة المحفوظة في «معلوماتك» وشريط مقياس 1 متر.</p>
+    <p id="printDialogDesc">أدخل بيانات المشروع واختر حجم الورق. ستظهر الخارطة مع شعارك ومعلومات الشركة المحفوظة في «الإعدادات» وشريط مقياس 1 متر.</p>
     <div class="printMeta">
       <div class="field wide"><label>اسم المشروع</label><input id="printProjectName" type="text" value="مشروع جديد"></div>
       <div class="field wide"><label>عنوان الخارطة</label><input id="printMapTitle" type="text" placeholder="مثال: قياسات، توزيع أثاث، الطابق الأرضي"></div>
@@ -2764,7 +2764,7 @@ function showColorFlyout(){
   const it=current();if(!it||getSelectedIds().length!==1){setStatus('اختر قطعة واحدة لتغيير اللون');return;}
   furnitureToolFlyout.innerHTML='<h4>لون القطعة</h4><label>اللون<input id="fpColor" type="color" value="'+(it.color||'#bfa781')+'"></label><label style="margin-top:8px;display:flex;flex-direction:row;align-items:center;gap:6px"><input id="fpTint" type="checkbox" '+(it.tintEnabled?'checked':'')+'> استبدال اللون الأساسي للصورة</label><div class="flyActions"><button id="fpApplyColor" class="primary">تطبيق</button><button id="fpCloseColor">إغلاق</button></div>';
   furnitureToolFlyout.classList.add('show');
-  document.getElementById('fpApplyColor').onclick=()=>{const col=document.getElementById('fpColor').value,tint=document.getElementById('fpTint').checked;applyToSelection(x=>{x.color=col;x.tintEnabled=tint||!!x.src;},'تم تغيير لون القطعة');closeFurnitureFlyout();};
+  document.getElementById('fpApplyColor').onclick=()=>{const col=document.getElementById('fpColor').value,tint=document.getElementById('fpTint').checked;applyToSelection(x=>{x.color=col;x.tintEnabled=tint;},'تم تغيير لون القطعة');closeFurnitureFlyout();};
   document.getElementById('fpCloseColor').onclick=closeFurnitureFlyout;
 }
 function reorderSelection(front){
