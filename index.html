@@ -13,7 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <title>تأثيثي — iPad و iPhone</title>
-<meta name="taatheethi-version" content="44-layout-reset">
+<meta name="taatheethi-version" content="45-3d-furniture-library">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -545,7 +545,7 @@ main{position:relative!important}
 <div class="modalOverlay" id="libraryModal">
   <div class="modalCard libraryModalCard">
     <h3 id="libraryModalTitle">إضافة قطعة إلى المكتبة</h3>
-    <p>يمكن تعديل الاسم والقياسات والتصنيف، ورفع صورة PNG أو JPG من الأعلى. يفضل PNG بخلفية شفافة.</p>
+    <p>يمكن تعديل الاسم والقياسات والتصنيف، وإضافة صورتين: صورة منظورية تظهر في المكتبة، وصورة علوية تستخدم عند وضع القطعة على المخطط.</p>
     <div class="row"><div class="field"><label>اسم القطعة</label><input id="libEditName" type="text" value="قطعة جديدة"></div></div>
     <div class="twoCols">
       <div class="field"><label>العرض الحقيقي (سم)</label><input id="libEditW" type="number" min="1" value="100"></div>
@@ -556,12 +556,20 @@ main{position:relative!important}
       <div class="field"><label>تصنيف جديد (اختياري)</label><input id="libNewCategory" type="text" placeholder="مثال: مكتب"></div>
     </div>
     <div class="row" style="margin-top:8px">
-      <div class="field"><label>لون افتراضي للقطع بدون صورة</label><input id="libEditColor" type="color" value="#bfa781"></div>
-      <div class="field"><label>صورة القطعة</label><input id="libEditImage" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"></div>
+      <div class="field"><label>اللون الافتراضي</label><input id="libEditColor" type="color" value="#bfa781"></div>
+      <div class="field"><label style="display:flex;align-items:center;gap:8px"><input id="libEditColorable" type="checkbox" checked> يسمح بتغيير اللون</label></div>
     </div>
-    <div class="libraryPreview" id="libraryPreview"><span class="noImage">لا توجد صورة — ستظهر كقطعة رسومية بسيطة</span></div>
+    <div class="twoCols" style="margin-top:8px">
+      <div class="field"><label>صورة المكتبة — منظور 3D</label><input id="libEditPreviewImage" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"></div>
+      <div class="field"><label>صورة المخطط — منظور علوي</label><input id="libEditImage" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"></div>
+    </div>
+    <div class="twoCols">
+      <div class="libraryPreview" id="libraryPreviewPerspective"><span class="noImage">معاينة المنظور</span></div>
+      <div class="libraryPreview" id="libraryPreview"><span class="noImage">معاينة الأعلى</span></div>
+    </div>
     <div class="modalSubActions">
-      <button id="removeLibraryImageBtn">إزالة الصورة</button>
+      <button id="removeLibraryPreviewImageBtn">إزالة صورة المنظور</button>
+      <button id="removeLibraryImageBtn">إزالة صورة الأعلى</button>
       <button id="deleteLibraryItemBtn" class="danger" style="display:none">حذف من المكتبة</button>
     </div>
     <div class="modalActions"><button id="cancelLibraryEditBtn">إلغاء</button><button id="saveLibraryEditBtn" class="primary">حفظ في المكتبة</button></div>
@@ -659,6 +667,9 @@ const libEditCategory=document.getElementById('libEditCategory');
 const libNewCategory=document.getElementById('libNewCategory');
 const libEditColor=document.getElementById('libEditColor');
 const libEditImage=document.getElementById('libEditImage');
+const libEditPreviewImage=document.getElementById('libEditPreviewImage');
+const libEditColorable=document.getElementById('libEditColorable');
+const libraryPreviewPerspective=document.getElementById('libraryPreviewPerspective');
 const libraryPreview=document.getElementById('libraryPreview');
 const deleteLibraryItemBtn=document.getElementById('deleteLibraryItemBtn');
 const archLibrary=document.getElementById('archLibrary');
@@ -868,86 +879,99 @@ refreshCompanyLogo();
 const palette=['#c9a66b','#b4895b','#8d6e63','#b7b7a4','#c2b280','#8fa3bf','#8bb09c','#d0a5a5','#9e9e9e','#5f6f7a'];
 
 const defaultFurniture=[
- {name:"كنبة 3 مقاعد",w:220,h:90,src:"assets/furniture/sofa_3.png",category:"صالة"},
- {name:"كنبة زاوية L",w:270,h:270,src:"assets/furniture/corner_sofa_red.png",category:"صالة"},
- {name:"وحدة زاوية",w:90,h:90,src:"assets/furniture/corner_module_red.png",category:"صالة"},
- {name:"كرسي أصفر",w:90,h:90,src:"assets/furniture/armchair_yellow.png",category:"صالة"},
- {name:"كرسي برتقالي",w:85,h:90,src:"assets/furniture/armchair_orange.png",category:"صالة"},
- {name:"كنبة برتقالية 2",w:90,h:170,src:"assets/furniture/sofa_orange_2.png",category:"صالة"},
- {name:"كنبة برتقالية 3",w:90,h:210,src:"assets/furniture/sofa_orange_3.png",category:"صالة"},
- {name:"كنبة برتقالية طويلة",w:90,h:250,src:"assets/furniture/sofa_orange_long.png",category:"صالة"},
- {name:"طاولة وسط حمراء",w:90,h:90,src:"assets/furniture/coffee_red.png",category:"صالة"},
- {name:"طاولة وسط داكنة",w:70,h:90,src:"assets/furniture/coffee_dark.png",category:"صالة"},
- {name:"طاولة جانبية حمراء",w:50,h:50,src:"assets/furniture/side_table_red_small.png",category:"صالة"},
- {name:"بوف أخضر",w:65,h:65,src:"assets/furniture/ottoman_green.png",category:"صالة"},
- {name:"بوف أحمر",w:60,h:60,src:"assets/furniture/pouf_red.png",category:"صالة"},
- {name:"مقعد دائري أحمر",w:50,h:50,src:"assets/furniture/stool_round_red.png",category:"صالة"},
- {name:"مقعد دائري بني",w:50,h:50,src:"assets/furniture/stool_round_brown.png",category:"صالة"},
- {name:"وحدة تلفزيون",w:110,h:40,src:"assets/furniture/tv_console_brown.png",category:"صالة"},
- {name:"كونسول",w:165,h:40,src:"assets/furniture/console_brown.png",category:"صالة"},
- {name:"نبتة ديكور",w:60,h:60,src:"assets/furniture/plant_small.png",category:"صالة"},
- {name:"طاولة طعام مستطيلة",w:157,h:114,src:"assets/furniture/dining_rect.png",category:"غرفة طعام"},
- {name:"طاولة طعام دائرية",w:140,h:105,src:"assets/furniture/dining_round.png",category:"غرفة طعام"},
- {name:"طاولة طعام صغيرة",w:115,h:80,src:"assets/furniture/dining_small.png",category:"غرفة طعام"},
- {name:"طاولة طعام مربعة 4 كراسي",w:160,h:150,src:"assets/furniture/dining_square_gray.png",category:"غرفة طعام"},
- {name:"سرير مفرد أبيض",w:90,h:190,src:"assets/furniture/bed_single_white.png",category:"غرفة نوم"},
- {name:"سرير مفرد أزرق",w:90,h:190,src:"assets/furniture/bed_single_blue.png",category:"غرفة نوم"},
- {name:"سرير مزدوج أحمر",w:140,h:190,src:"assets/furniture/bed_double_red.png",category:"غرفة نوم"},
- {name:"سرير مزدوج بنفسجي",w:200,h:190,src:"assets/furniture/bed_double_purple.png",category:"غرفة نوم"},
- {name:"خزانة منخفضة",w:150,h:68,src:"assets/furniture/cabinet_low.png",category:"خزن"},
- {name:"خزانة عريضة",w:240,h:60,src:"assets/furniture/cabinet_wide.png",category:"خزن"},
- {name:"مغسلة مزدوجة",w:130,h:47,src:"assets/furniture/double_sink.png",category:"حمام"},
- {name:"مغسلة 1",w:100,h:46,src:"assets/furniture/sink.png",category:"حمام"},
- {name:"مغسلة 2",w:100,h:50,src:"assets/furniture/sink_beige_2.png",category:"حمام"},
- {name:"حوض نصف دائري 60",w:60,h:50,src:"assets/furniture/basin_half_60.png",category:"حمام"},
- {name:"حوض نصف دائري 70",w:70,h:50,src:"assets/furniture/basin_half_70.png",category:"حمام"},
- {name:"حوض دائري صغير",w:60,h:50,src:"assets/furniture/basin_round_small.png",category:"حمام"},
- {name:"بيديه صغير",w:40,h:60,src:"assets/furniture/bidet_slim.png",category:"حمام"},
- {name:"مرحاض",w:70,h:80,src:"assets/furniture/toilet.png",category:"حمام"},
- {name:"قاعدة دش 70×170",w:70,h:170,src:"assets/furniture/shower_long.png",category:"حمام"},
- {name:"قاعدة دش 70×70",w:70,h:70,src:"assets/furniture/shower_square_70.png",category:"حمام"},
- {name:"قاعدة دش 80×80",w:80,h:80,src:"assets/furniture/shower_square_80.png",category:"حمام"},
- {name:"قاعدة دش 90×90",w:90,h:90,src:"assets/furniture/shower_square_90.png",category:"حمام"},
- {name:"قاعدة دش زاوية 110×100",w:110,h:100,src:"assets/furniture/shower_corner_110.png",category:"حمام"},
- {name:"قاعدة دش زاوية 70",w:70,h:70,src:"assets/furniture/shower_corner_70.png",category:"حمام"},
- {name:"قاعدة دش زاوية 80",w:80,h:80,src:"assets/furniture/shower_corner_80.png",category:"حمام"},
- {name:"قاعدة دش زاوية 90",w:90,h:90,src:"assets/furniture/shower_corner_90.png",category:"حمام"},
- {name:"قاعدة دش زرقاء",w:80,h:142,src:"assets/furniture/shower_blue.png",category:"حمام"},
- {name:"مصرف خطي",w:100,h:15,src:"assets/furniture/linear_drain.png",category:"حمام"},
- {name:"مصرف أرضي مربع",w:15,h:15,src:"assets/furniture/floor_drain_square.png",category:"حمام"},
- {name:"مصرف أرضي دائري",w:15,h:15,src:"assets/furniture/floor_drain_round.png",category:"حمام"},
- {name:"حوض دائري",w:60,h:60,src:"assets/furniture/round_basin_60.png",category:"مطبخ"},
- {name:"وحدة صغيرة رمادية",w:60,h:40,src:"assets/furniture/utility_small_gray.png",category:"مطبخ"},
- {name:"غسالة دائرية",w:60,h:60,src:"assets/furniture/washer_round_blue.png",category:"مطبخ"},
- {name:"وحدة مطبخ 1",w:44,h:150,src:"assets/furniture/counter_module_1.png",category:"مطبخ"},
- {name:"وحدة مطبخ 2",w:44,h:150,src:"assets/furniture/counter_module_2.png",category:"مطبخ"},
- {name:"حوض مطبخ 120",w:120,h:45,src:"assets/furniture/sink_counter_120.png",category:"مطبخ"},
- {name:"وحدة مطبخ بيضاء 135",w:135,h:55,src:"assets/furniture/counter_white_135.png",category:"مطبخ"},
- {name:"سطح عمل بني",w:120,h:40,src:"assets/furniture/worktop_brown.png",category:"مطبخ"},
- {name:"حوض مطبخ 60",w:60,h:60,src:"assets/furniture/kitchen_sink_60.png",category:"مطبخ"},
- {name:"مايكروويف / جهاز 60",w:60,h:60,src:"assets/furniture/microwave_60.png",category:"مطبخ"},
- {name:"سطح طبخ 4 عيون",w:60,h:90,src:"assets/furniture/cooktop_4.png",category:"مطبخ"},
- {name:"سطح طبخ 2 عين",w:60,h:60,src:"assets/furniture/cooktop_2.png",category:"مطبخ"},
- {name:"ثلاجة صغيرة",w:75,h:60,src:"assets/furniture/fridge_small.png",category:"مطبخ"},
- {name:"ثلاجة طويلة",w:75,h:180,src:"assets/furniture/fridge_tall.png",category:"مطبخ"},
- {name:"خزان ماء للسطح",w:160,h:90,src:"assets/furniture/bathtub.png",category:"سطح وخدمات"},
- {name:"سيارة حمراء",w:175,h:424,src:"assets/furniture/car_red.png",category:"كراج"},
- {name:"سيارة بيضاء",w:210,h:431,src:"assets/furniture/car_white.png",category:"كراج"},
- {name:"مروحة سقف",w:130,h:130,src:"assets/furniture/ceiling_fan.png",category:"إنارة"},
- {name:"إنارة جدارية 1",w:30,h:20,src:"assets/furniture/light_wall_1.png",category:"إنارة"},
- {name:"إنارة جدارية 2",w:35,h:25,src:"assets/furniture/light_wall_2.png",category:"إنارة"},
- {name:"إنارة جدارية 3",w:30,h:25,src:"assets/furniture/light_wall_3.png",category:"إنارة"},
- {name:"إنارة مربعة صغيرة",w:20,h:20,src:"assets/furniture/light_square_small.png",category:"إنارة"},
- {name:"إنارة سقف كبيرة",w:60,h:60,src:"assets/furniture/ceiling_light_large.png",category:"إنارة"},
- {name:"إنارة سقف متوسطة",w:45,h:45,src:"assets/furniture/ceiling_light_medium.png",category:"إنارة"},
- {name:"سبوت كبير",w:18,h:18,src:"assets/furniture/spot_large.png",category:"إنارة"},
- {name:"سبوت متوسط",w:14,h:14,src:"assets/furniture/spot_medium.png",category:"إنارة"},
- {name:"سبوت صغير",w:10,h:10,src:"assets/furniture/spot_small.png",category:"إنارة"}
+ {name:"أريكة ثلاثية مستقيمة",w:240,h:95,src:"assets/furniture3d/top/sofa_3.webp",previewSrc:"assets/furniture3d/preview/sofa_3.webp",category:"الأرائك والجلسات",colorable:true,color:"#bfa781"},
+ {name:"أريكة ثنائية",w:175,h:90,src:"assets/furniture3d/top/sofa_2.webp",previewSrc:"assets/furniture3d/preview/sofa_2.svg",category:"الأرائك والجلسات",colorable:true,color:"#bfa781"},
+ {name:"أريكة حرف L",w:280,h:190,src:"assets/furniture3d/top/sofa_l.webp",previewSrc:"assets/furniture3d/preview/sofa_l.svg",category:"الأرائك والجلسات",colorable:true,color:"#bfa781"},
+ {name:"كرسي مفرد",w:90,h:90,src:"assets/furniture3d/top/armchair.webp",previewSrc:"assets/furniture3d/preview/armchair.svg",category:"الأرائك والجلسات",colorable:true,color:"#bfa781"},
+ {name:"كرسي أكسنت",w:85,h:82,src:"assets/furniture3d/top/accent_chair.webp",previewSrc:"assets/furniture3d/preview/accent_chair.svg",category:"الأرائك والجلسات",colorable:true,color:"#bfa781"},
+ {name:"شيزلونج",w:175,h:80,src:"assets/furniture3d/top/chaise.webp",previewSrc:"assets/furniture3d/preview/chaise.png",category:"الأرائك والجلسات",colorable:true,color:"#bfa781"},
+ {name:"عثمانية",w:120,h:65,src:"assets/furniture3d/top/ottoman.webp",previewSrc:"assets/furniture3d/preview/ottoman.webp",category:"الأرائك والجلسات",colorable:true,color:"#bfa781"},
+ {name:"بوف",w:60,h:60,src:"assets/furniture3d/top/pouf.webp",previewSrc:"assets/furniture3d/preview/pouf.webp",category:"الأرائك والجلسات",colorable:true,color:"#bfa781"},
+ {name:"طاولة قهوة دائرية",w:90,h:90,src:"assets/furniture3d/top/coffee_round.webp",previewSrc:"assets/furniture3d/preview/coffee_round.png",category:"الطاولات والتخزين",colorable:true,color:"#bfa781"},
+ {name:"طاولة قهوة مستطيلة",w:120,h:65,src:"assets/furniture3d/top/coffee_rect.webp",previewSrc:"assets/furniture3d/preview/coffee_rect.png",category:"الطاولات والتخزين",colorable:true,color:"#bfa781"},
+ {name:"طاولة قهوة رخامية",w:120,h:70,src:"assets/furniture3d/top/coffee_marble.webp",previewSrc:"assets/furniture3d/preview/coffee_marble.png",category:"الطاولات والتخزين",colorable:false,color:"#bfa781"},
+ {name:"طاولة جانبية دائرية",w:50,h:50,src:"assets/furniture3d/top/side_round.webp",previewSrc:"assets/furniture3d/preview/side_round.webp",category:"الطاولات والتخزين",colorable:true,color:"#bfa781"},
+ {name:"طاولة جانبية مربعة",w:50,h:50,src:"assets/furniture3d/top/side_square.webp",previewSrc:"assets/furniture3d/preview/side_square.webp",category:"الطاولات والتخزين",colorable:true,color:"#bfa781"},
+ {name:"طاولة جانبية أسطوانية",w:45,h:45,src:"assets/furniture3d/top/side_cyl.webp",previewSrc:"assets/furniture3d/preview/side_cyl.webp",category:"الطاولات والتخزين",colorable:true,color:"#bfa781"},
+ {name:"طاولات متداخلة",w:95,h:60,src:"assets/furniture3d/top/nested_tables.webp",previewSrc:"assets/furniture3d/preview/nested_tables.webp",category:"الطاولات والتخزين",colorable:true,color:"#bfa781"},
+ {name:"شاشة تلفاز حائطية",w:160,h:12,src:"assets/furniture3d/top/tv_wall.webp",previewSrc:"assets/furniture3d/preview/tv_wall.webp",category:"الطاولات والتخزين",colorable:false,color:"#bfa781"},
+ {name:"وحدة تلفاز",w:180,h:45,src:"assets/furniture3d/top/tv_console.webp",previewSrc:"assets/furniture3d/preview/tv_console.webp",category:"الطاولات والتخزين",colorable:true,color:"#bfa781"},
+ {name:"مكتبة رفوف",w:120,h:38,src:"assets/furniture3d/top/shelving.webp",previewSrc:"assets/furniture3d/preview/shelving.webp",category:"الطاولات والتخزين",colorable:true,color:"#bfa781"},
+ {name:"سايدبورد",w:160,h:45,src:"assets/furniture3d/top/sideboard.webp",previewSrc:"assets/furniture3d/preview/sideboard.webp",category:"الطاولات والتخزين",colorable:true,color:"#bfa781"},
+ {name:"خزانة أدراج",w:110,h:50,src:"assets/furniture3d/top/dresser.webp",previewSrc:"assets/furniture3d/preview/dresser.webp",category:"الطاولات والتخزين",colorable:true,color:"#bfa781"},
+ {name:"نبات كبير",w:70,h:70,src:"assets/furniture3d/top/plant_big.webp",previewSrc:"assets/furniture3d/preview/plant_big.webp",category:"النباتات والديكور",colorable:false,color:"#bfa781"},
+ {name:"نبات متوسط",w:55,h:55,src:"assets/furniture3d/top/plant_med.webp",previewSrc:"assets/furniture3d/preview/plant_med.webp",category:"النباتات والديكور",colorable:false,color:"#bfa781"},
+ {name:"نبات صغير",w:35,h:35,src:"assets/furniture3d/top/plant_small.webp",previewSrc:"assets/furniture3d/preview/plant_small.webp",category:"النباتات والديكور",colorable:false,color:"#bfa781"},
+ {name:"نبات عصاري",w:28,h:28,src:"assets/furniture3d/top/succulent.webp",previewSrc:"assets/furniture3d/preview/succulent.webp",category:"النباتات والديكور",colorable:false,color:"#bfa781"},
+ {name:"كتب ديكور",w:45,h:30,src:"assets/furniture3d/top/books.webp",previewSrc:"assets/furniture3d/preview/books.png",category:"النباتات والديكور",colorable:false,color:"#bfa781"},
+ {name:"لوحة حائط",w:90,h:6,src:"assets/furniture3d/top/wall_art.webp",previewSrc:"assets/furniture3d/preview/wall_art.webp",category:"النباتات والديكور",colorable:false,color:"#bfa781"},
+ {name:"مرآة دائرية",w:80,h:8,src:"assets/furniture3d/top/mirror_round.webp",previewSrc:"assets/furniture3d/preview/mirror_round.webp",category:"النباتات والديكور",colorable:false,color:"#bfa781"},
+ {name:"سلة ديكور",w:45,h:45,src:"assets/furniture3d/top/basket.webp",previewSrc:"assets/furniture3d/preview/basket.png",category:"النباتات والديكور",colorable:true,color:"#bfa781"},
+ {name:"وسادة",w:50,h:50,src:"assets/furniture3d/top/cushion.webp",previewSrc:"assets/furniture3d/preview/cushion.png",category:"النباتات والديكور",colorable:true,color:"#bfa781"},
+ {name:"طاولة طعام مستطيلة",w:200,h:100,src:"assets/furniture3d/top/dining_rect.svg",previewSrc:"assets/furniture3d/preview/dining_rect.png",category:"غرفة الطعام",colorable:true,color:"#bfa781"},
+ {name:"طاولة طعام دائرية",w:140,h:140,src:"assets/furniture3d/top/dining_round.svg",previewSrc:"assets/furniture3d/preview/dining_round.svg",category:"غرفة الطعام",colorable:true,color:"#bfa781"},
+ {name:"طاولة طعام بيضاوية",w:200,h:110,src:"assets/furniture3d/top/dining_oval.svg",previewSrc:"assets/furniture3d/preview/dining_oval.svg",category:"غرفة الطعام",colorable:true,color:"#bfa781"},
+ {name:"طاولة طعام زجاجية",w:190,h:95,src:"assets/furniture3d/top/dining_glass.svg",previewSrc:"assets/furniture3d/preview/dining_glass.svg",category:"غرفة الطعام",colorable:false,color:"#bfa781"},
+ {name:"مقعد بار مع ظهر",w:50,h:50,src:"assets/furniture3d/top/bar_back.svg",previewSrc:"assets/furniture3d/preview/bar_back.svg",category:"غرفة الطعام",colorable:true,color:"#bfa781"},
+ {name:"مقعد بار عصري",w:48,h:48,src:"assets/furniture3d/top/bar_modern.svg",previewSrc:"assets/furniture3d/preview/bar_modern.svg",category:"غرفة الطعام",colorable:true,color:"#bfa781"},
+ {name:"مقعد بار معدني",w:45,h:45,src:"assets/furniture3d/top/bar_metal.svg",previewSrc:"assets/furniture3d/preview/bar_metal.png",category:"غرفة الطعام",colorable:false,color:"#bfa781"},
+ {name:"سرير مفرد",w:100,h:200,src:"assets/furniture3d/top/bed_single.svg",previewSrc:"assets/furniture3d/preview/bed_single.png",category:"غرف النوم",colorable:true,color:"#bfa781"},
+ {name:"سرير مزدوج",w:160,h:200,src:"assets/furniture3d/top/bed_double.svg",previewSrc:"assets/furniture3d/preview/bed_double.png",category:"غرف النوم",colorable:true,color:"#bfa781"},
+ {name:"سرير كينغ",w:200,h:210,src:"assets/furniture3d/top/bed_king.svg",previewSrc:"assets/furniture3d/preview/bed_king.png",category:"غرف النوم",colorable:true,color:"#bfa781"},
+ {name:"سرير طابقين",w:100,h:205,src:"assets/furniture3d/top/bunk.svg",previewSrc:"assets/furniture3d/preview/bunk.png",category:"غرف النوم",colorable:true,color:"#bfa781"},
+ {name:"كومدينة",w:55,h:45,src:"assets/furniture3d/top/nightstand.svg",previewSrc:"assets/furniture3d/preview/nightstand.svg",category:"غرف النوم",colorable:true,color:"#bfa781"},
+ {name:"كومدينة بديلة",w:50,h:42,src:"assets/furniture3d/top/nightstand2.svg",previewSrc:"assets/furniture3d/preview/nightstand2.svg",category:"غرف النوم",colorable:true,color:"#bfa781"},
+ {name:"خزانة ملابس",w:180,h:60,src:"assets/furniture3d/top/wardrobe.svg",previewSrc:"assets/furniture3d/preview/wardrobe.webp",category:"غرف النوم",colorable:true,color:"#bfa781"},
+ {name:"خزانة أدراج عريضة",w:160,h:50,src:"assets/furniture3d/top/dresser_wide.svg",previewSrc:"assets/furniture3d/preview/dresser_wide.webp",category:"غرف النوم",colorable:true,color:"#bfa781"},
+ {name:"مكتب عمل",w:140,h:70,src:"assets/furniture3d/top/desk.svg",previewSrc:"assets/furniture3d/preview/desk.png",category:"المكتب والسجاد",colorable:true,color:"#bfa781"},
+ {name:"كرسي مكتب",w:70,h:70,src:"assets/furniture3d/top/office_chair.svg",previewSrc:"assets/furniture3d/preview/office_chair.svg",category:"المكتب والسجاد",colorable:true,color:"#bfa781"},
+ {name:"طاولة اجتماعات",w:240,h:120,src:"assets/furniture3d/top/meeting_table.svg",previewSrc:"assets/furniture3d/preview/meeting_table.webp",category:"المكتب والسجاد",colorable:true,color:"#bfa781"},
+ {name:"سجادة مستطيلة",w:240,h:160,src:"assets/furniture3d/top/rug_rect.svg",previewSrc:"assets/furniture3d/preview/rug_rect.webp",category:"المكتب والسجاد",colorable:true,color:"#bfa781"},
+ {name:"سجادة دائرية",w:180,h:180,src:"assets/furniture3d/top/rug_round.svg",previewSrc:"assets/furniture3d/preview/rug_round.webp",category:"المكتب والسجاد",colorable:true,color:"#bfa781"},
+ {name:"سجادة بنسيج واضح",w:220,h:150,src:"assets/furniture3d/top/rug_texture.svg",previewSrc:"assets/furniture3d/preview/rug_texture.webp",category:"المكتب والسجاد",colorable:true,color:"#bfa781"},
+ {name:"قاعدة حوض",w:90,h:60,src:"assets/furniture3d/top/base_sink.webp",previewSrc:"assets/furniture3d/preview/base_sink.png",category:"المطبخ",colorable:true,color:"#bfa781"},
+ {name:"قاعدة موقد",w:90,h:60,src:"assets/furniture3d/top/base_cooktop.webp",previewSrc:"assets/furniture3d/preview/base_cooktop.png",category:"المطبخ",colorable:true,color:"#bfa781"},
+ {name:"قاعدة أدراج",w:60,h:60,src:"assets/furniture3d/top/base_drawers.webp",previewSrc:"assets/furniture3d/preview/base_drawers.png",category:"المطبخ",colorable:true,color:"#bfa781"},
+ {name:"قاعدة مستقيمة",w:90,h:60,src:"assets/furniture3d/top/base_straight.webp",previewSrc:"assets/furniture3d/preview/base_straight.png",category:"المطبخ",colorable:true,color:"#bfa781"},
+ {name:"قاعدة زاوية",w:90,h:90,src:"assets/furniture3d/top/base_corner.webp",previewSrc:"assets/furniture3d/preview/base_corner.png",category:"المطبخ",colorable:true,color:"#bfa781"},
+ {name:"وحدة حرف L",w:180,h:120,src:"assets/furniture3d/top/base_l.webp",previewSrc:"assets/furniture3d/preview/base_l.png",category:"المطبخ",colorable:true,color:"#bfa781"},
+ {name:"خزانة حائط مفردة",w:45,h:35,src:"assets/furniture3d/top/wall_single.webp",previewSrc:"assets/furniture3d/preview/wall_single.webp",category:"المطبخ",colorable:true,color:"#bfa781"},
+ {name:"خزانة حائط مزدوجة",w:90,h:35,src:"assets/furniture3d/top/wall_double.webp",previewSrc:"assets/furniture3d/preview/wall_double.webp",category:"المطبخ",colorable:true,color:"#bfa781"},
+ {name:"خزانة حائط ثلاثية",w:135,h:35,src:"assets/furniture3d/top/wall_triple.webp",previewSrc:"assets/furniture3d/preview/wall_triple.webp",category:"المطبخ",colorable:true,color:"#bfa781"},
+ {name:"خزانة زاوية",w:70,h:70,src:"assets/furniture3d/top/wall_corner.webp",previewSrc:"assets/furniture3d/preview/wall_corner.webp",category:"المطبخ",colorable:true,color:"#bfa781"},
+ {name:"جزيرة مطبخ",w:180,h:90,src:"assets/furniture3d/top/island.webp",previewSrc:"assets/furniture3d/preview/island.webp",category:"المطبخ",colorable:true,color:"#bfa781"},
+ {name:"جزيرة بمغسلة",w:200,h:95,src:"assets/furniture3d/top/island_sink.webp",previewSrc:"assets/furniture3d/preview/island_sink.webp",category:"المطبخ",colorable:true,color:"#bfa781"},
+ {name:"هود مطبخ 60 سم",w:60,h:45,src:"assets/furniture3d/top/hood60.webp",previewSrc:"assets/furniture3d/preview/hood60.webp",category:"الأجهزة والخدمات",colorable:false,color:"#bfa781"},
+ {name:"هود مطبخ 90 سم",w:90,h:50,src:"assets/furniture3d/top/hood90.webp",previewSrc:"assets/furniture3d/preview/hood90.webp",category:"الأجهزة والخدمات",colorable:false,color:"#bfa781"},
+ {name:"ثلاجة متر",w:100,h:75,src:"assets/furniture3d/top/fridge100.webp",previewSrc:"assets/furniture3d/preview/fridge100.webp",category:"الأجهزة والخدمات",colorable:false,color:"#bfa781"},
+ {name:"ثلاجة ثلاثة أبواب 85 سم",w:85,h:75,src:"assets/furniture3d/top/fridge3.webp",previewSrc:"assets/furniture3d/preview/fridge3.webp",category:"الأجهزة والخدمات",colorable:false,color:"#bfa781"},
+ {name:"ثلاجة بابين 120 سم",w:120,h:75,src:"assets/furniture3d/top/fridge2.webp",previewSrc:"assets/furniture3d/preview/fridge2.webp",category:"الأجهزة والخدمات",colorable:false,color:"#bfa781"},
+ {name:"غسالة ملابس",w:60,h:60,src:"assets/furniture3d/top/washer.webp",previewSrc:"assets/furniture3d/preview/washer.webp",category:"الأجهزة والخدمات",colorable:false,color:"#bfa781"},
+ {name:"نشافة ملابس",w:60,h:60,src:"assets/furniture3d/top/dryer.webp",previewSrc:"assets/furniture3d/preview/dryer.webp",category:"الأجهزة والخدمات",colorable:false,color:"#bfa781"},
+ {name:"حوض غسيل",w:70,h:60,src:"assets/furniture3d/top/laundry_sink.webp",previewSrc:"assets/furniture3d/preview/laundry_sink.webp",category:"الأجهزة والخدمات",colorable:false,color:"#bfa781"},
+ {name:"خزانة تخزين",w:90,h:55,src:"assets/furniture3d/top/storage_tall.webp",previewSrc:"assets/furniture3d/preview/storage_tall.webp",category:"الأجهزة والخدمات",colorable:true,color:"#bfa781"},
+ {name:"مكيف سبليت داخلي",w:100,h:25,src:"assets/furniture3d/top/split_in.svg",previewSrc:"assets/furniture3d/preview/split_in.svg",category:"الأجهزة والخدمات",colorable:false,color:"#bfa781"},
+ {name:"مكيف سبليت خارجي",w:85,h:35,src:"assets/furniture3d/top/split_out.svg",previewSrc:"assets/furniture3d/preview/split_out.webp",category:"الأجهزة والخدمات",colorable:false,color:"#bfa781"},
+ {name:"سخان ماء جداري",w:55,h:35,src:"assets/furniture3d/top/heater.svg",previewSrc:"assets/furniture3d/preview/heater.webp",category:"الأجهزة والخدمات",colorable:false,color:"#bfa781"},
+ {name:"خزان ماء علوي",w:160,h:160,src:"assets/furniture3d/top/tank.svg",previewSrc:"assets/furniture3d/preview/tank.webp",category:"الأجهزة والخدمات",colorable:false,color:"#bfa781"},
+ {name:"بانيو",w:175,h:80,src:"assets/furniture3d/top/bathtub.svg",previewSrc:"assets/furniture3d/preview/bathtub.png",category:"الحمام",colorable:false,color:"#bfa781"},
+ {name:"قاعدة شاور",w:90,h:90,src:"assets/furniture3d/top/shower_base.svg",previewSrc:"assets/furniture3d/preview/shower_base.webp",category:"الحمام",colorable:false,color:"#bfa781"},
+ {name:"مرحاض",w:70,h:80,src:"assets/furniture3d/top/toilet.svg",previewSrc:"assets/furniture3d/preview/toilet.webp",category:"الحمام",colorable:false,color:"#bfa781"},
+ {name:"مغسلة حمام مع خزانة",w:100,h:55,src:"assets/furniture3d/top/vanity.svg",previewSrc:"assets/furniture3d/preview/vanity.webp",category:"الحمام",colorable:true,color:"#bfa781"},
+ {name:"مقعد شاور",w:90,h:40,src:"assets/furniture3d/top/shower_bench.svg",previewSrc:"assets/furniture3d/preview/shower_bench.webp",category:"الحمام",colorable:true,color:"#bfa781"},
+ {name:"قاطع حمام زجاج - بابين",w:120,h:90,src:"assets/furniture3d/top/glass2.svg",previewSrc:"assets/furniture3d/preview/glass2.webp",category:"الحمام",colorable:false,color:"#bfa781"},
+ {name:"قاطع حمام زجاج - أربعة أبواب",w:180,h:100,src:"assets/furniture3d/top/glass4.svg",previewSrc:"assets/furniture3d/preview/glass4.webp",category:"الحمام",colorable:false,color:"#bfa781"},
+ {name:"سيارة سيدان 1",w:190,h:480,src:"assets/furniture3d/top/sedan1.svg",previewSrc:"assets/furniture3d/preview/sedan1.webp",category:"السيارات",colorable:true,color:"#bfa781"},
+ {name:"سيارة سيدان 2",w:190,h:480,src:"assets/furniture3d/top/sedan2.svg",previewSrc:"assets/furniture3d/preview/sedan2.webp",category:"السيارات",colorable:true,color:"#bfa781"},
+ {name:"سيارة دفع رباعي SUV",w:205,h:500,src:"assets/furniture3d/top/suv.svg",previewSrc:"assets/furniture3d/preview/suv.webp",category:"السيارات",colorable:true,color:"#bfa781"},
+ {name:"مرآة مستطيلة",w:70,h:8,src:"assets/furniture3d/top/mirror_rect.svg",previewSrc:"assets/furniture3d/preview/mirror_rect.webp",category:"النباتات والديكور",colorable:false,color:"#bfa781"},
+ {name:"شاشة تلفاز حائطية بديلة",w:140,h:10,src:"assets/furniture3d/top/tv_alt.svg",previewSrc:"assets/furniture3d/preview/tv_alt.webp",category:"الطاولات والتخزين",colorable:false,color:"#bfa781"},
+ {name:"نبات زينة بديل",w:50,h:50,src:"assets/furniture3d/top/plant_alt.svg",previewSrc:"assets/furniture3d/preview/plant_alt.webp",category:"النباتات والديكور",colorable:false,color:"#bfa781"}
 ];
 
-const LIBRARY_STORAGE_KEY='furniturePlannerLibraryV7';
+const LIBRARY_STORAGE_KEY='furniturePlannerLibraryV8_3D';
 function cloneDefaultLibrary(){
-  return defaultFurniture.map((x,i)=>({...x,id:`base_${i}`,isCustom:false}));
+  return defaultFurniture.map((x,i)=>({...x,id:`base_${i}`,isCustom:false,previewSrc:x.previewSrc||x.src,colorable:x.colorable!==false}));
 }
 function loadSavedLibrary(){
   try{
@@ -955,7 +979,7 @@ function loadSavedLibrary(){
     if(!raw)return cloneDefaultLibrary();
     const parsed=JSON.parse(raw);
     if(!Array.isArray(parsed)||!parsed.length)return cloneDefaultLibrary();
-    return parsed.map((x,i)=>({id:x.id||`saved_${i}_${Date.now()}`,name:x.name||'قطعة',w:+x.w||100,h:+x.h||60,src:x.src||null,category:x.category||'أخرى',color:x.color||'#bfa781',isCustom:x.isCustom!==false}));
+    return parsed.map((x,i)=>({id:x.id||`saved_${i}_${Date.now()}`,name:x.name||'قطعة',w:+x.w||100,h:+x.h||60,src:x.src||x.topSrc||null,previewSrc:x.previewSrc||x.src||null,category:x.category||'أخرى',color:x.color||'#bfa781',colorable:x.colorable!==false,isCustom:x.isCustom!==false}));
   }catch(e){return cloneDefaultLibrary();}
 }
 function saveLibraryState(){
@@ -1251,7 +1275,7 @@ document.getElementById('fileInput').onchange=async e=>{
 
 const lib=document.getElementById('library');
 const categoryList=document.getElementById('categoryList');
-const baseCategoryOrder=['الكل','صالة','غرفة نوم','غرفة طعام','مطبخ','حمام','خزن','سطح وخدمات','كراج','إنارة','أخرى'];
+const baseCategoryOrder=['الكل','الأرائك والجلسات','الطاولات والتخزين','النباتات والديكور','غرفة الطعام','غرف النوم','المكتب والسجاد','المطبخ','الأجهزة والخدمات','الحمام','السيارات','أخرى'];
 let activeCategory='الكل';
 function getCategoryOrder(){
   const extras=[...new Set(furniture.map(x=>x.category).filter(Boolean))].filter(x=>!baseCategoryOrder.includes(x)).sort((a,b)=>a.localeCompare(b,'ar'));
@@ -1290,7 +1314,8 @@ function renderLibrary(){
   furniture.forEach((obj,index)=>{
     if(activeCategory!=='الكل'&&obj.category!==activeCategory)return;
     const d=document.createElement('div');d.className='fcard';
-    const visual=obj.src?`<img loading="lazy" decoding="async" src="${resolveAssetSrc(obj.src)}" alt="${obj.name}">`:`<div class="genericThumb" style="box-shadow:inset 0 0 0 999px ${obj.color||'#bfa781'}33">بدون صورة</div>`;
+    const preview=obj.previewSrc||obj.src;
+    const visual=preview?`<img loading="lazy" decoding="async" src="${resolveAssetSrc(preview)}" alt="${obj.name}">`:`<div class="genericThumb" style="box-shadow:inset 0 0 0 999px ${obj.color||'#bfa781'}33">بدون صورة</div>`;
     d.innerHTML=`<button class="editLibBtn" title="تعديل القطعة">✎</button>${obj.isCustom?'<span class="customMark">مضافة</span>':''}${visual}<b>${obj.name}</b><span>${obj.w} × ${obj.h} سم</span><button class="touchDragHandle" type="button" aria-label="اسحب إلى الخارطة">⠿</button>`;
     d.querySelector('.editLibBtn').onclick=e=>{e.stopPropagation();openLibraryEditor(obj.id);};
     const th=d.querySelector('.touchDragHandle');th.addEventListener('pointerdown',e=>startTouchLibraryDrag(e,obj,false));th.addEventListener('pointermove',moveTouchLibraryDrag);th.addEventListener('pointerup',endTouchLibraryDrag);th.addEventListener('pointercancel',endTouchLibraryDrag);
@@ -1302,57 +1327,48 @@ buildCategoryButtons();renderLibrary();
 
 let editingLibraryId=null;
 let pendingLibraryImageData=null;
+let pendingLibraryPreviewData=null;
 function fillLibraryCategorySelect(selected=''){
   const cats=getCategoryOrder().filter(x=>x!=='الكل');
   if(selected&&!cats.includes(selected))cats.push(selected);
   libEditCategory.innerHTML=cats.map(c=>`<option value="${c.replace(/"/g,'&quot;')}">${c}</option>`).join('');
   libEditCategory.value=selected||'أخرى';
 }
-function setLibraryPreview(src){
-  libraryPreview.innerHTML=src?`<img src="${resolveAssetSrc(src)}" alt="معاينة">`:'<span class="noImage">لا توجد صورة — ستظهر كقطعة رسومية بسيطة</span>';
-}
+function setLibraryPreview(src){libraryPreview.innerHTML=src?`<img src="${resolveAssetSrc(src)}" alt="معاينة علوية">`:'<span class="noImage">لا توجد صورة علوية</span>';}
+function setLibraryPerspectivePreview(src){libraryPreviewPerspective.innerHTML=src?`<img src="${resolveAssetSrc(src)}" alt="معاينة منظورية">`:'<span class="noImage">لا توجد صورة منظورية</span>';}
 function openLibraryEditor(id=null,preset=null){
   editingLibraryId=id;
   const obj=id?furniture.find(x=>x.id===id):null;
-  const data=obj||preset||{name:'قطعة جديدة',w:100,h:60,category:'أخرى',src:null,color:'#bfa781'};
+  const data=obj||preset||{name:'قطعة جديدة',w:100,h:60,category:'أخرى',src:null,previewSrc:null,color:'#bfa781',colorable:true};
   libraryModalTitle.textContent=obj?'تعديل قطعة في المكتبة':'إضافة قطعة إلى المكتبة';
-  libEditName.value=data.name||'قطعة جديدة';libEditW.value=data.w||100;libEditH.value=data.h||60;libEditColor.value=data.color||'#bfa781';
+  libEditName.value=data.name||'قطعة جديدة';libEditW.value=data.w||100;libEditH.value=data.h||60;libEditColor.value=data.color||'#bfa781';libEditColorable.checked=data.colorable!==false;
   fillLibraryCategorySelect(data.category||'أخرى');libNewCategory.value='';
-  pendingLibraryImageData=data.src||null;libEditImage.value='';setLibraryPreview(pendingLibraryImageData);
+  pendingLibraryImageData=data.src||null;pendingLibraryPreviewData=data.previewSrc||data.src||null;libEditImage.value='';libEditPreviewImage.value='';setLibraryPreview(pendingLibraryImageData);setLibraryPerspectivePreview(pendingLibraryPreviewData);
   deleteLibraryItemBtn.style.display=obj?'inline-flex':'none';
   libraryModal.style.display='flex';
   setTimeout(()=>libEditName.focus(),50);
 }
-function closeLibraryEditor(){libraryModal.style.display='none';editingLibraryId=null;pendingLibraryImageData=null;libEditImage.value='';}
-libEditImage.onchange=()=>{
-  const f=libEditImage.files&&libEditImage.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=()=>{
-    const source=r.result;const im=new Image();
-    im.onload=()=>{
-      const maxSide=700,scale=Math.min(1,maxSide/Math.max(im.naturalWidth,im.naturalHeight));
-      const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.naturalWidth*scale));c.height=Math.max(1,Math.round(im.naturalHeight*scale));
-      const cc=c.getContext('2d');cc.clearRect(0,0,c.width,c.height);cc.drawImage(im,0,0,c.width,c.height);
-      pendingLibraryImageData=c.toDataURL('image/png');setLibraryPreview(pendingLibraryImageData);
-    };
-    im.onerror=()=>{pendingLibraryImageData=source;setLibraryPreview(pendingLibraryImageData);};
-    im.src=source;
-  };
-  r.readAsDataURL(f);
-};
+function closeLibraryEditor(){libraryModal.style.display='none';editingLibraryId=null;pendingLibraryImageData=null;pendingLibraryPreviewData=null;libEditImage.value='';libEditPreviewImage.value='';}
+function readLibraryImageInput(input,onDone){
+  const f=input.files&&input.files[0];if(!f)return;
+  const r=new FileReader();r.onload=()=>{const source=r.result;const im=new Image();im.onload=()=>{const maxSide=900,scale=Math.min(1,maxSide/Math.max(im.naturalWidth,im.naturalHeight));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.naturalWidth*scale));c.height=Math.max(1,Math.round(im.naturalHeight*scale));const cc=c.getContext('2d');cc.clearRect(0,0,c.width,c.height);cc.drawImage(im,0,0,c.width,c.height);onDone(c.toDataURL('image/png'));};im.onerror=()=>onDone(source);im.src=source;};r.readAsDataURL(f);
+}
+libEditImage.onchange=()=>readLibraryImageInput(libEditImage,v=>{pendingLibraryImageData=v;setLibraryPreview(v);});
+libEditPreviewImage.onchange=()=>readLibraryImageInput(libEditPreviewImage,v=>{pendingLibraryPreviewData=v;setLibraryPerspectivePreview(v);});
 document.getElementById('removeLibraryImageBtn').onclick=()=>{pendingLibraryImageData=null;libEditImage.value='';setLibraryPreview(null);};
+document.getElementById('removeLibraryPreviewImageBtn').onclick=()=>{pendingLibraryPreviewData=null;libEditPreviewImage.value='';setLibraryPerspectivePreview(null);};
 document.getElementById('cancelLibraryEditBtn').onclick=closeLibraryEditor;
 libraryModal.addEventListener('pointerdown',e=>{if(e.target===libraryModal)closeLibraryEditor();});
 document.getElementById('addLibraryItemBtn').onclick=()=>openLibraryEditor();
 document.getElementById('saveLibraryEditBtn').onclick=()=>{
   const name=libEditName.value.trim()||'قطعة';const w=Math.max(1,+libEditW.value||1);const h=Math.max(1,+libEditH.value||1);
-  const newCat=libNewCategory.value.trim();const category=newCat||libEditCategory.value||'أخرى';const color=libEditColor.value||'#bfa781';
+  const newCat=libNewCategory.value.trim();const category=newCat||libEditCategory.value||'أخرى';const color=libEditColor.value||'#bfa781';const colorable=libEditColorable.checked;
   if(editingLibraryId){
     const obj=furniture.find(x=>x.id===editingLibraryId);if(!obj)return;
-    Object.assign(obj,{name,w,h,category,color,src:pendingLibraryImageData||null,isCustom:obj.isCustom});ensureSpriteForDef(obj);
+    Object.assign(obj,{name,w,h,category,color,colorable,src:pendingLibraryImageData||null,previewSrc:pendingLibraryPreviewData||pendingLibraryImageData||null,isCustom:obj.isCustom});ensureSpriteForDef(obj);
     setStatus(`تم تحديث ${name} في المكتبة`);
   }else{
-    const obj={id:`custom_${Date.now()}_${randId()}`,name,w,h,category,color,src:pendingLibraryImageData||null,isCustom:true};
+    const obj={id:`custom_${Date.now()}_${randId()}`,name,w,h,category,color,colorable,src:pendingLibraryImageData||null,previewSrc:pendingLibraryPreviewData||pendingLibraryImageData||null,isCustom:true};
     furniture.push(obj);ensureSpriteForDef(obj);activeCategory=category;setStatus(`تمت إضافة ${name} إلى المكتبة`);
   }
   saveLibraryState();buildCategoryButtons();renderLibrary();closeLibraryEditor();
@@ -1366,7 +1382,7 @@ document.getElementById('resetLibraryBtn').onclick=()=>{
   if(!confirm('استعادة المكتبة الأصلية؟ سيتم حذف كل القطع التي أضافها المستخدم وإلغاء تعديلات أسماء وقياسات المكتبة الحالية.'))return;
   furniture=cloneDefaultLibrary();activeCategory='الكل';saveLibraryState();buildCategoryButtons();renderLibrary();setStatus('تمت استعادة المكتبة الأصلية');
 };
-document.getElementById('saveCustomToLibrary').onclick=()=>openLibraryEditor(null,{name:document.getElementById('customName').value||'قطعة مخصصة',w:+document.getElementById('customW').value||100,h:+document.getElementById('customH').value||60,category:'أخرى',src:null,color:document.getElementById('customColor').value||'#bfa781'});
+document.getElementById('saveCustomToLibrary').onclick=()=>openLibraryEditor(null,{name:document.getElementById('customName').value||'قطعة مخصصة',w:+document.getElementById('customW').value||100,h:+document.getElementById('customH').value||60,category:'أخرى',src:null,previewSrc:null,color:document.getElementById('customColor').value||'#bfa781',colorable:true});
 
 
 function cloneEditState(){
@@ -1467,7 +1483,7 @@ function addItem(def,x,y){
   if(!pxPerCm){alert('يجب معايرة القياس أولاً حتى يظهر الأثاث بحجمه الحقيقي.');return null;}
   const it={
     id:randId(),name:def.name,w:def.w,h:def.h,x:clamp(x??canvas.width/2,0,canvas.width),y:clamp(y??canvas.height/2,0,canvas.height),
-    rot:0,color:def.color||'#bfa781',type:def.type||'generic',src:def.src||null,tintEnabled:false,locked:false,archType:def.archType||null,doorSwing:def.doorSwing||1
+    rot:0,color:def.color||'#bfa781',type:def.type||'generic',src:def.src||null,previewSrc:def.previewSrc||def.src||null,colorable:def.colorable!==false,tintEnabled:false,locked:false,archType:def.archType||null,doorSwing:def.doorSwing||1
   };
   items.push(it);setSelection([it.id],it.id);selectedMeasureId=null;syncSelectedPanel();draw();commitHistory(before);return it;
 }
@@ -1928,16 +1944,21 @@ function getTintedSprite(src,color){
   const key=src+'|'+color;
   if(tintedCache.has(key))return tintedCache.get(key);
   const base=spriteImages[src],layers=tintLayers[src];
-  if(!base||!base.complete||!base.naturalWidth||!layers||!layers.neutral.complete||!layers.shade.complete)return null;
+  if(!base||!base.complete||!base.naturalWidth)return null;
   const off=document.createElement('canvas');off.width=base.naturalWidth;off.height=base.naturalHeight;
-  const oc=off.getContext('2d');
-  oc.clearRect(0,0,off.width,off.height);
-  // New color exists only where the original artwork has a colored material region.
-  oc.fillStyle=color;oc.fillRect(0,0,off.width,off.height);
-  oc.globalCompositeOperation='destination-in';oc.drawImage(layers.shade,0,0,off.width,off.height);
-  oc.globalCompositeOperation='multiply';oc.drawImage(layers.shade,0,0,off.width,off.height);
-  oc.globalCompositeOperation='source-over';oc.drawImage(layers.neutral,0,0,off.width,off.height);
-  oc.globalCompositeOperation='source-over';
+  const oc=off.getContext('2d');oc.clearRect(0,0,off.width,off.height);
+  if(layers&&layers.neutral.complete&&layers.neutral.naturalWidth&&layers.shade.complete&&layers.shade.naturalWidth){
+    oc.fillStyle=color;oc.fillRect(0,0,off.width,off.height);
+    oc.globalCompositeOperation='destination-in';oc.drawImage(layers.shade,0,0,off.width,off.height);
+    oc.globalCompositeOperation='multiply';oc.drawImage(layers.shade,0,0,off.width,off.height);
+    oc.globalCompositeOperation='source-over';oc.drawImage(layers.neutral,0,0,off.width,off.height);
+  }else{
+    // Vector/new library fallback: preserve original shading while recoloring the visible silhouette.
+    oc.drawImage(base,0,0,off.width,off.height);
+    oc.globalCompositeOperation='source-atop';oc.fillStyle=color;oc.globalAlpha=.72;oc.fillRect(0,0,off.width,off.height);
+    oc.globalAlpha=.48;oc.globalCompositeOperation='multiply';oc.drawImage(base,0,0,off.width,off.height);
+  }
+  oc.globalAlpha=1;oc.globalCompositeOperation='source-over';
   tintedCache.set(key,off);return off;
 }
 function drawSprite(it,w,h){
@@ -2352,7 +2373,7 @@ function syncSelectedPanel(){
   if(multiInfo){multiInfo.style.display=multi?'inline-flex':'none';multiInfo.textContent=`${ids.length} قطع محددة`;}
   setSingleInspectorVisible(!multi);
   selectedTitle.textContent=multi?`${ids.length} قطع`:it.name;
-  if(!multi){selName.value=it.name;selW.value=it.w;selH.value=it.h;selRot.value=it.rot;selColor.value=it.color||'#bfa781';selTintEnabled.checked=!!it.tintEnabled;}
+  if(!multi){selName.value=it.name;selW.value=it.w;selH.value=it.h;selRot.value=it.rot;selColor.value=it.color||'#bfa781';selTintEnabled.checked=!!it.tintEnabled;selColor.disabled=it.colorable===false;selTintEnabled.disabled=it.colorable===false;}
   const allLocked=list.length&&list.every(x=>x.locked);
   if(lockBtn)lockBtn.textContent=allLocked?'🔓 فتح القفل':'🔒 قفل المحدد';
   flipDoorBtn.style.display=(!multi&&it&&(it.archType==='door'||it.archType==='doubleDoor'))?'':'none';
@@ -2371,14 +2392,14 @@ deleteMapLabelBtn.onclick=()=>{if(mapLabelsGloballyLocked()){setStatus('المس
   const ids=getSelectedIds(),it=current();if(ids.length!==1||!canEditItem(it))return;
   it.name=selName.value;it.w=Math.max(1,+selW.value||1);it.h=Math.max(1,+selH.value||1);it.rot=+selRot.value||0;it.color=selColor.value;
   selectedTitle.textContent=it.name;
-  if(el===selColor && it.src){it.tintEnabled=true;selTintEnabled.checked=true;}
+  if(el===selColor && it.src && it.colorable!==false){it.tintEnabled=true;selTintEnabled.checked=true;}
   draw();
 });
 [selName,selW,selH,selRot,selColor].forEach(el=>{
   el.addEventListener('focus',()=>{if(getSelectedIds().length===1&&canEditItem(current())&&!inspectorEditBefore)inspectorEditBefore=cloneEditState();});
   el.addEventListener('change',()=>{commitHistory(inspectorEditBefore);inspectorEditBefore=null;});
 });
-selTintEnabled.onchange=()=>{const it=current();if(getSelectedIds().length!==1||!canEditItem(it))return;const before=cloneEditState();it.tintEnabled=selTintEnabled.checked;draw();commitHistory(before);};
+selTintEnabled.onchange=()=>{const it=current();if(getSelectedIds().length!==1||!canEditItem(it)||it.colorable===false){selTintEnabled.checked=false;return;}const before=cloneEditState();it.tintEnabled=selTintEnabled.checked;draw();commitHistory(before);};
 
 function applyToSelection(fn,statusText){
   if(furnitureGloballyLocked()){setStatus('الأثاث مقفل من الشريط العلوي');return false;}
@@ -2471,7 +2492,7 @@ document.getElementById('loadInput').onchange=e=>{
         saveLibraryState();activeCategory='الكل';buildCategoryButtons();renderLibrary();
       }
       pxPerCm=p.pxPerCm||null;
-      items=(p.items||[]).map(it=>({color:'#bfa781',type:'generic',rot:0,tintEnabled:false,locked:false,...it}));
+      items=(p.items||[]).map(it=>({color:'#bfa781',type:'generic',rot:0,colorable:true,tintEnabled:false,locked:false,...it}));
       items.forEach(ensureSpriteForDef);
       measurements=(p.measurements||[]).map(m=>({id:m.id||randId(),pinned:m.pinned!==false,offsetX:0,offsetY:0,...m}));selectedMeasureId=null;
       mapLabels=(p.mapLabels||[]).map(l=>({id:l.id||randId(),text:l.text||'مسمى',x:+l.x||0,y:+l.y||0}));selectedMapLabelId=null;

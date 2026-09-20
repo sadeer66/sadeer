@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v44-no-stale-cache";
+const CACHE_NAME = "taatheethi-v45-3d-library";
 
 self.addEventListener('install', event => {
   self.skipWaiting();
