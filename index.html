@@ -986,6 +986,14 @@ const V453_TOP_TYPES={
 'سيارة سيدان 1':'car','سيارة سيدان 2':'car','سيارة دفع رباعي SUV':'suv','مرآة مستطيلة':'mirrorRect','شاشة تلفاز حائطية بديلة':'tvwall','نبات زينة بديل':'plant'
 };
 defaultFurniture.forEach(d=>{d.type=V453_TOP_TYPES[d.name]||'generic';d.src=null;});
+function v453NormalizeBuiltIn(obj){
+  if(!obj)return obj;
+  const base=defaultFurniture.find(d=>d.name===obj.name);
+  if(base && obj.isCustom!==true){
+    return {...obj,type:base.type,src:null,previewSrc:base.previewSrc||obj.previewSrc||null,colorable:base.colorable!==false,isCustom:false};
+  }
+  return obj;
+}
 
 const LIBRARY_STORAGE_KEY='furniturePlannerLibraryV8_3D';
 function cloneDefaultLibrary(){
@@ -2569,11 +2577,14 @@ document.getElementById('loadInput').onchange=e=>{
       projectMeta={name:p.projectMeta?.name||'مشروع جديد',mapTitle:p.projectMeta?.mapTitle||'',client:p.projectMeta?.client||'',location:p.projectMeta?.location||''};
       if(p.brandInfo){brandInfo={...defaultBrandInfo(),...p.brandInfo};saveBrandInfoState();refreshCompanyLogo();}
       if(Array.isArray(p.library)&&p.library.length&&confirm('ملف المشروع يحتوي على مكتبة أثاث محفوظة معه. هل تريد تحميل هذه المكتبة أيضًا؟')){
-        furniture=p.library.map((x,i)=>({id:x.id||`project_${i}_${Date.now()}`,name:x.name||'قطعة',w:+x.w||100,h:+x.h||60,src:x.src||null,category:x.category||'أخرى',color:x.color||'#bfa781',isCustom:x.isCustom!==false}));
+        furniture=p.library.map((x,i)=>{
+          const item={id:x.id||`project_${i}_${Date.now()}`,name:x.name||'قطعة',w:+x.w||100,h:+x.h||60,src:x.src||null,previewSrc:x.previewSrc||x.src||null,type:x.type||'generic',category:x.category||'أخرى',color:x.color||'#bfa781',colorable:x.colorable!==false,isCustom:x.isCustom!==false};
+          return v453NormalizeBuiltIn(item);
+        });
         saveLibraryState();activeCategory='الكل';buildCategoryButtons();renderLibrary();
       }
       pxPerCm=p.pxPerCm||null;
-      items=(p.items||[]).map(it=>({color:'#bfa781',type:'generic',rot:0,colorable:true,tintEnabled:false,locked:false,...it}));
+      items=(p.items||[]).map(it=>v453NormalizeBuiltIn({color:'#bfa781',type:'generic',rot:0,colorable:true,tintEnabled:false,locked:false,...it}));
       items.forEach(ensureSpriteForDef);
       measurements=(p.measurements||[]).map(m=>({id:m.id||randId(),pinned:m.pinned!==false,offsetX:0,offsetY:0,...m}));selectedMeasureId=null;
       mapLabels=(p.mapLabels||[]).map(l=>({id:l.id||randId(),text:l.text||'مسمى',x:+l.x||0,y:+l.y||0}));selectedMapLabelId=null;
