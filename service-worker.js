@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v46-1-toponly-professional";
+const CACHE_NAME = "taatheethi-v46-2-visible-bounds";
 
 self.addEventListener('install', event => {
   self.skipWaiting();
