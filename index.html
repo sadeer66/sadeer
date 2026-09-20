@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <title>تأثيثي — iPad و iPhone</title>
-<meta name="taatheethi-version" content="35-rotate-90">
+<meta name="taatheethi-version" content="36-photoshop-tools">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -255,6 +255,47 @@
     aside{top:calc(env(safe-area-inset-top) + 104px)}
     .sidebarScrim{inset:calc(env(safe-area-inset-top) + 104px) 0 env(safe-area-inset-bottom) 0}
   }
+
+  /* TAATHEETHI_V36_TOOL_PALETTE */
+  .photoshopTopbar{gap:4px!important;align-items:stretch!important;padding:5px 7px!important;background:#060b13!important;border-color:#263244!important}
+  .mainToolbar .topAction{min-width:66px!important;min-height:58px!important;padding:5px 8px!important;border-radius:7px!important;display:flex!important;flex-direction:column!important;gap:3px!important;background:#151d29!important;border:1px solid transparent!important;color:#e8edf5!important;font-size:10.5px!important;font-weight:600!important}
+  .mainToolbar .topAction:hover{background:#202b3b!important;border-color:#52647b!important}
+  .mainToolbar .topAction.primary{background:#152338!important;border-color:#3576b9!important}
+  .mainToolbar .topAction.settingsAction{background:#151d29!important;border-color:transparent!important}
+  .mainToolbar .topAction.pdfAction{background:#151d29!important;border-color:transparent!important}
+  .topToolIcon{width:25px;height:25px;display:flex;align-items:center;justify-content:center}
+  .topToolIcon svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+  .pdfAction .topToolIcon{color:#ff6b6b}
+  #infoBtn{background:#151d29!important;border-color:transparent!important}
+  #pdfBtn{background:#151d29!important;border-color:transparent!important}
+  #selectedPanel{display:none!important}
+
+  .furnitureToolPalette{position:absolute;left:24px;top:118px;z-index:190;width:48px;padding:5px;background:linear-gradient(180deg,#20252d,#15191f);border:1px solid #343b46;border-radius:9px;box-shadow:0 12px 28px rgba(0,0,0,.38);direction:ltr;user-select:none}
+  .furnitureToolPalette.show{display:flex!important;flex-direction:column;gap:3px}
+  .furnitureToolPalette .toolSep{height:1px;background:#3b424d;margin:3px 2px}
+  .furnitureToolPalette .psTool{width:38px;height:38px;padding:0;border:1px solid transparent;border-radius:6px;background:transparent;color:#eef2f7;display:flex;align-items:center;justify-content:center;position:relative}
+  .furnitureToolPalette .psTool:hover{background:#2b323d;border-color:#515c6c}
+  .furnitureToolPalette .psTool.active{background:#35445a;border-color:#79b8ff;color:#fff;box-shadow:inset 0 0 0 1px rgba(121,184,255,.22)}
+  .furnitureToolPalette .psTool.dangerTool:hover{background:#52242a;border-color:#ef6b73}
+  .furnitureToolPalette .psTool svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .furnitureToolPalette .psTool .tiny90{font-size:10px;font-weight:800;line-height:1;position:absolute;right:3px;bottom:3px}
+  .furnitureToolFlyout{display:none;position:absolute;left:80px;top:118px;z-index:191;min-width:220px;max-width:290px;padding:11px;background:#171c23;border:1px solid #3a4452;border-radius:9px;box-shadow:0 15px 36px rgba(0,0,0,.42);color:#eef2f7;direction:rtl}
+  .furnitureToolFlyout.show{display:block}
+  .furnitureToolFlyout h4{margin:0 0 9px;font-size:12px;color:#fff}
+  .furnitureToolFlyout .flyGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .furnitureToolFlyout label{display:flex;flex-direction:column;gap:4px;font-size:10px;color:#aeb9c7}
+  .furnitureToolFlyout input[type=number],.furnitureToolFlyout input[type=text]{width:100%;background:#0d1218;border:1px solid #3a4657;color:#fff;border-radius:6px;padding:7px}
+  .furnitureToolFlyout input[type=color]{width:100%;height:38px;background:#0d1218;border:1px solid #3a4657;border-radius:6px;padding:3px}
+  .furnitureToolFlyout .flyActions{display:flex;gap:6px;margin-top:9px}
+  .furnitureToolFlyout .flyActions button{flex:1;padding:7px 8px;border-radius:6px;font-size:11px}
+  .furnitureToolFlyout .flyNote{font-size:10px;color:#91a0b3;line-height:1.5;margin-top:7px}
+  @media (pointer:coarse){
+    .furnitureToolPalette{left:18px;width:58px;padding:5px;top:126px}
+    .furnitureToolPalette .psTool{width:48px;height:48px}
+    .furnitureToolPalette .psTool svg{width:26px;height:26px}
+    .furnitureToolFlyout{left:84px;top:126px;min-width:250px}
+  }
+
 </style>
 </head>
 <body>
@@ -265,14 +306,14 @@
     <div class="status" id="status">ارفع مخططًا للبدء</div>
   </div>
   <div class="toolbarStack">
-    <div class="toolbar toolbarRow mainToolbar">
-      <button id="infoBtn"><span class="actionIcon">●</span>معلوماتك</button>
-      <button id="newProjectBtn" class="primary">مشروع جديد</button>
-      <label class="btn optional" for="loadInput">فتح مشروع</label><input id="loadInput" type="file" accept="application/json" />
-      <button id="saveBtn" class="optional">حفظ المشروع</button>
-      <button id="exportBtn">تصدير PNG</button>
-      <button id="printBtn">طباعة A3/A4</button>
-      <button id="pdfBtn"><span class="actionIcon">PDF</span>حفظ PDF</button>
+    <div class="toolbar toolbarRow mainToolbar photoshopTopbar">
+      <button id="newProjectBtn" class="topAction primary" title="مشروع جديد"><span class="topToolIcon"><svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z"/><path d="M15 3v4h4M12 10v7M8.5 13.5h7"/></svg></span><span>مشروع جديد</span></button>
+      <label class="btn optional topAction" for="loadInput" title="فتح مشروع"><span class="topToolIcon"><svg viewBox="0 0 24 24"><path d="M3 7h7l2 2h9v10H3z"/><path d="M3 7V5h8l2 2"/></svg></span><span>فتح</span></label><input id="loadInput" type="file" accept="application/json" />
+      <button id="saveBtn" class="optional topAction" title="حفظ المشروع"><span class="topToolIcon"><svg viewBox="0 0 24 24"><path d="M5 3h13l2 2v16H4V3z"/><path d="M8 3v6h8V3M8 14h8v7"/></svg></span><span>حفظ</span></button>
+      <button id="pdfBtn" class="topAction pdfAction" title="حفظ PDF"><span class="topToolIcon"><svg viewBox="0 0 24 24"><path d="M6 2h9l4 4v16H6z"/><path d="M15 2v5h5"/><path d="M8 16c3-5 5-7 8-3M9 12c1 4 3 6 7 7"/></svg></span><span>PDF</span></button>
+      <button id="exportBtn" class="topAction" title="حفظ PNG"><span class="topToolIcon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><circle cx="9" cy="9" r="2"/><path d="m5 18 5-5 3 3 2-2 4 4"/></svg></span><span>PNG</span></button>
+      <button id="printBtn" class="topAction" title="طباعة"><span class="topToolIcon"><svg viewBox="0 0 24 24"><path d="M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-5h18v5a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7z"/></svg></span><span>طباعة</span></button>
+      <button id="infoBtn" class="topAction settingsAction" title="إعدادات الشركة"><span class="topToolIcon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a8 8 0 0 0-1.8-1L14.4 3h-4.8l-.4 3.1a8 8 0 0 0-1.8 1L5 6.1 3 9.5 5 11a7 7 0 0 0 0 2l-2 1.5L5 18l2.4-1a8 8 0 0 0 1.8 1l.4 3h4.8l.4-3a8 8 0 0 0 1.8-1l2.4 1 2-3.5-2-1.5a7 7 0 0 0 .1-1z"/></svg></span><span>الإعدادات</span></button>
     </div>
     <div class="toolbar toolbarRow workToolbar">
       <button id="sidebarToggle" class="ipadOnly primary">☰ المكتبة</button>
@@ -327,6 +368,28 @@
 </aside>
 
 <main>
+  <div id="furnitureToolPalette" class="furnitureToolPalette" aria-label="أدوات الأثاث" style="display:none">
+    <button class="psTool active" data-tool="move" title="تحريك"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><path d="m12 3-2 2m2-2 2 2M21 12l-2-2m2 2-2 2M12 21l-2-2m2 2 2-2M3 12l2-2m-2 2 2 2"/></svg></button>
+    <button class="psTool" data-tool="resize" title="تحجيم"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12"/><rect x="3" y="3" width="4" height="4"/><rect x="17" y="3" width="4" height="4"/><rect x="3" y="17" width="4" height="4"/><rect x="17" y="17" width="4" height="4"/></svg></button>
+    <button class="psTool" data-tool="rotate" title="تدوير"><svg viewBox="0 0 24 24"><path d="M19 8a8 8 0 1 0 1 8"/><path d="M19 3v5h-5"/></svg></button>
+    <button class="psTool" data-tool="rotate90" title="دوران 90 درجة"><svg viewBox="0 0 24 24"><path d="M5 17V7h10"/><path d="M14 4l3 3-3 3"/><path d="M18 11v7h-7"/></svg><span class="tiny90">90°</span></button>
+    <button class="psTool" data-tool="flip" title="عكس أفقي"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="m4 12 6-6v12zM20 12l-6-6v12z"/></svg></button>
+    <div class="toolSep"></div>
+    <button class="psTool" data-tool="color" title="تلوين"><svg viewBox="0 0 24 24"><path d="m4 15 8-8 5 5-8 8H4z"/><path d="m13 6 2-2 5 5-2 2"/><path d="M4 20h16"/></svg></button>
+    <button class="psTool" data-tool="visibility" title="إظهار أو إخفاء"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.6"/></svg></button>
+    <button class="psTool" data-tool="dimensions" title="إظهار القياسات"><svg viewBox="0 0 24 24"><path d="m5 17 12-12 3 3L8 20z"/><path d="m8 14 2 2m1-5 2 2m1-5 2 2"/></svg></button>
+    <button class="psTool" data-tool="labels" title="إظهار الاسم"><svg viewBox="0 0 24 24"><path d="M5 5h14M12 5v14M8 19h8"/></svg></button>
+    <div class="toolSep"></div>
+    <button class="psTool" data-tool="snap" title="Snap"><svg viewBox="0 0 24 24"><path d="M7 3v10a5 5 0 0 0 10 0V3"/><path d="M7 7h4M13 7h4"/></svg></button>
+    <button class="psTool" data-tool="lock" title="قفل أو فتح"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></button>
+    <button class="psTool" data-tool="copy" title="نسخ"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11"/><path d="M5 16H3V3h13v2"/></svg></button>
+    <button class="psTool" data-tool="front" title="إحضار للأمام"><svg viewBox="0 0 24 24"><rect x="8" y="4" width="11" height="11"/><rect x="4" y="9" width="11" height="11"/></svg></button>
+    <button class="psTool" data-tool="back" title="إرسال للخلف"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="11" height="11"/><rect x="9" y="9" width="11" height="11"/></svg></button>
+    <div class="toolSep"></div>
+    <button class="psTool" data-tool="reset" title="إعادة الضبط"><svg viewBox="0 0 24 24"><path d="M5 8V3m0 0h5M5 3l4 4a8 8 0 1 1-2 10"/></svg></button>
+    <button class="psTool dangerTool" data-tool="delete" title="حذف"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 14h8l1-14M10 11v6M14 11v6"/></svg></button>
+  </div>
+  <div id="furnitureToolFlyout" class="furnitureToolFlyout"></div>
   <div class="mapPanel">
     <div class="mapTopbar">
       <div class="group">
@@ -452,17 +515,18 @@
 
 <div class="modalOverlay" id="brandModal">
   <div class="modalCard brandModalCard">
-    <h3>معلوماتك</h3>
-    <p>هذه المعلومات محفوظة في البرنامج وتظهر في شاشة البداية وأوراق الطباعة وPNG. الشعار يظهر بالأعلى، ومعلومات الشركة بشكل صغير أسفل الورقة.</p>
+    <h3>إعدادات الشركة</h3>
+    <p>احفظ هوية الشركة هنا. تظهر البيانات والشعار في شاشة البداية والطباعة وملفات PDF وPNG.</p>
     <div class="printMeta">
       <div class="field wide"><label>اسم الشركة</label><input id="brandCompanyName" type="text" placeholder="اسم الشركة أو المكتب"></div>
       <div class="field wide"><label>العنوان</label><input id="brandAddress" type="text" placeholder="عنوان الشركة"></div>
+      <div class="field wide"><label>الهاتف</label><input id="brandPhone" type="text" inputmode="tel" placeholder="رقم هاتف الشركة"></div>
       <div class="field wide"><label>الإيميل</label><input id="brandEmail" type="text" inputmode="email" placeholder="name@example.com"></div>
       <div class="field wide"><label>الشعار</label><input id="brandLogoInput" type="file" accept="image/png,image/jpeg,image/webp"></div>
     </div>
     <div class="brandPreview" id="brandLogoPreview"><span class="noImage">لم يتم اختيار شعار بعد</span></div>
     <div class="modalSubActions"><button id="removeBrandLogoBtn">إزالة الشعار المخصص</button></div>
-    <div class="modalActions"><button id="cancelBrandBtn">إلغاء</button><button id="saveBrandBtn" class="primary">حفظ معلوماتك</button></div>
+    <div class="modalActions"><button id="cancelBrandBtn">إلغاء</button><button id="saveBrandBtn" class="primary">حفظ إعدادات الشركة</button></div>
   </div>
 </div>
 
@@ -565,6 +629,7 @@ const pngOrientation=document.getElementById('pngOrientation');
 const brandModal=document.getElementById('brandModal');
 const brandCompanyName=document.getElementById('brandCompanyName');
 const brandAddress=document.getElementById('brandAddress');
+const brandPhone=document.getElementById('brandPhone');
 const brandEmail=document.getElementById('brandEmail');
 const brandLogoInput=document.getElementById('brandLogoInput');
 const brandLogoPreview=document.getElementById('brandLogoPreview');
@@ -709,7 +774,7 @@ const promoLogoImage=new Image();
 promoLogoImage.onload=()=>draw();
 promoLogoImage.src=PROMO_LOGO_DATA;
 const BRAND_STORAGE_KEY='taatheethiBrandV1';
-function defaultBrandInfo(){return {companyName:'',address:'',email:'',logoData:''};}
+function defaultBrandInfo(){return {companyName:'',address:'',phone:'',email:'',logoData:''};}
 function loadBrandInfo(){
   try{const raw=localStorage.getItem(BRAND_STORAGE_KEY);if(!raw)return defaultBrandInfo();return {...defaultBrandInfo(),...JSON.parse(raw)};}catch{return defaultBrandInfo();}
 }
@@ -731,7 +796,7 @@ function renderBrandPreview(){
   else{brandLogoPreview.innerHTML='<span class="noImage">لم يتم اختيار شعار بعد</span>';}
 }
 function openBrandDialog(){
-  brandCompanyName.value=brandInfo.companyName||'';brandAddress.value=brandInfo.address||'';brandEmail.value=brandInfo.email||'';brandLogoInput.value='';renderBrandPreview();brandModal.style.display='flex';
+  brandCompanyName.value=brandInfo.companyName||'';brandAddress.value=brandInfo.address||'';brandPhone.value=brandInfo.phone||'';brandEmail.value=brandInfo.email||'';brandLogoInput.value='';renderBrandPreview();brandModal.style.display='flex';
 }
 function resizeLogoFile(file){
   return new Promise((resolve,reject)=>{
@@ -743,7 +808,7 @@ document.getElementById('cancelBrandBtn').onclick=()=>brandModal.style.display='
 brandLogoInput.onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{brandInfo.logoData=await resizeLogoFile(f);renderBrandPreview();}catch{alert('تعذر قراءة الشعار. جرّب PNG أو JPG.');}};
 removeBrandLogoBtn.onclick=()=>{brandInfo.logoData='';brandLogoInput.value='';renderBrandPreview();};
 document.getElementById('saveBrandBtn').onclick=()=>{
-  brandInfo.companyName=brandCompanyName.value.trim();brandInfo.address=brandAddress.value.trim();brandInfo.email=brandEmail.value.trim();saveBrandInfoState();refreshCompanyLogo();brandModal.style.display='none';setStatus('تم حفظ معلوماتك وهوية الشركة');draw();
+  brandInfo.companyName=brandCompanyName.value.trim();brandInfo.address=brandAddress.value.trim();brandInfo.phone=brandPhone.value.trim();brandInfo.email=brandEmail.value.trim();saveBrandInfoState();refreshCompanyLogo();brandModal.style.display='none';setStatus('تم حفظ معلوماتك وهوية الشركة');draw();
 };
 refreshCompanyLogo();
 
@@ -1872,11 +1937,21 @@ function drawWindow(it,w,h){
 function drawOpening(it,w,h){const u=1/zoom;ctx.save();ctx.strokeStyle='#111827';ctx.lineWidth=1.5*u;ctx.setLineDash([6*u,4*u]);ctx.beginPath();ctx.moveTo(-w/2,0);ctx.lineTo(w/2,0);ctx.stroke();ctx.setLineDash([]);ctx.restore();}
 function drawItem(it){
   const w=it.w*pxPerCm,h=it.h*pxPerCm;
+  if(it.hidden){
+    if(isItemSelected(it.id)){
+      ctx.save();ctx.translate(it.x,it.y);ctx.rotate(it.rot*Math.PI/180);
+      drawSelectionOutline(w,(it.archType==='door'||it.archType==='doubleDoor')?w:h);
+      if(it.locked)drawLockMarker(w,(it.archType==='door'||it.archType==='doubleDoor')?w:h);
+      ctx.restore();
+    }
+    return;
+  }
   const showLabels=document.getElementById('labelsToggle').checked;
   const showDims=document.getElementById('dimsToggle').checked;
   ctx.save();
   ctx.translate(it.x,it.y);
   ctx.rotate(it.rot*Math.PI/180);
+  if(it.flipX||it.flipY)ctx.scale(it.flipX?-1:1,it.flipY?-1:1);
   if(it.archType==='door')drawDoor(it,w,h); else if(it.archType==='doubleDoor')drawDoubleDoor(it,w,h); else if(it.archType==='window')drawWindow(it,w,h); else if(it.archType==='opening')drawOpening(it,w,h); else if(it.src){ drawSprite(it,w,h); } else switch(it.type){
     case 'sofa': drawSofa(it,w,h); break;
     case 'armchair': drawArmchair(it,w,h); break;
@@ -2047,7 +2122,7 @@ function draw(){
       ctx.textAlign='center';
       let ty=cy+h/2+30;
       if(brandInfo.companyName){ctx.fillStyle='#0f172a';ctx.font='700 21px Tahoma';ctx.fillText(brandInfo.companyName,canvas.width/2,ty);ty+=27;}
-      const sub=[brandInfo.address,brandInfo.email].filter(Boolean).join('  •  ');
+      const sub=[brandInfo.address,brandInfo.phone,brandInfo.email].filter(Boolean).join('  •  ');
       if(sub){ctx.fillStyle='#64748b';ctx.font='14px Tahoma';ctx.fillText(sub,canvas.width/2,ty);ty+=25;}
       ctx.fillStyle='#334155';ctx.font='bold 17px Tahoma';ctx.fillText('ارفع الخارطة لبدء مشروع جديد',canvas.width/2,ty+5);
     }else{
@@ -2491,7 +2566,7 @@ async function buildBrandedSheet({paper='A4',orient='landscape',title='',mapTitl
   c.drawImage(plan, drawX, drawY, drawW, drawH);
   if(schedule){c.drawImage(schedule,Math.round((sheet.width-scheduleW)/2),Math.round(planTop+planAreaH+scheduleGap),scheduleW,scheduleH);}
   c.fillStyle='#555';
-  const companyLine=[brandInfo.companyName,brandInfo.address,brandInfo.email].filter(Boolean).join('  •  ');
+  const companyLine=[brandInfo.companyName,brandInfo.address,brandInfo.phone,brandInfo.email].filter(Boolean).join('  •  ');
   const footerY=sheet.height-margin+Math.round(footH*0.08);
   c.font=`${Math.round(footH*0.34)}px Tahoma,Arial,sans-serif`;
   if(companyLine){c.textAlign='center';c.fillText(companyLine,sheet.width/2,footerY);}
@@ -2644,6 +2719,85 @@ window.addEventListener('keydown',e=>{
   if(e.key.toLowerCase()==='r'){editable.forEach(it=>it.rot=(it.rot+5)%360);changed=true;}
   if(changed){syncSelectedPanel();draw();commitHistory(before);}
 });
+
+
+/* TAATHEETHI_V36_TOOL_PALETTE */
+const furnitureToolPalette=document.getElementById('furnitureToolPalette');
+const furnitureToolFlyout=document.getElementById('furnitureToolFlyout');
+function closeFurnitureFlyout(){furnitureToolFlyout.classList.remove('show');furnitureToolFlyout.innerHTML='';}
+function setPaletteActive(name){
+  furnitureToolPalette.querySelectorAll('.psTool').forEach(b=>b.classList.toggle('active',b.dataset.tool===name));
+}
+function syncFurnitureToolPalette(){
+  const ids=getSelectedIds(), it=current();
+  const show=!!(ids.length&&it&&!selectedMeasureId&&!selectedMapLabelId&&visibleFurniture());
+  furnitureToolPalette.classList.toggle('show',show);
+  if(!show){closeFurnitureFlyout();return;}
+  const list=selectedItems();
+  const lockBtn=furnitureToolPalette.querySelector('[data-tool="lock"]');
+  const eyeBtn=furnitureToolPalette.querySelector('[data-tool="visibility"]');
+  const dimBtn=furnitureToolPalette.querySelector('[data-tool="dimensions"]');
+  const labelBtn=furnitureToolPalette.querySelector('[data-tool="labels"]');
+  const snapBtn=furnitureToolPalette.querySelector('[data-tool="snap"]');
+  if(lockBtn)lockBtn.classList.toggle('active',list.length>0&&list.every(x=>x.locked));
+  if(eyeBtn)eyeBtn.classList.toggle('active',list.some(x=>x.hidden));
+  if(dimBtn)dimBtn.classList.toggle('active',!!document.getElementById('dimsToggle').checked);
+  if(labelBtn)labelBtn.classList.toggle('active',!!document.getElementById('labelsToggle').checked);
+  if(snapBtn)snapBtn.classList.toggle('active',!!document.getElementById('snapToggle').checked);
+}
+function showSizeFlyout(){
+  const it=current();if(!it||getSelectedIds().length!==1){setStatus('اختر قطعة واحدة للتحجيم');return;}
+  furnitureToolFlyout.innerHTML='<h4>تحجيم القطعة</h4><div class="flyGrid"><label>العرض (سم)<input id="fpWidth" type="number" min="1" value="'+Math.round(it.w*10)/10+'"></label><label>العمق (سم)<input id="fpHeight" type="number" min="1" value="'+Math.round(it.h*10)/10+'"></label></div><div class="flyActions"><button id="fpApplySize" class="primary">تطبيق</button><button id="fpCloseSize">إغلاق</button></div><div class="flyNote">تبقى القياسات بالسنتيمتر وتُحفظ مع المشروع.</div>';
+  furnitureToolFlyout.classList.add('show');
+  document.getElementById('fpApplySize').onclick=()=>{const w=Math.max(1,+document.getElementById('fpWidth').value||1),h=Math.max(1,+document.getElementById('fpHeight').value||1);applyToSelection(x=>{x.w=w;x.h=h;},'تم تحديث حجم القطعة');closeFurnitureFlyout();};
+  document.getElementById('fpCloseSize').onclick=closeFurnitureFlyout;
+}
+function showRotateFlyout(){
+  const it=current();if(!it)return;
+  furnitureToolFlyout.innerHTML='<h4>تدوير</h4><label>الزاوية<input id="fpAngle" type="number" step="1" value="'+Math.round(it.rot||0)+'"></label><div class="flyActions"><button data-a="45">45°</button><button data-a="90">90°</button><button data-a="180">180°</button><button data-a="0">0°</button></div><div class="flyActions"><button id="fpApplyAngle" class="primary">تطبيق الزاوية</button><button id="fpCloseRotate">إغلاق</button></div>';
+  furnitureToolFlyout.classList.add('show');
+  furnitureToolFlyout.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{const a=+b.dataset.a;applyToSelection(x=>{x.rot=a;},'تم ضبط الدوران '+a+'°');closeFurnitureFlyout();});
+  document.getElementById('fpApplyAngle').onclick=()=>{const a=((+document.getElementById('fpAngle').value||0)%360+360)%360;applyToSelection(x=>{x.rot=a;},'تم ضبط الدوران '+a+'°');closeFurnitureFlyout();};
+  document.getElementById('fpCloseRotate').onclick=closeFurnitureFlyout;
+}
+function showColorFlyout(){
+  const it=current();if(!it||getSelectedIds().length!==1){setStatus('اختر قطعة واحدة لتغيير اللون');return;}
+  furnitureToolFlyout.innerHTML='<h4>لون القطعة</h4><label>اللون<input id="fpColor" type="color" value="'+(it.color||'#bfa781')+'"></label><label style="margin-top:8px;display:flex;flex-direction:row;align-items:center;gap:6px"><input id="fpTint" type="checkbox" '+(it.tintEnabled?'checked':'')+'> استبدال اللون الأساسي للصورة</label><div class="flyActions"><button id="fpApplyColor" class="primary">تطبيق</button><button id="fpCloseColor">إغلاق</button></div>';
+  furnitureToolFlyout.classList.add('show');
+  document.getElementById('fpApplyColor').onclick=()=>{const col=document.getElementById('fpColor').value,tint=document.getElementById('fpTint').checked;applyToSelection(x=>{x.color=col;x.tintEnabled=tint||!!x.src;},'تم تغيير لون القطعة');closeFurnitureFlyout();};
+  document.getElementById('fpCloseColor').onclick=closeFurnitureFlyout;
+}
+function reorderSelection(front){
+  if(furnitureGloballyLocked()){setStatus('الأثاث مقفل');return;}
+  const ids=new Set(getSelectedIds());if(!ids.size)return;
+  const before=cloneEditState(),sel=items.filter(x=>ids.has(x.id)),rest=items.filter(x=>!ids.has(x.id));
+  items=front?rest.concat(sel):sel.concat(rest);draw();commitHistory(before);setStatus(front?'تم إحضار المحدد للأمام':'تم إرسال المحدد للخلف');
+}
+furnitureToolPalette.addEventListener('click',e=>{
+  const b=e.target.closest('.psTool');if(!b)return;
+  const tool=b.dataset.tool;
+  if(tool!=='dimensions'&&tool!=='labels'&&tool!=='snap'&&tool!=='lock'&&tool!=='visibility')setPaletteActive(tool);
+  if(tool==='move'){closeFurnitureFlyout();mode='select';updateInteractionCursor();setStatus('أداة التحريك مفعّلة — اسحب القطعة على الخارطة');}
+  else if(tool==='resize')showSizeFlyout();
+  else if(tool==='rotate')showRotateFlyout();
+  else if(tool==='rotate90'){document.getElementById('rotate90').click();closeFurnitureFlyout();}
+  else if(tool==='flip'){applyToSelection(x=>{x.flipX=!x.flipX;},'تم عكس القطعة أفقيًا');}
+  else if(tool==='color')showColorFlyout();
+  else if(tool==='visibility'){applyToSelection(x=>{x.hidden=!x.hidden;},selectedItems().some(x=>x.hidden)?'تم إظهار القطعة':'تم إخفاء القطعة');syncFurnitureToolPalette();}
+  else if(tool==='dimensions'){const t=document.getElementById('dimsToggle');t.checked=!t.checked;t.dispatchEvent(new Event('change'));syncFurnitureToolPalette();}
+  else if(tool==='labels'){const t=document.getElementById('labelsToggle');t.checked=!t.checked;t.dispatchEvent(new Event('change'));syncFurnitureToolPalette();}
+  else if(tool==='snap'){const t=document.getElementById('snapToggle');t.checked=!t.checked;t.dispatchEvent(new Event('change'));syncFurnitureToolPalette();}
+  else if(tool==='lock'){document.getElementById('lockItemBtn').click();syncFurnitureToolPalette();}
+  else if(tool==='copy'){document.getElementById('dupBtn').click();}
+  else if(tool==='front')reorderSelection(true);
+  else if(tool==='back')reorderSelection(false);
+  else if(tool==='reset'){applyToSelection(x=>{const d=(typeof furniture!=='undefined'&&furniture.find)?(furniture.find(f=>f.src&&f.src===x.src)||furniture.find(f=>f.name===x.name)):null;if(d){x.w=d.w;x.h=d.h;if(d.color)x.color=d.color;}x.rot=0;x.flipX=false;x.flipY=false;x.hidden=false;x.tintEnabled=false;},'تمت إعادة القطعة لوضعها الأصلي');}
+  else if(tool==='delete'){document.getElementById('deleteBtn').click();}
+});
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('#furnitureToolPalette')&&!e.target.closest('#furnitureToolFlyout'))closeFurnitureFlyout();});
+const _syncSelectedPanelV36=syncSelectedPanel;
+syncSelectedPanel=function(){_syncSelectedPanelV36();syncFurnitureToolPalette();};
+['dimsToggle','labelsToggle','snapToggle','furnitureLayerToggle'].forEach(id=>document.getElementById(id)?.addEventListener('change',syncFurnitureToolPalette));
 
 buildArchitectureLibrary();
 updateScaleUI();
