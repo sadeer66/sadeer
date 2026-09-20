@@ -1,4 +1,4 @@
-const CACHE_NAME = "furniture-planner-v35-rotate90-guide-color";
+const CACHE_NAME = "furniture-planner-v36-photoshop-tools";
 const CRITICAL = ['./', './index.html'];
 
 self.addEventListener('install', event => {
