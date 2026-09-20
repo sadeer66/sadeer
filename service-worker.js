@@ -1,4 +1,4 @@
-const CACHE_NAME = "furniture-planner-v38-toolbar-visible";
+const CACHE_NAME = "furniture-planner-v39-toolbar-watchdog";
 const CRITICAL = ['./', './index.html'];
 
 self.addEventListener('install', event => {
