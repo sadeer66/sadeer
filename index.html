@@ -2877,7 +2877,7 @@ draw();
     ['lRot90','rotate','دوران 90°',()=>click('rotate90')],
     ['lRot45','rotate45','دوران 45°',()=>click('rotate45')],
     ['lReset','reset','إعادة الدوران',()=>click('rotate360')],
-    ['lColor','palette','تلوين القطعة',()=>{const it=(typeof current==='function'?current():null);if(!it)return;const p=document.getElementById('v44Color');p.value=it.color||'#bfa781';p.click();},'colorState'],
+    ['lColor','palette','تلوين القطعة',()=>{},'colorState'],
     ['lEye','eye','إخفاء / إظهار القطعة',()=>toggleSelectedVisibility()],
     ['lDims','dims','قياسات القطعة',()=>toggle('dimsToggle')],
     ['lNames','tag','أسماء القطع',()=>toggle('labelsToggle')],
@@ -2892,7 +2892,18 @@ draw();
   ];
   leftDefs.forEach((d,i)=>{if([3,9,15,19].includes(i))left.appendChild(sep());left.appendChild(button(...d));});
 
-  const picker=document.createElement('input');picker.type='color';picker.id='v44Color';picker.style.cssText='position:fixed;left:-100px;top:-100px;opacity:0;width:1px;height:1px';document.body.appendChild(picker);
+  const colorButton=document.getElementById('lColor');
+  const picker=document.createElement('input');
+  picker.type='color';picker.id='v44Color';
+  picker.style.cssText='position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0;margin:0';
+  if(colorButton){
+    colorButton.style.position='relative';
+    colorButton.onclick=null;
+    colorButton.appendChild(picker);
+  }else{
+    document.body.appendChild(picker);
+  }
+  picker.addEventListener('click',()=>{const it=(typeof current==='function'?current():null);if(it)picker.value=it.color||'#bfa781';});
   picker.addEventListener('input',()=>{const it=(typeof current==='function'?current():null);if(!it)return;const src=document.getElementById('selColor');if(!src)return;src.value=picker.value;src.dispatchEvent(new Event('input',{bubbles:true}));src.dispatchEvent(new Event('change',{bubbles:true}));syncStates();});
 
   const originalDrawItem=typeof drawItem==='function'?drawItem:null;
