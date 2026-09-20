@@ -58,7 +58,7 @@
   .fcard:active{cursor:grabbing;transform:scale(.985)}
   .fcard:hover{border-color:#38bdf8}
   .ficon{display:block;font-size:20px;margin-bottom:4px}
-  .fcard img{width:100%;height:70px;object-fit:contain;display:block;margin:0 auto 6px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.22))}
+  .fcard img{width:100%;height:70px;object-fit:contain;display:block;margin:0 auto 6px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.22))}\n  .fcard .procThumb{width:100%;height:70px;display:block;margin:0 auto 6px;filter:drop-shadow(0 5px 5px rgba(0,0,0,.28));overflow:visible}
   .fcard b{display:block;font-size:13px}
   .fcard span{font-size:11px;color:#94a3b8}
   main{position:relative;background:#334155;overflow:hidden;padding:14px}
@@ -1246,12 +1246,85 @@ function wireFurnitureCard(d,obj,index){
   d.addEventListener('dragend',()=>{setTimeout(()=>libraryDragActive=false,0);});
   d.onclick=e=>{if(e.target.closest('.editLibBtn,.touchDragHandle'))return;if(!libraryDragActive){armFurniturePlacement(obj);if(isIPadLayout())setSidebarOpen(false);}};
 }
+
+function safeThumbColor(v){return /^#[0-9a-f]{6}$/i.test(String(v||''))?v:'#bfa781';}
+function proceduralThumbMarkup(obj){
+  const t=obj.type||'generic',c=safeThumbColor(obj.color),d=shade(c,-0.22),l=shade(c,0.32),common='stroke="#394454" stroke-width="2"';
+  let s='';
+  if(['sofa','sectional'].includes(t)){
+    s=t==='sectional'
+      ?`<rect x="20" y="20" width="120" height="34" rx="11" fill="${c}" ${common}/><rect x="100" y="20" width="40" height="60" rx="11" fill="${c}" ${common}/><path d="M52 23v28M80 23v28M112 23v28" stroke="${d}" opacity=".55"/><rect x="25" y="26" width="15" height="20" rx="5" fill="${l}"/><rect x="119" y="26" width="14" height="20" rx="5" fill="${l}"/>`
+      :`<rect x="18" y="26" width="124" height="46" rx="14" fill="${c}" ${common}/><rect x="25" y="30" width="14" height="38" rx="7" fill="${d}"/><rect x="121" y="30" width="14" height="38" rx="7" fill="${d}"/><path d="M60 31v36M100 31v36" stroke="${d}" opacity=".6"/><rect x="43" y="31" width="18" height="10" rx="4" fill="${l}"/><rect x="99" y="31" width="18" height="10" rx="4" fill="${l}"/>`;
+  }else if(['armchair','chaise','ottoman','ottomanRound','diningChair','barStool','officeChair'].includes(t)){
+    if(t==='ottomanRound'||t==='barStool')s=`<circle cx="80" cy="50" r="28" fill="${c}" ${common}/><circle cx="80" cy="50" r="20" fill="none" stroke="${l}" opacity=".5"/>`;
+    else if(t==='ottoman')s=`<rect x="42" y="30" width="76" height="40" rx="14" fill="${c}" ${common}/><rect x="50" y="36" width="60" height="28" rx="10" fill="${l}" opacity=".35"/>`;
+    else s=`<rect x="50" y="18" width="60" height="64" rx="17" fill="${c}" ${common}/><rect x="57" y="27" width="46" height="44" rx="13" fill="${l}" opacity=".35"/><rect x="51" y="21" width="11" height="56" rx="6" fill="${d}"/><rect x="98" y="21" width="11" height="56" rx="6" fill="${d}"/>`;
+  }else if(['coffee','coffeeRound','sideTable','sideTableSquare','nestingTables','dining','diningRound','diningOval','diningGlass','meetingTable'].includes(t)){
+    if(['coffeeRound','sideTable'].includes(t))s=`<circle cx="80" cy="50" r="${t==='sideTable'?23:34}" fill="${c}" ${common}/><circle cx="80" cy="50" r="${t==='sideTable'?16:26}" fill="none" stroke="${l}" opacity=".55"/>`;
+    else if(t==='sideTableSquare')s=`<rect x="52" y="22" width="56" height="56" rx="8" fill="${c}" ${common}/><rect x="60" y="30" width="40" height="40" rx="6" fill="none" stroke="${l}" opacity=".5"/>`;
+    else if(t==='nestingTables')s=`<circle cx="64" cy="55" r="27" fill="${c}" ${common}/><circle cx="99" cy="42" r="23" fill="${l}" ${common}/>`;
+    else if(t==='diningRound')s=`<circle cx="80" cy="50" r="28" fill="${c}" ${common}/><circle cx="80" cy="13" r="8" fill="#bdb6ad"/><circle cx="80" cy="87" r="8" fill="#bdb6ad"/><circle cx="42" cy="50" r="8" fill="#bdb6ad"/><circle cx="118" cy="50" r="8" fill="#bdb6ad"/>`;
+    else if(['diningOval','meetingTable'].includes(t))s=`<rect x="30" y="27" width="100" height="46" rx="23" fill="${c}" ${common}/><rect x="46" y="14" width="18" height="10" rx="5" fill="#bbb5ad"/><rect x="96" y="14" width="18" height="10" rx="5" fill="#bbb5ad"/><rect x="46" y="76" width="18" height="10" rx="5" fill="#bbb5ad"/><rect x="96" y="76" width="18" height="10" rx="5" fill="#bbb5ad"/>`;
+    else s=`<rect x="27" y="30" width="106" height="40" rx="8" fill="${t==='diningGlass'?'#a9d5de':c}" fill-opacity="${t==='diningGlass'?'.62':'1'}" ${common}/><rect x="39" y="16" width="18" height="10" rx="4" fill="#bbb5ad"/><rect x="71" y="16" width="18" height="10" rx="4" fill="#bbb5ad"/><rect x="103" y="16" width="18" height="10" rx="4" fill="#bbb5ad"/><rect x="39" y="74" width="18" height="10" rx="4" fill="#bbb5ad"/><rect x="71" y="74" width="18" height="10" rx="4" fill="#bbb5ad"/><rect x="103" y="74" width="18" height="10" rx="4" fill="#bbb5ad"/>`;
+  }else if(t==='bed'){
+    s=`<rect x="43" y="10" width="74" height="80" rx="8" fill="${c}" ${common}/><rect x="49" y="17" width="28" height="18" rx="6" fill="#f4f5f6" stroke="#cbd5e1"/><rect x="83" y="17" width="28" height="18" rx="6" fill="#f4f5f6" stroke="#cbd5e1"/><rect x="49" y="39" width="62" height="44" rx="6" fill="${l}" opacity=".52"/>`;
+  }else if(['wardrobe','dresserPremium','bookcasePremium'].includes(t)){
+    s=`<rect x="30" y="25" width="100" height="50" rx="5" fill="${c}" ${common}/><path d="M80 27v46M34 42h92M34 58h92" stroke="${d}" opacity=".55"/>`;
+  }else if(t==='desk'){
+    s=`<rect x="25" y="27" width="110" height="46" rx="7" fill="${c}" ${common}/><rect x="65" y="35" width="36" height="22" rx="3" fill="#30353b"/><circle cx="117" cy="42" r="7" fill="#4f7c45"/>`;
+  }else if(['rugRect','rugRound'].includes(t)){
+    s=t==='rugRound'
+      ?`<circle cx="80" cy="50" r="34" fill="${c}" stroke="${d}" stroke-width="2"/><circle cx="80" cy="50" r="26" fill="none" stroke="${l}" stroke-dasharray="3 3"/>`
+      :`<rect x="25" y="20" width="110" height="60" rx="7" fill="${c}" stroke="${d}" stroke-width="2"/><rect x="32" y="27" width="96" height="46" rx="5" fill="none" stroke="${l}" stroke-dasharray="4 3"/>`;
+  }else if(t==='plant'){
+    s=`<circle cx="80" cy="56" r="15" fill="#785a3c"/><g fill="${c}" stroke="${d}" stroke-width="1"><ellipse cx="80" cy="27" rx="10" ry="24"/><ellipse cx="103" cy="39" rx="10" ry="24" transform="rotate(50 103 39)"/><ellipse cx="57" cy="39" rx="10" ry="24" transform="rotate(-50 57 39)"/><ellipse cx="102" cy="65" rx="10" ry="24" transform="rotate(110 102 65)"/><ellipse cx="58" cy="65" rx="10" ry="24" transform="rotate(-110 58 65)"/></g>`;
+  }else if(['fridgePremium','dishwasherPremium','ovenPremium','washerPremium','dryerPremium','utilityCabinetPremium'].includes(t)){
+    s=`<rect x="42" y="18" width="76" height="64" rx="7" fill="${c}" ${common}/><rect x="48" y="24" width="64" height="52" rx="5" fill="${l}" opacity=".25"/>`;
+    if(t==='fridgePremium'){const n=Math.max(1,Math.min(3,obj.doors||1));for(let i=1;i<n;i++)s+=`<path d="M${42+76*i/n} 20v60" stroke="${d}" stroke-width="2"/>`;}
+    if(t==='washerPremium'||t==='dryerPremium')s+=`<circle cx="80" cy="50" r="20" fill="#35414c" stroke="#d7dde2" stroke-width="4"/><circle cx="80" cy="50" r="11" fill="#91a7b6" opacity=".55"/>`;
+    if(t==='ovenPremium')s+=`<circle cx="62" cy="38" r="8" fill="#23282d"/><circle cx="98" cy="38" r="8" fill="#23282d"/><rect x="57" y="52" width="46" height="20" rx="3" fill="#252a2e"/>`;
+  }else if(['kitchenBasePremium','kitchenWallPremium','kitchenCornerPremium','kitchenLPremium','kitchenIslandSink','rangeHood','island'].includes(t)){
+    if(t==='rangeHood')s=`<rect x="32" y="28" width="96" height="44" rx="6" fill="${c}" ${common}/><rect x="58" y="32" width="44" height="36" rx="5" fill="${d}"/><path d="M38 65h84" stroke="#e2e8f0" opacity=".65"/>`;
+    else if(t==='kitchenLPremium')s=`<path d="M24 22h112v28H58v30H24z" fill="${c}" ${common}/><path d="M31 29h98M31 43h98M31 57h20M31 71h20" stroke="${d}" opacity=".55"/>`;
+    else if(t==='kitchenCornerPremium')s=`<path d="M40 20h80v28H70v32H40z" fill="${c}" ${common}/><path d="M47 27h66M47 42h66M47 57h16M47 72h16" stroke="${d}" opacity=".55"/>`;
+    else s=`<rect x="26" y="27" width="108" height="46" rx="5" fill="${c}" ${common}/><path d="M80 29v42" stroke="${d}" opacity=".45"/><path d="M31 38h98" stroke="${l}" opacity=".45"/>`;
+  }else if(['bathtubPremium','showerPremium','toiletPremium','vanityPremium','laundrySinkPremium'].includes(t)){
+    if(t==='bathtubPremium')s=`<rect x="25" y="22" width="110" height="56" rx="28" fill="#eef2f3" ${common}/><rect x="34" y="30" width="92" height="40" rx="20" fill="#cfe4ea"/><circle cx="114" cy="50" r="4" fill="#66717a"/>`;
+    else if(t==='showerPremium')s=`<rect x="46" y="18" width="68" height="64" rx="4" fill="#dcecef" ${common}/><path d="M50 22l60 56M110 22 50 78" stroke="#9fb8c0" opacity=".6"/><circle cx="102" cy="70" r="5" fill="#606a72"/>`;
+    else if(t==='toiletPremium')s=`<rect x="57" y="18" width="46" height="24" rx="6" fill="#eff2f3" ${common}/><ellipse cx="80" cy="59" rx="26" ry="27" fill="#eef2f3" ${common}/><ellipse cx="80" cy="59" rx="14" ry="17" fill="#cfe0e5"/>`;
+    else s=`<rect x="35" y="22" width="90" height="56" rx="6" fill="${c}" ${common}/><ellipse cx="80" cy="50" rx="25" ry="18" fill="#edf2f3" stroke="#8fa1aa" stroke-width="2"/><circle cx="80" cy="50" r="4" fill="#68747c"/>`;
+  }else if(t==='glassPartition'){
+    const n=Math.max(2,obj.panels||2);s=`<rect x="20" y="39" width="120" height="22" rx="3" fill="#9fd7e5" fill-opacity=".35" stroke="#6498a8" stroke-width="2"/>`;for(let i=1;i<n;i++)s+=`<path d="M${20+120*i/n} 40v20" stroke="#6498a8" stroke-width="2"/>`;
+  }else if(['splitIndoor','splitOutdoor','waterHeater','waterTank'].includes(t)){
+    if(t==='splitIndoor')s=`<rect x="28" y="31" width="104" height="38" rx="12" fill="${c}" ${common}/><path d="M38 59h84M45 63h70" stroke="#727d86" opacity=".6"/><circle cx="116" cy="43" r="3" fill="#62a8d6"/>`;
+    else if(t==='splitOutdoor')s=`<rect x="45" y="18" width="70" height="64" rx="6" fill="${c}" ${common}/><circle cx="80" cy="50" r="23" fill="#5f6972"/><circle cx="80" cy="50" r="16" fill="none" stroke="#bdc5cb" stroke-width="3"/><path d="M80 29v42M59 50h42M65 35l30 30M95 35 65 65" stroke="#bdc5cb" stroke-width="1.4"/>`;
+    else if(t==='waterHeater')s=`<rect x="55" y="18" width="50" height="64" rx="22" fill="${c}" ${common}/><circle cx="80" cy="68" r="4" fill="#d34f48"/><circle cx="91" cy="68" r="4" fill="#4b89c6"/>`;
+    else s=`<circle cx="80" cy="50" r="35" fill="${c}" ${common}/><circle cx="80" cy="50" r="27" fill="none" stroke="${l}" opacity=".38" stroke-width="3"/><circle cx="80" cy="50" r="15" fill="none" stroke="${d}" opacity=".4" stroke-width="3"/>`;
+  }else if(['carSedan','carSUV'].includes(t)){
+    const yy=t==='carSUV'?12:16,hh=t==='carSUV'?76:68;s=`<rect x="50" y="${yy}" width="60" height="${hh}" rx="20" fill="${c}" ${common}/><rect x="57" y="${yy+14}" width="46" height="18" rx="7" fill="#6f8795"/><rect x="57" y="${yy+hh-33}" width="46" height="18" rx="7" fill="#6f8795"/><rect x="45" y="${yy+16}" width="7" height="18" rx="3" fill="#24292f"/><rect x="108" y="${yy+16}" width="7" height="18" rx="3" fill="#24292f"/><rect x="45" y="${yy+hh-34}" width="7" height="18" rx="3" fill="#24292f"/><rect x="108" y="${yy+hh-34}" width="7" height="18" rx="3" fill="#24292f"/>`;
+  }else if(['ceilingFanPremium','ceilingLightPremium','spotPremium'].includes(t)){
+    s=t==='ceilingFanPremium'
+      ?`<circle cx="80" cy="50" r="8" fill="${c}"/><ellipse cx="80" cy="24" rx="8" ry="26" fill="${c}"/><ellipse cx="80" cy="76" rx="8" ry="26" fill="${c}"/><ellipse cx="54" cy="50" rx="26" ry="8" fill="${c}"/><ellipse cx="106" cy="50" rx="26" ry="8" fill="${c}"/>`
+      :`<circle cx="80" cy="50" r="${t==='spotPremium'?15:31}" fill="${c}" stroke="#8f7e5f" stroke-width="2"/><circle cx="80" cy="50" r="${t==='spotPremium'?7:20}" fill="#fff5d7" opacity=".8"/>`;
+  }else if(t==='tvWall'){
+    s=`<rect x="28" y="45" width="104" height="10" rx="4" fill="#151a1f" stroke="#56616b" stroke-width="2"/><path d="M50 48h60" stroke="#8a959f" opacity=".5"/>`;
+  }else if(t==='wallMirror'){
+    s=`<rect x="28" y="43" width="104" height="14" rx="7" fill="#bfe0e6" ${common}/><path d="M35 47h90" stroke="#fff" opacity=".8"/>`;
+  }else if(t==='basket'){
+    s=`<circle cx="80" cy="50" r="30" fill="${c}" ${common}/><path d="M58 34c12 12 32 12 44 0M52 49c15 12 41 12 56 0M58 66c12-12 32-12 44 0" fill="none" stroke="${l}" opacity=".55"/>`;
+  }else if(t==='cushion'){
+    s=`<rect x="50" y="20" width="60" height="60" rx="15" fill="${c}" ${common}/><path d="M58 28c8 8 36 8 44 0M58 72c8-8 36-8 44 0" fill="none" stroke="${l}" opacity=".55"/>`;
+  }else{
+    s=`<rect x="36" y="25" width="88" height="50" rx="9" fill="${c}" ${common}/><rect x="46" y="35" width="68" height="30" rx="7" fill="${l}" opacity=".3"/>`;
+  }
+  return `<svg class="procThumb" viewBox="0 0 160 100" aria-hidden="true"><rect x="6" y="7" width="148" height="86" rx="14" fill="#ffffff" opacity=".04"/>${s}</svg>`;
+}
 function renderLibrary(){
   lib.innerHTML='';
   furniture.forEach((obj,index)=>{
     if(activeCategory!=='الكل'&&obj.category!==activeCategory)return;
     const d=document.createElement('div');d.className='fcard';
-    const visual=obj.src?`<img loading="lazy" decoding="async" src="${resolveAssetSrc(obj.src)}" alt="${obj.name}">`:`<div class="genericThumb" style="box-shadow:inset 0 0 0 999px ${obj.color||'#bfa781'}33">بدون صورة</div>`;
+    const visual=obj.src?`<img loading="lazy" decoding="async" src="${resolveAssetSrc(obj.src)}" alt="${obj.name}">`:proceduralThumbMarkup(obj);
     d.innerHTML=`<button class="editLibBtn" title="تعديل القطعة">✎</button>${obj.isCustom?'<span class="customMark">مضافة</span>':''}${visual}<b>${obj.name}</b><span>${obj.w} × ${obj.h} سم</span><button class="touchDragHandle" type="button" aria-label="اسحب إلى الخارطة">⠿</button>`;
     d.querySelector('.editLibBtn').onclick=e=>{e.stopPropagation();openLibraryEditor(obj.id);};
     const th=d.querySelector('.touchDragHandle');th.addEventListener('pointerdown',e=>startTouchLibraryDrag(e,obj,false));th.addEventListener('pointermove',moveTouchLibraryDrag);th.addEventListener('pointerup',endTouchLibraryDrag);th.addEventListener('pointercancel',endTouchLibraryDrag);
@@ -1269,8 +1342,8 @@ function fillLibraryCategorySelect(selected=''){
   libEditCategory.innerHTML=cats.map(c=>`<option value="${c.replace(/"/g,'&quot;')}">${c}</option>`).join('');
   libEditCategory.value=selected||'أخرى';
 }
-function setLibraryPreview(src){
-  libraryPreview.innerHTML=src?`<img src="${resolveAssetSrc(src)}" alt="معاينة">`:'<span class="noImage">لا توجد صورة — ستظهر كقطعة رسومية بسيطة</span>';
+function setLibraryPreview(src,obj=null){
+  libraryPreview.innerHTML=src?`<img src="${resolveAssetSrc(src)}" alt="معاينة">`:(obj?proceduralThumbMarkup(obj):'<span class="noImage">لا توجد صورة — ستظهر كقطعة رسومية قابلة للتلوين</span>');
 }
 function openLibraryEditor(id=null,preset=null){
   editingLibraryId=id;
@@ -1279,7 +1352,7 @@ function openLibraryEditor(id=null,preset=null){
   libraryModalTitle.textContent=obj?'تعديل قطعة في المكتبة':'إضافة قطعة إلى المكتبة';
   libEditName.value=data.name||'قطعة جديدة';libEditW.value=data.w||100;libEditH.value=data.h||60;libEditColor.value=data.color||'#bfa781';
   fillLibraryCategorySelect(data.category||'أخرى');libNewCategory.value='';
-  pendingLibraryImageData=data.src||null;libEditImage.value='';setLibraryPreview(pendingLibraryImageData);
+  pendingLibraryImageData=data.src||null;libEditImage.value='';setLibraryPreview(pendingLibraryImageData,data);
   deleteLibraryItemBtn.style.display=obj?'inline-flex':'none';
   libraryModal.style.display='flex';
   setTimeout(()=>libEditName.focus(),50);
