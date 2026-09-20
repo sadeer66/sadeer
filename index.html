@@ -318,6 +318,25 @@
     .sidebarScrim{inset:calc(env(safe-area-inset-top) + 96px) 0 env(safe-area-inset-bottom) 0!important}
   }
 
+
+  .floatingItemToolbar{
+    position:absolute;z-index:25;display:none;flex-direction:column;gap:6px;padding:7px;
+    background:linear-gradient(180deg,rgba(18,24,31,.98),rgba(12,17,23,.96));border:1px solid #334155;border-radius:12px;
+    box-shadow:0 12px 30px rgba(0,0,0,.36);backdrop-filter:blur(4px);width:46px;align-items:center;
+  }
+  .floatingItemToolbar .floatToolBtn{
+    width:32px;height:32px;min-width:32px;min-height:32px;padding:0;border-radius:8px;border:1px solid #465260;
+    background:linear-gradient(180deg,#242c36,#171d25);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#f5f7fb;
+  }
+  .floatingItemToolbar .floatToolBtn:hover{background:linear-gradient(180deg,#304152,#1f2c39);border-color:#7cb0e3}
+  .floatingItemToolbar .floatToolBtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+  .floatingItemToolbar .floatToolBtn.danger{background:linear-gradient(180deg,#51252a,#34161a);border-color:#7c343b}
+  .floatingItemToolbar .floatToolBtn.colorChip{position:relative;overflow:hidden}
+  .floatingItemToolbar .floatToolBtn.colorChip::after{content:'';position:absolute;inset:auto 5px 4px 5px;height:4px;border-radius:999px;background:var(--chipColor,#bfa781)}
+  .floatingItemToolbar .floatDivider{width:22px;height:1px;background:#334155;margin:1px 0}
+  .floatingItemToolbar.itemHiddenState{border-color:#7c5e2d}
+  .floatingItemToolbar.itemHiddenState .floatHideBtn{background:linear-gradient(180deg,#5f4a24,#392b16);border-color:#d1aa52;color:#fff6d5}
+
 </style>
 </head>
 <body>
@@ -425,7 +444,19 @@
     </div>
     <div class="mapViewport" id="mainScroll" title="عند التكبير: اسحب مكانًا فارغًا بالماوس أو الإصبع لتحريك الخارطة">
       <div class="canvasWrap">
-        <div class="stage" id="stage"><canvas id="canvas" width="1100" height="750"></canvas></div>
+        <div class="stage" id="stage"><canvas id="canvas" width="1100" height="750"></canvas>
+        <div id="floatingItemToolbar" class="floatingItemToolbar" aria-label="أدوات القطعة المحددة">
+          <button id="floatHideBtn" class="floatToolBtn floatHideBtn" title="إظهار / إخفاء القطعة" aria-label="إظهار / إخفاء القطعة"></button>
+          <button id="floatScaleUpBtn" class="floatToolBtn" title="تكبير القطعة" aria-label="تكبير القطعة"></button>
+          <button id="floatScaleDownBtn" class="floatToolBtn" title="تصغير القطعة" aria-label="تصغير القطعة"></button>
+          <button id="floatColorBtn" class="floatToolBtn colorChip" title="تلوين القطعة" aria-label="تلوين القطعة"></button>
+          <button id="floatRotateBtn" class="floatToolBtn" title="تدوير 90°" aria-label="تدوير 90°"></button>
+          <div class="floatDivider"></div>
+          <button id="floatDupBtn" class="floatToolBtn" title="نسخ القطعة" aria-label="نسخ القطعة"></button>
+          <button id="floatLockBtn" class="floatToolBtn" title="قفل / فتح القطعة" aria-label="قفل / فتح القطعة"></button>
+          <button id="floatDeleteBtn" class="floatToolBtn danger" title="حذف القطعة" aria-label="حذف القطعة"></button>
+          <input id="floatColorInput" type="color" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px" value="#bfa781">
+        </div></div>
       </div>
     </div>
     <div class="usedFurniturePanel" id="usedFurniturePanel">
@@ -1060,6 +1091,7 @@ function setZoomPercent(v){
   document.getElementById('zoomRange').value=Math.round(zoom*100);
   document.getElementById('zoomLabel').textContent=Math.round(zoom*100)+'%';
   updatePanState();
+  updateFloatingItemToolbar();
 }
 function touchPair(){
   const pts=[...activeCanvasTouches.values()];
@@ -1452,7 +1484,7 @@ function pointInPoly(p,poly){
   }
   return inside;
 }
-function hitTest(p){if(!visibleFurniture())return null;for(let i=items.length-1;i>=0;i--)if(pointInPoly(p,itemCorners(items[i])))return items[i];return null}
+function hitTest(p){if(!visibleFurniture())return null;for(let i=items.length-1;i>=0;i--){if(items[i]?.hidden)continue;if(pointInPoly(p,itemCorners(items[i])))return items[i];}return null}
 
 function commitTargetPoint(ev){
   if(mode!=='calibrate' && mode!=='measure') return false;
@@ -1934,10 +1966,13 @@ function drawWindow(it,w,h){
 }
 function drawOpening(it,w,h){const u=1/zoom;ctx.save();ctx.strokeStyle='#111827';ctx.lineWidth=1.5*u;ctx.setLineDash([6*u,4*u]);ctx.beginPath();ctx.moveTo(-w/2,0);ctx.lineTo(w/2,0);ctx.stroke();ctx.setLineDash([]);ctx.restore();}
 function drawItem(it){
+  const selected=isItemSelected(it.id);
+  if(it.hidden && !selected)return;
   const w=it.w*pxPerCm,h=it.h*pxPerCm;
   const showLabels=document.getElementById('labelsToggle').checked;
   const showDims=document.getElementById('dimsToggle').checked;
   ctx.save();
+  if(it.hidden)ctx.globalAlpha=.18;
   ctx.translate(it.x,it.y);
   ctx.rotate(it.rot*Math.PI/180);
   if(it.archType==='door')drawDoor(it,w,h); else if(it.archType==='doubleDoor')drawDoubleDoor(it,w,h); else if(it.archType==='window')drawWindow(it,w,h); else if(it.archType==='opening')drawOpening(it,w,h); else if(it.src){ drawSprite(it,w,h); } else switch(it.type){
@@ -1957,10 +1992,10 @@ function drawItem(it){
     case 'fridge': drawFridge(it,w,h); break;
     default: drawGeneric(it,w,h); break;
   }
-  if(isItemSelected(it.id)){const sh=(it.archType==='door'||it.archType==='doubleDoor')?w:h;drawSelectionOutline(w,sh);if(it.locked)drawLockMarker(w,sh);}
+  if(selected){const sh=(it.archType==='door'||it.archType==='doubleDoor')?w:h;drawSelectionOutline(w,sh);if(it.locked)drawLockMarker(w,sh);}
   ctx.restore();
 
-  if(showLabels || showDims){
+  if((showLabels || showDims) && !it.hidden){
     const lines=[];
     if(showLabels)lines.push(it.name);
     if(showDims)lines.push(`${Math.round(it.w)} × ${Math.round(it.h)} سم`);
@@ -1997,7 +2032,7 @@ function drawMode(){
 function usedFurnitureGroups(){
   const map=new Map();
   for(const it of items){
-    if(it.archType)continue;
+    if(it.archType||it.hidden)continue;
     const w=Math.max(1,Number(it.w)||0),h=Math.max(1,Number(it.h)||0);
     const tintEnabled=!!it.tintEnabled;
     const key=[it.name||'قطعة',w.toFixed(2),h.toFixed(2),it.src||'',it.color||'',tintEnabled?1:0].join('|');
@@ -2126,6 +2161,7 @@ function draw(){
   if(visibleMapLabels())drawMapLabels();
   drawMode();
   scheduleUsedFurnitureSync();
+  updateFloatingItemToolbar();
 }
 
 document.getElementById('addMapLabelBtn').onclick=()=>{
@@ -2279,11 +2315,13 @@ function syncSelectedPanel(){
   const ml=currentMapLabel(),m=currentMeasure(),ids=getSelectedIds(),list=selectedItems(),it=current();
   const multiInfo=document.getElementById('multiSelectionInfo'),lockBtn=document.getElementById('lockItemBtn');
   if(ml){
+    if(floatingItemToolbar)floatingItemToolbar.style.display='none';
     selectedPanel.style.display='none';measurePanel.style.display='none';selectedEmpty.style.display='none';mapLabelPanel.style.display='flex';
     mapLabelValue.textContent=ml.text;mapLabelTextInput.value=ml.text;return;
   }
   mapLabelPanel.style.display='none';
   if(m){
+    if(floatingItemToolbar)floatingItemToolbar.style.display='none';
     selectedPanel.style.display='none';selectedEmpty.style.display='none';measurePanel.style.display='flex';
     measureValue.textContent=formatMeasureNumber(m.cm);
     document.getElementById('measureHint').textContent=m.pinned?'اسحب القياس المختار بحرية إلى المكان المناسب. الرقم مرتبط بالخريطة ويكبر ويصغر معها، و× تظهر للقياس المحدد فقط.':'هذا القياس مؤقت؛ حرّكه بحرية للمكان المناسب ثم ثبته أو احذفه.';
@@ -2291,7 +2329,7 @@ function syncSelectedPanel(){
     return;
   }
   measurePanel.style.display='none';
-  if(!ids.length||!it){selectedPanel.style.display='none';selectedEmpty.style.display='flex';if(multiInfo)multiInfo.style.display='none';return}
+  if(!ids.length||!it){selectedPanel.style.display='none';selectedEmpty.style.display='flex';if(multiInfo)multiInfo.style.display='none';if(floatingItemToolbar)floatingItemToolbar.style.display='none';return}
   selectedPanel.style.display='flex';selectedEmpty.style.display='none';
   const multi=ids.length>1;
   if(multiInfo){multiInfo.style.display=multi?'inline-flex':'none';multiInfo.textContent=`${ids.length} قطع محددة`;}
@@ -2304,6 +2342,49 @@ function syncSelectedPanel(){
   const disableSingle=multi||!canEditItem(it);
   [selName,selW,selH,selRot,selColor,selTintEnabled].forEach(el=>el.disabled=disableSingle);
   ['rotate90','rotate45','rotate180','rotate360','dupBtn','deleteBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=furnitureGloballyLocked();});
+  updateFloatingItemToolbar();
+}
+
+
+const floatingItemToolbar=document.getElementById('floatingItemToolbar');
+const floatColorInput=document.getElementById('floatColorInput');
+function currentSingleSelectedItem(){
+  if(selectedMeasureId||selectedMapLabelId)return null;
+  const ids=getSelectedIds();
+  if(ids.length!==1)return null;
+  return current();
+}
+function updateFloatingItemToolbar(){
+  if(!floatingItemToolbar)return;
+  const it=currentSingleSelectedItem();
+  if(!it||!visibleFurniture()){floatingItemToolbar.style.display='none';return;}
+  const colorBtn=document.getElementById('floatColorBtn');
+  if(colorBtn)colorBtn.style.setProperty('--chipColor',it.color||'#bfa781');
+  floatingItemToolbar.classList.toggle('itemHiddenState',!!it.hidden);
+  floatingItemToolbar.style.visibility='hidden';
+  floatingItemToolbar.style.display='flex';
+  const pts=itemCorners(it),xs=pts.map(p=>p.x*zoom),ys=pts.map(p=>p.y*zoom);
+  const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
+  const barW=floatingItemToolbar.offsetWidth||46,barH=floatingItemToolbar.offsetHeight||260,gap=10;
+  let left=maxX+gap;
+  const stageW=stage.clientWidth||canvas.width*zoom,stageH=stage.clientHeight||canvas.height*zoom;
+  if(left+barW>stageW-6)left=minX-barW-gap;
+  left=Math.max(6,Math.min(left,stageW-barW-6));
+  let top=minY;
+  if(top+barH>stageH-6)top=Math.max(6,maxY-barH);
+  top=Math.max(6,Math.min(top,stageH-barH-6));
+  floatingItemToolbar.style.left=left+'px';
+  floatingItemToolbar.style.top=top+'px';
+  floatingItemToolbar.style.visibility='visible';
+}
+function toggleHiddenForSelection(){
+  if(furnitureGloballyLocked()){setStatus('الأثاث مقفل من الشريط العلوي');return;}
+  const list=selectedItems().filter(it=>!it.locked);if(!list.length){setStatus('القطع المحددة مقفلة');return;}
+  const before=cloneEditState();
+  const shouldHide=list.some(it=>!it.hidden);
+  list.forEach(it=>it.hidden=shouldHide);
+  syncSelectedPanel();draw();commitHistory(before);
+  setStatus(shouldHide?'تم إخفاء القطعة المحددة':'تم إظهار القطعة المحددة');
 }
 
 let mapLabelEditBefore=null;
@@ -2351,6 +2432,16 @@ document.getElementById('dupBtn').onclick=()=>{
   for(const it of list){const n={...it,id:randId(),x:it.x+20,y:it.y+20,locked:false};items.push(n);newIds.push(n.id);}
   setSelection(newIds,newIds[newIds.length-1]);syncSelectedPanel();draw();commitHistory(before);setStatus(`تم نسخ ${newIds.length} قطعة`);
 };
+
+document.getElementById('floatHideBtn')?.addEventListener('click',toggleHiddenForSelection);
+document.getElementById('floatScaleUpBtn')?.addEventListener('click',()=>applyToSelection(it=>{it.w=Math.max(1,Math.round(it.w*1.05));it.h=Math.max(1,Math.round(it.h*1.05));},'تم تكبير القطعة المحددة'));
+document.getElementById('floatScaleDownBtn')?.addEventListener('click',()=>applyToSelection(it=>{it.w=Math.max(1,Math.round(it.w*0.95));it.h=Math.max(1,Math.round(it.h*0.95));},'تم تصغير القطعة المحددة'));
+document.getElementById('floatRotateBtn')?.addEventListener('click',()=>addRotationAngle(90));
+document.getElementById('floatDupBtn')?.addEventListener('click',()=>document.getElementById('dupBtn').click());
+document.getElementById('floatLockBtn')?.addEventListener('click',()=>document.getElementById('lockItemBtn').click());
+document.getElementById('floatDeleteBtn')?.addEventListener('click',()=>document.getElementById('deleteBtn').click());
+document.getElementById('floatColorBtn')?.addEventListener('click',()=>{const it=currentSingleSelectedItem();if(!it||!canEditItem(it))return;floatColorInput.value=it.color||'#bfa781';floatColorInput.click();});
+floatColorInput?.addEventListener('input',()=>{const it=currentSingleSelectedItem();if(!it||!canEditItem(it))return;const before=cloneEditState();it.color=floatColorInput.value;if(it.src)it.tintEnabled=true;syncSelectedPanel();draw();commitHistory(before);setStatus('تم تلوين القطعة المحددة');});
 pinMeasureBtn.onclick=()=>{if(measurementsGloballyLocked()){setStatus('القياسات مقفلة');return;}const m=currentMeasure();if(!m)return;const before=cloneEditState();m.pinned=!m.pinned;syncSelectedPanel();draw();commitHistory(before);setStatus(m.pinned?'تم تثبيت القياس على الخارطة':'أصبح القياس مؤقتًا');};
 document.getElementById('deleteMeasureBtn').onclick=()=>{if(measurementsGloballyLocked()){setStatus('القياسات مقفلة');return;}if(!selectedMeasureId)return;const before=cloneEditState();measurements=measurements.filter(m=>m.id!==selectedMeasureId);selectedMeasureId=null;syncSelectedPanel();draw();commitHistory(before);setStatus('تم حذف القياس');};
 mapLabelLayerToggle.onchange=()=>{if(!visibleMapLabels())selectedMapLabelId=null;syncSelectedPanel();syncQuickDisplayButtons();draw();};
@@ -2763,14 +2854,17 @@ if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.se
     flip:S('<path d="M12 4v16"/><path d="m10 7-5 5 5 5M14 7l5 5-5 5"/>'),
     copy:S('<rect x="8" y="8" width="11" height="11"/><rect x="5" y="5" width="11" height="11"/>'),
     close:S('<path d="M6 6l12 12M18 6 6 18"/>'),
-    trash:S('<path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/>')
+    trash:S('<path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/>'),
+    plusBox:S('<rect x="5" y="5" width="14" height="14" rx="2"/><path d="M12 8v8M8 12h8"/>'),
+    minusBox:S('<rect x="5" y="5" width="14" height="14" rx="2"/><path d="M8 12h8"/>'),
+    palette:S('<path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 0-4h-1a2 2 0 0 1 0-4h3a4 4 0 0 0 0-8Z"/><circle cx="7.5" cy="10" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="14.5" cy="7.5" r="1"/>')
   };
   function iconize(el,icon,label,extra=''){
     if(!el)return;el.classList.add('psIconTool');if(extra)el.classList.add(extra);el.title=label;el.setAttribute('aria-label',label);el.dataset.psLabel=label;el.innerHTML=I[icon]||I.info;
   }
   function mini(id,icon,label){const el=document.getElementById(id);if(!el)return;el.classList.add('psMiniIcon');el.title=label;el.setAttribute('aria-label',label);el.innerHTML=I[icon]||I.info;}
   function bottom(id,icon,label){const el=document.getElementById(id);if(!el)return;el.classList.add('psBottomIcon');el.title=label;el.setAttribute('aria-label',label);el.innerHTML=I[icon]||I.info;}
-  function toggle(id,icon,label){const input=document.getElementById(id);if(!input)return;const el=input.closest('label');if(!el)return;el.classList.add('psIconToggle');el.title=label;el.setAttribute('aria-label',label);[...el.childNodes].forEach(n=>{if(n.nodeType===3)n.remove();});el.insertAdjacentHTML('beforeend',I[icon]||I.info);}
+  function toggle(id,icon,label){const input=document.getElementById(id);if(!input)return;const el=input.closest('label');if(!el)return;el.classList.add('psIconToggle');el.title=label;el.setAttribute('aria-label',label);if(input.parentNode!==el)el.appendChild(input);el.innerHTML='';el.appendChild(input);el.insertAdjacentHTML('beforeend',I[icon]||I.info);}
 
   iconize(document.getElementById('infoBtn'),'info','معلوماتك');
   iconize(document.getElementById('newProjectBtn'),'filePlus','مشروع جديد');
@@ -2799,6 +2893,8 @@ if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.se
   mini('clearMeasuresBtn','clear','مسح كل القياسات');mini('fitBtn','fit','ملاءمة للشاشة');mini('actualBtn','actual','عرض 100%');
   bottom('rotate90','rotate90','دوران 90°');bottom('rotate45','rotate45','دوران 45°');bottom('rotate180','rotate180','دوران 180°');bottom('rotate360','reset','إعادة الدوران 0°');
   bottom('flipDoorBtn','flip','عكس فتح الباب');bottom('dupBtn','copy','نسخ القطعة');bottom('deselectBtn','close','إلغاء التحديد');bottom('deleteBtn','trash','حذف القطعة');
+  const f=(id,icon,label)=>{const el=document.getElementById(id);if(!el)return;el.title=label;el.setAttribute('aria-label',label);el.innerHTML=I[icon]||I.info;};
+  f('floatHideBtn','eye','إظهار / إخفاء القطعة');f('floatScaleUpBtn','plusBox','تكبير القطعة');f('floatScaleDownBtn','minusBox','تصغير القطعة');f('floatColorBtn','palette','تلوين القطعة');f('floatRotateBtn','rotate90','تدوير 90°');f('floatDupBtn','copy','نسخ القطعة');f('floatLockBtn','lock','قفل / فتح القطعة');f('floatDeleteBtn','trash','حذف القطعة');
 })();
 </script>
 

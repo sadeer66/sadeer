@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v36-photoshop-icons";
+const CACHE_NAME = "taatheethi-v37-floating-icons-fix";
 const CRITICAL = ['./', './index.html'];
 
 self.addEventListener('install', event => {
