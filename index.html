@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <title>تأثيثي — iPad و iPhone</title>
-<meta name="taatheethi-version" content="37-premium-furniture-library">
+<meta name="taatheethi-version" content="38-toolbar-visible">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -270,7 +270,8 @@
   #pdfBtn{background:#151d29!important;border-color:transparent!important}
   #selectedPanel{display:none!important}
 
-  .furnitureToolPalette{position:absolute;left:24px;top:118px;z-index:190;width:48px;padding:5px;background:linear-gradient(180deg,#20252d,#15191f);border:1px solid #343b46;border-radius:9px;box-shadow:0 12px 28px rgba(0,0,0,.38);direction:ltr;user-select:none}
+  .furnitureToolPalette{position:fixed;left:24px;top:118px;z-index:1900;width:48px;max-height:calc(100vh - 40px);overflow-y:auto;overflow-x:hidden;padding:5px;background:linear-gradient(180deg,#20252d,#15191f);border:1px solid #343b46;border-radius:9px;box-shadow:0 12px 28px rgba(0,0,0,.38);direction:ltr;user-select:none;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .furnitureToolPalette::-webkit-scrollbar{display:none}
   .furnitureToolPalette.show{display:flex!important;flex-direction:column;gap:3px}
   .furnitureToolPalette .toolSep{height:1px;background:#3b424d;margin:3px 2px}
   .furnitureToolPalette .psTool{width:38px;height:38px;padding:0;border:1px solid transparent;border-radius:6px;background:transparent;color:#eef2f7;display:flex;align-items:center;justify-content:center;position:relative}
@@ -279,7 +280,7 @@
   .furnitureToolPalette .psTool.dangerTool:hover{background:#52242a;border-color:#ef6b73}
   .furnitureToolPalette .psTool svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
   .furnitureToolPalette .psTool .tiny90{font-size:10px;font-weight:800;line-height:1;position:absolute;right:3px;bottom:3px}
-  .furnitureToolFlyout{display:none;position:absolute;left:80px;top:118px;z-index:191;min-width:220px;max-width:290px;padding:11px;background:#171c23;border:1px solid #3a4452;border-radius:9px;box-shadow:0 15px 36px rgba(0,0,0,.42);color:#eef2f7;direction:rtl}
+  .furnitureToolFlyout{display:none;position:fixed;left:80px;top:118px;z-index:1901;min-width:220px;max-width:290px;padding:11px;background:#171c23;border:1px solid #3a4452;border-radius:9px;box-shadow:0 15px 36px rgba(0,0,0,.42);color:#eef2f7;direction:rtl}
   .furnitureToolFlyout.show{display:block}
   .furnitureToolFlyout h4{margin:0 0 9px;font-size:12px;color:#fff}
   .furnitureToolFlyout .flyGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
@@ -290,10 +291,10 @@
   .furnitureToolFlyout .flyActions button{flex:1;padding:7px 8px;border-radius:6px;font-size:11px}
   .furnitureToolFlyout .flyNote{font-size:10px;color:#91a0b3;line-height:1.5;margin-top:7px}
   @media (pointer:coarse){
-    .furnitureToolPalette{left:18px;width:58px;padding:5px;top:126px}
+    .furnitureToolPalette{width:58px;padding:5px}
     .furnitureToolPalette .psTool{width:48px;height:48px}
     .furnitureToolPalette .psTool svg{width:26px;height:26px}
-    .furnitureToolFlyout{left:84px;top:126px;min-width:250px}
+    .furnitureToolFlyout{min-width:250px}
   }
 
 </style>
@@ -2873,6 +2874,8 @@ document.getElementById('doExportBtn').onclick=async()=>{
 
 mainScroll.addEventListener('wheel',e=>{if(e.shiftKey){mainScroll.scrollLeft+=e.deltaY;e.preventDefault();}},{passive:false});
 window.addEventListener('resize',updatePanState);
+window.addEventListener('resize',()=>{positionFurnitureToolPalette();});
+mainScroll.addEventListener('scroll',()=>{if(furnitureToolPalette && furnitureToolPalette.classList.contains('show'))positionFurnitureToolPalette();},{passive:true});
 
 window.addEventListener('keydown',e=>{
   const tag=document.activeElement?.tagName;
@@ -2919,11 +2922,28 @@ function closeFurnitureFlyout(){furnitureToolFlyout.classList.remove('show');fur
 function setPaletteActive(name){
   furnitureToolPalette.querySelectorAll('.psTool').forEach(b=>b.classList.toggle('active',b.dataset.tool===name));
 }
+function positionFurnitureToolPalette(){
+  if(!furnitureToolPalette||!mainScroll)return;
+  const r=mainScroll.getBoundingClientRect();
+  const coarse=window.matchMedia('(pointer:coarse)').matches;
+  const pad=coarse?10:12;
+  const left=Math.max(8,r.left+pad);
+  const top=Math.max(8,r.top+pad);
+  furnitureToolPalette.style.left=left+'px';
+  furnitureToolPalette.style.top=top+'px';
+  furnitureToolPalette.style.maxHeight=Math.max(120,r.height-pad*2)+'px';
+  furnitureToolFlyout.style.left=(left+(coarse?66:56))+'px';
+  furnitureToolFlyout.style.top=top+'px';
+  furnitureToolFlyout.style.maxHeight=Math.max(140,r.height-pad*2)+'px';
+  furnitureToolFlyout.style.overflowY='auto';
+}
 function syncFurnitureToolPalette(){
   const ids=getSelectedIds(), it=current();
   const show=!!(ids.length&&it&&!selectedMeasureId&&!selectedMapLabelId&&visibleFurniture());
   furnitureToolPalette.classList.toggle('show',show);
+  furnitureToolPalette.style.display=show?'flex':'none';
   if(!show){closeFurnitureFlyout();return;}
+  positionFurnitureToolPalette();
   const list=selectedItems();
   const lockBtn=furnitureToolPalette.querySelector('[data-tool="lock"]');
   const eyeBtn=furnitureToolPalette.querySelector('[data-tool="visibility"]');
