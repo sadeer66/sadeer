@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <title>تأثيثي — iPad و iPhone</title>
-<meta name="taatheethi-version" content="39-toolbar-watchdog">
+<meta name="taatheethi-version" content="36-photoshop-icons">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -58,7 +58,7 @@
   .fcard:active{cursor:grabbing;transform:scale(.985)}
   .fcard:hover{border-color:#38bdf8}
   .ficon{display:block;font-size:20px;margin-bottom:4px}
-  .fcard img{width:100%;height:70px;object-fit:contain;display:block;margin:0 auto 6px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.22))}\n  .fcard .procThumb{width:100%;height:70px;display:block;margin:0 auto 6px;filter:drop-shadow(0 5px 5px rgba(0,0,0,.28));overflow:visible}
+  .fcard img{width:100%;height:70px;object-fit:contain;display:block;margin:0 auto 6px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.22))}
   .fcard b{display:block;font-size:13px}
   .fcard span{font-size:11px;color:#94a3b8}
   main{position:relative;background:#334155;overflow:hidden;padding:14px}
@@ -256,45 +256,66 @@
     .sidebarScrim{inset:calc(env(safe-area-inset-top) + 104px) 0 env(safe-area-inset-bottom) 0}
   }
 
-  /* TAATHEETHI_V36_TOOL_PALETTE */
-  .photoshopTopbar{gap:4px!important;align-items:stretch!important;padding:5px 7px!important;background:#060b13!important;border-color:#263244!important}
-  .mainToolbar .topAction{min-width:66px!important;min-height:58px!important;padding:5px 8px!important;border-radius:7px!important;display:flex!important;flex-direction:column!important;gap:3px!important;background:#151d29!important;border:1px solid transparent!important;color:#e8edf5!important;font-size:10.5px!important;font-weight:600!important}
-  .mainToolbar .topAction:hover{background:#202b3b!important;border-color:#52647b!important}
-  .mainToolbar .topAction.primary{background:#152338!important;border-color:#3576b9!important}
-  .mainToolbar .topAction.settingsAction{background:#151d29!important;border-color:transparent!important}
-  .mainToolbar .topAction.pdfAction{background:#151d29!important;border-color:transparent!important}
-  .topToolIcon{width:25px;height:25px;display:flex;align-items:center;justify-content:center}
-  .topToolIcon svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
-  .pdfAction .topToolIcon{color:#ff6b6b}
-  #infoBtn{background:#151d29!important;border-color:transparent!important}
-  #pdfBtn{background:#151d29!important;border-color:transparent!important}
-  #selectedPanel{display:none!important}
 
-  .furnitureToolPalette{position:fixed;left:24px;top:118px;z-index:1900;width:48px;max-height:calc(100vh - 40px);overflow-y:auto;overflow-x:hidden;padding:5px;background:linear-gradient(180deg,#20252d,#15191f);border:1px solid #343b46;border-radius:9px;box-shadow:0 12px 28px rgba(0,0,0,.38);direction:ltr;user-select:none;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-  .furnitureToolPalette::-webkit-scrollbar{display:none}
-  .furnitureToolPalette.show{display:flex!important;flex-direction:column;gap:3px}
-  .furnitureToolPalette .toolSep{height:1px;background:#3b424d;margin:3px 2px}
-  .furnitureToolPalette .psTool{width:38px;height:38px;padding:0;border:1px solid transparent;border-radius:6px;background:transparent;color:#eef2f7;display:flex;align-items:center;justify-content:center;position:relative}
-  .furnitureToolPalette .psTool:hover{background:#2b323d;border-color:#515c6c}
-  .furnitureToolPalette .psTool.active{background:#35445a;border-color:#79b8ff;color:#fff;box-shadow:inset 0 0 0 1px rgba(121,184,255,.22)}
-  .furnitureToolPalette .psTool.dangerTool:hover{background:#52242a;border-color:#ef6b73}
-  .furnitureToolPalette .psTool svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-  .furnitureToolPalette .psTool .tiny90{font-size:10px;font-weight:800;line-height:1;position:absolute;right:3px;bottom:3px}
-  .furnitureToolFlyout{display:none;position:fixed;left:80px;top:118px;z-index:1901;min-width:220px;max-width:290px;padding:11px;background:#171c23;border:1px solid #3a4452;border-radius:9px;box-shadow:0 15px 36px rgba(0,0,0,.42);color:#eef2f7;direction:rtl}
-  .furnitureToolFlyout.show{display:block}
-  .furnitureToolFlyout h4{margin:0 0 9px;font-size:12px;color:#fff}
-  .furnitureToolFlyout .flyGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-  .furnitureToolFlyout label{display:flex;flex-direction:column;gap:4px;font-size:10px;color:#aeb9c7}
-  .furnitureToolFlyout input[type=number],.furnitureToolFlyout input[type=text]{width:100%;background:#0d1218;border:1px solid #3a4657;color:#fff;border-radius:6px;padding:7px}
-  .furnitureToolFlyout input[type=color]{width:100%;height:38px;background:#0d1218;border:1px solid #3a4657;border-radius:6px;padding:3px}
-  .furnitureToolFlyout .flyActions{display:flex;gap:6px;margin-top:9px}
-  .furnitureToolFlyout .flyActions button{flex:1;padding:7px 8px;border-radius:6px;font-size:11px}
-  .furnitureToolFlyout .flyNote{font-size:10px;color:#91a0b3;line-height:1.5;margin-top:7px}
-  @media (pointer:coarse){
-    .furnitureToolPalette{width:58px;padding:5px}
-    .furnitureToolPalette .psTool{width:48px;height:48px}
-    .furnitureToolPalette .psTool svg{width:26px;height:26px}
-    .furnitureToolFlyout{min-width:250px}
+  /* V36 — Photoshop-inspired icon toolbar */
+  .psIconTool,.psIconToggle{
+    width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;
+    padding:0!important;border-radius:9px!important;background:linear-gradient(180deg,#242a31,#171b20)!important;
+    border:1px solid #414851!important;color:#eef4fa!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 1px 2px rgba(0,0,0,.32);
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;position:relative;flex:0 0 42px!important;
+  }
+  .psIconTool:hover,.psIconToggle:hover{background:linear-gradient(180deg,#303840,#20262c)!important;border-color:#6a7785!important}
+  .psIconTool svg,.psIconToggle svg{width:24px;height:24px;display:block;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+  .psIconTool.primary{background:linear-gradient(180deg,#2e465f,#233548)!important;border-color:#72a7dc!important;box-shadow:inset 0 0 0 1px rgba(126,180,235,.16)}
+  .psIconTool:disabled{opacity:.34!important;filter:saturate(.45);cursor:not-allowed}
+  .psIconTool.psPdf{color:#d6fbf3!important}
+  .toolbarRow{gap:5px!important;padding:5px 7px!important;background:#11161c!important;border-color:#303741!important;border-radius:10px!important}
+  .workToolbar{background:#151b22!important}
+  header{min-height:100px}
+  .mainToolbar,.workToolbar{overflow-x:auto;scrollbar-width:thin}
+
+  .mapTopbar .psIconToggle{
+    width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;flex-basis:38px!important;
+    border-radius:8px!important;background:linear-gradient(180deg,#222831,#171c22)!important;border-color:#3d4652!important;
+  }
+  .mapTopbar .psIconToggle svg{width:21px;height:21px}
+  .psIconToggle input{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important;margin:0!important}
+  .psIconToggle:has(input:checked){background:linear-gradient(180deg,#314b67,#22364b)!important;border-color:#79afe6!important;color:#fff!important;box-shadow:inset 0 0 0 1px rgba(121,175,230,.22),0 0 0 1px rgba(0,0,0,.25)}
+  .psIconToggle.lockState:has(input:checked){background:linear-gradient(180deg,#604a22,#3f311a)!important;border-color:#d4a84c!important;color:#fff5d1!important}
+  .psIconToggle.layerCtl{border-style:dashed!important}
+  .mapTopbar .psMiniIcon{width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;padding:0!important;font-size:0!important;border-radius:8px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;background:linear-gradient(180deg,#222831,#171c22)!important;border:1px solid #3d4652!important}
+  .mapTopbar .psMiniIcon svg{width:21px;height:21px;stroke:#eef4fa;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .mapTopbar .psMiniIcon:hover{background:linear-gradient(180deg,#303840,#20262c)!important;border-color:#6a7785!important}
+  .mapTopbar .psMiniIcon:disabled{opacity:.33!important}
+
+  .bottomInspector .psBottomIcon{
+    width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;padding:0!important;font-size:0!important;
+    border-radius:8px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;background:linear-gradient(180deg,#232a32,#181d23)!important;border:1px solid #44505d!important;
+  }
+  .bottomInspector .psBottomIcon svg{width:22px;height:22px;stroke:#f3f6fa;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+  .bottomInspector .psBottomIcon:hover{border-color:#78aee4!important;background:linear-gradient(180deg,#2d3e51,#202b38)!important}
+  .bottomInspector .psBottomIcon.danger{background:linear-gradient(180deg,#4a2226,#32171a)!important;border-color:#74343b!important}
+  #lockItemBtn,#pinMeasureBtn,#deleteMeasureBtn,#deleteMapLabelBtn{
+    width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;padding:0!important;font-size:0!important;
+    border-radius:8px!important;background-repeat:no-repeat!important;background-position:center!important;background-size:22px 22px!important;
+  }
+  #lockItemBtn{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f3f6fa' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='10' width='12' height='10' rx='2'/%3E%3Cpath d='M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10'/%3E%3C/svg%3E")!important}
+  #pinMeasureBtn{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f3f6fa' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 3h6l-1 6 3 3H7l3-3-1-6Z'/%3E%3Cpath d='M12 12v9'/%3E%3C/svg%3E")!important}
+  #deleteMeasureBtn,#deleteMapLabelBtn{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16'/%3E%3Cpath d='M9 7V4h6v3'/%3E%3Cpath d='M7 7l1 13h8l1-13'/%3E%3Cpath d='M10 11v5M14 11v5'/%3E%3C/svg%3E")!important}
+  #deleteMeasureBtn,#deleteMapLabelBtn{background-color:#4b2025!important;border-color:#7a313a!important}
+  .psIconTool:focus-visible,.psIconToggle:focus-visible,.psMiniIcon:focus-visible,.psBottomIcon:focus-visible{outline:2px solid #8fc7ff!important;outline-offset:2px}
+
+  @media(max-width:900px){
+    header{min-height:92px!important}
+    .psIconTool{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;flex-basis:40px!important}
+    .psIconTool svg{width:22px;height:22px}
+    .toolbarStack{gap:4px!important}
+    aside{top:calc(env(safe-area-inset-top) + 96px)!important}
+    .sidebarScrim{inset:calc(env(safe-area-inset-top) + 96px) 0 env(safe-area-inset-bottom) 0!important}
+  }
+  @media(max-width:600px){
+    aside{top:calc(env(safe-area-inset-top) + 96px)!important}
+    .sidebarScrim{inset:calc(env(safe-area-inset-top) + 96px) 0 env(safe-area-inset-bottom) 0!important}
   }
 
 </style>
@@ -307,14 +328,14 @@
     <div class="status" id="status">ارفع مخططًا للبدء</div>
   </div>
   <div class="toolbarStack">
-    <div class="toolbar toolbarRow mainToolbar photoshopTopbar">
-      <button id="newProjectBtn" class="topAction primary" title="مشروع جديد"><span class="topToolIcon"><svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z"/><path d="M15 3v4h4M12 10v7M8.5 13.5h7"/></svg></span><span>مشروع جديد</span></button>
-      <label class="btn optional topAction" for="loadInput" title="فتح مشروع"><span class="topToolIcon"><svg viewBox="0 0 24 24"><path d="M3 7h7l2 2h9v10H3z"/><path d="M3 7V5h8l2 2"/></svg></span><span>فتح</span></label><input id="loadInput" type="file" accept="application/json" />
-      <button id="saveBtn" class="optional topAction" title="حفظ المشروع"><span class="topToolIcon"><svg viewBox="0 0 24 24"><path d="M5 3h13l2 2v16H4V3z"/><path d="M8 3v6h8V3M8 14h8v7"/></svg></span><span>حفظ</span></button>
-      <button id="pdfBtn" class="topAction pdfAction" title="حفظ PDF"><span class="topToolIcon"><svg viewBox="0 0 24 24"><path d="M6 2h9l4 4v16H6z"/><path d="M15 2v5h5"/><path d="M8 16c3-5 5-7 8-3M9 12c1 4 3 6 7 7"/></svg></span><span>PDF</span></button>
-      <button id="exportBtn" class="topAction" title="حفظ PNG"><span class="topToolIcon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><circle cx="9" cy="9" r="2"/><path d="m5 18 5-5 3 3 2-2 4 4"/></svg></span><span>PNG</span></button>
-      <button id="printBtn" class="topAction" title="طباعة"><span class="topToolIcon"><svg viewBox="0 0 24 24"><path d="M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-5h18v5a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7z"/></svg></span><span>طباعة</span></button>
-      <button id="infoBtn" class="topAction settingsAction" title="إعدادات الشركة"><span class="topToolIcon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a8 8 0 0 0-1.8-1L14.4 3h-4.8l-.4 3.1a8 8 0 0 0-1.8 1L5 6.1 3 9.5 5 11a7 7 0 0 0 0 2l-2 1.5L5 18l2.4-1a8 8 0 0 0 1.8 1l.4 3h4.8l.4-3a8 8 0 0 0 1.8-1l2.4 1 2-3.5-2-1.5a7 7 0 0 0 .1-1z"/></svg></span><span>الإعدادات</span></button>
+    <div class="toolbar toolbarRow mainToolbar">
+      <button id="infoBtn"><span class="actionIcon">●</span>معلوماتك</button>
+      <button id="newProjectBtn" class="primary">مشروع جديد</button>
+      <label class="btn optional" for="loadInput">فتح مشروع</label><input id="loadInput" type="file" accept="application/json" />
+      <button id="saveBtn" class="optional">حفظ المشروع</button>
+      <button id="exportBtn">تصدير PNG</button>
+      <button id="printBtn">طباعة A3/A4</button>
+      <button id="pdfBtn"><span class="actionIcon">PDF</span>حفظ PDF</button>
     </div>
     <div class="toolbar toolbarRow workToolbar">
       <button id="sidebarToggle" class="ipadOnly primary">☰ المكتبة</button>
@@ -369,28 +390,6 @@
 </aside>
 
 <main>
-  <div id="furnitureToolPalette" class="furnitureToolPalette" aria-label="أدوات الأثاث" style="display:none">
-    <button class="psTool active" data-tool="move" title="تحريك"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><path d="m12 3-2 2m2-2 2 2M21 12l-2-2m2 2-2 2M12 21l-2-2m2 2 2-2M3 12l2-2m-2 2 2 2"/></svg></button>
-    <button class="psTool" data-tool="resize" title="تحجيم"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12"/><rect x="3" y="3" width="4" height="4"/><rect x="17" y="3" width="4" height="4"/><rect x="3" y="17" width="4" height="4"/><rect x="17" y="17" width="4" height="4"/></svg></button>
-    <button class="psTool" data-tool="rotate" title="تدوير"><svg viewBox="0 0 24 24"><path d="M19 8a8 8 0 1 0 1 8"/><path d="M19 3v5h-5"/></svg></button>
-    <button class="psTool" data-tool="rotate90" title="دوران 90 درجة"><svg viewBox="0 0 24 24"><path d="M5 17V7h10"/><path d="M14 4l3 3-3 3"/><path d="M18 11v7h-7"/></svg><span class="tiny90">90°</span></button>
-    <button class="psTool" data-tool="flip" title="عكس أفقي"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="m4 12 6-6v12zM20 12l-6-6v12z"/></svg></button>
-    <div class="toolSep"></div>
-    <button class="psTool" data-tool="color" title="تلوين"><svg viewBox="0 0 24 24"><path d="m4 15 8-8 5 5-8 8H4z"/><path d="m13 6 2-2 5 5-2 2"/><path d="M4 20h16"/></svg></button>
-    <button class="psTool" data-tool="visibility" title="إظهار أو إخفاء"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.6"/></svg></button>
-    <button class="psTool" data-tool="dimensions" title="إظهار القياسات"><svg viewBox="0 0 24 24"><path d="m5 17 12-12 3 3L8 20z"/><path d="m8 14 2 2m1-5 2 2m1-5 2 2"/></svg></button>
-    <button class="psTool" data-tool="labels" title="إظهار الاسم"><svg viewBox="0 0 24 24"><path d="M5 5h14M12 5v14M8 19h8"/></svg></button>
-    <div class="toolSep"></div>
-    <button class="psTool" data-tool="snap" title="Snap"><svg viewBox="0 0 24 24"><path d="M7 3v10a5 5 0 0 0 10 0V3"/><path d="M7 7h4M13 7h4"/></svg></button>
-    <button class="psTool" data-tool="lock" title="قفل أو فتح"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></button>
-    <button class="psTool" data-tool="copy" title="نسخ"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11"/><path d="M5 16H3V3h13v2"/></svg></button>
-    <button class="psTool" data-tool="front" title="إحضار للأمام"><svg viewBox="0 0 24 24"><rect x="8" y="4" width="11" height="11"/><rect x="4" y="9" width="11" height="11"/></svg></button>
-    <button class="psTool" data-tool="back" title="إرسال للخلف"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="11" height="11"/><rect x="9" y="9" width="11" height="11"/></svg></button>
-    <div class="toolSep"></div>
-    <button class="psTool" data-tool="reset" title="إعادة الضبط"><svg viewBox="0 0 24 24"><path d="M5 8V3m0 0h5M5 3l4 4a8 8 0 1 1-2 10"/></svg></button>
-    <button class="psTool dangerTool" data-tool="delete" title="حذف"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 14h8l1-14M10 11v6M14 11v6"/></svg></button>
-  </div>
-  <div id="furnitureToolFlyout" class="furnitureToolFlyout"></div>
   <div class="mapPanel">
     <div class="mapTopbar">
       <div class="group">
@@ -447,7 +446,7 @@
       <button id="rotate180" class="bottomBtn">180°</button>
       <button id="rotate360" class="bottomBtn">0/360°</button>
       <button id="flipDoorBtn" class="bottomBtn doorOnly">عكس فتح الباب</button>
-      <button id="lockItemBtn" class="bottomBtn">🔓 قفل</button>
+      <button id="lockItemBtn" class="bottomBtn" title="قفل / فتح القطعة المحددة" aria-label="قفل / فتح القطعة المحددة">🔓 قفل</button>
       <button id="dupBtn" class="bottomBtn">نسخ</button>
       <button id="deselectBtn" class="bottomBtn">إلغاء التحديد</button>
       <button id="deleteBtn" class="bottomBtn danger">حذف</button>
@@ -455,14 +454,14 @@
     <div class="bottomInspector measureInspector" id="measurePanel" style="display:none">
       <div class="selectedTitle"><span>القياس المحدد:</span><strong class="measureValue" id="measureValue">—</strong></div>
       <span class="measureHint" id="measureHint">استخدم شريط «حجم القياسات» للتحكم يدويًا بحجم جميع الأرقام. نفس الحجم يظهر في PNG والطباعة.</span>
-      <button id="pinMeasureBtn" class="bottomBtn">تثبيت القياس</button>
-      <button id="deleteMeasureBtn" class="bottomBtn danger">حذف القياس</button>
+      <button id="pinMeasureBtn" class="bottomBtn" title="تثبيت / إلغاء تثبيت القياس" aria-label="تثبيت / إلغاء تثبيت القياس">تثبيت القياس</button>
+      <button id="deleteMeasureBtn" class="bottomBtn danger" title="حذف القياس" aria-label="حذف القياس">حذف القياس</button>
     </div>
     <div class="bottomInspector mapLabelInspector" id="mapLabelPanel" style="display:none">
       <div class="selectedTitle"><span>المسمى المحدد:</span><strong class="mapLabelValue" id="mapLabelValue">—</strong></div>
       <label class="inlineField">النص <input id="mapLabelTextInput" type="text" maxlength="80"></label>
       <span class="measureHint">اسحب المسمى على الخارطة لتغيير مكانه. شريط «حجم المسميات» يغيّر حجم الجميع معًا.</span>
-      <button id="deleteMapLabelBtn" class="bottomBtn danger">حذف المسمى</button>
+      <button id="deleteMapLabelBtn" class="bottomBtn danger" title="حذف المسمى" aria-label="حذف المسمى">حذف المسمى</button>
     </div>
     <div class="bottomInspector" id="selectedEmpty">
       <span class="mutedMsg">على iPad: اضغط القطعة ثم المس مكان وضعها، أو اسحبها من مقبض ⠿ إلى الخارطة. عند التكبير اسحب مكانًا فارغًا لتحريك الخارطة.</span>
@@ -516,25 +515,24 @@
 
 <div class="modalOverlay" id="brandModal">
   <div class="modalCard brandModalCard">
-    <h3>إعدادات الشركة</h3>
-    <p>احفظ هوية الشركة هنا. تظهر البيانات والشعار في شاشة البداية والطباعة وملفات PDF وPNG.</p>
+    <h3>معلوماتك</h3>
+    <p>هذه المعلومات محفوظة في البرنامج وتظهر في شاشة البداية وأوراق الطباعة وPNG. الشعار يظهر بالأعلى، ومعلومات الشركة بشكل صغير أسفل الورقة.</p>
     <div class="printMeta">
       <div class="field wide"><label>اسم الشركة</label><input id="brandCompanyName" type="text" placeholder="اسم الشركة أو المكتب"></div>
       <div class="field wide"><label>العنوان</label><input id="brandAddress" type="text" placeholder="عنوان الشركة"></div>
-      <div class="field wide"><label>الهاتف</label><input id="brandPhone" type="text" inputmode="tel" placeholder="رقم هاتف الشركة"></div>
       <div class="field wide"><label>الإيميل</label><input id="brandEmail" type="text" inputmode="email" placeholder="name@example.com"></div>
       <div class="field wide"><label>الشعار</label><input id="brandLogoInput" type="file" accept="image/png,image/jpeg,image/webp"></div>
     </div>
     <div class="brandPreview" id="brandLogoPreview"><span class="noImage">لم يتم اختيار شعار بعد</span></div>
     <div class="modalSubActions"><button id="removeBrandLogoBtn">إزالة الشعار المخصص</button></div>
-    <div class="modalActions"><button id="cancelBrandBtn">إلغاء</button><button id="saveBrandBtn" class="primary">حفظ إعدادات الشركة</button></div>
+    <div class="modalActions"><button id="cancelBrandBtn">إلغاء</button><button id="saveBrandBtn" class="primary">حفظ معلوماتك</button></div>
   </div>
 </div>
 
 <div class="modalOverlay" id="printModal">
   <div class="modalCard">
     <h3 id="printDialogTitle">طباعة المخطط</h3>
-    <p id="printDialogDesc">أدخل بيانات المشروع واختر حجم الورق. ستظهر الخارطة مع شعارك ومعلومات الشركة المحفوظة في «الإعدادات» وشريط مقياس 1 متر.</p>
+    <p id="printDialogDesc">أدخل بيانات المشروع واختر حجم الورق. ستظهر الخارطة مع شعارك ومعلومات الشركة المحفوظة في «معلوماتك» وشريط مقياس 1 متر.</p>
     <div class="printMeta">
       <div class="field wide"><label>اسم المشروع</label><input id="printProjectName" type="text" value="مشروع جديد"></div>
       <div class="field wide"><label>عنوان الخارطة</label><input id="printMapTitle" type="text" placeholder="مثال: قياسات، توزيع أثاث، الطابق الأرضي"></div>
@@ -630,7 +628,6 @@ const pngOrientation=document.getElementById('pngOrientation');
 const brandModal=document.getElementById('brandModal');
 const brandCompanyName=document.getElementById('brandCompanyName');
 const brandAddress=document.getElementById('brandAddress');
-const brandPhone=document.getElementById('brandPhone');
 const brandEmail=document.getElementById('brandEmail');
 const brandLogoInput=document.getElementById('brandLogoInput');
 const brandLogoPreview=document.getElementById('brandLogoPreview');
@@ -775,7 +772,7 @@ const promoLogoImage=new Image();
 promoLogoImage.onload=()=>draw();
 promoLogoImage.src=PROMO_LOGO_DATA;
 const BRAND_STORAGE_KEY='taatheethiBrandV1';
-function defaultBrandInfo(){return {companyName:'',address:'',phone:'',email:'',logoData:''};}
+function defaultBrandInfo(){return {companyName:'',address:'',email:'',logoData:''};}
 function loadBrandInfo(){
   try{const raw=localStorage.getItem(BRAND_STORAGE_KEY);if(!raw)return defaultBrandInfo();return {...defaultBrandInfo(),...JSON.parse(raw)};}catch{return defaultBrandInfo();}
 }
@@ -797,7 +794,7 @@ function renderBrandPreview(){
   else{brandLogoPreview.innerHTML='<span class="noImage">لم يتم اختيار شعار بعد</span>';}
 }
 function openBrandDialog(){
-  brandCompanyName.value=brandInfo.companyName||'';brandAddress.value=brandInfo.address||'';brandPhone.value=brandInfo.phone||'';brandEmail.value=brandInfo.email||'';brandLogoInput.value='';renderBrandPreview();brandModal.style.display='flex';
+  brandCompanyName.value=brandInfo.companyName||'';brandAddress.value=brandInfo.address||'';brandEmail.value=brandInfo.email||'';brandLogoInput.value='';renderBrandPreview();brandModal.style.display='flex';
 }
 function resizeLogoFile(file){
   return new Promise((resolve,reject)=>{
@@ -809,114 +806,101 @@ document.getElementById('cancelBrandBtn').onclick=()=>brandModal.style.display='
 brandLogoInput.onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{brandInfo.logoData=await resizeLogoFile(f);renderBrandPreview();}catch{alert('تعذر قراءة الشعار. جرّب PNG أو JPG.');}};
 removeBrandLogoBtn.onclick=()=>{brandInfo.logoData='';brandLogoInput.value='';renderBrandPreview();};
 document.getElementById('saveBrandBtn').onclick=()=>{
-  brandInfo.companyName=brandCompanyName.value.trim();brandInfo.address=brandAddress.value.trim();brandInfo.phone=brandPhone.value.trim();brandInfo.email=brandEmail.value.trim();saveBrandInfoState();refreshCompanyLogo();brandModal.style.display='none';setStatus('تم حفظ معلوماتك وهوية الشركة');draw();
+  brandInfo.companyName=brandCompanyName.value.trim();brandInfo.address=brandAddress.value.trim();brandInfo.email=brandEmail.value.trim();saveBrandInfoState();refreshCompanyLogo();brandModal.style.display='none';setStatus('تم حفظ معلوماتك وهوية الشركة');draw();
 };
 refreshCompanyLogo();
 
 const palette=['#c9a66b','#b4895b','#8d6e63','#b7b7a4','#c2b280','#8fa3bf','#8bb09c','#d0a5a5','#9e9e9e','#5f6f7a'];
 
 const defaultFurniture=[
-  {name:"أريكة ثلاثية مستقيمة",w:240,h:95,type:"sofa",category:"صالة",color:"#d6c8b8"},
-  {name:"أريكة ثلاثية مودرن",w:240,h:100,type:"sofa",category:"صالة",color:"#78816d"},
-  {name:"أريكة حرف L ثلاثية",w:280,h:180,type:"sectional",category:"صالة",color:"#c9b9a8"},
-  {name:"كرسي مفرد",w:90,h:90,type:"armchair",category:"صالة",color:"#cfc5b8"},
-  {name:"كرسي استرخاء",w:85,h:160,type:"chaise",category:"صالة",color:"#d8c9b7"},
-  {name:"أوتومان",w:80,h:60,type:"ottoman",category:"صالة",color:"#b8b4ad"},
-  {name:"بوف دائري",w:65,h:65,type:"ottomanRound",category:"صالة",color:"#8b8c74"},
-  {name:"طاولة وسط دائرية",w:100,h:100,type:"coffeeRound",category:"صالة",color:"#9b744d"},
-  {name:"طاولة وسط مستطيلة",w:120,h:70,type:"coffee",category:"صالة",color:"#9d7650"},
-  {name:"طاولة وسط رخام",w:90,h:90,type:"coffeeRound",category:"صالة",color:"#e8e4df"},
-  {name:"طاولة جانبية دائرية",w:50,h:50,type:"sideTable",category:"صالة",color:"#aa855e"},
-  {name:"طاولة جانبية مربعة",w:50,h:50,type:"sideTableSquare",category:"صالة",color:"#d5d0c7"},
-  {name:"طاولات متداخلة",w:75,h:60,type:"nestingTables",category:"صالة",color:"#a17a50"},
-  {name:"تلفزيون معلق",w:140,h:5,type:"tvWall",category:"صالة",color:"#222831"},
-  {name:"طاولة طعام مستطيلة 6 مقاعد",w:200,h:90,type:"dining",category:"غرفة طعام",color:"#9a7048"},
-  {name:"طاولة طعام دائرية 4 مقاعد",w:140,h:140,type:"diningRound",category:"غرفة طعام",color:"#a77d53"},
-  {name:"طاولة طعام بيضاوية 6 مقاعد",w:200,h:110,type:"diningOval",category:"غرفة طعام",color:"#98704c"},
-  {name:"طاولة طعام زجاجية 6 مقاعد",w:180,h:100,type:"diningGlass",category:"غرفة طعام",color:"#b9d8df"},
-  {name:"كرسي طعام",w:50,h:55,type:"diningChair",category:"غرفة طعام",color:"#c5b8aa"},
-  {name:"كرسي بار",w:45,h:45,type:"barStool",category:"غرفة طعام",color:"#aa8158"},
-  {name:"سرير مفرد",w:100,h:200,type:"bed",category:"غرفة نوم",color:"#d8d2c8"},
-  {name:"سرير مزدوج",w:160,h:200,type:"bed",category:"غرفة نوم",color:"#d7cbbb"},
-  {name:"سرير ملكي",w:200,h:200,type:"bed",category:"غرفة نوم",color:"#c8b89f"},
-  {name:"كومدينو",w:50,h:45,type:"nightstand",category:"غرفة نوم",color:"#a77a4d"},
-  {name:"خزانة ملابس",w:180,h:60,type:"wardrobe",category:"غرفة نوم",color:"#9b744d"},
-  {name:"تسريحة عريضة",w:160,h:55,type:"dresserPremium",category:"غرفة نوم",color:"#a27b53"},
-  {name:"مكتب عمل",w:160,h:80,type:"desk",category:"مكتب",color:"#9f7954"},
-  {name:"كرسي مكتب",w:70,h:70,type:"officeChair",category:"مكتب",color:"#555b61"},
-  {name:"طاولة اجتماعات",w:220,h:110,type:"meetingTable",category:"مكتب",color:"#9a754f"},
-  {name:"مكتبة كتب",w:100,h:40,type:"bookcasePremium",category:"مكتب",color:"#936c46"},
-  {name:"خزانة تخزين منخفضة",w:160,h:50,type:"dresserPremium",category:"خزن",color:"#a67d51"},
-  {name:"سجادة مستطيلة",w:200,h:140,type:"rugRect",category:"ديكور",color:"#d8d0c3"},
-  {name:"سجادة دائرية",w:160,h:160,type:"rugRound",category:"ديكور",color:"#d0c5b4"},
-  {name:"نبات كبير",w:80,h:80,type:"plant",category:"ديكور",color:"#4f7c45"},
-  {name:"نبات متوسط",w:60,h:60,type:"plant",category:"ديكور",color:"#56814b"},
-  {name:"نبات صغير",w:40,h:40,type:"plant",category:"ديكور",color:"#628c56"},
-  {name:"مرآة حائط",w:90,h:6,type:"wallMirror",category:"ديكور",color:"#b9d9df"},
-  {name:"سلة ديكور",w:50,h:50,type:"basket",category:"ديكور",color:"#9b7048"},
-  {name:"وسادة ديكور",w:45,h:45,type:"cushion",category:"ديكور",color:"#c9b6a0"},
-  {name:"ثلاجة عرض 100 سم",w:100,h:70,type:"fridgePremium",category:"مطبخ",color:"#aeb5bc",doors:1},
-  {name:"ثلاجة ثلاثية الأبواب 85 سم",w:85,h:70,type:"fridgePremium",category:"مطبخ",color:"#9fa8b0",doors:3},
-  {name:"ثلاجة بابين 120 سم",w:120,h:70,type:"fridgePremium",category:"مطبخ",color:"#b1b8be",doors:2},
-  {name:"قاعدة حوض 60",w:60,h:60,type:"kitchenBasePremium",category:"مطبخ",color:"#a57a50",module:"sink"},
-  {name:"قاعدة موقد 60",w:60,h:60,type:"kitchenBasePremium",category:"مطبخ",color:"#a57a50",module:"cooktop"},
-  {name:"قاعدة أدراج 60",w:60,h:60,type:"kitchenBasePremium",category:"مطبخ",color:"#a57a50",module:"drawers"},
-  {name:"قاعدة مستقيمة 60",w:60,h:60,type:"kitchenBasePremium",category:"مطبخ",color:"#a57a50",module:"plain"},
-  {name:"قاعدة مستقيمة 90",w:90,h:60,type:"kitchenBasePremium",category:"مطبخ",color:"#a57a50",module:"plain"},
-  {name:"قاعدة مستقيمة 120",w:120,h:60,type:"kitchenBasePremium",category:"مطبخ",color:"#a57a50",module:"plain"},
-  {name:"قاعدة زاوية 90×90",w:90,h:90,type:"kitchenCornerPremium",category:"مطبخ",color:"#a57a50"},
-  {name:"وحدة مطبخ L 180×180",w:180,h:180,type:"kitchenLPremium",category:"مطبخ",color:"#a57a50"},
-  {name:"خزانة حائط 60",w:60,h:30,type:"kitchenWallPremium",category:"مطبخ",color:"#b28a60",doors:1},
-  {name:"خزانة حائط 120",w:120,h:30,type:"kitchenWallPremium",category:"مطبخ",color:"#b28a60",doors:2},
-  {name:"خزانة حائط 180",w:180,h:30,type:"kitchenWallPremium",category:"مطبخ",color:"#b28a60",doors:3},
-  {name:"خزانة حائط زاوية",w:60,h:60,type:"kitchenCornerPremium",category:"مطبخ",color:"#b28a60"},
-  {name:"جزيرة مطبخ صغيرة",w:120,h:70,type:"island",category:"مطبخ",color:"#d7d2ca"},
-  {name:"جزيرة مطبخ بمغسلة",w:180,h:90,type:"kitchenIslandSink",category:"مطبخ",color:"#ddd8d0"},
-  {name:"مرشحة طباخ 60",w:60,h:50,type:"rangeHood",category:"مطبخ",color:"#9ea5ab"},
-  {name:"مرشحة طباخ 90",w:90,h:50,type:"rangeHood",category:"مطبخ",color:"#9ea5ab"},
-  {name:"غسالة صحون 60",w:60,h:60,type:"dishwasherPremium",category:"مطبخ",color:"#9fa7ae"},
-  {name:"فرن / طباخ 60",w:60,h:60,type:"ovenPremium",category:"مطبخ",color:"#7e858b"},
-  {name:"بانيو",w:170,h:75,type:"bathtubPremium",category:"حمام",color:"#e7e8e8"},
-  {name:"قاعدة دش 90×90",w:90,h:90,type:"showerPremium",category:"حمام",color:"#d9e4e8"},
-  {name:"مرحاض",w:70,h:80,type:"toiletPremium",category:"حمام",color:"#e7e8e8"},
-  {name:"مغسلة حمام 100",w:100,h:50,type:"vanityPremium",category:"حمام",color:"#c7a57e"},
-  {name:"قاطع حمام زجاج بابين",w:120,h:10,type:"glassPartition",category:"حمام",color:"#9fd7e5",panels:2},
-  {name:"قاطع حمام زجاج أربعة أبواب",w:180,h:10,type:"glassPartition",category:"حمام",color:"#9fd7e5",panels:4},
-  {name:"غسالة ملابس",w:60,h:60,type:"washerPremium",category:"غسيل",color:"#b9c0c6"},
-  {name:"نشافة ملابس",w:60,h:60,type:"dryerPremium",category:"غسيل",color:"#aeb6bd"},
-  {name:"حوض غسيل",w:60,h:60,type:"laundrySinkPremium",category:"غسيل",color:"#c7ced3"},
-  {name:"خزانة خدمات",w:60,h:60,type:"utilityCabinetPremium",category:"غسيل",color:"#9ca5ad"},
-  {name:"سبلت داخلي",w:90,h:30,type:"splitIndoor",category:"تكييف وخدمات",color:"#e4e6e7"},
-  {name:"سبلت خارجي",w:95,h:35,type:"splitOutdoor",category:"تكييف وخدمات",color:"#aeb5bb"},
-  {name:"سخان ماء",w:50,h:50,type:"waterHeater",category:"تكييف وخدمات",color:"#e0e2e3"},
-  {name:"خزان ماء",w:120,h:120,type:"waterTank",category:"تكييف وخدمات",color:"#3d4650"},
-  {name:"سيارة صالون 1",w:202,h:500,type:"carSedan",category:"كراج",color:"#e3e5e7"},
-  {name:"سيارة صالون 2",w:202,h:500,type:"carSedan",category:"كراج",color:"#69727a"},
-  {name:"دفع رباعي SUV",w:207.5,h:600,type:"carSUV",category:"كراج",color:"#353b42"},
-  {name:"مروحة سقف",w:130,h:130,type:"ceilingFanPremium",category:"إنارة",color:"#6e6257"},
-  {name:"إنارة سقف",w:60,h:60,type:"ceilingLightPremium",category:"إنارة",color:"#f0d8a3"},
-  {name:"سبوت",w:15,h:15,type:"spotPremium",category:"إنارة",color:"#f4e1ac"}
+ {name:"كنبة 3 مقاعد",w:220,h:90,src:"assets/furniture/sofa_3.png",category:"صالة"},
+ {name:"كنبة زاوية L",w:270,h:270,src:"assets/furniture/corner_sofa_red.png",category:"صالة"},
+ {name:"وحدة زاوية",w:90,h:90,src:"assets/furniture/corner_module_red.png",category:"صالة"},
+ {name:"كرسي أصفر",w:90,h:90,src:"assets/furniture/armchair_yellow.png",category:"صالة"},
+ {name:"كرسي برتقالي",w:85,h:90,src:"assets/furniture/armchair_orange.png",category:"صالة"},
+ {name:"كنبة برتقالية 2",w:90,h:170,src:"assets/furniture/sofa_orange_2.png",category:"صالة"},
+ {name:"كنبة برتقالية 3",w:90,h:210,src:"assets/furniture/sofa_orange_3.png",category:"صالة"},
+ {name:"كنبة برتقالية طويلة",w:90,h:250,src:"assets/furniture/sofa_orange_long.png",category:"صالة"},
+ {name:"طاولة وسط حمراء",w:90,h:90,src:"assets/furniture/coffee_red.png",category:"صالة"},
+ {name:"طاولة وسط داكنة",w:70,h:90,src:"assets/furniture/coffee_dark.png",category:"صالة"},
+ {name:"طاولة جانبية حمراء",w:50,h:50,src:"assets/furniture/side_table_red_small.png",category:"صالة"},
+ {name:"بوف أخضر",w:65,h:65,src:"assets/furniture/ottoman_green.png",category:"صالة"},
+ {name:"بوف أحمر",w:60,h:60,src:"assets/furniture/pouf_red.png",category:"صالة"},
+ {name:"مقعد دائري أحمر",w:50,h:50,src:"assets/furniture/stool_round_red.png",category:"صالة"},
+ {name:"مقعد دائري بني",w:50,h:50,src:"assets/furniture/stool_round_brown.png",category:"صالة"},
+ {name:"وحدة تلفزيون",w:110,h:40,src:"assets/furniture/tv_console_brown.png",category:"صالة"},
+ {name:"كونسول",w:165,h:40,src:"assets/furniture/console_brown.png",category:"صالة"},
+ {name:"نبتة ديكور",w:60,h:60,src:"assets/furniture/plant_small.png",category:"صالة"},
+ {name:"طاولة طعام مستطيلة",w:157,h:114,src:"assets/furniture/dining_rect.png",category:"غرفة طعام"},
+ {name:"طاولة طعام دائرية",w:140,h:105,src:"assets/furniture/dining_round.png",category:"غرفة طعام"},
+ {name:"طاولة طعام صغيرة",w:115,h:80,src:"assets/furniture/dining_small.png",category:"غرفة طعام"},
+ {name:"طاولة طعام مربعة 4 كراسي",w:160,h:150,src:"assets/furniture/dining_square_gray.png",category:"غرفة طعام"},
+ {name:"سرير مفرد أبيض",w:90,h:190,src:"assets/furniture/bed_single_white.png",category:"غرفة نوم"},
+ {name:"سرير مفرد أزرق",w:90,h:190,src:"assets/furniture/bed_single_blue.png",category:"غرفة نوم"},
+ {name:"سرير مزدوج أحمر",w:140,h:190,src:"assets/furniture/bed_double_red.png",category:"غرفة نوم"},
+ {name:"سرير مزدوج بنفسجي",w:200,h:190,src:"assets/furniture/bed_double_purple.png",category:"غرفة نوم"},
+ {name:"خزانة منخفضة",w:150,h:68,src:"assets/furniture/cabinet_low.png",category:"خزن"},
+ {name:"خزانة عريضة",w:240,h:60,src:"assets/furniture/cabinet_wide.png",category:"خزن"},
+ {name:"مغسلة مزدوجة",w:130,h:47,src:"assets/furniture/double_sink.png",category:"حمام"},
+ {name:"مغسلة 1",w:100,h:46,src:"assets/furniture/sink.png",category:"حمام"},
+ {name:"مغسلة 2",w:100,h:50,src:"assets/furniture/sink_beige_2.png",category:"حمام"},
+ {name:"حوض نصف دائري 60",w:60,h:50,src:"assets/furniture/basin_half_60.png",category:"حمام"},
+ {name:"حوض نصف دائري 70",w:70,h:50,src:"assets/furniture/basin_half_70.png",category:"حمام"},
+ {name:"حوض دائري صغير",w:60,h:50,src:"assets/furniture/basin_round_small.png",category:"حمام"},
+ {name:"بيديه صغير",w:40,h:60,src:"assets/furniture/bidet_slim.png",category:"حمام"},
+ {name:"مرحاض",w:70,h:80,src:"assets/furniture/toilet.png",category:"حمام"},
+ {name:"قاعدة دش 70×170",w:70,h:170,src:"assets/furniture/shower_long.png",category:"حمام"},
+ {name:"قاعدة دش 70×70",w:70,h:70,src:"assets/furniture/shower_square_70.png",category:"حمام"},
+ {name:"قاعدة دش 80×80",w:80,h:80,src:"assets/furniture/shower_square_80.png",category:"حمام"},
+ {name:"قاعدة دش 90×90",w:90,h:90,src:"assets/furniture/shower_square_90.png",category:"حمام"},
+ {name:"قاعدة دش زاوية 110×100",w:110,h:100,src:"assets/furniture/shower_corner_110.png",category:"حمام"},
+ {name:"قاعدة دش زاوية 70",w:70,h:70,src:"assets/furniture/shower_corner_70.png",category:"حمام"},
+ {name:"قاعدة دش زاوية 80",w:80,h:80,src:"assets/furniture/shower_corner_80.png",category:"حمام"},
+ {name:"قاعدة دش زاوية 90",w:90,h:90,src:"assets/furniture/shower_corner_90.png",category:"حمام"},
+ {name:"قاعدة دش زرقاء",w:80,h:142,src:"assets/furniture/shower_blue.png",category:"حمام"},
+ {name:"مصرف خطي",w:100,h:15,src:"assets/furniture/linear_drain.png",category:"حمام"},
+ {name:"مصرف أرضي مربع",w:15,h:15,src:"assets/furniture/floor_drain_square.png",category:"حمام"},
+ {name:"مصرف أرضي دائري",w:15,h:15,src:"assets/furniture/floor_drain_round.png",category:"حمام"},
+ {name:"حوض دائري",w:60,h:60,src:"assets/furniture/round_basin_60.png",category:"مطبخ"},
+ {name:"وحدة صغيرة رمادية",w:60,h:40,src:"assets/furniture/utility_small_gray.png",category:"مطبخ"},
+ {name:"غسالة دائرية",w:60,h:60,src:"assets/furniture/washer_round_blue.png",category:"مطبخ"},
+ {name:"وحدة مطبخ 1",w:44,h:150,src:"assets/furniture/counter_module_1.png",category:"مطبخ"},
+ {name:"وحدة مطبخ 2",w:44,h:150,src:"assets/furniture/counter_module_2.png",category:"مطبخ"},
+ {name:"حوض مطبخ 120",w:120,h:45,src:"assets/furniture/sink_counter_120.png",category:"مطبخ"},
+ {name:"وحدة مطبخ بيضاء 135",w:135,h:55,src:"assets/furniture/counter_white_135.png",category:"مطبخ"},
+ {name:"سطح عمل بني",w:120,h:40,src:"assets/furniture/worktop_brown.png",category:"مطبخ"},
+ {name:"حوض مطبخ 60",w:60,h:60,src:"assets/furniture/kitchen_sink_60.png",category:"مطبخ"},
+ {name:"مايكروويف / جهاز 60",w:60,h:60,src:"assets/furniture/microwave_60.png",category:"مطبخ"},
+ {name:"سطح طبخ 4 عيون",w:60,h:90,src:"assets/furniture/cooktop_4.png",category:"مطبخ"},
+ {name:"سطح طبخ 2 عين",w:60,h:60,src:"assets/furniture/cooktop_2.png",category:"مطبخ"},
+ {name:"ثلاجة صغيرة",w:75,h:60,src:"assets/furniture/fridge_small.png",category:"مطبخ"},
+ {name:"ثلاجة طويلة",w:75,h:180,src:"assets/furniture/fridge_tall.png",category:"مطبخ"},
+ {name:"خزان ماء للسطح",w:160,h:90,src:"assets/furniture/bathtub.png",category:"سطح وخدمات"},
+ {name:"سيارة حمراء",w:175,h:424,src:"assets/furniture/car_red.png",category:"كراج"},
+ {name:"سيارة بيضاء",w:210,h:431,src:"assets/furniture/car_white.png",category:"كراج"},
+ {name:"مروحة سقف",w:130,h:130,src:"assets/furniture/ceiling_fan.png",category:"إنارة"},
+ {name:"إنارة جدارية 1",w:30,h:20,src:"assets/furniture/light_wall_1.png",category:"إنارة"},
+ {name:"إنارة جدارية 2",w:35,h:25,src:"assets/furniture/light_wall_2.png",category:"إنارة"},
+ {name:"إنارة جدارية 3",w:30,h:25,src:"assets/furniture/light_wall_3.png",category:"إنارة"},
+ {name:"إنارة مربعة صغيرة",w:20,h:20,src:"assets/furniture/light_square_small.png",category:"إنارة"},
+ {name:"إنارة سقف كبيرة",w:60,h:60,src:"assets/furniture/ceiling_light_large.png",category:"إنارة"},
+ {name:"إنارة سقف متوسطة",w:45,h:45,src:"assets/furniture/ceiling_light_medium.png",category:"إنارة"},
+ {name:"سبوت كبير",w:18,h:18,src:"assets/furniture/spot_large.png",category:"إنارة"},
+ {name:"سبوت متوسط",w:14,h:14,src:"assets/furniture/spot_medium.png",category:"إنارة"},
+ {name:"سبوت صغير",w:10,h:10,src:"assets/furniture/spot_small.png",category:"إنارة"}
 ];
 
-const LIBRARY_STORAGE_KEY='furniturePlannerLibraryV8';
-const LEGACY_LIBRARY_STORAGE_KEY='furniturePlannerLibraryV7';
-function cloneDefaultLibrary(){return defaultFurniture.map((x,i)=>({...x,id:`base_v8_${i}`,isCustom:false}));}
-function normalizeLibraryItem(x,i,prefix='saved'){
-  return {...x,id:x.id||`${prefix}_${i}_${Date.now()}`,name:x.name||'قطعة',w:+x.w||100,h:+x.h||60,src:x.src||null,category:x.category||'أخرى',color:x.color||'#bfa781',type:x.type||'generic',isCustom:x.isCustom!==false};
+const LIBRARY_STORAGE_KEY='furniturePlannerLibraryV7';
+function cloneDefaultLibrary(){
+  return defaultFurniture.map((x,i)=>({...x,id:`base_${i}`,isCustom:false}));
 }
 function loadSavedLibrary(){
   try{
     const raw=localStorage.getItem(LIBRARY_STORAGE_KEY);
-    if(raw){const parsed=JSON.parse(raw);if(Array.isArray(parsed)&&parsed.length)return parsed.map((x,i)=>normalizeLibraryItem(x,i));}
-    const legacyRaw=localStorage.getItem(LEGACY_LIBRARY_STORAGE_KEY),base=cloneDefaultLibrary();
-    if(legacyRaw){
-      const legacy=JSON.parse(legacyRaw);
-      if(Array.isArray(legacy)){
-        const custom=legacy.filter(x=>x&&x.isCustom!==false).map((x,i)=>normalizeLibraryItem(x,i,'custom_migrated'));
-        return base.concat(custom);
-      }
-    }
-    return base;
+    if(!raw)return cloneDefaultLibrary();
+    const parsed=JSON.parse(raw);
+    if(!Array.isArray(parsed)||!parsed.length)return cloneDefaultLibrary();
+    return parsed.map((x,i)=>({id:x.id||`saved_${i}_${Date.now()}`,name:x.name||'قطعة',w:+x.w||100,h:+x.h||60,src:x.src||null,category:x.category||'أخرى',color:x.color||'#bfa781',isCustom:x.isCustom!==false}));
   }catch(e){return cloneDefaultLibrary();}
 }
 function saveLibraryState(){
@@ -924,7 +908,6 @@ function saveLibraryState(){
   catch(e){alert('تعذر حفظ المكتبة في المتصفح. قد تكون صورة مضافة كبيرة جدًا؛ جرب صورة أصغر.');}
 }
 let furniture=loadSavedLibrary();
-saveLibraryState();
 
 const spriteImages={};
 const tintLayers={};
@@ -1213,7 +1196,7 @@ document.getElementById('fileInput').onchange=async e=>{
 
 const lib=document.getElementById('library');
 const categoryList=document.getElementById('categoryList');
-const baseCategoryOrder=['الكل','صالة','غرفة طعام','غرفة نوم','مكتب','مطبخ','حمام','غسيل','تكييف وخدمات','ديكور','خزن','كراج','إنارة','أخرى'];
+const baseCategoryOrder=['الكل','صالة','غرفة نوم','غرفة طعام','مطبخ','حمام','خزن','سطح وخدمات','كراج','إنارة','أخرى'];
 let activeCategory='الكل';
 function getCategoryOrder(){
   const extras=[...new Set(furniture.map(x=>x.category).filter(Boolean))].filter(x=>!baseCategoryOrder.includes(x)).sort((a,b)=>a.localeCompare(b,'ar'));
@@ -1247,85 +1230,12 @@ function wireFurnitureCard(d,obj,index){
   d.addEventListener('dragend',()=>{setTimeout(()=>libraryDragActive=false,0);});
   d.onclick=e=>{if(e.target.closest('.editLibBtn,.touchDragHandle'))return;if(!libraryDragActive){armFurniturePlacement(obj);if(isIPadLayout())setSidebarOpen(false);}};
 }
-
-function safeThumbColor(v){return /^#[0-9a-f]{6}$/i.test(String(v||''))?v:'#bfa781';}
-function proceduralThumbMarkup(obj){
-  const t=obj.type||'generic',c=safeThumbColor(obj.color),d=shade(c,-0.22),l=shade(c,0.32),common='stroke="#394454" stroke-width="2"';
-  let s='';
-  if(['sofa','sectional'].includes(t)){
-    s=t==='sectional'
-      ?`<rect x="20" y="20" width="120" height="34" rx="11" fill="${c}" ${common}/><rect x="100" y="20" width="40" height="60" rx="11" fill="${c}" ${common}/><path d="M52 23v28M80 23v28M112 23v28" stroke="${d}" opacity=".55"/><rect x="25" y="26" width="15" height="20" rx="5" fill="${l}"/><rect x="119" y="26" width="14" height="20" rx="5" fill="${l}"/>`
-      :`<rect x="18" y="26" width="124" height="46" rx="14" fill="${c}" ${common}/><rect x="25" y="30" width="14" height="38" rx="7" fill="${d}"/><rect x="121" y="30" width="14" height="38" rx="7" fill="${d}"/><path d="M60 31v36M100 31v36" stroke="${d}" opacity=".6"/><rect x="43" y="31" width="18" height="10" rx="4" fill="${l}"/><rect x="99" y="31" width="18" height="10" rx="4" fill="${l}"/>`;
-  }else if(['armchair','chaise','ottoman','ottomanRound','diningChair','barStool','officeChair'].includes(t)){
-    if(t==='ottomanRound'||t==='barStool')s=`<circle cx="80" cy="50" r="28" fill="${c}" ${common}/><circle cx="80" cy="50" r="20" fill="none" stroke="${l}" opacity=".5"/>`;
-    else if(t==='ottoman')s=`<rect x="42" y="30" width="76" height="40" rx="14" fill="${c}" ${common}/><rect x="50" y="36" width="60" height="28" rx="10" fill="${l}" opacity=".35"/>`;
-    else s=`<rect x="50" y="18" width="60" height="64" rx="17" fill="${c}" ${common}/><rect x="57" y="27" width="46" height="44" rx="13" fill="${l}" opacity=".35"/><rect x="51" y="21" width="11" height="56" rx="6" fill="${d}"/><rect x="98" y="21" width="11" height="56" rx="6" fill="${d}"/>`;
-  }else if(['coffee','coffeeRound','sideTable','sideTableSquare','nestingTables','dining','diningRound','diningOval','diningGlass','meetingTable'].includes(t)){
-    if(['coffeeRound','sideTable'].includes(t))s=`<circle cx="80" cy="50" r="${t==='sideTable'?23:34}" fill="${c}" ${common}/><circle cx="80" cy="50" r="${t==='sideTable'?16:26}" fill="none" stroke="${l}" opacity=".55"/>`;
-    else if(t==='sideTableSquare')s=`<rect x="52" y="22" width="56" height="56" rx="8" fill="${c}" ${common}/><rect x="60" y="30" width="40" height="40" rx="6" fill="none" stroke="${l}" opacity=".5"/>`;
-    else if(t==='nestingTables')s=`<circle cx="64" cy="55" r="27" fill="${c}" ${common}/><circle cx="99" cy="42" r="23" fill="${l}" ${common}/>`;
-    else if(t==='diningRound')s=`<circle cx="80" cy="50" r="28" fill="${c}" ${common}/><circle cx="80" cy="13" r="8" fill="#bdb6ad"/><circle cx="80" cy="87" r="8" fill="#bdb6ad"/><circle cx="42" cy="50" r="8" fill="#bdb6ad"/><circle cx="118" cy="50" r="8" fill="#bdb6ad"/>`;
-    else if(['diningOval','meetingTable'].includes(t))s=`<rect x="30" y="27" width="100" height="46" rx="23" fill="${c}" ${common}/><rect x="46" y="14" width="18" height="10" rx="5" fill="#bbb5ad"/><rect x="96" y="14" width="18" height="10" rx="5" fill="#bbb5ad"/><rect x="46" y="76" width="18" height="10" rx="5" fill="#bbb5ad"/><rect x="96" y="76" width="18" height="10" rx="5" fill="#bbb5ad"/>`;
-    else s=`<rect x="27" y="30" width="106" height="40" rx="8" fill="${t==='diningGlass'?'#a9d5de':c}" fill-opacity="${t==='diningGlass'?'.62':'1'}" ${common}/><rect x="39" y="16" width="18" height="10" rx="4" fill="#bbb5ad"/><rect x="71" y="16" width="18" height="10" rx="4" fill="#bbb5ad"/><rect x="103" y="16" width="18" height="10" rx="4" fill="#bbb5ad"/><rect x="39" y="74" width="18" height="10" rx="4" fill="#bbb5ad"/><rect x="71" y="74" width="18" height="10" rx="4" fill="#bbb5ad"/><rect x="103" y="74" width="18" height="10" rx="4" fill="#bbb5ad"/>`;
-  }else if(t==='bed'){
-    s=`<rect x="43" y="10" width="74" height="80" rx="8" fill="${c}" ${common}/><rect x="49" y="17" width="28" height="18" rx="6" fill="#f4f5f6" stroke="#cbd5e1"/><rect x="83" y="17" width="28" height="18" rx="6" fill="#f4f5f6" stroke="#cbd5e1"/><rect x="49" y="39" width="62" height="44" rx="6" fill="${l}" opacity=".52"/>`;
-  }else if(['wardrobe','dresserPremium','bookcasePremium'].includes(t)){
-    s=`<rect x="30" y="25" width="100" height="50" rx="5" fill="${c}" ${common}/><path d="M80 27v46M34 42h92M34 58h92" stroke="${d}" opacity=".55"/>`;
-  }else if(t==='desk'){
-    s=`<rect x="25" y="27" width="110" height="46" rx="7" fill="${c}" ${common}/><rect x="65" y="35" width="36" height="22" rx="3" fill="#30353b"/><circle cx="117" cy="42" r="7" fill="#4f7c45"/>`;
-  }else if(['rugRect','rugRound'].includes(t)){
-    s=t==='rugRound'
-      ?`<circle cx="80" cy="50" r="34" fill="${c}" stroke="${d}" stroke-width="2"/><circle cx="80" cy="50" r="26" fill="none" stroke="${l}" stroke-dasharray="3 3"/>`
-      :`<rect x="25" y="20" width="110" height="60" rx="7" fill="${c}" stroke="${d}" stroke-width="2"/><rect x="32" y="27" width="96" height="46" rx="5" fill="none" stroke="${l}" stroke-dasharray="4 3"/>`;
-  }else if(t==='plant'){
-    s=`<circle cx="80" cy="56" r="15" fill="#785a3c"/><g fill="${c}" stroke="${d}" stroke-width="1"><ellipse cx="80" cy="27" rx="10" ry="24"/><ellipse cx="103" cy="39" rx="10" ry="24" transform="rotate(50 103 39)"/><ellipse cx="57" cy="39" rx="10" ry="24" transform="rotate(-50 57 39)"/><ellipse cx="102" cy="65" rx="10" ry="24" transform="rotate(110 102 65)"/><ellipse cx="58" cy="65" rx="10" ry="24" transform="rotate(-110 58 65)"/></g>`;
-  }else if(['fridgePremium','dishwasherPremium','ovenPremium','washerPremium','dryerPremium','utilityCabinetPremium'].includes(t)){
-    s=`<rect x="42" y="18" width="76" height="64" rx="7" fill="${c}" ${common}/><rect x="48" y="24" width="64" height="52" rx="5" fill="${l}" opacity=".25"/>`;
-    if(t==='fridgePremium'){const n=Math.max(1,Math.min(3,obj.doors||1));for(let i=1;i<n;i++)s+=`<path d="M${42+76*i/n} 20v60" stroke="${d}" stroke-width="2"/>`;}
-    if(t==='washerPremium'||t==='dryerPremium')s+=`<circle cx="80" cy="50" r="20" fill="#35414c" stroke="#d7dde2" stroke-width="4"/><circle cx="80" cy="50" r="11" fill="#91a7b6" opacity=".55"/>`;
-    if(t==='ovenPremium')s+=`<circle cx="62" cy="38" r="8" fill="#23282d"/><circle cx="98" cy="38" r="8" fill="#23282d"/><rect x="57" y="52" width="46" height="20" rx="3" fill="#252a2e"/>`;
-  }else if(['kitchenBasePremium','kitchenWallPremium','kitchenCornerPremium','kitchenLPremium','kitchenIslandSink','rangeHood','island'].includes(t)){
-    if(t==='rangeHood')s=`<rect x="32" y="28" width="96" height="44" rx="6" fill="${c}" ${common}/><rect x="58" y="32" width="44" height="36" rx="5" fill="${d}"/><path d="M38 65h84" stroke="#e2e8f0" opacity=".65"/>`;
-    else if(t==='kitchenLPremium')s=`<path d="M24 22h112v28H58v30H24z" fill="${c}" ${common}/><path d="M31 29h98M31 43h98M31 57h20M31 71h20" stroke="${d}" opacity=".55"/>`;
-    else if(t==='kitchenCornerPremium')s=`<path d="M40 20h80v28H70v32H40z" fill="${c}" ${common}/><path d="M47 27h66M47 42h66M47 57h16M47 72h16" stroke="${d}" opacity=".55"/>`;
-    else s=`<rect x="26" y="27" width="108" height="46" rx="5" fill="${c}" ${common}/><path d="M80 29v42" stroke="${d}" opacity=".45"/><path d="M31 38h98" stroke="${l}" opacity=".45"/>`;
-  }else if(['bathtubPremium','showerPremium','toiletPremium','vanityPremium','laundrySinkPremium'].includes(t)){
-    if(t==='bathtubPremium')s=`<rect x="25" y="22" width="110" height="56" rx="28" fill="#eef2f3" ${common}/><rect x="34" y="30" width="92" height="40" rx="20" fill="#cfe4ea"/><circle cx="114" cy="50" r="4" fill="#66717a"/>`;
-    else if(t==='showerPremium')s=`<rect x="46" y="18" width="68" height="64" rx="4" fill="#dcecef" ${common}/><path d="M50 22l60 56M110 22 50 78" stroke="#9fb8c0" opacity=".6"/><circle cx="102" cy="70" r="5" fill="#606a72"/>`;
-    else if(t==='toiletPremium')s=`<rect x="57" y="18" width="46" height="24" rx="6" fill="#eff2f3" ${common}/><ellipse cx="80" cy="59" rx="26" ry="27" fill="#eef2f3" ${common}/><ellipse cx="80" cy="59" rx="14" ry="17" fill="#cfe0e5"/>`;
-    else s=`<rect x="35" y="22" width="90" height="56" rx="6" fill="${c}" ${common}/><ellipse cx="80" cy="50" rx="25" ry="18" fill="#edf2f3" stroke="#8fa1aa" stroke-width="2"/><circle cx="80" cy="50" r="4" fill="#68747c"/>`;
-  }else if(t==='glassPartition'){
-    const n=Math.max(2,obj.panels||2);s=`<rect x="20" y="39" width="120" height="22" rx="3" fill="#9fd7e5" fill-opacity=".35" stroke="#6498a8" stroke-width="2"/>`;for(let i=1;i<n;i++)s+=`<path d="M${20+120*i/n} 40v20" stroke="#6498a8" stroke-width="2"/>`;
-  }else if(['splitIndoor','splitOutdoor','waterHeater','waterTank'].includes(t)){
-    if(t==='splitIndoor')s=`<rect x="28" y="31" width="104" height="38" rx="12" fill="${c}" ${common}/><path d="M38 59h84M45 63h70" stroke="#727d86" opacity=".6"/><circle cx="116" cy="43" r="3" fill="#62a8d6"/>`;
-    else if(t==='splitOutdoor')s=`<rect x="45" y="18" width="70" height="64" rx="6" fill="${c}" ${common}/><circle cx="80" cy="50" r="23" fill="#5f6972"/><circle cx="80" cy="50" r="16" fill="none" stroke="#bdc5cb" stroke-width="3"/><path d="M80 29v42M59 50h42M65 35l30 30M95 35 65 65" stroke="#bdc5cb" stroke-width="1.4"/>`;
-    else if(t==='waterHeater')s=`<rect x="55" y="18" width="50" height="64" rx="22" fill="${c}" ${common}/><circle cx="80" cy="68" r="4" fill="#d34f48"/><circle cx="91" cy="68" r="4" fill="#4b89c6"/>`;
-    else s=`<circle cx="80" cy="50" r="35" fill="${c}" ${common}/><circle cx="80" cy="50" r="27" fill="none" stroke="${l}" opacity=".38" stroke-width="3"/><circle cx="80" cy="50" r="15" fill="none" stroke="${d}" opacity=".4" stroke-width="3"/>`;
-  }else if(['carSedan','carSUV'].includes(t)){
-    const yy=t==='carSUV'?12:16,hh=t==='carSUV'?76:68;s=`<rect x="50" y="${yy}" width="60" height="${hh}" rx="20" fill="${c}" ${common}/><rect x="57" y="${yy+14}" width="46" height="18" rx="7" fill="#6f8795"/><rect x="57" y="${yy+hh-33}" width="46" height="18" rx="7" fill="#6f8795"/><rect x="45" y="${yy+16}" width="7" height="18" rx="3" fill="#24292f"/><rect x="108" y="${yy+16}" width="7" height="18" rx="3" fill="#24292f"/><rect x="45" y="${yy+hh-34}" width="7" height="18" rx="3" fill="#24292f"/><rect x="108" y="${yy+hh-34}" width="7" height="18" rx="3" fill="#24292f"/>`;
-  }else if(['ceilingFanPremium','ceilingLightPremium','spotPremium'].includes(t)){
-    s=t==='ceilingFanPremium'
-      ?`<circle cx="80" cy="50" r="8" fill="${c}"/><ellipse cx="80" cy="24" rx="8" ry="26" fill="${c}"/><ellipse cx="80" cy="76" rx="8" ry="26" fill="${c}"/><ellipse cx="54" cy="50" rx="26" ry="8" fill="${c}"/><ellipse cx="106" cy="50" rx="26" ry="8" fill="${c}"/>`
-      :`<circle cx="80" cy="50" r="${t==='spotPremium'?15:31}" fill="${c}" stroke="#8f7e5f" stroke-width="2"/><circle cx="80" cy="50" r="${t==='spotPremium'?7:20}" fill="#fff5d7" opacity=".8"/>`;
-  }else if(t==='tvWall'){
-    s=`<rect x="28" y="45" width="104" height="10" rx="4" fill="#151a1f" stroke="#56616b" stroke-width="2"/><path d="M50 48h60" stroke="#8a959f" opacity=".5"/>`;
-  }else if(t==='wallMirror'){
-    s=`<rect x="28" y="43" width="104" height="14" rx="7" fill="#bfe0e6" ${common}/><path d="M35 47h90" stroke="#fff" opacity=".8"/>`;
-  }else if(t==='basket'){
-    s=`<circle cx="80" cy="50" r="30" fill="${c}" ${common}/><path d="M58 34c12 12 32 12 44 0M52 49c15 12 41 12 56 0M58 66c12-12 32-12 44 0" fill="none" stroke="${l}" opacity=".55"/>`;
-  }else if(t==='cushion'){
-    s=`<rect x="50" y="20" width="60" height="60" rx="15" fill="${c}" ${common}/><path d="M58 28c8 8 36 8 44 0M58 72c8-8 36-8 44 0" fill="none" stroke="${l}" opacity=".55"/>`;
-  }else{
-    s=`<rect x="36" y="25" width="88" height="50" rx="9" fill="${c}" ${common}/><rect x="46" y="35" width="68" height="30" rx="7" fill="${l}" opacity=".3"/>`;
-  }
-  return `<svg class="procThumb" viewBox="0 0 160 100" aria-hidden="true"><rect x="6" y="7" width="148" height="86" rx="14" fill="#ffffff" opacity=".04"/>${s}</svg>`;
-}
 function renderLibrary(){
   lib.innerHTML='';
   furniture.forEach((obj,index)=>{
     if(activeCategory!=='الكل'&&obj.category!==activeCategory)return;
     const d=document.createElement('div');d.className='fcard';
-    const visual=obj.src?`<img loading="lazy" decoding="async" src="${resolveAssetSrc(obj.src)}" alt="${obj.name}">`:proceduralThumbMarkup(obj);
+    const visual=obj.src?`<img loading="lazy" decoding="async" src="${resolveAssetSrc(obj.src)}" alt="${obj.name}">`:`<div class="genericThumb" style="box-shadow:inset 0 0 0 999px ${obj.color||'#bfa781'}33">بدون صورة</div>`;
     d.innerHTML=`<button class="editLibBtn" title="تعديل القطعة">✎</button>${obj.isCustom?'<span class="customMark">مضافة</span>':''}${visual}<b>${obj.name}</b><span>${obj.w} × ${obj.h} سم</span><button class="touchDragHandle" type="button" aria-label="اسحب إلى الخارطة">⠿</button>`;
     d.querySelector('.editLibBtn').onclick=e=>{e.stopPropagation();openLibraryEditor(obj.id);};
     const th=d.querySelector('.touchDragHandle');th.addEventListener('pointerdown',e=>startTouchLibraryDrag(e,obj,false));th.addEventListener('pointermove',moveTouchLibraryDrag);th.addEventListener('pointerup',endTouchLibraryDrag);th.addEventListener('pointercancel',endTouchLibraryDrag);
@@ -1343,8 +1253,8 @@ function fillLibraryCategorySelect(selected=''){
   libEditCategory.innerHTML=cats.map(c=>`<option value="${c.replace(/"/g,'&quot;')}">${c}</option>`).join('');
   libEditCategory.value=selected||'أخرى';
 }
-function setLibraryPreview(src,obj=null){
-  libraryPreview.innerHTML=src?`<img src="${resolveAssetSrc(src)}" alt="معاينة">`:(obj?proceduralThumbMarkup(obj):'<span class="noImage">لا توجد صورة — ستظهر كقطعة رسومية قابلة للتلوين</span>');
+function setLibraryPreview(src){
+  libraryPreview.innerHTML=src?`<img src="${resolveAssetSrc(src)}" alt="معاينة">`:'<span class="noImage">لا توجد صورة — ستظهر كقطعة رسومية بسيطة</span>';
 }
 function openLibraryEditor(id=null,preset=null){
   editingLibraryId=id;
@@ -1353,7 +1263,7 @@ function openLibraryEditor(id=null,preset=null){
   libraryModalTitle.textContent=obj?'تعديل قطعة في المكتبة':'إضافة قطعة إلى المكتبة';
   libEditName.value=data.name||'قطعة جديدة';libEditW.value=data.w||100;libEditH.value=data.h||60;libEditColor.value=data.color||'#bfa781';
   fillLibraryCategorySelect(data.category||'أخرى');libNewCategory.value='';
-  pendingLibraryImageData=data.src||null;libEditImage.value='';setLibraryPreview(pendingLibraryImageData,data);
+  pendingLibraryImageData=data.src||null;libEditImage.value='';setLibraryPreview(pendingLibraryImageData);
   deleteLibraryItemBtn.style.display=obj?'inline-flex':'none';
   libraryModal.style.display='flex';
   setTimeout(()=>libEditName.focus(),50);
@@ -1501,11 +1411,9 @@ function addItem(def,x,y){
   const before=cloneEditState();
   if(!pxPerCm){alert('يجب معايرة القياس أولاً حتى يظهر الأثاث بحجمه الحقيقي.');return null;}
   const it={
-    ...def,
     id:randId(),name:def.name,w:def.w,h:def.h,x:clamp(x??canvas.width/2,0,canvas.width),y:clamp(y??canvas.height/2,0,canvas.height),
-    rot:def.rot||0,color:def.color||'#bfa781',type:def.type||'generic',src:def.src||null,tintEnabled:false,locked:false,archType:def.archType||null,doorSwing:def.doorSwing||1
+    rot:0,color:def.color||'#bfa781',type:def.type||'generic',src:def.src||null,tintEnabled:false,locked:false,archType:def.archType||null,doorSwing:def.doorSwing||1
   };
-  delete it.isCustom;delete it.category;
   items.push(it);setSelection([it.id],it.id);selectedMeasureId=null;syncSelectedPanel();draw();commitHistory(before);return it;
 }
 
@@ -1960,59 +1868,6 @@ function drawGeneric(it,w,h){
   ctx.fillStyle=rgba('#ffffff',0.18); roundRectPath(-w*0.26,-h*0.18,w*0.52,h*0.36,10);ctx.fill();
 }
 
-function premiumShadow(){if(document.getElementById('shadowToggle').checked){ctx.shadowColor='rgba(0,0,0,.22)';ctx.shadowBlur=12;ctx.shadowOffsetY=3;}}
-function clearPremiumShadow(){ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;}
-function drawPremiumPanel(it,w,h,r=8){
-  premiumShadow();roundRectPath(-w/2,-h/2,w,h,r);ctx.fillStyle=linearFill(-w/2,-h/2,w/2,h/2,shade(it.color||'#bfa781',.25),shade(it.color||'#bfa781',-.18));ctx.strokeStyle='rgba(45,55,65,.9)';ctx.lineWidth=1.6;ctx.fill();ctx.stroke();clearPremiumShadow();
-}
-function drawSectionalPremium(it,w,h){
-  const c=it.color||'#c9b9a8',r=Math.min(14,Math.min(w,h)*.08);premiumShadow();
-  roundRectPath(-w/2,-h/2,w,h*.42,r);ctx.fillStyle=linearFill(0,-h/2,0,h/2,shade(c,.22),shade(c,-.12));ctx.fill();
-  roundRectPath(w*.18,-h/2,w*.32,h,r);ctx.fill();clearPremiumShadow();
-  ctx.strokeStyle=shade(c,-.32);ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-w*.16,-h*.47);ctx.lineTo(-w*.16,-h*.12);ctx.moveTo(w*.16,-h*.47);ctx.lineTo(w*.16,-h*.12);ctx.stroke();
-  drawPillow(-w*.34,-h*.27,w*.12,h*.13,shade(c,.35));drawPillow(w*.34,-h*.27,w*.12,h*.13,shade(c,.28));
-}
-function drawChaisePremium(it,w,h){drawPremiumPanel(it,w,h,Math.min(16,w*.18));ctx.fillStyle=shade(it.color||'#bfa781',.34);roundRectPath(-w*.34,-h*.32,w*.68,h*.22,10);ctx.fill();ctx.fillStyle=shade(it.color||'#bfa781',-.15);roundRectPath(-w*.42,-h*.48,w*.84,h*.12,8);ctx.fill();}
-function drawOttomanPremium(it,w,h,round=false){premiumShadow();if(round){ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.48,0,Math.PI*2);}else roundRectPath(-w/2,-h/2,w,h,Math.min(14,Math.min(w,h)*.2));ctx.fillStyle=linearFill(-w/2,-h/2,w/2,h/2,shade(it.color,.26),shade(it.color,-.16));ctx.fill();ctx.strokeStyle=shade(it.color,-.35);ctx.lineWidth=1.3;ctx.stroke();clearPremiumShadow();}
-function drawRoundTablePremium(it,w,h){const r=Math.min(w,h)*.47;premiumShadow();ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fillStyle=linearFill(-r,-r,r,r,shade(it.color,.24),shade(it.color,-.18));ctx.fill();ctx.strokeStyle=shade(it.color,-.35);ctx.lineWidth=1.3;ctx.stroke();clearPremiumShadow();ctx.beginPath();ctx.arc(0,0,r*.72,0,Math.PI*2);ctx.strokeStyle=rgba('#ffffff',.28);ctx.stroke();}
-function drawSideTableSquarePremium(it,w,h){drawPremiumPanel(it,w,h,6);ctx.strokeStyle=rgba('#ffffff',.28);ctx.strokeRect(-w*.32,-h*.32,w*.64,h*.64);}
-function drawNestingTablesPremium(it,w,h){ctx.save();ctx.translate(-w*.12,h*.07);drawRoundTablePremium(it,w*.62,h*.72);ctx.restore();ctx.save();ctx.translate(w*.22,-h*.10);drawRoundTablePremium({...it,color:shade(it.color,.18)},w*.55,h*.62);ctx.restore();}
-function drawTvWallPremium(it,w,h){const hh=Math.max(h,6);premiumShadow();roundRectPath(-w/2,-hh/2,w,hh,3);ctx.fillStyle='#11161c';ctx.fill();ctx.strokeStyle='#424b54';ctx.lineWidth=1;ctx.stroke();clearPremiumShadow();ctx.fillStyle='rgba(255,255,255,.32)';ctx.fillRect(-w*.36,-1,w*.72,1);}
-function drawDiningRoundPremium(it,w,h){drawRoundTablePremium(it,w*.68,h*.68);const r=Math.min(w,h)*.43;for(let a=0;a<Math.PI*2;a+=Math.PI/2){ctx.save();ctx.translate(Math.cos(a)*r,Math.sin(a)*r);ctx.rotate(a+Math.PI/2);drawPremiumPanel({...it,color:shade(it.color,.22)},w*.15,h*.19,5);ctx.restore();}}
-function drawDiningOvalPremium(it,w,h,glass=false){premiumShadow();ctx.beginPath();ctx.ellipse(0,0,w*.34,h*.34,0,0,Math.PI*2);ctx.fillStyle=glass?'rgba(155,211,224,.58)':linearFill(-w/2,0,w/2,0,shade(it.color,.23),shade(it.color,-.16));ctx.fill();ctx.strokeStyle=glass?'rgba(73,124,139,.85)':shade(it.color,-.35);ctx.lineWidth=1.5;ctx.stroke();clearPremiumShadow();for(const sx of [-.36,-.12,.12,.36])for(const sy of [-.42,.42]){ctx.save();ctx.translate(w*sx,h*sy);drawPremiumPanel({...it,color:'#bbb5ad'},w*.15,h*.15,5);ctx.restore();}}
-function drawBarStoolPremium(it,w,h){drawRoundTablePremium(it,w*.72,h*.72);ctx.strokeStyle=shade(it.color,-.4);ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(-w*.22,h*.20);ctx.lineTo(-w*.32,h*.42);ctx.moveTo(w*.22,h*.20);ctx.lineTo(w*.32,h*.42);ctx.stroke();}
-function drawMeetingTablePremium(it,w,h){premiumShadow();ctx.beginPath();ctx.ellipse(0,0,w*.38,h*.34,0,0,Math.PI*2);ctx.fillStyle=linearFill(-w/2,0,w/2,0,shade(it.color,.22),shade(it.color,-.16));ctx.fill();ctx.strokeStyle=shade(it.color,-.35);ctx.stroke();clearPremiumShadow();for(const sx of [-.30,0,.30])for(const sy of [-.43,.43]){ctx.save();ctx.translate(w*sx,h*sy);drawPremiumPanel({...it,color:'#6d7074'},w*.13,h*.15,5);ctx.restore();}}
-function drawDresserPremium(it,w,h){drawPremiumPanel(it,w,h,6);ctx.strokeStyle=shade(it.color,-.33);ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(0,-h/2);ctx.lineTo(0,h/2);ctx.moveTo(-w/2,-h*.15);ctx.lineTo(w/2,-h*.15);ctx.moveTo(-w/2,h*.18);ctx.lineTo(w/2,h*.18);ctx.stroke();ctx.fillStyle='#2f3439';for(const x of [-w*.22,w*.22])for(const y of [-h*.32,0,h*.32])ctx.fillRect(x-2,y-1,4,2);}
-function drawBookcasePremium(it,w,h){drawPremiumPanel(it,w,h,4);ctx.strokeStyle=shade(it.color,-.38);ctx.lineWidth=1;for(let x=-w*.32;x<=w*.32;x+=w*.16){ctx.beginPath();ctx.moveTo(x,-h*.38);ctx.lineTo(x,h*.38);ctx.stroke();}ctx.fillStyle='#d5ccb9';for(let i=0;i<7;i++)ctx.fillRect(-w*.36+i*w*.11,-h*.26+(i%2)*h*.18,w*.07,h*.12);}
-function drawRugPremium(it,w,h,round=false){ctx.save();ctx.globalAlpha=.92;ctx.fillStyle=it.color;ctx.strokeStyle=shade(it.color,-.22);ctx.lineWidth=1.2;if(round){ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.48,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.38,0,Math.PI*2);ctx.setLineDash([5,4]);ctx.strokeStyle=shade(it.color,.28);ctx.stroke();}else{roundRectPath(-w/2,-h/2,w,h,8);ctx.fill();ctx.stroke();roundRectPath(-w*.42,-h*.38,w*.84,h*.76,6);ctx.setLineDash([5,4]);ctx.strokeStyle=shade(it.color,.28);ctx.stroke();}ctx.setLineDash([]);ctx.restore();}
-function drawPlantPremium(it,w,h){const r=Math.min(w,h);ctx.save();ctx.fillStyle='#8a6847';ctx.beginPath();ctx.arc(0,0,r*.18,0,Math.PI*2);ctx.fill();for(let i=0;i<10;i++){ctx.save();ctx.rotate(i*Math.PI/5);ctx.fillStyle=i%2?shade(it.color,.15):shade(it.color,-.08);ctx.beginPath();ctx.ellipse(0,-r*.22,r*.09,r*.28,0,0,Math.PI*2);ctx.fill();ctx.restore();}ctx.restore();}
-function drawWallMirrorPremium(it,w,h){const hh=Math.max(h,6);premiumShadow();roundRectPath(-w/2,-hh/2,w,hh,3);ctx.fillStyle='rgba(176,220,230,.85)';ctx.fill();ctx.strokeStyle='#647985';ctx.stroke();clearPremiumShadow();ctx.fillStyle='rgba(255,255,255,.65)';ctx.fillRect(-w*.35,-1,w*.42,1);}
-function drawBasketPremium(it,w,h){drawRoundTablePremium(it,w,h);ctx.save();ctx.strokeStyle=shade(it.color,.34);ctx.globalAlpha=.5;for(const rr of [.26,.38]){ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*rr,0,Math.PI*2);ctx.stroke();}ctx.restore();}
-function drawCushionPremium(it,w,h){drawPremiumPanel(it,w,h,Math.min(12,w*.24));ctx.strokeStyle=shade(it.color,.25);ctx.globalAlpha=.55;ctx.beginPath();ctx.moveTo(-w*.35,-h*.35);ctx.quadraticCurveTo(0,-h*.15,w*.35,-h*.35);ctx.moveTo(-w*.35,h*.35);ctx.quadraticCurveTo(0,h*.15,w*.35,h*.35);ctx.stroke();ctx.globalAlpha=1;}
-function drawFridgePremium(it,w,h){drawPremiumPanel(it,w,h,5);const n=Math.max(1,Math.min(3,it.doors||1));ctx.strokeStyle=shade(it.color,-.35);ctx.lineWidth=1.3;for(let i=1;i<n;i++){ctx.beginPath();ctx.moveTo(-w/2+w*i/n,-h*.46);ctx.lineTo(-w/2+w*i/n,h*.46);ctx.stroke();}ctx.fillStyle=shade(it.color,-.48);for(let i=0;i<n;i++)ctx.fillRect(-w/2+w*(i+.5)/n-1,-h*.28,2,h*.22);ctx.fillStyle='rgba(255,255,255,.25)';ctx.fillRect(-w*.37,-h*.36,w*.50,2);}
-function drawKitchenBasePremium(it,w,h){drawPremiumPanel(it,w,h,4);ctx.fillStyle=rgba('#ffffff',.24);ctx.fillRect(-w*.46,-h*.45,w*.92,h*.08);ctx.strokeStyle=shade(it.color,-.33);ctx.lineWidth=1.1;ctx.beginPath();ctx.moveTo(0,-h*.38);ctx.lineTo(0,h*.42);ctx.stroke();if(it.module==='sink'){ctx.fillStyle='#dfe6e9';roundRectPath(-w*.28,-h*.22,w*.56,h*.42,6);ctx.fill();ctx.strokeStyle='#7b8991';ctx.stroke();ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.04,0,Math.PI*2);ctx.fillStyle='#65747d';ctx.fill();}else if(it.module==='cooktop'){ctx.fillStyle='#23282c';roundRectPath(-w*.32,-h*.28,w*.64,h*.56,5);ctx.fill();ctx.strokeStyle='#79838a';ctx.lineWidth=1;for(const x of [-w*.15,w*.15])for(const y of [-h*.14,h*.14]){ctx.beginPath();ctx.arc(x,y,Math.min(w,h)*.08,0,Math.PI*2);ctx.stroke();}}else if(it.module==='drawers'){ctx.strokeStyle=shade(it.color,-.35);for(const y of [-h*.18,h*.08,h*.33]){ctx.beginPath();ctx.moveTo(-w*.42,y);ctx.lineTo(w*.42,y);ctx.stroke();}}}
-function drawKitchenWallPremium(it,w,h){drawPremiumPanel(it,w,h,4);const n=Math.max(1,Math.min(3,it.doors||1));ctx.strokeStyle=shade(it.color,-.34);ctx.lineWidth=1;for(let i=1;i<n;i++){ctx.beginPath();ctx.moveTo(-w/2+w*i/n,-h*.42);ctx.lineTo(-w/2+w*i/n,h*.42);ctx.stroke();}}
-function drawKitchenCornerPremium(it,w,h){premiumShadow();ctx.fillStyle=linearFill(-w/2,-h/2,w/2,h/2,shade(it.color,.22),shade(it.color,-.14));ctx.strokeStyle=shade(it.color,-.35);ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-w/2,-h/2);ctx.lineTo(w/2,-h/2);ctx.lineTo(w/2,-h*.14);ctx.lineTo(-w*.14,-h*.14);ctx.lineTo(-w*.14,h/2);ctx.lineTo(-w/2,h/2);ctx.closePath();ctx.fill();ctx.stroke();clearPremiumShadow();}
-function drawKitchenLPremium(it,w,h){premiumShadow();ctx.fillStyle=linearFill(-w/2,-h/2,w/2,h/2,shade(it.color,.22),shade(it.color,-.14));ctx.strokeStyle=shade(it.color,-.35);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-w/2,-h/2);ctx.lineTo(w/2,-h/2);ctx.lineTo(w/2,-h*.24);ctx.lineTo(-w*.24,-h*.24);ctx.lineTo(-w*.24,h/2);ctx.lineTo(-w/2,h/2);ctx.closePath();ctx.fill();ctx.stroke();clearPremiumShadow();}
-function drawKitchenIslandSink(it,w,h){drawPremiumPanel(it,w,h,6);ctx.fillStyle='#e5e9ea';roundRectPath(-w*.22,-h*.22,w*.44,h*.44,7);ctx.fill();ctx.strokeStyle='#7b8b94';ctx.stroke();ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.035,0,Math.PI*2);ctx.fillStyle='#596971';ctx.fill();}
-function drawRangeHoodPremium(it,w,h){drawPremiumPanel(it,w,h,5);ctx.fillStyle=shade(it.color,-.35);roundRectPath(-w*.22,-h*.34,w*.44,h*.68,5);ctx.fill();ctx.strokeStyle='rgba(255,255,255,.45)';for(let y=-h*.2;y<=h*.2;y+=h*.13){ctx.beginPath();ctx.moveTo(-w*.16,y);ctx.lineTo(w*.16,y);ctx.stroke();}}
-function drawDishwasherPremium(it,w,h){drawPremiumPanel(it,w,h,5);ctx.fillStyle=shade(it.color,-.36);ctx.fillRect(-w*.38,-h*.34,w*.76,h*.12);ctx.fillStyle='#1f252a';ctx.beginPath();ctx.arc(w*.24,-h*.28,Math.min(w,h)*.045,0,Math.PI*2);ctx.fill();}
-function drawOvenPremium(it,w,h){drawPremiumPanel(it,w,h,5);ctx.fillStyle='#20262b';roundRectPath(-w*.32,-h*.24,w*.64,h*.48,5);ctx.fill();ctx.strokeStyle='#7d878f';for(const x of [-w*.15,w*.15])for(const y of [-h*.14,h*.14]){ctx.beginPath();ctx.arc(x,y,Math.min(w,h)*.07,0,Math.PI*2);ctx.stroke();}}
-function drawBathtubPremium(it,w,h){premiumShadow();roundRectPath(-w/2,-h/2,w,h,Math.min(h*.48,28));ctx.fillStyle='#eef2f3';ctx.fill();ctx.strokeStyle='#7f8d95';ctx.lineWidth=1.3;ctx.stroke();clearPremiumShadow();roundRectPath(-w*.42,-h*.34,w*.84,h*.68,Math.min(h*.34,22));ctx.fillStyle='rgba(191,220,229,.72)';ctx.fill();ctx.beginPath();ctx.arc(w*.30,0,Math.min(w,h)*.035,0,Math.PI*2);ctx.fillStyle='#65737b';ctx.fill();}
-function drawShowerPremium(it,w,h){ctx.save();ctx.globalAlpha=.8;drawPremiumPanel({...it,color:'#d9e7ea'},w,h,4);ctx.globalAlpha=1;ctx.strokeStyle='#829ba4';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(-w*.42,-h*.42);ctx.lineTo(w*.42,h*.42);ctx.moveTo(w*.42,-h*.42);ctx.lineTo(-w*.42,h*.42);ctx.stroke();ctx.beginPath();ctx.arc(w*.32,h*.30,Math.min(w,h)*.05,0,Math.PI*2);ctx.fillStyle='#687780';ctx.fill();ctx.restore();}
-function drawToiletPremium(it,w,h){premiumShadow();roundRectPath(-w*.30,-h*.48,w*.60,h*.28,6);ctx.fillStyle='#edf1f2';ctx.fill();ctx.strokeStyle='#87959d';ctx.stroke();ctx.beginPath();ctx.ellipse(0,h*.12,w*.38,h*.34,0,0,Math.PI*2);ctx.fill();ctx.stroke();clearPremiumShadow();ctx.beginPath();ctx.ellipse(0,h*.12,w*.20,h*.20,0,0,Math.PI*2);ctx.fillStyle='rgba(184,218,227,.7)';ctx.fill();}
-function drawVanityPremium(it,w,h){drawPremiumPanel(it,w,h,5);ctx.beginPath();ctx.ellipse(0,0,w*.28,h*.30,0,0,Math.PI*2);ctx.fillStyle='#edf1f2';ctx.fill();ctx.strokeStyle='#7d8b93';ctx.stroke();ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.04,0,Math.PI*2);ctx.fillStyle='#64727a';ctx.fill();}
-function drawGlassPartitionPremium(it,w,h){const n=Math.max(2,it.panels||2),th=Math.max(h,5);ctx.save();ctx.fillStyle='rgba(128,204,224,.23)';ctx.strokeStyle='rgba(71,142,160,.9)';ctx.lineWidth=1.3;ctx.fillRect(-w/2,-th/2,w,th);ctx.strokeRect(-w/2,-th/2,w,th);for(let i=1;i<n;i++){const x=-w/2+w*i/n;ctx.beginPath();ctx.moveTo(x,-th/2);ctx.lineTo(x,th/2);ctx.stroke();}ctx.fillStyle='#4e6670';for(let i=0;i<n;i++)ctx.fillRect(-w/2+w*(i+.5)/n-1,-1,2,2);ctx.restore();}
-function drawWasherDryerPremium(it,w,h,isDryer=false){drawPremiumPanel(it,w,h,5);ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.30,0,Math.PI*2);ctx.fillStyle=isDryer?'#4b555e':'#35434e';ctx.fill();ctx.strokeStyle='#d8e0e4';ctx.lineWidth=3;ctx.stroke();ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.17,0,Math.PI*2);ctx.fillStyle='rgba(134,171,190,.55)';ctx.fill();ctx.fillStyle='#23292e';ctx.fillRect(-w*.32,-h*.40,w*.64,h*.10);}
-function drawLaundrySinkPremium(it,w,h){drawPremiumPanel(it,w,h,5);roundRectPath(-w*.30,-h*.30,w*.60,h*.60,7);ctx.fillStyle='#e8eff1';ctx.fill();ctx.strokeStyle='#7c8c94';ctx.stroke();ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.04,0,Math.PI*2);ctx.fillStyle='#60717a';ctx.fill();}
-function drawSplitIndoorPremium(it,w,h){premiumShadow();roundRectPath(-w/2,-h/2,w,h,Math.min(12,h*.35));ctx.fillStyle=linearFill(0,-h/2,0,h/2,shade(it.color,.18),shade(it.color,-.08));ctx.fill();ctx.strokeStyle='#8f9aa1';ctx.stroke();clearPremiumShadow();ctx.strokeStyle='#717d85';ctx.globalAlpha=.55;for(let y=h*.12;y<h*.36;y+=h*.08){ctx.beginPath();ctx.moveTo(-w*.36,y);ctx.lineTo(w*.36,y);ctx.stroke();}ctx.globalAlpha=1;ctx.fillStyle='#4aa0d0';ctx.beginPath();ctx.arc(w*.34,-h*.18,Math.min(w,h)*.045,0,Math.PI*2);ctx.fill();}
-function drawSplitOutdoorPremium(it,w,h){drawPremiumPanel(it,w,h,5);const r=Math.min(w,h)*.34;ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fillStyle='#59636b';ctx.fill();ctx.strokeStyle='#c4ccd1';ctx.lineWidth=2;ctx.stroke();ctx.beginPath();ctx.arc(0,0,r*.7,0,Math.PI*2);ctx.stroke();for(let a=0;a<Math.PI;a+=Math.PI/4){ctx.beginPath();ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r);ctx.lineTo(-Math.cos(a)*r,-Math.sin(a)*r);ctx.stroke();}}
-function drawWaterHeaterPremium(it,w,h){premiumShadow();roundRectPath(-w*.38,-h/2,w*.76,h,Math.min(w*.35,20));ctx.fillStyle=linearFill(-w/2,0,w/2,0,shade(it.color,.18),shade(it.color,-.10));ctx.fill();ctx.strokeStyle='#8d979e';ctx.stroke();clearPremiumShadow();ctx.beginPath();ctx.arc(0,h*.31,Math.min(w,h)*.045,0,Math.PI*2);ctx.fillStyle='#d4554b';ctx.fill();ctx.beginPath();ctx.arc(w*.16,h*.31,Math.min(w,h)*.045,0,Math.PI*2);ctx.fillStyle='#4f91c7';ctx.fill();}
-function drawWaterTankPremium(it,w,h){const r=Math.min(w,h)*.47;premiumShadow();ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fillStyle=linearFill(-r,-r,r,r,shade(it.color,.18),shade(it.color,-.22));ctx.fill();ctx.strokeStyle='#20262b';ctx.stroke();clearPremiumShadow();for(const rr of [.72,.43]){ctx.beginPath();ctx.arc(0,0,r*rr,0,Math.PI*2);ctx.strokeStyle='rgba(255,255,255,.22)';ctx.lineWidth=2;ctx.stroke();}}
-function drawCarPremium(it,w,h,suv=false){const bodyW=w*.72,bodyH=h*.92;premiumShadow();roundRectPath(-bodyW/2,-bodyH/2,bodyW,bodyH,Math.min(bodyW*.23,24));ctx.fillStyle=linearFill(-bodyW/2,0,bodyW/2,0,shade(it.color,.18),shade(it.color,-.20));ctx.fill();ctx.strokeStyle=shade(it.color,-.42);ctx.lineWidth=1.6;ctx.stroke();clearPremiumShadow();ctx.fillStyle='rgba(91,121,139,.78)';roundRectPath(-bodyW*.34,-bodyH*.30,bodyW*.68,bodyH*.20,Math.min(10,bodyW*.09));ctx.fill();roundRectPath(-bodyW*.34,bodyH*.10,bodyW*.68,bodyH*.20,Math.min(10,bodyW*.09));ctx.fill();ctx.fillStyle='#1f2429';const wh=bodyH*.20,ww=Math.max(3,w*.06);for(const sx of [-1,1])for(const sy of [-.28,.28]){roundRectPath(sx*(bodyW/2+ww*.15)-ww/2,sy*bodyH-wh/2,ww,wh,3);ctx.fill();}if(suv){ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=2;ctx.strokeRect(-bodyW*.22,-bodyH*.07,bodyW*.44,bodyH*.14);}ctx.fillStyle='rgba(255,255,255,.2)';ctx.fillRect(-bodyW*.28,-bodyH*.38,bodyW*.56,2);}
-function drawCeilingFanPremium(it,w,h){const r=Math.min(w,h);ctx.save();ctx.fillStyle=it.color;for(let a=0;a<Math.PI*2;a+=Math.PI/2){ctx.save();ctx.rotate(a);roundRectPath(-r*.08,-r*.48,r*.16,r*.40,r*.08);ctx.fill();ctx.restore();}ctx.beginPath();ctx.arc(0,0,r*.10,0,Math.PI*2);ctx.fillStyle=shade(it.color,-.18);ctx.fill();ctx.restore();}
-function drawCeilingLightPremium(it,w,h,spot=false){const r=Math.min(w,h)*.48;ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fillStyle=it.color;ctx.fill();ctx.strokeStyle=shade(it.color,-.25);ctx.stroke();ctx.beginPath();ctx.arc(0,0,r*(spot?0.45:0.65),0,Math.PI*2);ctx.fillStyle='rgba(255,249,222,.82)';ctx.fill();}
-
 
 function getTintedSprite(src,color){
   const key=src+'|'+color;
@@ -2080,84 +1935,25 @@ function drawWindow(it,w,h){
 function drawOpening(it,w,h){const u=1/zoom;ctx.save();ctx.strokeStyle='#111827';ctx.lineWidth=1.5*u;ctx.setLineDash([6*u,4*u]);ctx.beginPath();ctx.moveTo(-w/2,0);ctx.lineTo(w/2,0);ctx.stroke();ctx.setLineDash([]);ctx.restore();}
 function drawItem(it){
   const w=it.w*pxPerCm,h=it.h*pxPerCm;
-  if(it.hidden){
-    if(isItemSelected(it.id)){
-      ctx.save();ctx.translate(it.x,it.y);ctx.rotate(it.rot*Math.PI/180);
-      drawSelectionOutline(w,(it.archType==='door'||it.archType==='doubleDoor')?w:h);
-      if(it.locked)drawLockMarker(w,(it.archType==='door'||it.archType==='doubleDoor')?w:h);
-      ctx.restore();
-    }
-    return;
-  }
   const showLabels=document.getElementById('labelsToggle').checked;
   const showDims=document.getElementById('dimsToggle').checked;
   ctx.save();
   ctx.translate(it.x,it.y);
   ctx.rotate(it.rot*Math.PI/180);
-  if(it.flipX||it.flipY)ctx.scale(it.flipX?-1:1,it.flipY?-1:1);
   if(it.archType==='door')drawDoor(it,w,h); else if(it.archType==='doubleDoor')drawDoubleDoor(it,w,h); else if(it.archType==='window')drawWindow(it,w,h); else if(it.archType==='opening')drawOpening(it,w,h); else if(it.src){ drawSprite(it,w,h); } else switch(it.type){
     case 'sofa': drawSofa(it,w,h); break;
-    case 'sectional': drawSectionalPremium(it,w,h); break;
     case 'armchair': drawArmchair(it,w,h); break;
-    case 'chaise': drawChaisePremium(it,w,h); break;
-    case 'ottoman': drawOttomanPremium(it,w,h,false); break;
-    case 'ottomanRound': drawOttomanPremium(it,w,h,true); break;
     case 'coffee': drawCoffee(it,w,h); break;
-    case 'coffeeRound': drawRoundTablePremium(it,w,h); break;
-    case 'sideTable': drawRoundTablePremium(it,w,h); break;
-    case 'sideTableSquare': drawSideTableSquarePremium(it,w,h); break;
-    case 'nestingTables': drawNestingTablesPremium(it,w,h); break;
-    case 'tvWall': drawTvWallPremium(it,w,h); break;
     case 'dining': drawDining(it,w,h); break;
-    case 'diningRound': drawDiningRoundPremium(it,w,h); break;
-    case 'diningOval': drawDiningOvalPremium(it,w,h,false); break;
-    case 'diningGlass': drawDiningOvalPremium(it,w,h,true); break;
     case 'diningChair': drawDiningChair(it,w,h); break;
-    case 'barStool': drawBarStoolPremium(it,w,h); break;
     case 'bed': drawBed(it,w,h); break;
     case 'wardrobe': drawWardrobe(it,w,h); break;
     case 'nightstand': drawNightstand(it,w,h); break;
-    case 'dresserPremium': drawDresserPremium(it,w,h); break;
     case 'desk': drawDesk(it,w,h); break;
     case 'officeChair': drawOfficeChair(it,w,h); break;
-    case 'meetingTable': drawMeetingTablePremium(it,w,h); break;
-    case 'bookcasePremium': drawBookcasePremium(it,w,h); break;
-    case 'rugRect': drawRugPremium(it,w,h,false); break;
-    case 'rugRound': drawRugPremium(it,w,h,true); break;
-    case 'plant': drawPlantPremium(it,w,h); break;
-    case 'wallMirror': drawWallMirrorPremium(it,w,h); break;
-    case 'basket': drawBasketPremium(it,w,h); break;
-    case 'cushion': drawCushionPremium(it,w,h); break;
-    case 'fridgePremium': drawFridgePremium(it,w,h); break;
-    case 'kitchenBasePremium': drawKitchenBasePremium(it,w,h); break;
-    case 'kitchenWallPremium': drawKitchenWallPremium(it,w,h); break;
-    case 'kitchenCornerPremium': drawKitchenCornerPremium(it,w,h); break;
-    case 'kitchenLPremium': drawKitchenLPremium(it,w,h); break;
-    case 'island': drawIsland(it,w,h); break;
-    case 'kitchenIslandSink': drawKitchenIslandSink(it,w,h); break;
-    case 'rangeHood': drawRangeHoodPremium(it,w,h); break;
-    case 'dishwasherPremium': drawDishwasherPremium(it,w,h); break;
-    case 'ovenPremium': drawOvenPremium(it,w,h); break;
-    case 'bathtubPremium': drawBathtubPremium(it,w,h); break;
-    case 'showerPremium': drawShowerPremium(it,w,h); break;
-    case 'toiletPremium': drawToiletPremium(it,w,h); break;
-    case 'vanityPremium': drawVanityPremium(it,w,h); break;
-    case 'glassPartition': drawGlassPartitionPremium(it,w,h); break;
-    case 'washerPremium': drawWasherDryerPremium(it,w,h,false); break;
-    case 'dryerPremium': drawWasherDryerPremium(it,w,h,true); break;
-    case 'laundrySinkPremium': drawLaundrySinkPremium(it,w,h); break;
-    case 'utilityCabinetPremium': drawDresserPremium(it,w,h); break;
-    case 'splitIndoor': drawSplitIndoorPremium(it,w,h); break;
-    case 'splitOutdoor': drawSplitOutdoorPremium(it,w,h); break;
-    case 'waterHeater': drawWaterHeaterPremium(it,w,h); break;
-    case 'waterTank': drawWaterTankPremium(it,w,h); break;
-    case 'carSedan': drawCarPremium(it,w,h,false); break;
-    case 'carSUV': drawCarPremium(it,w,h,true); break;
-    case 'ceilingFanPremium': drawCeilingFanPremium(it,w,h); break;
-    case 'ceilingLightPremium': drawCeilingLightPremium(it,w,h,false); break;
-    case 'spotPremium': drawCeilingLightPremium(it,w,h,true); break;
     case 'tvunit': drawTvUnit(it,w,h); break;
     case 'shelf': drawShelf(it,w,h); break;
+    case 'island': drawIsland(it,w,h); break;
     case 'fridge': drawFridge(it,w,h); break;
     default: drawGeneric(it,w,h); break;
   }
@@ -2314,7 +2110,7 @@ function draw(){
       ctx.textAlign='center';
       let ty=cy+h/2+30;
       if(brandInfo.companyName){ctx.fillStyle='#0f172a';ctx.font='700 21px Tahoma';ctx.fillText(brandInfo.companyName,canvas.width/2,ty);ty+=27;}
-      const sub=[brandInfo.address,brandInfo.phone,brandInfo.email].filter(Boolean).join('  •  ');
+      const sub=[brandInfo.address,brandInfo.email].filter(Boolean).join('  •  ');
       if(sub){ctx.fillStyle='#64748b';ctx.font='14px Tahoma';ctx.fillText(sub,canvas.width/2,ty);ty+=25;}
       ctx.fillStyle='#334155';ctx.font='bold 17px Tahoma';ctx.fillText('ارفع الخارطة لبدء مشروع جديد',canvas.width/2,ty+5);
     }else{
@@ -2616,7 +2412,7 @@ document.getElementById('loadInput').onchange=e=>{
       projectMeta={name:p.projectMeta?.name||'مشروع جديد',mapTitle:p.projectMeta?.mapTitle||'',client:p.projectMeta?.client||'',location:p.projectMeta?.location||''};
       if(p.brandInfo){brandInfo={...defaultBrandInfo(),...p.brandInfo};saveBrandInfoState();refreshCompanyLogo();}
       if(Array.isArray(p.library)&&p.library.length&&confirm('ملف المشروع يحتوي على مكتبة أثاث محفوظة معه. هل تريد تحميل هذه المكتبة أيضًا؟')){
-        furniture=p.library.map((x,i)=>normalizeLibraryItem(x,i,'project'));
+        furniture=p.library.map((x,i)=>({id:x.id||`project_${i}_${Date.now()}`,name:x.name||'قطعة',w:+x.w||100,h:+x.h||60,src:x.src||null,category:x.category||'أخرى',color:x.color||'#bfa781',isCustom:x.isCustom!==false}));
         saveLibraryState();activeCategory='الكل';buildCategoryButtons();renderLibrary();
       }
       pxPerCm=p.pxPerCm||null;
@@ -2758,7 +2554,7 @@ async function buildBrandedSheet({paper='A4',orient='landscape',title='',mapTitl
   c.drawImage(plan, drawX, drawY, drawW, drawH);
   if(schedule){c.drawImage(schedule,Math.round((sheet.width-scheduleW)/2),Math.round(planTop+planAreaH+scheduleGap),scheduleW,scheduleH);}
   c.fillStyle='#555';
-  const companyLine=[brandInfo.companyName,brandInfo.address,brandInfo.phone,brandInfo.email].filter(Boolean).join('  •  ');
+  const companyLine=[brandInfo.companyName,brandInfo.address,brandInfo.email].filter(Boolean).join('  •  ');
   const footerY=sheet.height-margin+Math.round(footH*0.08);
   c.font=`${Math.round(footH*0.34)}px Tahoma,Arial,sans-serif`;
   if(companyLine){c.textAlign='center';c.fillText(companyLine,sheet.width/2,footerY);}
@@ -2874,8 +2670,6 @@ document.getElementById('doExportBtn').onclick=async()=>{
 
 mainScroll.addEventListener('wheel',e=>{if(e.shiftKey){mainScroll.scrollLeft+=e.deltaY;e.preventDefault();}},{passive:false});
 window.addEventListener('resize',updatePanState);
-window.addEventListener('resize',()=>{positionFurnitureToolPalette();});
-mainScroll.addEventListener('scroll',()=>{if(furnitureToolPalette && furnitureToolPalette.classList.contains('show'))positionFurnitureToolPalette();},{passive:true});
 
 window.addEventListener('keydown',e=>{
   const tag=document.activeElement?.tagName;
@@ -2914,124 +2708,6 @@ window.addEventListener('keydown',e=>{
   if(changed){syncSelectedPanel();draw();commitHistory(before);}
 });
 
-
-/* TAATHEETHI_V36_TOOL_PALETTE */
-const furnitureToolPalette=document.getElementById('furnitureToolPalette');
-const furnitureToolFlyout=document.getElementById('furnitureToolFlyout');
-function closeFurnitureFlyout(){furnitureToolFlyout.classList.remove('show');furnitureToolFlyout.innerHTML='';}
-function setPaletteActive(name){
-  furnitureToolPalette.querySelectorAll('.psTool').forEach(b=>b.classList.toggle('active',b.dataset.tool===name));
-}
-function positionFurnitureToolPalette(){
-  if(!furnitureToolPalette||!mainScroll)return;
-  const r=mainScroll.getBoundingClientRect();
-  const coarse=window.matchMedia('(pointer:coarse)').matches;
-  const pad=coarse?10:12;
-  const left=Math.max(8,r.left+pad);
-  const top=Math.max(8,r.top+pad);
-  furnitureToolPalette.style.left=left+'px';
-  furnitureToolPalette.style.top=top+'px';
-  furnitureToolPalette.style.maxHeight=Math.max(120,r.height-pad*2)+'px';
-  furnitureToolFlyout.style.left=(left+(coarse?66:56))+'px';
-  furnitureToolFlyout.style.top=top+'px';
-  furnitureToolFlyout.style.maxHeight=Math.max(140,r.height-pad*2)+'px';
-  furnitureToolFlyout.style.overflowY='auto';
-}
-function syncFurnitureToolPalette(){
-  const ids=getSelectedIds(), it=current();
-  const show=!!(ids.length&&it&&!selectedMeasureId&&!selectedMapLabelId&&visibleFurniture());
-  furnitureToolPalette.classList.toggle('show',show);
-  furnitureToolPalette.style.display=show?'flex':'none';
-  if(!show){closeFurnitureFlyout();return;}
-  positionFurnitureToolPalette();
-  const list=selectedItems();
-  const lockBtn=furnitureToolPalette.querySelector('[data-tool="lock"]');
-  const eyeBtn=furnitureToolPalette.querySelector('[data-tool="visibility"]');
-  const dimBtn=furnitureToolPalette.querySelector('[data-tool="dimensions"]');
-  const labelBtn=furnitureToolPalette.querySelector('[data-tool="labels"]');
-  const snapBtn=furnitureToolPalette.querySelector('[data-tool="snap"]');
-  if(lockBtn)lockBtn.classList.toggle('active',list.length>0&&list.every(x=>x.locked));
-  if(eyeBtn)eyeBtn.classList.toggle('active',list.some(x=>x.hidden));
-  if(dimBtn)dimBtn.classList.toggle('active',!!document.getElementById('dimsToggle').checked);
-  if(labelBtn)labelBtn.classList.toggle('active',!!document.getElementById('labelsToggle').checked);
-  if(snapBtn)snapBtn.classList.toggle('active',!!document.getElementById('snapToggle').checked);
-  furnitureToolPalette.style.visibility='visible';
-  furnitureToolPalette.style.opacity='1';
-}
-function showSizeFlyout(){
-  const it=current();if(!it||getSelectedIds().length!==1){setStatus('اختر قطعة واحدة للتحجيم');return;}
-  furnitureToolFlyout.innerHTML='<h4>تحجيم القطعة</h4><div class="flyGrid"><label>العرض (سم)<input id="fpWidth" type="number" min="1" value="'+Math.round(it.w*10)/10+'"></label><label>العمق (سم)<input id="fpHeight" type="number" min="1" value="'+Math.round(it.h*10)/10+'"></label></div><div class="flyActions"><button id="fpApplySize" class="primary">تطبيق</button><button id="fpCloseSize">إغلاق</button></div><div class="flyNote">تبقى القياسات بالسنتيمتر وتُحفظ مع المشروع.</div>';
-  furnitureToolFlyout.classList.add('show');
-  document.getElementById('fpApplySize').onclick=()=>{const w=Math.max(1,+document.getElementById('fpWidth').value||1),h=Math.max(1,+document.getElementById('fpHeight').value||1);applyToSelection(x=>{x.w=w;x.h=h;},'تم تحديث حجم القطعة');closeFurnitureFlyout();};
-  document.getElementById('fpCloseSize').onclick=closeFurnitureFlyout;
-}
-function showRotateFlyout(){
-  const it=current();if(!it)return;
-  furnitureToolFlyout.innerHTML='<h4>تدوير</h4><label>الزاوية<input id="fpAngle" type="number" step="1" value="'+Math.round(it.rot||0)+'"></label><div class="flyActions"><button data-a="45">45°</button><button data-a="90">90°</button><button data-a="180">180°</button><button data-a="0">0°</button></div><div class="flyActions"><button id="fpApplyAngle" class="primary">تطبيق الزاوية</button><button id="fpCloseRotate">إغلاق</button></div>';
-  furnitureToolFlyout.classList.add('show');
-  furnitureToolFlyout.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{const a=+b.dataset.a;applyToSelection(x=>{x.rot=a;},'تم ضبط الدوران '+a+'°');closeFurnitureFlyout();});
-  document.getElementById('fpApplyAngle').onclick=()=>{const a=((+document.getElementById('fpAngle').value||0)%360+360)%360;applyToSelection(x=>{x.rot=a;},'تم ضبط الدوران '+a+'°');closeFurnitureFlyout();};
-  document.getElementById('fpCloseRotate').onclick=closeFurnitureFlyout;
-}
-function showColorFlyout(){
-  const it=current();if(!it||getSelectedIds().length!==1){setStatus('اختر قطعة واحدة لتغيير اللون');return;}
-  furnitureToolFlyout.innerHTML='<h4>لون القطعة</h4><label>اللون<input id="fpColor" type="color" value="'+(it.color||'#bfa781')+'"></label><label style="margin-top:8px;display:flex;flex-direction:row;align-items:center;gap:6px"><input id="fpTint" type="checkbox" '+(it.tintEnabled?'checked':'')+'> استبدال اللون الأساسي للصورة</label><div class="flyActions"><button id="fpApplyColor" class="primary">تطبيق</button><button id="fpCloseColor">إغلاق</button></div>';
-  furnitureToolFlyout.classList.add('show');
-  document.getElementById('fpApplyColor').onclick=()=>{const col=document.getElementById('fpColor').value,tint=document.getElementById('fpTint').checked;applyToSelection(x=>{x.color=col;x.tintEnabled=tint;},'تم تغيير لون القطعة');closeFurnitureFlyout();};
-  document.getElementById('fpCloseColor').onclick=closeFurnitureFlyout;
-}
-function reorderSelection(front){
-  if(furnitureGloballyLocked()){setStatus('الأثاث مقفل');return;}
-  const ids=new Set(getSelectedIds());if(!ids.size)return;
-  const before=cloneEditState(),sel=items.filter(x=>ids.has(x.id)),rest=items.filter(x=>!ids.has(x.id));
-  items=front?rest.concat(sel):sel.concat(rest);draw();commitHistory(before);setStatus(front?'تم إحضار المحدد للأمام':'تم إرسال المحدد للخلف');
-}
-furnitureToolPalette.addEventListener('click',e=>{
-  const b=e.target.closest('.psTool');if(!b)return;
-  const tool=b.dataset.tool;
-  if(tool!=='dimensions'&&tool!=='labels'&&tool!=='snap'&&tool!=='lock'&&tool!=='visibility')setPaletteActive(tool);
-  if(tool==='move'){closeFurnitureFlyout();mode='select';updateInteractionCursor();setStatus('أداة التحريك مفعّلة — اسحب القطعة على الخارطة');}
-  else if(tool==='resize')showSizeFlyout();
-  else if(tool==='rotate')showRotateFlyout();
-  else if(tool==='rotate90'){document.getElementById('rotate90').click();closeFurnitureFlyout();}
-  else if(tool==='flip'){applyToSelection(x=>{x.flipX=!x.flipX;},'تم عكس القطعة أفقيًا');}
-  else if(tool==='color')showColorFlyout();
-  else if(tool==='visibility'){applyToSelection(x=>{x.hidden=!x.hidden;},selectedItems().some(x=>x.hidden)?'تم إظهار القطعة':'تم إخفاء القطعة');syncFurnitureToolPalette();}
-  else if(tool==='dimensions'){const t=document.getElementById('dimsToggle');t.checked=!t.checked;t.dispatchEvent(new Event('change'));syncFurnitureToolPalette();}
-  else if(tool==='labels'){const t=document.getElementById('labelsToggle');t.checked=!t.checked;t.dispatchEvent(new Event('change'));syncFurnitureToolPalette();}
-  else if(tool==='snap'){const t=document.getElementById('snapToggle');t.checked=!t.checked;t.dispatchEvent(new Event('change'));syncFurnitureToolPalette();}
-  else if(tool==='lock'){document.getElementById('lockItemBtn').click();syncFurnitureToolPalette();}
-  else if(tool==='copy'){document.getElementById('dupBtn').click();}
-  else if(tool==='front')reorderSelection(true);
-  else if(tool==='back')reorderSelection(false);
-  else if(tool==='reset'){applyToSelection(x=>{const d=(typeof furniture!=='undefined'&&furniture.find)?(furniture.find(f=>f.src&&f.src===x.src)||furniture.find(f=>f.name===x.name)):null;if(d){x.w=d.w;x.h=d.h;if(d.color)x.color=d.color;}x.rot=0;x.flipX=false;x.flipY=false;x.hidden=false;x.tintEnabled=false;},'تمت إعادة القطعة لوضعها الأصلي');}
-  else if(tool==='delete'){document.getElementById('deleteBtn').click();}
-});
-document.addEventListener('pointerdown',e=>{if(!e.target.closest('#furnitureToolPalette')&&!e.target.closest('#furnitureToolFlyout'))closeFurnitureFlyout();});
-const _syncSelectedPanelV36=syncSelectedPanel;
-syncSelectedPanel=function(){_syncSelectedPanelV36();syncFurnitureToolPalette();};
-
-function enforceFurnitureToolPaletteVisibility(){
-  const ids=getSelectedIds();
-  const it=current();
-  const shouldShow=!!(ids.length&&it&&!selectedMeasureId&&!selectedMapLabelId&&visibleFurniture());
-  if(shouldShow){
-    furnitureToolPalette.classList.add('show');
-    furnitureToolPalette.style.setProperty('display','flex','important');
-    furnitureToolPalette.style.setProperty('visibility','visible','important');
-    furnitureToolPalette.style.setProperty('opacity','1','important');
-    furnitureToolPalette.style.pointerEvents='auto';
-    positionFurnitureToolPalette();
-  }else{
-    furnitureToolPalette.classList.remove('show');
-    furnitureToolPalette.style.setProperty('display','none','important');
-  }
-}
-['dimsToggle','labelsToggle','snapToggle','furnitureLayerToggle'].forEach(id=>document.getElementById(id)?.addEventListener('change',()=>{syncFurnitureToolPalette();enforceFurnitureToolPaletteVisibility();}));
-canvas.addEventListener('pointerup',()=>requestAnimationFrame(enforceFurnitureToolPaletteVisibility),true);
-canvas.addEventListener('click',()=>requestAnimationFrame(enforceFurnitureToolPaletteVisibility),true);
-setInterval(enforceFurnitureToolPaletteVisibility,350);
-
 buildArchitectureLibrary();
 updateScaleUI();
 updateStageSize();
@@ -3042,7 +2718,88 @@ updateHistoryButtons();
 syncQuickDisplayButtons();
 scheduleUsedFurnitureSync(true);
 draw();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=39').then(r=>r.update()).catch(()=>{}));}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
+</script>
+
+
+<script id="v36PhotoshopIcons">
+(()=>{
+  const S=(body)=>`<svg viewBox="0 0 24 24" aria-hidden="true">${body}</svg>`;
+  const I={
+    info:S('<circle cx="12" cy="12" r="9"/><path d="M12 10v7M12 7h.01"/>'),
+    filePlus:S('<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5M12 11v6M9 14h6"/>'),
+    folder:S('<path d="M3 7h7l2 2h9v10H3z"/><path d="M3 7V5h7l2 2"/>'),
+    save:S('<path d="M5 4h12l2 2v14H5z"/><path d="M8 4v6h8V4M8 20v-7h8v7"/>'),
+    image:S('<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="9" r="1.5"/><path d="m5 17 4-4 3 3 2-2 5 5"/>'),
+    print:S('<path d="M7 8V4h10v4M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v6H7z"/>'),
+    pdf:S('<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M8.5 16h1.5a1.5 1.5 0 1 0 0-3H8.5v5M13 18v-5h1.4a2.5 2.5 0 0 1 0 5H13M18 13h-2v5M16 15h1.7"/>'),
+    library:S('<path d="M5 8h14v11H5z"/><path d="M8 8V5h8v3M9 19v-5h6v5"/><path d="M7 11h10"/>'),
+    upload:S('<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 16V8M9 11l3-3 3 3"/>'),
+    target:S('<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>'),
+    ruler:S('<path d="m5 17 12-12 3 3-12 12z"/><path d="m9 13 2 2M12 10l2 2M15 7l2 2"/>'),
+    text:S('<path d="M5 5h14M12 5v14M8 19h8"/>'),
+    grid:S('<rect x="4" y="4" width="16" height="16"/><path d="M10 4v16M16 4v16M4 10h16M4 16h16"/>'),
+    dims:S('<path d="M5 7v10M19 7v10M5 12h14"/><path d="m8 9-3 3 3 3M16 9l3 3-3 3"/>'),
+    tag:S('<path d="M4 7v10h16V7z"/><path d="M8 11h8M8 14h5"/>'),
+    shadow:S('<rect x="5" y="5" width="11" height="11"/><path d="M8 8h11v11H8"/>'),
+    magnet:S('<path d="M7 4v8a5 5 0 0 0 10 0V4"/><path d="M7 8h4M13 8h4"/>'),
+    auto:S('<path d="M5 7v10M19 7v10M5 12h14"/><path d="m8 9-3 3 3 3M16 9l3 3-3 3"/><circle cx="12" cy="12" r="1.4"/>'),
+    select:S('<path d="M5 8V5h3M16 5h3v3M19 16v3h-3M8 19H5v-3"/><rect x="9" y="9" width="6" height="6"/>'),
+    lock:S('<rect x="6" y="10" width="12" height="10" rx="2"/><path d="M8.5 10V7.5a3.5 3.5 0 0 1 7 0V10"/>'),
+    panlock:S('<path d="M6 14V9a2 2 0 0 1 4 0v3M10 12V7a2 2 0 0 1 4 0v5M14 12V9a2 2 0 0 1 4 0v5"/><path d="M6 13 4.5 12a1.5 1.5 0 0 0-2 2.2l3.7 5A4.5 4.5 0 0 0 9.8 21H15a5 5 0 0 0 5-5v-2"/>'),
+    eye:S('<path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z"/><circle cx="12" cy="12" r="2.5"/>'),
+    arrows:S('<path d="M5 12h14M8 9l-3 3 3 3M16 9l3 3-3 3"/>'),
+    summary:S('<path d="M5 5h14v14H5z"/><path d="M8 9h8M8 12h5M8 15h7"/>'),
+    undo:S('<path d="M9 7 5 11l4 4"/><path d="M5 11h7a6 6 0 0 1 6 6"/>'),
+    redo:S('<path d="m15 7 4 4-4 4"/><path d="M19 11h-7a6 6 0 0 0-6 6"/>'),
+    selectAll:S('<rect x="7" y="7" width="10" height="10"/><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4"/>'),
+    clear:S('<path d="M5 7h14M9 7V4h6v3M8 7l1 13h6l1-13"/><path d="M11 11v5M13 11v5"/>'),
+    fit:S('<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/><rect x="8" y="8" width="8" height="8"/>'),
+    actual:S('<rect x="5" y="5" width="14" height="14"/><path d="M9 9v6M8 10l1-1M12 12h3"/>'),
+    rotate90:S('<path d="M6 15a7 7 0 1 0 2-7"/><path d="M5 5v5h5"/><rect x="12" y="12" width="6" height="6"/>'),
+    rotate45:S('<path d="M6 15a7 7 0 1 0 2-7"/><path d="M5 5v5h5"/><path d="m13 12 4 4-4 4-4-4z"/>'),
+    rotate180:S('<path d="M5 12a7 7 0 0 1 12-5"/><path d="m17 4 1 4-4-1"/><path d="M19 12a7 7 0 0 1-12 5"/><path d="m7 20-1-4 4 1"/>'),
+    reset:S('<path d="M6 8a7 7 0 1 1-1 7"/><path d="M6 4v4h4"/>'),
+    flip:S('<path d="M12 4v16"/><path d="m10 7-5 5 5 5M14 7l5 5-5 5"/>'),
+    copy:S('<rect x="8" y="8" width="11" height="11"/><rect x="5" y="5" width="11" height="11"/>'),
+    close:S('<path d="M6 6l12 12M18 6 6 18"/>'),
+    trash:S('<path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/>')
+  };
+  function iconize(el,icon,label,extra=''){
+    if(!el)return;el.classList.add('psIconTool');if(extra)el.classList.add(extra);el.title=label;el.setAttribute('aria-label',label);el.dataset.psLabel=label;el.innerHTML=I[icon]||I.info;
+  }
+  function mini(id,icon,label){const el=document.getElementById(id);if(!el)return;el.classList.add('psMiniIcon');el.title=label;el.setAttribute('aria-label',label);el.innerHTML=I[icon]||I.info;}
+  function bottom(id,icon,label){const el=document.getElementById(id);if(!el)return;el.classList.add('psBottomIcon');el.title=label;el.setAttribute('aria-label',label);el.innerHTML=I[icon]||I.info;}
+  function toggle(id,icon,label){const input=document.getElementById(id);if(!input)return;const el=input.closest('label');if(!el)return;el.classList.add('psIconToggle');el.title=label;el.setAttribute('aria-label',label);[...el.childNodes].forEach(n=>{if(n.nodeType===3)n.remove();});el.insertAdjacentHTML('beforeend',I[icon]||I.info);}
+
+  iconize(document.getElementById('infoBtn'),'info','معلوماتك');
+  iconize(document.getElementById('newProjectBtn'),'filePlus','مشروع جديد');
+  iconize(document.querySelector('label[for="loadInput"]'),'folder','فتح مشروع');
+  iconize(document.getElementById('saveBtn'),'save','حفظ المشروع');
+  iconize(document.getElementById('exportBtn'),'image','تصدير PNG');
+  iconize(document.getElementById('printBtn'),'print','طباعة A3 / A4');
+  iconize(document.getElementById('pdfBtn'),'pdf','حفظ PDF','psPdf');
+  iconize(document.getElementById('sidebarToggle'),'library','مكتبة الأثاث');
+  iconize(document.querySelector('label[for="fileInput"]'),'upload','رفع الخارطة');
+  iconize(document.getElementById('calibrateBtn'),'target','معايرة القياس');
+  iconize(document.getElementById('measureBtn'),'ruler','قياس مسافة');
+  iconize(document.getElementById('addMapLabelBtn'),'text','إضافة مسمى');
+
+  [
+    ['gridToggle','grid','الشبكة 50 سم'],['dimsToggle','dims','قياسات القطع'],['labelsToggle','tag','أسماء القطع'],
+    ['shadowToggle','shadow','التظليل'],['snapToggle','magnet','Snap'],['autoDimsToggle','auto','المسافات التلقائية'],
+    ['multiSelectToggle','select','التحديد المتعدد'],['furnitureLockToggle','lock','قفل الأثاث'],['measureLockToggle','lock','قفل القياسات'],
+    ['mapLabelLockToggle','lock','قفل المسميات'],['mapLockToggle','panlock','قفل سحب الخارطة'],['bgLayerToggle','eye','إظهار / إخفاء الخارطة'],
+    ['furnitureLayerToggle','eye','إظهار / إخفاء الأثاث'],['measureLayerToggle','ruler','إظهار / إخفاء القياسات'],
+    ['mapLabelLayerToggle','text','إظهار / إخفاء المسميات'],['measureArrowsToggle','arrows','إظهار / إخفاء أسهم القياس'],
+    ['furnitureSummaryToggle','summary','إظهار / إخفاء دليل الأثاث']
+  ].forEach(x=>toggle(...x));
+
+  mini('undoBtn','undo','تراجع');mini('redoBtn','redo','إعادة');mini('selectAllBtn','selectAll','تحديد كل الأثاث');
+  mini('clearMeasuresBtn','clear','مسح كل القياسات');mini('fitBtn','fit','ملاءمة للشاشة');mini('actualBtn','actual','عرض 100%');
+  bottom('rotate90','rotate90','دوران 90°');bottom('rotate45','rotate45','دوران 45°');bottom('rotate180','rotate180','دوران 180°');bottom('rotate360','reset','إعادة الدوران 0°');
+  bottom('flipDoorBtn','flip','عكس فتح الباب');bottom('dupBtn','copy','نسخ القطعة');bottom('deselectBtn','close','إلغاء التحديد');bottom('deleteBtn','trash','حذف القطعة');
+})();
 </script>
 
 </body>

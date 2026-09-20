@@ -1,4 +1,4 @@
-const CACHE_NAME = "furniture-planner-v39-toolbar-watchdog";
+const CACHE_NAME = "taatheethi-v36-photoshop-icons";
 const CRITICAL = ['./', './index.html'];
 
 self.addEventListener('install', event => {
