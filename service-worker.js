@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v39-unified-topbar-lefttoolbar";
+const CACHE_NAME = "taatheethi-v40-final-bars-openfix";
 const CRITICAL = ['./', './index.html'];
 
 self.addEventListener('install', event => {
