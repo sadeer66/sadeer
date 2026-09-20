@@ -337,6 +337,27 @@
   .floatingItemToolbar.itemHiddenState{border-color:#7c5e2d}
   .floatingItemToolbar.itemHiddenState .floatHideBtn{background:linear-gradient(180deg,#5f4a24,#392b16);border-color:#d1aa52;color:#fff6d5}
 
+  /* V38 layout cleanup */
+  header{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:64px!important;padding:8px 10px!important}
+  .headerBrand{min-width:auto!important;flex:0 0 auto}
+  .headerBrand h1{font-size:28px!important;margin:0 0 4px 0}
+  .status{font-size:12px!important;max-width:230px}
+  .toolbarStack{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-end!important;max-width:none!important;flex:1 1 auto;gap:8px!important}
+  .mainToolbar{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;align-items:center!important;justify-content:flex-end!important;gap:6px!important}
+  .workToolbar{display:none!important}
+  .mainToolbar::-webkit-scrollbar{height:8px}
+  .mainToolbar::-webkit-scrollbar-thumb{background:#334155;border-radius:99px}
+  .toolbarRow.mainToolbar{padding:6px 8px!important}
+  .mainToolbar .psIconTool{flex:0 0 42px!important}
+  .mapTopbar .group{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+  #selectedPanel .bottomBtn,#selectedPanel .psBottomIcon,#selectedPanel #lockItemBtn,#selectedPanel #flipDoorBtn,#selectedPanel #dupBtn,#selectedPanel #deleteBtn,#selectedPanel #deselectBtn,#selectedPanel #rotate90,#selectedPanel #rotate45,#selectedPanel #rotate180,#selectedPanel #rotate360{display:none!important}
+  #selectedPanel{gap:10px!important}
+  #selectedPanel .inlineField{margin-inline-start:0!important}
+  @media(max-width:1100px){
+    header{flex-wrap:wrap;align-items:flex-start!important}
+    .toolbarStack{width:100%;justify-content:flex-start!important}
+  }
+
 </style>
 </head>
 <body>
@@ -2366,9 +2387,9 @@ function updateFloatingItemToolbar(){
   const pts=itemCorners(it),xs=pts.map(p=>p.x*zoom),ys=pts.map(p=>p.y*zoom);
   const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
   const barW=floatingItemToolbar.offsetWidth||46,barH=floatingItemToolbar.offsetHeight||260,gap=10;
-  let left=maxX+gap;
   const stageW=stage.clientWidth||canvas.width*zoom,stageH=stage.clientHeight||canvas.height*zoom;
-  if(left+barW>stageW-6)left=minX-barW-gap;
+  let left=minX-barW-gap;
+  if(left<6)left=maxX+gap;
   left=Math.max(6,Math.min(left,stageW-barW-6));
   let top=minY;
   if(top+barH>stageH-6)top=Math.max(6,maxY-barH);
@@ -2857,7 +2878,11 @@ if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.se
     trash:S('<path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/>'),
     plusBox:S('<rect x="5" y="5" width="14" height="14" rx="2"/><path d="M12 8v8M8 12h8"/>'),
     minusBox:S('<rect x="5" y="5" width="14" height="14" rx="2"/><path d="M8 12h8"/>'),
-    palette:S('<path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 0-4h-1a2 2 0 0 1 0-4h3a4 4 0 0 0 0-8Z"/><circle cx="7.5" cy="10" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="14.5" cy="7.5" r="1"/>')
+    palette:S('<path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 0-4h-1a2 2 0 0 1 0-4h3a4 4 0 0 0 0-8Z"/><circle cx="7.5" cy="10" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="14.5" cy="7.5" r="1"/>'),
+    map:S('<path d="M4 6 9 4l6 2 5-2v14l-5 2-6-2-5 2Z"/><path d="M9 4v14M15 6v14"/>'),
+    sofa:S('<path d="M5 11a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4H5Z"/><path d="M7 9V8a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1"/><path d="M6 15v2M18 15v2"/>'),
+    gridNums:S('<rect x="4" y="4" width="16" height="16"/><path d="M10 4v16M16 4v16M4 10h16M4 16h16"/><path d="M7 8h.01M13 8h.01M7 14h.01"/>'),
+    measureText:S('<path d="M5 7v10M19 7v10M5 12h14"/><path d="m8 9-3 3 3 3M16 9l3 3-3 3"/><path d="M10 5h4"/>')
   };
   function iconize(el,icon,label,extra=''){
     if(!el)return;el.classList.add('psIconTool');if(extra)el.classList.add(extra);el.title=label;el.setAttribute('aria-label',label);el.dataset.psLabel=label;el.innerHTML=I[icon]||I.info;
@@ -2880,11 +2905,11 @@ if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.se
   iconize(document.getElementById('addMapLabelBtn'),'text','إضافة مسمى');
 
   [
-    ['gridToggle','grid','الشبكة 50 سم'],['dimsToggle','dims','قياسات القطع'],['labelsToggle','tag','أسماء القطع'],
+    ['gridToggle','gridNums','الشبكة 50 سم'],['dimsToggle','dims','قياسات القطع'],['labelsToggle','tag','أسماء القطع'],
     ['shadowToggle','shadow','التظليل'],['snapToggle','magnet','Snap'],['autoDimsToggle','auto','المسافات التلقائية'],
     ['multiSelectToggle','select','التحديد المتعدد'],['furnitureLockToggle','lock','قفل الأثاث'],['measureLockToggle','lock','قفل القياسات'],
-    ['mapLabelLockToggle','lock','قفل المسميات'],['mapLockToggle','panlock','قفل سحب الخارطة'],['bgLayerToggle','eye','إظهار / إخفاء الخارطة'],
-    ['furnitureLayerToggle','eye','إظهار / إخفاء الأثاث'],['measureLayerToggle','ruler','إظهار / إخفاء القياسات'],
+    ['mapLabelLockToggle','lock','قفل المسميات'],['mapLockToggle','panlock','قفل سحب الخارطة'],['bgLayerToggle','map','إظهار / إخفاء الخارطة'],
+    ['furnitureLayerToggle','sofa','إظهار / إخفاء الأثاث'],['measureLayerToggle','ruler','إظهار / إخفاء القياسات'],
     ['mapLabelLayerToggle','text','إظهار / إخفاء المسميات'],['measureArrowsToggle','arrows','إظهار / إخفاء أسهم القياس'],
     ['furnitureSummaryToggle','summary','إظهار / إخفاء دليل الأثاث']
   ].forEach(x=>toggle(...x));
@@ -2895,6 +2920,27 @@ if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.se
   bottom('flipDoorBtn','flip','عكس فتح الباب');bottom('dupBtn','copy','نسخ القطعة');bottom('deselectBtn','close','إلغاء التحديد');bottom('deleteBtn','trash','حذف القطعة');
   const f=(id,icon,label)=>{const el=document.getElementById(id);if(!el)return;el.title=label;el.setAttribute('aria-label',label);el.innerHTML=I[icon]||I.info;};
   f('floatHideBtn','eye','إظهار / إخفاء القطعة');f('floatScaleUpBtn','plusBox','تكبير القطعة');f('floatScaleDownBtn','minusBox','تصغير القطعة');f('floatColorBtn','palette','تلوين القطعة');f('floatRotateBtn','rotate90','تدوير 90°');f('floatDupBtn','copy','نسخ القطعة');f('floatLockBtn','lock','قفل / فتح القطعة');f('floatDeleteBtn','trash','حذف القطعة');
+  const main=document.querySelector('.mainToolbar');
+  const work=document.querySelector('.workToolbar');
+  if(main&&work){
+    const specs=[
+      ['#newProjectBtn'],
+      ['label[for="loadInput"]','#loadInput'],
+      ['#saveBtn'],
+      ['#pdfBtn'],
+      ['#exportBtn'],
+      ['#printBtn'],
+      ['label[for="fileInput"]','#fileInput'],
+      ['#calibrateBtn'],
+      ['#measureBtn'],
+      ['#addMapLabelBtn'],
+      ['#infoBtn']
+    ];
+    const frag=document.createDocumentFragment();
+    specs.forEach(group=>group.forEach(sel=>{const node=document.querySelector(sel);if(node)frag.appendChild(node);}));
+    main.innerHTML='';
+    main.appendChild(frag);
+  }
 })();
 </script>
 

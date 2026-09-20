@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v37-floating-icons-fix";
+const CACHE_NAME = "taatheethi-v38-toolbar-layout-fix";
 const CRITICAL = ['./', './index.html'];
 
 self.addEventListener('install', event => {
