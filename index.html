@@ -13,7 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <title>تأثيثي — iPad و iPhone</title>
-<meta name="taatheethi-version" content="45.1-flat-assets-fix">
+<meta name="taatheethi-version" content="45.2-library-path-migration">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -979,7 +979,17 @@ function loadSavedLibrary(){
     if(!raw)return cloneDefaultLibrary();
     const parsed=JSON.parse(raw);
     if(!Array.isArray(parsed)||!parsed.length)return cloneDefaultLibrary();
-    return parsed.map((x,i)=>({id:x.id||`saved_${i}_${Date.now()}`,name:x.name||'قطعة',w:+x.w||100,h:+x.h||60,src:x.src||x.topSrc||null,previewSrc:x.previewSrc||x.src||null,category:x.category||'أخرى',color:x.color||'#bfa781',colorable:x.colorable!==false,isCustom:x.isCustom!==false}));
+    return parsed.map((x,i)=>{
+      // ترقية القطع الأصلية المحفوظة من V45 القديمة إلى مسارات V45.2 الحالية.
+      // القطع التي أضافها المستخدم يدويًا تبقى كما هي.
+      if(x && x.isCustom===false){
+        const base=defaultFurniture.find(d=>d.name===x.name);
+        if(base){
+          return {...base,id:x.id||`base_${i}`,isCustom:false,color:x.color||base.color};
+        }
+      }
+      return {id:x.id||`saved_${i}_${Date.now()}`,name:x.name||'قطعة',w:+x.w||100,h:+x.h||60,src:x.src||x.topSrc||null,previewSrc:x.previewSrc||x.src||null,category:x.category||'أخرى',color:x.color||'#bfa781',colorable:x.colorable!==false,isCustom:x.isCustom!==false};
+    });
   }catch(e){return cloneDefaultLibrary();}
 }
 function saveLibraryState(){
