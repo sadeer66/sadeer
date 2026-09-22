@@ -1,0 +1,32 @@
+name: Patch Taatheethi V60 AutoCAD DXF
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/v60-autocad-dxf.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-v60:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Apply V60 AutoCAD DXF patch
+        run: python .github/scripts/apply_v60.py
+      - name: Commit V60
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html service-worker.js manifest.webmanifest
+          if git diff --cached --quiet; then
+            echo "No changes needed"
+          else
+            git commit -m "Taatheethi V60: import AutoCAD DXF plans"
+            git pull --rebase origin master
+            git push
+          fi
