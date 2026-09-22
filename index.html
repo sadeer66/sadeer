@@ -1836,9 +1836,9 @@ function snapDraggedPosition(it,x,y){
   const toggle=document.getElementById('snapToggle');
   if(!toggle||!toggle.checked||!pxPerCm)return {x:x,y:y};
   const box=itemAABBAt(it,x,y),threshold=Math.max(5,11/zoom);
-  let bestX={d:Infinity,v:x,guide:null},bestY={d:Infinity,v:y,guide:null};
-  const testX=(v,g)=>{const d=Math.abs(v-x);if(d<threshold&&d<bestX.d)bestX={d:d,v:v,guide:g};};
-  const testY=(v,g)=>{const d=Math.abs(v-y);if(d<threshold&&d<bestY.d)bestY={d:d,v:v,guide:g};};
+  let bestX={d:Infinity,score:Infinity,v:x,guide:null},bestY={d:Infinity,score:Infinity,v:y,guide:null};
+  const testX=(v,g,bonus=0)=>{const d=Math.abs(v-x),score=d-bonus;if(d<threshold&&score<bestX.score)bestX={d:d,score:score,v:v,guide:g};};
+  const testY=(v,g,bonus=0)=>{const d=Math.abs(v-y),score=d-bonus;if(d<threshold&&score<bestY.score)bestY={d:d,score:score,v:v,guide:g};};
   const grid=10*pxPerCm;
   if(grid>2){const gx=Math.round(x/grid)*grid,gy=Math.round(y/grid)*grid;testX(gx,{axis:'x',v:gx,type:'grid'});testY(gy,{axis:'y',v:gy,type:'grid'});}
   for(const o of items){
@@ -1852,15 +1852,15 @@ function snapDraggedPosition(it,x,y){
       const dx=s.b.x-s.a.x,dy=s.b.y-s.a.y,adx=Math.abs(dx),ady=Math.abs(dy);
       if(ady>1&&adx<=ady*orientTol){
         const wallX=(s.a.x+s.b.x)/2,minY=Math.min(s.a.y,s.b.y)-box.hy-threshold,maxY=Math.max(s.a.y,s.b.y)+box.hy+threshold;
-        if(y>=minY&&y<=maxY){testX(wallX-box.hx,{type:'dxf-wall',a:s.a,b:s.b});testX(wallX+box.hx,{type:'dxf-wall',a:s.a,b:s.b});}
+        if(y>=minY&&y<=maxY){testX(wallX-box.hx,{type:'dxf-wall',a:s.a,b:s.b},Math.min(5,threshold*.45));testX(wallX+box.hx,{type:'dxf-wall',a:s.a,b:s.b},Math.min(5,threshold*.45));}
       }else if(adx>1&&ady<=adx*orientTol){
         const wallY=(s.a.y+s.b.y)/2,minX=Math.min(s.a.x,s.b.x)-box.hx-threshold,maxX=Math.max(s.a.x,s.b.x)+box.hx+threshold;
-        if(x>=minX&&x<=maxX){testY(wallY-box.hy,{type:'dxf-wall',a:s.a,b:s.b});testY(wallY+box.hy,{type:'dxf-wall',a:s.a,b:s.b});}
+        if(x>=minX&&x<=maxX){testY(wallY-box.hy,{type:'dxf-wall',a:s.a,b:s.b},Math.min(5,threshold*.45));testY(wallY+box.hy,{type:'dxf-wall',a:s.a,b:s.b},Math.min(5,threshold*.45));}
       }
     }
     for(const q of dxfSnapKeyPoints){
-      if(Math.abs(q.y-y)<=box.hy+threshold){testX(q.x-box.hx,{type:'dxf-point',x:q.x,y:q.y,snapType:q.type});testX(q.x+box.hx,{type:'dxf-point',x:q.x,y:q.y,snapType:q.type});}
-      if(Math.abs(q.x-x)<=box.hx+threshold){testY(q.y-box.hy,{type:'dxf-point',x:q.x,y:q.y,snapType:q.type});testY(q.y+box.hy,{type:'dxf-point',x:q.x,y:q.y,snapType:q.type});}
+      if(Math.abs(q.y-y)<=box.hy+threshold){testX(q.x-box.hx,{type:'dxf-point',x:q.x,y:q.y,snapType:q.type},Math.min(4,threshold*.35));testX(q.x+box.hx,{type:'dxf-point',x:q.x,y:q.y,snapType:q.type},Math.min(4,threshold*.35));}
+      if(Math.abs(q.x-x)<=box.hx+threshold){testY(q.y-box.hy,{type:'dxf-point',x:q.x,y:q.y,snapType:q.type},Math.min(4,threshold*.35));testY(q.y+box.hy,{type:'dxf-point',x:q.x,y:q.y,snapType:q.type},Math.min(4,threshold*.35));}
     }
   }
   if(bestX.d<Infinity){x=bestX.v;snapGuides.push(bestX.guide);}
