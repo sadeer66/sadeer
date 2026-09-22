@@ -1,0 +1,59 @@
+name: Update Taatheethi Assistant Link
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  update-link:
+    if: github.actor == github.repository_owner && startsWith(github.event.issue.title, '[Taatheethi Assistant]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate and update assistant.json
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os, re, pathlib, urllib.parse
+          event=json.loads(pathlib.Path(os.environ['GITHUB_EVENT_PATH']).read_text(encoding='utf-8'))
+          body=event.get('issue',{}).get('body','') or ''
+          m=re.search(r'TAATHEETHI_ASSISTANT_URL\s*\n\s*(https://\S+)',body,re.I)
+          if not m:
+              raise SystemExit('No assistant URL found')
+          url=m.group(1).strip()
+          u=urllib.parse.urlparse(url)
+          host=(u.hostname or '').lower()
+          if u.scheme!='https' or not (host in {'youtube.com','www.youtube.com','youtu.be'} or host.endswith('.youtube.com')):
+              raise SystemExit('Only HTTPS YouTube links are allowed')
+          data={
+            'version':1,
+            'youtube_url':url,
+            'title':'شرح برنامج تأثيثي',
+            'updated_at': event.get('issue',{}).get('updated_at') or event.get('issue',{}).get('created_at')
+          }
+          pathlib.Path('assistant.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+
+      - name: Commit shared assistant link
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assistant.json
+          if git diff --cached --quiet; then
+            echo "No link change"
+          else
+            git commit -m "Update Taatheethi assistant YouTube link"
+            git push
+          fi
+
+      - name: Close request issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --comment "تم تحديث رابط المساعد المشترك بنجاح."
