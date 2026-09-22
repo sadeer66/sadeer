@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v60-autocad-dxf";
+const CACHE_NAME = "taatheethi-v61-dxf-vector-snap";
 
 self.addEventListener('install', event => {
   self.skipWaiting();
