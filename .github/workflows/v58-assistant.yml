@@ -27,6 +27,7 @@ jobs:
             echo "No changes needed"
           else
             git commit -m "Taatheethi V58: add shared assistant next to Info"
+            git pull --rebase origin master
             git push
           fi
-# desktop-safe-v58-1
+# desktop-safe-v58-2
