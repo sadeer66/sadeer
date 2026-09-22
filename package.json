@@ -1,0 +1,55 @@
+{
+  "name": "taatheethi-desktop",
+  "version": "1.0.57",
+  "description": "تأثيثي - مخطط توزيع الأثاث",
+  "main": "desktop/main.js",
+  "author": "سدير ياسين محمد",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dist:win": "electron-builder --win nsis --x64"
+  },
+  "devDependencies": {
+    "electron": "latest",
+    "electron-builder": "latest"
+  },
+  "build": {
+    "appId": "com.sadeer.taatheethi",
+    "productName": "تأثيثي",
+    "artifactName": "Taatheethi-Setup-V57-${arch}.exe",
+    "asar": true,
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "index.html",
+      "catalog_final.html",
+      "manifest.webmanifest",
+      "service-worker.js",
+      "v13-ipad-fix.js",
+      "assets/**/*",
+      "desktop/main.js"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/taatheethi.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "تأثيثي",
+      "runAfterFinish": true,
+      "installerIcon": "build/taatheethi.ico",
+      "uninstallerIcon": "build/taatheethi.ico",
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}
