@@ -85,16 +85,24 @@ function buildArchitectureLibrary(){
 '''
     c = c[:start] + new_arch + c[end:]
 
-    replace_one(
-        "const LIBRARY_STORAGE_KEY='furniturePlannerLibraryV47_FINAL_TOPONLY';",
-        "const LIBRARY_STORAGE_KEY='furniturePlannerLibraryV57_DOOR_WINDOW_ICONS';\nconst LEGACY_LIBRARY_STORAGE_KEYS=['furniturePlannerLibraryV55_IPAD_DINING_FIX','furniturePlannerLibraryV47_FINAL_TOPONLY'];",
-        'library storage key')
+    # Migrate whatever earlier library key is present (V47/V52/V54 variants) to V57.
+    import re
+    m = re.search(r"const LIBRARY_STORAGE_KEY='([^']+)';", c)
+    if not m:
+        raise SystemExit('library storage key: no anchor found')
+    previous_key = m.group(1)
+    key_block = (
+        "const LIBRARY_STORAGE_KEY='furniturePlannerLibraryV57_DOOR_WINDOW_ICONS';\n"
+        + "const LEGACY_LIBRARY_STORAGE_KEYS=['furniturePlannerLibraryV55_IPAD_DINING_FIX'," + repr(previous_key) + ",'furniturePlannerLibraryV47_FINAL_TOPONLY'];"
+    )
+    c = c[:m.start()] + key_block + c[m.end():]
 
-    clone_anchor = """function cloneDefaultLibrary(){
-  return defaultFurniture.map((x,i)=>({...x,id:`base_${i}`,isCustom:false}));
-}
-"""
-    helpers = clone_anchor + r'''function canonicalLibraryCategory(value){
+    # Replace the whole helper/load section by boundaries so older variants are supported.
+    helper_start = c.index('function cloneDefaultLibrary(){')
+    load_start = c.index('function loadSavedLibrary(){', helper_start)
+    save_start = c.index('function saveLibraryState(){', load_start)
+    clone_block = c[helper_start:load_start]
+    helpers = clone_block + r'''function canonicalLibraryCategory(value){
   const s=String(value||'').trim().replace(/\s+/g,' ');
   const aliases={
     'غرفة الطعام':'غرفة طعام','غرفه طعام':'غرفة طعام','غرفه الطعام':'غرفة طعام',
@@ -122,20 +130,7 @@ function repairDiningLibrary(list){
   list.forEach(x=>{x.category=canonicalLibraryCategory(x.category);});
   return list;
 }
-'''
-    replace_one(clone_anchor, helpers, 'dining helpers')
-
-    old_load = """function loadSavedLibrary(){
-  try{
-    const raw=localStorage.getItem(LIBRARY_STORAGE_KEY);
-    if(!raw)return cloneDefaultLibrary();
-    const parsed=JSON.parse(raw);
-    if(!Array.isArray(parsed)||!parsed.length)return cloneDefaultLibrary();
-    return parsed.map((x,i)=>({id:x.id||`saved_${i}_${Date.now()}`,name:x.name||'قطعة',w:+x.w||100,h:+x.h||60,src:x.src||null,category:x.category||'أخرى',color:x.color||'#bfa781',isCustom:x.isCustom!==false}));
-  }catch(e){return cloneDefaultLibrary();}
-}
-"""
-    new_load = """function loadSavedLibrary(){
+function loadSavedLibrary(){
   try{
     let parsed=null;
     for(const key of [LIBRARY_STORAGE_KEY,...LEGACY_LIBRARY_STORAGE_KEYS]){
@@ -150,8 +145,8 @@ function repairDiningLibrary(list){
     return repaired;
   }catch(e){return cloneDefaultLibrary();}
 }
-"""
-    replace_one(old_load, new_load, 'loadSavedLibrary')
+'''
+    c = c[:helper_start] + helpers + c[save_start:]
 
     replace_one(
         "const w=it.w*pxPerCm,h=(it.archType==='door'||it.archType==='doubleDoor'?Math.max(it.h,it.w):it.h)*pxPerCm,a=it.rot*Math.PI/180,c=Math.cos(a),s=Math.sin(a);",
