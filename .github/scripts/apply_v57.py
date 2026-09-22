@@ -153,11 +153,9 @@ function loadSavedLibrary(){
         "const w=it.w*pxPerCm,h=(['door','doubleDoor','slidingDoor'].includes(it.archType)?Math.max(it.h,it.w):it.h)*pxPerCm,a=it.rot*Math.PI/180,c=Math.cos(a),s=Math.sin(a);",
         'door geometry')
 
-    old_window = """function drawWindow(it,w,h){
-  const u=1/zoom,th=Math.max(h,7*u);ctx.save();ctx.strokeStyle='#111827';ctx.lineWidth=1.4*u;ctx.fillStyle='rgba(186,230,253,.55)';ctx.fillRect(-w/2,-th/2,w,th);ctx.strokeRect(-w/2,-th/2,w,th);
-  ctx.beginPath();ctx.moveTo(-w/2,0);ctx.lineTo(w/2,0);ctx.stroke();ctx.beginPath();ctx.moveTo(-w*.32,-th/2);ctx.lineTo(-w*.32,th/2);ctx.moveTo(w*.32,-th/2);ctx.lineTo(w*.32,th/2);ctx.stroke();ctx.restore();
-}
-"""
+    # Replace window drawing section by function boundaries; older builds differ slightly here.
+    win_start = c.index('function drawWindow(it,w,h){')
+    opening_start = c.index('function drawOpening(it,w,h){', win_start)
     new_window = """function drawSlidingDoor(it,w,h){
   const u=1/zoom,th=Math.max(8*u,Math.min(14*u,h||10*u));ctx.save();ctx.strokeStyle='#111827';ctx.lineWidth=1.5*u;ctx.lineCap='round';
   ctx.beginPath();ctx.moveTo(-w/2,0);ctx.lineTo(w/2,0);ctx.stroke();ctx.strokeRect(-w/2,-th/2,w*0.52,th);ctx.strokeRect(-w*0.02,-th/2,w*0.52,th);
@@ -174,22 +172,29 @@ function drawFixedWindow(it,w,h){
   const u=1/zoom,th=Math.max(h,7*u);ctx.save();ctx.strokeStyle='#111827';ctx.lineWidth=1.3*u;ctx.fillStyle='rgba(191,229,255,.72)';ctx.fillRect(-w/2,-th/2,w,th);ctx.strokeRect(-w/2,-th/2,w,th);ctx.restore();
 }
 """
-    replace_one(old_window, new_window, 'window drawing')
+    c = c[:win_start] + new_window + c[opening_start:]
 
-    replace_one(
-        "if(it.archType==='door')drawDoor(it,w,h); else if(it.archType==='doubleDoor')drawDoubleDoor(it,w,h); else if(it.archType==='window')drawWindow(it,w,h); else if(it.archType==='opening')drawOpening(it,w,h); else if(it.src){ drawSprite(it,w,h); } else switch(it.type){",
-        "if(it.archType==='door')drawDoor(it,w,h); else if(it.archType==='doubleDoor')drawDoubleDoor(it,w,h); else if(it.archType==='slidingDoor')drawSlidingDoor(it,w,h); else if(it.archType==='window')drawWindow(it,w,h); else if(it.archType==='slidingWindow')drawSlidingWindow(it,w,h); else if(it.archType==='fixedWindow')drawFixedWindow(it,w,h); else if(it.archType==='opening')drawOpening(it,w,h); else if(it.src){ drawSprite(it,w,h); } else switch(it.type){",
-        'draw dispatcher')
+    # Replace architecture dispatcher by its stable start/end markers.
+    dispatch_start = c.index("if(it.archType==='door')drawDoor(it,w,h);")
+    dispatch_end = c.index("else switch(it.type){", dispatch_start) + len("else switch(it.type){")
+    new_dispatch = "if(it.archType==='door')drawDoor(it,w,h); else if(it.archType==='doubleDoor')drawDoubleDoor(it,w,h); else if(it.archType==='slidingDoor')drawSlidingDoor(it,w,h); else if(it.archType==='window')drawWindow(it,w,h); else if(it.archType==='slidingWindow')drawSlidingWindow(it,w,h); else if(it.archType==='fixedWindow')drawFixedWindow(it,w,h); else if(it.archType==='opening')drawOpening(it,w,h); else if(it.src){ drawSprite(it,w,h); } else switch(it.type){"
+    c = c[:dispatch_start] + new_dispatch + c[dispatch_end:]
 
+    # Door-like selection box/label height (replace all legacy forms if present).
     c = c.replace("(it.archType==='door'||it.archType==='doubleDoor')?w:h", "(['door','doubleDoor','slidingDoor'].includes(it.archType))?w:h")
-    replace_one(
-        "(!multi&&it&&(it.archType==='door'||it.archType==='doubleDoor'))?'':'none'",
-        "(!multi&&it&&(['door','doubleDoor'].includes(it.archType)))?'':'none'",
-        'flip door visibility')
-    replace_one(
-        "if(it.archType==='door'||it.archType==='doubleDoor')it.doorSwing=(it.doorSwing||1)*-1;",
-        "if(['door','doubleDoor'].includes(it.archType))it.doorSwing=(it.doorSwing||1)*-1;",
-        'flip door action')
+
+    # Inspector flip button: only hinged doors can be flipped.
+    lines = c.splitlines()
+    for i,line in enumerate(lines):
+        if 'flipDoorBtn.style.display=' in line:
+            indent=line[:len(line)-len(line.lstrip())]
+            lines[i]=indent+"flipDoorBtn.style.display=(!multi&&it&&(['door','doubleDoor'].includes(it.archType)))?'':'none';"
+        if line.lstrip().startswith('flipDoorBtn.onclick='):
+            indent=line[:len(line)-len(line.lstrip())]
+            lines[i]=indent+"flipDoorBtn.onclick=()=>applyToSelection(it=>{if(['door','doubleDoor'].includes(it.archType))it.doorSwing=(it.doorSwing||1)*-1;},'تم عكس اتجاه فتح الباب');"
+    c='\n'.join(lines)
+    if not c.endswith('\n'):
+        c += '\n'
 
     required = [
         'furniturePlannerLibraryV57_DOOR_WINDOW_ICONS',
