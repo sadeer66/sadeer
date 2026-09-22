@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v54-restored-display-locks";
+const CACHE_NAME = "taatheethi-v57-door-window-icons";
 
 self.addEventListener('install', event => {
   self.skipWaiting();
