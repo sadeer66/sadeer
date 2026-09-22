@@ -34,10 +34,11 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
-      ],
-      "icon": "build/taatheethi.ico"
+      ]
     },
     "nsis": {
       "oneClick": false,
@@ -47,8 +48,6 @@
       "createStartMenuShortcut": true,
       "shortcutName": "تأثيثي",
       "runAfterFinish": true,
-      "installerIcon": "build/taatheethi.ico",
-      "uninstallerIcon": "build/taatheethi.ico",
       "deleteAppDataOnUninstall": false
     }
   }
