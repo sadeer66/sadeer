@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="مخطط الأثاث" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-<title>تأثيثي V61 — DXF Vector Snap</title>
+<title>تأثيثي V62 — DXF Unit Confirm</title>
 <meta name="taatheethi-version" content="44-layout-reset">
 <style>
   :root{
@@ -408,6 +408,18 @@ main{position:relative!important}
 .targetCursor.dxfSnapMidpoint .dot{background:#f59e0b!important}
 .targetCursor.dxfSnapNearest .dot{background:#0ea5e9!important}
 @media (hover:none),(pointer:coarse){.targetCursor .dxfSnapTag{font-size:12px;padding:5px 8px}}
+</style>
+
+<style id="v62DxfUnitStyle">
+/* V62 DXF Unit Confirm */
+.dxfUnitCard{width:min(470px,calc(100vw - 28px))}
+.dxfDetectedBox{background:#0f1b2d;border:1px solid #36506d;border-radius:11px;padding:10px 12px;margin:10px 0;color:#dbeafe;font-size:13px;line-height:1.7}
+.dxfUnitGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:10px}
+.dxfUnitChoice{position:relative;display:flex;align-items:center;justify-content:center;gap:7px;background:#10203d;border:1px solid #37506e;border-radius:11px;padding:11px 8px;cursor:pointer;font-weight:700;color:#e2e8f0}
+.dxfUnitChoice input{accent-color:#38bdf8}
+.dxfUnitChoice:has(input:checked){border-color:#38bdf8;background:#0c3450;box-shadow:0 0 0 1px rgba(56,189,248,.25) inset}
+.dxfUnitExample{font-size:11px;color:#94a3b8;line-height:1.7;margin-top:9px}
+@media(max-width:540px){.dxfUnitGrid{grid-template-columns:1fr 1fr}.dxfUnitChoice{min-height:50px}}
 </style>
 </head>
 <body>
@@ -1254,7 +1266,7 @@ function updateScaleUI(){
   if(pxPerCm){
     scaleBadge.textContent=dxfModel?'DXF حقيقي':'معاير';
     scaleBadge.classList.remove('off');
-    scaleText.textContent=dxfModel?('DXF '+(dxfModel.unitLabel||'')+' — 1 متر = '+(pxPerCm*100).toFixed(1)+' بكسل'):('1 متر = '+(pxPerCm*100).toFixed(1)+' بكسل');
+    scaleText.textContent=dxfModel?('DXF — الوحدة '+(dxfModel.unitLabel||'')+' — 1 متر = '+(pxPerCm*100).toFixed(1)+' بكسل'):('1 متر = '+(pxPerCm*100).toFixed(1)+' بكسل');
   }else{
     scaleBadge.textContent='غير معاير';
     scaleBadge.classList.add('off');
@@ -1441,22 +1453,60 @@ function dxfInsUnits(pairs){
   }
   return 0;
 }
+
 function dxfUnitInfo(code){
   const common={
-    1:{cm:2.54,label:'إنش'},2:{cm:30.48,label:'قدم'},4:{cm:.1,label:'ملم'},5:{cm:1,label:'سم'},6:{cm:100,label:'متر'},
-    10:{cm:91.44,label:'ياردة'},14:{cm:10,label:'ديسيمتر'}
+    1:{cm:2.54,label:'إنش',key:'in'},2:{cm:30.48,label:'قدم',key:'ft'},4:{cm:.1,label:'ملم',key:'mm'},5:{cm:1,label:'سم',key:'cm'},6:{cm:100,label:'متر',key:'m'},
+    10:{cm:91.44,label:'ياردة',key:'yd'},14:{cm:10,label:'ديسيمتر',key:'dm'}
   };
   return common[code]||null;
 }
+function dxfManualUnitInfo(key){
+  const map={mm:{cm:.1,label:'ملم',key:'mm'},cm:{cm:1,label:'سم',key:'cm'},m:{cm:100,label:'متر',key:'m'},in:{cm:2.54,label:'إنش',key:'in'}};
+  return map[key]||map.mm;
+}
+function ensureDxfUnitModal(){
+  let modal=document.getElementById('dxfUnitModal');if(modal)return modal;
+  modal=document.createElement('div');modal.id='dxfUnitModal';modal.className='modalOverlay';
+  modal.innerHTML='<div class="modalCard dxfUnitCard" dir="rtl">'+
+    '<h3>وحدة رسم AutoCAD</h3>'+
+    '<p>اختر ماذا تعني <b>وحدة واحدة</b> في هذا الرسم. لا نعتمد وحدة DXF تلقائيًا حتى لا تتكرر مشكلة اختلاف القياس.</p>'+
+    '<div id="dxfDetectedUnit" class="dxfDetectedBox"></div>'+
+    '<div class="dxfUnitGrid">'+
+      '<label class="dxfUnitChoice"><input type="radio" name="dxfUnitChoice" value="m"> متر (m)</label>'+
+      '<label class="dxfUnitChoice"><input type="radio" name="dxfUnitChoice" value="cm"> سنتيمتر (cm)</label>'+
+      '<label class="dxfUnitChoice"><input type="radio" name="dxfUnitChoice" value="mm"> مليمتر (mm)</label>'+
+      '<label class="dxfUnitChoice"><input type="radio" name="dxfUnitChoice" value="in"> إنش (inch)</label>'+
+    '</div>'+
+    '<div class="dxfUnitExample">مثال: إذا كان AutoCAD يعرض طول الجدار <b>3.0000</b> وتقصد به ثلاثة أمتار، اختر <b>متر (m)</b>.</div>'+
+    '<div class="modalActions"><button id="cancelDxfUnitBtn" type="button">إلغاء</button><button id="applyDxfUnitBtn" type="button">اعتماد وفتح المخطط</button></div>'+
+  '</div>';
+  document.body.appendChild(modal);return modal;
+}
 function askDxfUnitInfo(code){
-  const known=dxfUnitInfo(code);if(known)return known;
-  const answer=prompt('ملف DXF لا يحدد وحدة رسم مدعومة. اكتب وحدة الرسم: mm أو cm أو m','mm');
-  if(answer===null)return null;
-  const s=String(answer).trim().toLowerCase();
-  if(['m','meter','meters','م','متر'].includes(s))return {cm:100,label:'متر (اختيار يدوي)'};
-  if(['cm','centimeter','centimeters','سم'].includes(s))return {cm:1,label:'سم (اختيار يدوي)'};
-  if(['in','inch','inches'].includes(s))return {cm:2.54,label:'إنش (اختيار يدوي)'};
-  return {cm:.1,label:'ملم (اختيار يدوي)'};
+  return new Promise(resolve=>{
+    const modal=ensureDxfUnitModal(),detected=dxfUnitInfo(code);
+    const detectedBox=modal.querySelector('#dxfDetectedUnit');
+    detectedBox.innerHTML=detected
+      ?('الوحدة المكتشفة داخل ملف DXF: <b>'+detected.label+'</b> <span style="color:#94a3b8">($INSUNITS = '+code+')</span><br><span style="color:#fbbf24">يمكنك تغييرها إذا كان الرسم فعليًا بوحدة أخرى.</span>')
+      :('ملف DXF لا يحتوي وحدة مدعومة بوضوح <span style="color:#94a3b8">($INSUNITS = '+(code||0)+')</span>.<br><span style="color:#fbbf24">اختر الوحدة الصحيحة حسب طريقة رسم المخطط في AutoCAD.</span>');
+    const supported=['m','cm','mm','in'];
+    const defaultKey=detected&&supported.includes(detected.key)?detected.key:'mm';
+    for(const r of modal.querySelectorAll('input[name="dxfUnitChoice"]'))r.checked=r.value===defaultKey;
+    const finish=value=>{
+      modal.style.display='none';
+      modal.querySelector('#applyDxfUnitBtn').onclick=null;modal.querySelector('#cancelDxfUnitBtn').onclick=null;modal.onclick=null;
+      resolve(value);
+    };
+    modal.querySelector('#applyDxfUnitBtn').onclick=()=>{
+      const key=modal.querySelector('input[name="dxfUnitChoice"]:checked')?.value||defaultKey;
+      const unit={...dxfManualUnitInfo(key),manual:true,detectedCode:code||0,detectedLabel:detected?.label||'غير محددة'};
+      finish(unit);
+    };
+    modal.querySelector('#cancelDxfUnitBtn').onclick=()=>finish(null);
+    modal.onclick=e=>{if(e.target===modal)finish(null);};
+    modal.style.display='flex';
+  });
 }
 function parseAsciiDxf(text){
   if(/^AutoCAD Binary DXF/i.test(String(text||'').trimStart()))throw new Error('BINARY_DXF');
@@ -1524,7 +1574,7 @@ function buildDxfVectorModel(parsed,unit,fileName){
   const scale=Math.min((maxW-margin*2)/b.w,(maxH-margin*2)/b.h);
   if(!Number.isFinite(scale)||scale<=0)throw new Error('BAD_SCALE');
   return {
-    version:2,fileName:fileName||'',insUnits:parsed.insUnits||0,unitCm:unit.cm,unitLabel:unit.label,
+    version:3,fileName:fileName||'',insUnits:parsed.insUnits||0,unitCm:unit.cm,unitLabel:unit.label,unitKey:unit.key||'',unitManual:unit.manual!==false,detectedUnitLabel:unit.detectedLabel||'',
     bounds:b,scale:scale,margin:margin,
     width:Math.max(320,Math.ceil(b.w*scale+margin*2)),
     height:Math.max(240,Math.ceil(b.h*scale+margin*2)),
@@ -1645,14 +1695,14 @@ function loadDxfVectorModel(model){
   const snapToggle=document.getElementById('snapToggle');if(snapToggle)snapToggle.checked=true;
   draw();fitToViewport();
   if(dxfModel.fileName&&!projectMeta.mapTitle)projectMeta.mapTitle=dxfModel.fileName.replace(/\.dxf$/i,'');
-  setStatus('DXF متجه حقيقي — '+dxfModel.entities.length+' عنصر — '+dxfModel.unitLabel+' — المقياس تلقائي والسناب فعال');
+  setStatus('DXF متجه حقيقي — '+dxfModel.entities.length+' عنصر — الوحدة المعتمدة: '+dxfModel.unitLabel+' — المقياس والسناب جاهزان');
 }
 document.getElementById('dxfInput').onchange=async e=>{
   const input=e.currentTarget,f=input.files&&input.files[0];if(!f)return;
   input.disabled=true;setStatus('جاري قراءة مخطط AutoCAD DXF كمتجهات حقيقية…');
   await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));
   try{
-    const text=await f.text(),parsed=parseAsciiDxf(text),unit=askDxfUnitInfo(parsed.insUnits);if(!unit){setStatus('تم إلغاء استيراد DXF');return;}
+    const text=await f.text(),parsed=parseAsciiDxf(text),unit=await askDxfUnitInfo(parsed.insUnits);if(!unit){setStatus('تم إلغاء استيراد DXF');return;}
     const model=buildDxfVectorModel(parsed,unit,f.name||'');loadDxfVectorModel(model);
   }catch(err){
     console.error(err);
@@ -2670,7 +2720,7 @@ document.getElementById('addMapLabelBtn').onclick=()=>{
 
 document.getElementById('calibrateBtn').onclick=()=>{
   if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}
-  if(dxfModel){alert('مخطط DXF يحمل مقياسه الحقيقي تلقائيًا ولا يحتاج معايرة يدوية. استخدم أداة القياس مباشرة.');setStatus('DXF: المقياس الحقيقي جاهز والسناب فعال');return;}
+  if(dxfModel){alert('مخطط DXF يستخدم الوحدة التي اعتمدتها عند الفتح ('+(dxfModel.unitLabel||'')+'). إذا كانت القياسات غير صحيحة، أعد فتح ملف DXF واختر الوحدة الصحيحة.');setStatus('DXF: الوحدة المعتمدة '+(dxfModel.unitLabel||'')+' — السناب فعال');return;}
   selectedMeasureId=null;selectedMapLabelId=null;clearFurnitureSelection();pendingFurnitureDef=null;syncSelectedPanel();mode='calibrate';points=[];updateInteractionCursor();setStatus(isTouchDevice()?'المعايرة: أمسك مقبض العصا، حرّك رأسها للنقطة المطلوبة ثم ارفع إصبعك لتسجيلها':'المعايرة: حرّك علامة القنّاص وحدد النقطة الأولى ثم الثانية بدقة');draw();
 };
 document.getElementById('measureBtn').onclick=()=>{
@@ -3464,6 +3514,6 @@ draw();
 </script>
 
 <!-- V60 AutoCAD DXF -->
-<!-- V61 DXF Vector Snap -->
+<!-- V62 DXF Unit Confirm -->
 </body>
 </html>
