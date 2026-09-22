@@ -2714,6 +2714,14 @@ document.getElementById('doPrintBtn').onclick=async()=>{
   }catch(err){page.close();alert('تعذر تجهيز صفحة الطباعة.');console.error(err);}
 };
 
+
+function openExportDialog(){
+  pngProjectName.value=projectMeta.name||'مشروع جديد';
+  pngMapTitle.value=projectMeta.mapTitle||'';
+  pngClient.value=projectMeta.client||'';
+  pngLocation.value=projectMeta.location||'';
+  exportModal.style.display='flex';
+}
 document.getElementById('exportBtn').onclick=openExportDialog;
 document.getElementById('cancelExportBtn').onclick=()=>exportModal.style.display='none';
 document.getElementById('doExportBtn').onclick=async()=>{
@@ -2823,6 +2831,9 @@ draw();
     palette:svg('<path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 0-4h-1a2 2 0 0 1 0-4h3a4 4 0 0 0 0-8Z"/><circle cx="7.5" cy="10" r="1"/><circle cx="10" cy="7.5" r="1"/><circle cx="14.5" cy="7.5" r="1"/>'),
     eye:svg('<path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z"/><circle cx="12" cy="12" r="2.5"/>'),
     dims:svg('<path d="M5 7v10M19 7v10M5 12h14"/><path d="m8 9-3 3 3 3M16 9l3 3-3 3"/>'),
+    measureLine:svg('<path d="M4 12h16"/><path d="m7 9-3 3 3 3M17 9l3 3-3 3"/><circle cx="12" cy="12" r="1.4"/>'),
+    chair:svg('<path d="M7 12h10a2 2 0 0 1 2 2v3H5v-3a2 2 0 0 1 2-2Z"/><path d="M7 12V8a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v4M7 17v3M17 17v3"/>'),
+    map:svg('<path d="m4 6 5-2 6 2 5-2v14l-5 2-6-2-5 2Z"/><path d="M9 4v14M15 6v14"/>'),
     tag:svg('<path d="M4 7v10h16V7z"/><path d="M8 11h8M8 14h5"/>'),
     magnet:svg('<path d="M7 4v8a5 5 0 0 0 10 0V4"/><path d="M7 8h4M13 8h4"/>'),
     auto:svg('<path d="M5 7v10M19 7v10M5 12h14"/><path d="m8 9-3 3 3 3M16 9l3 3-3 3"/><circle cx="12" cy="12" r="1.4"/>'),
@@ -2862,6 +2873,17 @@ draw();
       button('v44Calibrate','target','معايرة القياس',()=>click('calibrateBtn'),'','معايرة'),
       button('v44Measure','ruler','قياس مسافة',()=>click('measureBtn'),'','قياس'),
       button('v44Label','text','إضافة مسمى',()=>click('addMapLabelBtn'),'','مسمى')
+    ],
+    [
+      button('v54MeasureLine','measureLine','إخفاء / إظهار خط القياس مع إبقاء الرقم',()=>toggle('measureArrowsToggle'),'','خط القياس'),
+      button('v54Measures','dims','إخفاء / إظهار جميع القياسات',()=>toggle('measureLayerToggle'),'','القياسات'),
+      button('v54Labels','tag','إخفاء / إظهار المسميات',()=>toggle('mapLabelLayerToggle'),'','المسميات'),
+      button('v54Map','map','إخفاء / إظهار الخارطة',()=>toggle('bgLayerToggle'),'','الخارطة'),
+      button('v54Furniture','chair','إخفاء / إظهار الأثاث',()=>toggle('furnitureLayerToggle'),'','الأثاث')
+    ],
+    [
+      button('v54LockLabels','lock','قفل / فتح المسميات',()=>toggle('mapLabelLockToggle'),'','قفل مسميات'),
+      button('v54LockMeasures','lock','قفل / فتح القياسات',()=>toggle('measureLockToggle'),'','قفل قياسات')
     ],
     [
       button('v44Grid','grid','الشبكة',()=>toggle('gridToggle'),'secondaryTop','شبكة'),
@@ -2934,15 +2956,29 @@ draw();
   if(originalDrawItem){window.drawItem=function(it){if(it?.uiHidden&&!isItemSelected(it.id))return;if(it?.uiHidden){ctx.save();ctx.globalAlpha=.16;originalDrawItem(it);ctx.restore();}else originalDrawItem(it);};}
   function toggleSelectedVisibility(){const list=typeof selectedItems==='function'?selectedItems():[];if(list.length){const hide=list.some(it=>!it.uiHidden);list.forEach(it=>it.uiHidden=hide);draw();setStatus?.(hide?'تم إخفاء المحدد':'تم إظهار المحدد');}else{let changed=false;items.forEach(it=>{if(it.uiHidden){it.uiHidden=false;changed=true;}});if(changed){draw();setStatus?.('تم إظهار القطع المخفية');}}syncStates();}
 
-  const checkMap={v44Grid:'gridToggle',lMulti:'multiSelectToggle',lDims:'dimsToggle',lNames:'labelsToggle',lSnap:'snapToggle',lAuto:'autoDimsToggle',lShadow:'shadowToggle',lSummary:'furnitureSummaryToggle'};
+  const checkMap={
+    v44Grid:'gridToggle',
+    v54MeasureLine:'measureArrowsToggle',v54Measures:'measureLayerToggle',v54Labels:'mapLabelLayerToggle',v54Map:'bgLayerToggle',v54Furniture:'furnitureLayerToggle',
+    v54LockLabels:'mapLabelLockToggle',v54LockMeasures:'measureLockToggle',
+    lMulti:'multiSelectToggle',lDims:'dimsToggle',lNames:'labelsToggle',lSnap:'snapToggle',lAuto:'autoDimsToggle',lShadow:'shadowToggle',lSummary:'furnitureSummaryToggle'
+  };
   function syncStates(){
     Object.entries(checkMap).forEach(([bid,cid])=>{const b=document.getElementById(bid),c=document.getElementById(cid);if(b&&c)b.classList.toggle('active',!!c.checked);});
+    const setToolLabel=(id,text)=>{const b=document.getElementById(id),sp=b?.querySelector('.iconLabel');if(sp){sp.textContent=text;sp.classList.toggle('short',String(text).length>7);}};
+    const stateLabel=(cid,onText,offText)=>document.getElementById(cid)?.checked?onText:offText;
+    setToolLabel('v54MeasureLine',stateLabel('measureArrowsToggle','إخفاء خط','إظهار خط'));
+    setToolLabel('v54Measures',stateLabel('measureLayerToggle','إخفاء قياسات','إظهار قياسات'));
+    setToolLabel('v54Labels',stateLabel('mapLabelLayerToggle','إخفاء مسميات','إظهار مسميات'));
+    setToolLabel('v54Map',stateLabel('bgLayerToggle','إخفاء خارطة','إظهار خارطة'));
+    setToolLabel('v54Furniture',stateLabel('furnitureLayerToggle','إخفاء أثاث','إظهار أثاث'));
+    setToolLabel('v54LockLabels',stateLabel('mapLabelLockToggle','فتح مسميات','قفل مسميات'));
+    setToolLabel('v54LockMeasures',stateLabel('measureLockToggle','فتح قياسات','قفل قياسات'));
     const has=typeof getSelectedIds==='function'&&getSelectedIds().length>0;
     ['lPlus','lMinus','lRot90','lRot45','lReset','lColor','lEye','lLock','lCopy','lDeselect','lDelete'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=!has;});
     const it=typeof current==='function'?current():null;const c=document.getElementById('lColor');if(c)c.style.setProperty('--tool-color',it?.color||'#bfa781');
     const u=document.getElementById('v44Undo'),r=document.getElementById('v44Redo'),uo=document.getElementById('undoBtn'),ro=document.getElementById('redoBtn');if(u&&uo)u.disabled=uo.disabled;if(r&&ro)r.disabled=ro.disabled;
   }
-  ['gridToggle','multiSelectToggle','dimsToggle','labelsToggle','snapToggle','autoDimsToggle','shadowToggle','furnitureSummaryToggle'].forEach(id=>document.getElementById(id)?.addEventListener('change',syncStates));
+  ['gridToggle','measureArrowsToggle','measureLayerToggle','mapLabelLayerToggle','bgLayerToggle','furnitureLayerToggle','mapLabelLockToggle','measureLockToggle','multiSelectToggle','dimsToggle','labelsToggle','snapToggle','autoDimsToggle','shadowToggle','furnitureSummaryToggle'].forEach(id=>document.getElementById(id)?.addEventListener('change',syncStates));
   document.getElementById('canvas')?.addEventListener('pointerup',()=>requestAnimationFrame(syncStates));
   document.addEventListener('keyup',()=>requestAnimationFrame(syncStates));
   window.addEventListener('resize',syncStates);
