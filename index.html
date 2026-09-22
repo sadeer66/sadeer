@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="مخطط الأثاث" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-<title>تأثيثي V60 — AutoCAD DXF</title>
+<title>تأثيثي V61 — DXF Vector Snap</title>
 <meta name="taatheethi-version" content="44-layout-reset">
 <style>
   :root{
@@ -400,6 +400,15 @@ main{position:relative!important}
 @media(max-width:700px){#assistantModal .modalCard{width:min(94vw,560px)}.assistantHeroIcon{width:46px;height:46px;min-width:46px}.assistantHeroText b{font-size:15px}.assistantHeroText span{font-size:11px}}
 
 </style>
+
+<style id="v61DxfSnapStyle">
+/* V61 DXF Vector Snap */
+.targetCursor .dxfSnapTag{display:none;position:absolute;right:calc(100% + 9px);top:50%;transform:translateY(-50%);white-space:nowrap;background:rgba(15,23,42,.95);color:#fff;border:1px solid #38bdf8;border-radius:8px;padding:4px 7px;font:700 11px/1.1 Tahoma,Arial,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.25);direction:rtl}
+.targetCursor.dxfSnapEndpoint .dot{background:#22c55e!important}
+.targetCursor.dxfSnapMidpoint .dot{background:#f59e0b!important}
+.targetCursor.dxfSnapNearest .dot{background:#0ea5e9!important}
+@media (hover:none),(pointer:coarse){.targetCursor .dxfSnapTag{font-size:12px;padding:5px 8px}}
+</style>
 </head>
 <body>
 <div class="app">
@@ -754,7 +763,8 @@ const mapLabelTextInput=document.getElementById('mapLabelTextInput');
 const deleteMapLabelBtn=document.getElementById('deleteMapLabelBtn');
 
 
-let bgImage=null,bgData=null,items=[],selectedId=null,selectedIds=[],selectedMeasureId=null,selectedMapLabelId=null,pxPerCm=null,mode='select',points=[],drag=null,panDrag=null,measureDrag=null,mapLabelDrag=null,zoom=1,measureDisplayScale=1,mapLabelDisplayScale=1,measurements=[],mapLabels=[],pendingCalDistancePx=null,pendingFurnitureDef=null,pendingMapLabelText='',libraryDragActive=false;
+let bgImage=null,bgData=null,dxfModel=null,dxfSnapSegments=[],dxfSnapKeyPoints=[],dxfActiveSnap=null,items=[],selectedId=null,selectedIds=[],selectedMeasureId=null,selectedMapLabelId=null,pxPerCm=null,mode='select',points=[],drag=null,panDrag=null,measureDrag=null,mapLabelDrag=null,zoom=1,measureDisplayScale=1,mapLabelDisplayScale=1,measurements=[],mapLabels=[],pendingCalDistancePx=null,pendingFurnitureDef=null,pendingMapLabelText='',libraryDragActive=false;
+function hasPlan(){return !!(bgImage||dxfModel);}
 let undoStack=[],redoStack=[],snapGuides=[],inspectorEditBefore=null;
 let touchLibraryDrag=null,touchDragGhost=null;
 let activeCanvasTouches=new Map(),pinchState=null,suppressCanvasClickUntil=0,aimingTouchId=null,labelPlaceTap=null;
@@ -1181,27 +1191,30 @@ function updateLiveMeasureBadge(ev){
   const p=targetingCanvasPos(ev);
   const p1=points[0];
   const cm=Math.hypot(p.x-p1.x,p.y-p1.y)/pxPerCm;
-  liveMeasureBadge.textContent=formatMeasureNumber(cm);
+  liveMeasureBadge.textContent=formatMeasureNumber(cm)+(dxfActiveSnap?(' • '+dxfSnapLabel(dxfActiveSnap.type)):'');
   liveMeasureBadge.style.display='block';
 }
 function updateInteractionCursor(){
   const targeting=mode==='calibrate'||mode==='measure';
   mainScroll.classList.toggle('targeting',targeting);
   mainScroll.classList.toggle('placing',mode==='place'||mode==='labelPlace');
-  if(!targeting){targetCursor.style.display='none';hideLiveMeasureBadge();}
+  if(!targeting){dxfActiveSnap=null;targetCursor.style.display='none';hideLiveMeasureBadge();updateDxfSnapTag();}
   updatePanState();
 }
 function showTargetCursor(ev){
-  if(mode!=='calibrate'&&mode!=='measure'){targetCursor.style.display='none';targetCursor.classList.remove('touchWand');hideLiveMeasureBadge();return;}
-  const r=canvas.getBoundingClientRect();
-  const t=targetClientPoint(ev);
+  if(mode!=='calibrate'&&mode!=='measure'){
+    dxfActiveSnap=null;targetCursor.style.display='none';targetCursor.classList.remove('touchWand');hideLiveMeasureBadge();updateDxfSnapTag();return;
+  }
+  const r=canvas.getBoundingClientRect(),t=targetClientPoint(ev);
   const fingerInside=ev.clientX>=r.left&&ev.clientX<=r.right&&ev.clientY>=r.top&&ev.clientY<=r.bottom;
-  const targetInside=t.x>=r.left&&t.x<=r.right&&t.y>=r.top&&t.y<=r.bottom;
-  if(!fingerInside||!targetInside){targetCursor.style.display='none';hideLiveMeasureBadge();return;}
+  if(!fingerInside){targetCursor.style.display='none';hideLiveMeasureBadge();dxfActiveSnap=null;updateDxfSnapTag();return;}
+  const p=targetingCanvasPos(ev);
+  const clientX=r.left+p.x*(r.width/canvas.width),clientY=r.top+p.y*(r.height/canvas.height);
+  const targetInside=clientX>=r.left&&clientX<=r.right&&clientY>=r.top&&clientY<=r.bottom;
+  if(!targetInside){targetCursor.style.display='none';hideLiveMeasureBadge();dxfActiveSnap=null;updateDxfSnapTag();return;}
   targetCursor.classList.toggle('touchWand',t.touchWand);
-  targetCursor.style.display='block';
-  targetCursor.style.left=t.x+'px';targetCursor.style.top=t.y+'px';
-  updateLiveMeasureBadge(ev);
+  targetCursor.style.display='block';targetCursor.style.left=clientX+'px';targetCursor.style.top=clientY+'px';
+  updateDxfSnapTag();updateLiveMeasureBadge(ev);
 }
 function clampPointToCanvas(p){return {x:clamp(p.x,0,canvas.width),y:clamp(p.y,0,canvas.height)};}
 
@@ -1239,9 +1252,9 @@ function estimateItemWidthPx(cmValue){
 }
 function updateScaleUI(){
   if(pxPerCm){
-    scaleBadge.textContent='معاير';
+    scaleBadge.textContent=dxfModel?'DXF حقيقي':'معاير';
     scaleBadge.classList.remove('off');
-    scaleText.textContent=`1 متر = ${(pxPerCm*100).toFixed(1)} بكسل`;
+    scaleText.textContent=dxfModel?('DXF '+(dxfModel.unitLabel||'')+' — 1 متر = '+(pxPerCm*100).toFixed(1)+' بكسل'):('1 متر = '+(pxPerCm*100).toFixed(1)+' بكسل');
   }else{
     scaleBadge.textContent='غير معاير';
     scaleBadge.classList.add('off');
@@ -1270,7 +1283,7 @@ function resizeToImage(img){
 function loadImageData(data){
   const img=new Image();
   img.onload=()=>{
-    bgImage=img;bgData=data;
+    bgImage=img;bgData=data;dxfModel=null;dxfSnapSegments=[];dxfSnapKeyPoints=[];dxfActiveSnap=null;
     items=[];clearFurnitureSelection();selectedMeasureId=null;pxPerCm=null;points=[];measurements=[];mode='select';pendingFurnitureDef=null;updateInteractionCursor();
     syncSelectedPanel();
     updateScaleUI();
@@ -1500,53 +1513,154 @@ function dxfBounds(entities){
   if(!Number.isFinite(minX)||!(maxX>minX)||!(maxY>minY))throw new Error('BAD_BOUNDS');
   return {minX,minY,maxX,maxY,w:maxX-minX,h:maxY-minY};
 }
-function renderDxfMap(parsed,unit){
+
+function dxfToCanvasPoint(model,x,y){
+  const b=model.bounds;
+  return {x:model.margin+(x-b.minX)*model.scale,y:model.margin+(b.maxY-y)*model.scale};
+}
+function buildDxfVectorModel(parsed,unit,fileName){
   const b=dxfBounds(parsed.entities),touch=isTouchDevice();
   const maxW=touch?1400:1700,maxH=touch?1000:1150,margin=42;
   const scale=Math.min((maxW-margin*2)/b.w,(maxH-margin*2)/b.h);
   if(!Number.isFinite(scale)||scale<=0)throw new Error('BAD_SCALE');
-  const w=Math.max(320,Math.ceil(b.w*scale+margin*2)),h=Math.max(240,Math.ceil(b.h*scale+margin*2));
-  const off=document.createElement('canvas');off.width=w;off.height=h;const g=off.getContext('2d');
-  g.fillStyle='#fff';g.fillRect(0,0,w,h);g.strokeStyle='#111827';g.fillStyle='#111827';g.lineWidth=Math.max(1,Math.min(2.2,scale*.6));g.lineJoin='round';g.lineCap='round';
-  const X=x=>margin+(x-b.minX)*scale,Y=y=>margin+(b.maxY-y)*scale;
-  for(const e of parsed.entities){
-    g.beginPath();
-    if(e.type==='LINE'){g.moveTo(X(e.x1),Y(e.y1));g.lineTo(X(e.x2),Y(e.y2));g.stroke();}
-    else if(e.verts){g.moveTo(X(e.verts[0].x),Y(e.verts[0].y));for(let i=1;i<e.verts.length;i++)g.lineTo(X(e.verts[i].x),Y(e.verts[i].y));if(e.closed)g.closePath();g.stroke();}
-    else if(e.type==='CIRCLE'){g.arc(X(e.cx),Y(e.cy),e.r*scale,0,Math.PI*2);g.stroke();}
-    else if(e.type==='ARC'){
-      // Canvas Y is inverted relative to DXF, therefore angle signs are inverted.
-      const s=-e.a1*Math.PI/180,t=-e.a2*Math.PI/180;g.arc(X(e.cx),Y(e.cy),e.r*scale,s,t,true);g.stroke();
-    }else if(e.type==='POINT'){const x=X(e.x),y=Y(e.y);g.arc(x,y,2.2,0,Math.PI*2);g.fill();}
-  }
-  return {data:off.toDataURL('image/png'),width:w,height:h,pxPerCm:scale/unit.cm,entityCount:parsed.entities.length};
-}
-function loadDxfRenderedMap(result,unit,fileName=''){
-  const img=new Image();
-  img.onload=()=>{
-    bgImage=img;bgData=result.data;
-    items=[];clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;points=[];measurements=[];mapLabels=[];mode='select';pendingFurnitureDef=null;pendingMapLabelText='';
-    pxPerCm=result.pxPerCm;undoStack=[];redoStack=[];updateHistoryButtons();syncSelectedPanel();updateScaleUI();
-    canvas.width=result.width;canvas.height=result.height;updateStageSize();draw();fitToViewport();
-    if(fileName&&!projectMeta.mapTitle)projectMeta.mapTitle=fileName.replace(/\.dxf$/i,'');
-    setStatus(`تم فتح DXF — ${result.entityCount} عنصر — الوحدة ${unit.label} — المقياس مضبوط تلقائيًا`);
+  return {
+    version:2,fileName:fileName||'',insUnits:parsed.insUnits||0,unitCm:unit.cm,unitLabel:unit.label,
+    bounds:b,scale:scale,margin:margin,
+    width:Math.max(320,Math.ceil(b.w*scale+margin*2)),
+    height:Math.max(240,Math.ceil(b.h*scale+margin*2)),
+    entities:parsed.entities
   };
-  img.src=result.data;
+}
+function dxfArcInfo(e){
+  const start=Number(e.a1)||0;let sweep=(Number(e.a2)||0)-start;
+  while(sweep<=0)sweep+=360;if(sweep>360)sweep=360;
+  return {start:start,sweep:sweep};
+}
+function rebuildDxfSnapGeometry(){
+  dxfSnapSegments=[];dxfSnapKeyPoints=[];dxfActiveSnap=null;
+  if(!dxfModel||!Array.isArray(dxfModel.entities))return;
+  const keySeen=new Set();
+  const addKey=(p,type)=>{
+    if(!p||!Number.isFinite(p.x)||!Number.isFinite(p.y))return;
+    const k=Math.round(p.x*5)+'_'+Math.round(p.y*5)+'_'+type;
+    if(keySeen.has(k))return;keySeen.add(k);dxfSnapKeyPoints.push({x:p.x,y:p.y,type:type});
+  };
+  const addSeg=(a,b,curve)=>{
+    if(!a||!b||Math.hypot(b.x-a.x,b.y-a.y)<.01)return;
+    dxfSnapSegments.push({a:a,b:b,curve:!!curve});
+  };
+  const P=(x,y)=>dxfToCanvasPoint(dxfModel,x,y);
+  for(const e of dxfModel.entities){
+    if(e.type==='LINE'){
+      const a=P(e.x1,e.y1),b=P(e.x2,e.y2);addSeg(a,b,false);addKey(a,'endpoint');addKey(b,'endpoint');addKey({x:(a.x+b.x)/2,y:(a.y+b.y)/2},'midpoint');
+    }else if(e.verts&&e.verts.length>1){
+      const vv=e.verts.map(v=>P(v.x,v.y));
+      for(let i=0;i<vv.length-1;i++){addSeg(vv[i],vv[i+1],false);addKey(vv[i],'endpoint');addKey({x:(vv[i].x+vv[i+1].x)/2,y:(vv[i].y+vv[i+1].y)/2},'midpoint');}
+      addKey(vv[vv.length-1],'endpoint');
+      if(e.closed){addSeg(vv[vv.length-1],vv[0],false);addKey({x:(vv[vv.length-1].x+vv[0].x)/2,y:(vv[vv.length-1].y+vv[0].y)/2},'midpoint');}
+    }else if(e.type==='CIRCLE'){
+      const circumference=Math.max(24,2*Math.PI*e.r*dxfModel.scale),steps=Math.min(96,Math.max(24,Math.ceil(circumference/18)));
+      let prev=P(e.cx+e.r,e.cy);addKey(prev,'quadrant');
+      for(let i=1;i<=steps;i++){const a=i*Math.PI*2/steps,cur=P(e.cx+Math.cos(a)*e.r,e.cy+Math.sin(a)*e.r);addSeg(prev,cur,true);prev=cur;}
+      addKey(P(e.cx-e.r,e.cy),'quadrant');addKey(P(e.cx,e.cy+e.r),'quadrant');addKey(P(e.cx,e.cy-e.r),'quadrant');
+    }else if(e.type==='ARC'){
+      const ai=dxfArcInfo(e),arcPx=Math.max(16,e.r*dxfModel.scale*ai.sweep*Math.PI/180),steps=Math.min(96,Math.max(8,Math.ceil(arcPx/18)));
+      let a0=ai.start*Math.PI/180,prev=P(e.cx+Math.cos(a0)*e.r,e.cy+Math.sin(a0)*e.r);addKey(prev,'endpoint');
+      for(let i=1;i<=steps;i++){const a=(ai.start+ai.sweep*i/steps)*Math.PI/180,cur=P(e.cx+Math.cos(a)*e.r,e.cy+Math.sin(a)*e.r);addSeg(prev,cur,true);prev=cur;}
+      addKey(prev,'endpoint');
+    }else if(e.type==='POINT'){
+      addKey(P(e.x,e.y),'endpoint');
+    }
+  }
+}
+function nearestPointOnDxfSegment(p,a,b){
+  const vx=b.x-a.x,vy=b.y-a.y,den=vx*vx+vy*vy;
+  let t=den?((p.x-a.x)*vx+(p.y-a.y)*vy)/den:0;t=Math.max(0,Math.min(1,t));
+  const x=a.x+t*vx,y=a.y+t*vy;return {x:x,y:y,t:t,d:Math.hypot(p.x-x,p.y-y)};
+}
+function snapPointToDxf(p){
+  const toggle=document.getElementById('snapToggle');
+  if(!dxfModel||!toggle||!toggle.checked){dxfActiveSnap=null;return p;}
+  const threshold=Math.max(5,14/zoom);let best=null;
+  const offer=(q,type,d,bonus)=>{
+    if(d>threshold)return;const score=d-(bonus||0);
+    if(!best||score<best.score){best={x:q.x,y:q.y,type:type,d:d,score:score};}
+  };
+  for(const q of dxfSnapKeyPoints){
+    const d=Math.hypot(p.x-q.x,p.y-q.y);
+    const bonus=(q.type==='endpoint'?Math.min(5,threshold*.35):q.type==='midpoint'?Math.min(3,threshold*.22):1);
+    offer(q,q.type,d,bonus);
+  }
+  for(const s of dxfSnapSegments){
+    const q=nearestPointOnDxfSegment(p,s.a,s.b);offer(q,'nearest',q.d,0);
+  }
+  if(!best){dxfActiveSnap=null;return p;}
+  dxfActiveSnap=best;return {x:best.x,y:best.y};
+}
+function dxfSnapLabel(type){
+  if(type==='endpoint')return '● زاوية';
+  if(type==='midpoint')return '▲ منتصف';
+  if(type==='quadrant')return '● نقطة';
+  return '— جدار';
+}
+function updateDxfSnapTag(){
+  let tag=targetCursor.querySelector('.dxfSnapTag');
+  if(!tag){tag=document.createElement('span');tag.className='dxfSnapTag';targetCursor.appendChild(tag);}
+  targetCursor.classList.remove('dxfSnapEndpoint','dxfSnapMidpoint','dxfSnapNearest');
+  if(!dxfActiveSnap){tag.style.display='none';return;}
+  tag.textContent=dxfSnapLabel(dxfActiveSnap.type);tag.style.display='block';
+  if(dxfActiveSnap.type==='endpoint'||dxfActiveSnap.type==='quadrant')targetCursor.classList.add('dxfSnapEndpoint');
+  else if(dxfActiveSnap.type==='midpoint')targetCursor.classList.add('dxfSnapMidpoint');
+  else targetCursor.classList.add('dxfSnapNearest');
+}
+function drawDxfVector(){
+  if(!dxfModel||!Array.isArray(dxfModel.entities))return;
+  const P=(x,y)=>dxfToCanvasPoint(dxfModel,x,y),u=1/zoom;
+  ctx.save();ctx.strokeStyle='#111827';ctx.fillStyle='#111827';ctx.lineWidth=Math.max(.7,1.25*u);ctx.lineJoin='round';ctx.lineCap='round';
+  for(const e of dxfModel.entities){
+    ctx.beginPath();
+    if(e.type==='LINE'){
+      const a=P(e.x1,e.y1),b=P(e.x2,e.y2);ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+    }else if(e.verts&&e.verts.length){
+      const a=P(e.verts[0].x,e.verts[0].y);ctx.moveTo(a.x,a.y);
+      for(let i=1;i<e.verts.length;i++){const q=P(e.verts[i].x,e.verts[i].y);ctx.lineTo(q.x,q.y);}
+      if(e.closed)ctx.closePath();ctx.stroke();
+    }else if(e.type==='CIRCLE'){
+      const q=P(e.cx,e.cy);ctx.arc(q.x,q.y,e.r*dxfModel.scale,0,Math.PI*2);ctx.stroke();
+    }else if(e.type==='ARC'){
+      const q=P(e.cx,e.cy),ai=dxfArcInfo(e),start=-ai.start*Math.PI/180,end=-(ai.start+ai.sweep)*Math.PI/180;
+      ctx.arc(q.x,q.y,e.r*dxfModel.scale,start,end,true);ctx.stroke();
+    }else if(e.type==='POINT'){
+      const q=P(e.x,e.y);ctx.arc(q.x,q.y,2.2*u,0,Math.PI*2);ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+function loadDxfVectorModel(model){
+  bgImage=null;bgData=null;dxfModel=model;rebuildDxfSnapGeometry();
+  items=[];clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;points=[];measurements=[];mapLabels=[];mode='select';pendingFurnitureDef=null;pendingMapLabelText='';
+  pxPerCm=dxfModel.scale/dxfModel.unitCm;undoStack=[];redoStack=[];updateHistoryButtons();syncSelectedPanel();updateScaleUI();
+  canvas.width=dxfModel.width;canvas.height=dxfModel.height;updateStageSize();
+  const bgToggle=document.getElementById('bgLayerToggle');if(bgToggle)bgToggle.checked=true;
+  const snapToggle=document.getElementById('snapToggle');if(snapToggle)snapToggle.checked=true;
+  draw();fitToViewport();
+  if(dxfModel.fileName&&!projectMeta.mapTitle)projectMeta.mapTitle=dxfModel.fileName.replace(/\.dxf$/i,'');
+  setStatus('DXF متجه حقيقي — '+dxfModel.entities.length+' عنصر — '+dxfModel.unitLabel+' — المقياس تلقائي والسناب فعال');
 }
 document.getElementById('dxfInput').onchange=async e=>{
   const input=e.currentTarget,f=input.files&&input.files[0];if(!f)return;
-  input.disabled=true;setStatus('جاري قراءة مخطط AutoCAD DXF…');
+  input.disabled=true;setStatus('جاري قراءة مخطط AutoCAD DXF كمتجهات حقيقية…');
   await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));
   try{
     const text=await f.text(),parsed=parseAsciiDxf(text),unit=askDxfUnitInfo(parsed.insUnits);if(!unit){setStatus('تم إلغاء استيراد DXF');return;}
-    const result=renderDxfMap(parsed,unit);loadDxfRenderedMap(result,unit,f.name||'');
+    const model=buildDxfVectorModel(parsed,unit,f.name||'');loadDxfVectorModel(model);
   }catch(err){
     console.error(err);
     const msg=err&&err.message==='BINARY_DXF'?'هذا ملف DXF ثنائي. من AutoCAD استخدم Save As واختر DXF بصيغة ASCII ثم أعد فتحه.':'تعذر قراءة ملف DXF. جرّب حفظه من AutoCAD بصيغة DXF ASCII (يفضل 2013 أو 2018) وتأكد أن المخطط ثنائي الأبعاد.';
     alert(msg);setStatus('لم يتم تحميل ملف DXF');
   }finally{input.disabled=false;input.value='';}
 };
-// ===== End V60 AutoCAD DXF import =====
+// ===== End V61 AutoCAD DXF Vector Snap =====
 
 document.getElementById('fileInput').onchange=async e=>{
   const input=e.currentTarget,f=input.files&&input.files[0];if(!f)return;
@@ -1720,28 +1834,54 @@ function itemAABBAt(it,x=it.x,y=it.y){
 function snapDraggedPosition(it,x,y){
   snapGuides=[];
   const toggle=document.getElementById('snapToggle');
-  if(!toggle||!toggle.checked||!pxPerCm)return {x,y};
-  const box=itemAABBAt(it,x,y),threshold=9/zoom;
+  if(!toggle||!toggle.checked||!pxPerCm)return {x:x,y:y};
+  const box=itemAABBAt(it,x,y),threshold=Math.max(5,11/zoom);
   let bestX={d:Infinity,v:x,guide:null},bestY={d:Infinity,v:y,guide:null};
-  const testX=(v,g)=>{const d=Math.abs(v-x);if(d<threshold&&d<bestX.d)bestX={d,v,guide:g};};
-  const testY=(v,g)=>{const d=Math.abs(v-y);if(d<threshold&&d<bestY.d)bestY={d,v,guide:g};};
-  // 10 cm center grid snap
+  const testX=(v,g)=>{const d=Math.abs(v-x);if(d<threshold&&d<bestX.d)bestX={d:d,v:v,guide:g};};
+  const testY=(v,g)=>{const d=Math.abs(v-y);if(d<threshold&&d<bestY.d)bestY={d:d,v:v,guide:g};};
   const grid=10*pxPerCm;
-  if(grid>2){testX(Math.round(x/grid)*grid,{axis:'x',v:Math.round(x/grid)*grid,type:'grid'});testY(Math.round(y/grid)*grid,{axis:'y',v:Math.round(y/grid)*grid,type:'grid'});}
+  if(grid>2){const gx=Math.round(x/grid)*grid,gy=Math.round(y/grid)*grid;testX(gx,{axis:'x',v:gx,type:'grid'});testY(gy,{axis:'y',v:gy,type:'grid'});}
   for(const o of items){
     if(o.id===it.id||isItemSelected(o.id))continue;const b=itemAABBAt(o);
-    [b.minX+box.hx,b.maxX-box.hx,b.cx,b.maxX+box.hx,b.minX-box.hx].forEach(v=>testX(v,{axis:'x',v,type:'item'}));
-    [b.minY+box.hy,b.maxY-box.hy,b.cy,b.maxY+box.hy,b.minY-box.hy].forEach(v=>testY(v,{axis:'y',v,type:'item'}));
+    [b.minX+box.hx,b.maxX-box.hx,b.cx,b.maxX+box.hx,b.minX-box.hx].forEach(v=>testX(v,{axis:'x',v:v,type:'item'}));
+    [b.minY+box.hy,b.maxY-box.hy,b.cy,b.maxY+box.hy,b.minY-box.hy].forEach(v=>testY(v,{axis:'y',v:v,type:'item'}));
+  }
+  if(dxfModel&&dxfSnapSegments.length){
+    const orientTol=.12;
+    for(const s of dxfSnapSegments){
+      const dx=s.b.x-s.a.x,dy=s.b.y-s.a.y,adx=Math.abs(dx),ady=Math.abs(dy);
+      if(ady>1&&adx<=ady*orientTol){
+        const wallX=(s.a.x+s.b.x)/2,minY=Math.min(s.a.y,s.b.y)-box.hy-threshold,maxY=Math.max(s.a.y,s.b.y)+box.hy+threshold;
+        if(y>=minY&&y<=maxY){testX(wallX-box.hx,{type:'dxf-wall',a:s.a,b:s.b});testX(wallX+box.hx,{type:'dxf-wall',a:s.a,b:s.b});}
+      }else if(adx>1&&ady<=adx*orientTol){
+        const wallY=(s.a.y+s.b.y)/2,minX=Math.min(s.a.x,s.b.x)-box.hx-threshold,maxX=Math.max(s.a.x,s.b.x)+box.hx+threshold;
+        if(x>=minX&&x<=maxX){testY(wallY-box.hy,{type:'dxf-wall',a:s.a,b:s.b});testY(wallY+box.hy,{type:'dxf-wall',a:s.a,b:s.b});}
+      }
+    }
+    for(const q of dxfSnapKeyPoints){
+      if(Math.abs(q.y-y)<=box.hy+threshold){testX(q.x-box.hx,{type:'dxf-point',x:q.x,y:q.y,snapType:q.type});testX(q.x+box.hx,{type:'dxf-point',x:q.x,y:q.y,snapType:q.type});}
+      if(Math.abs(q.x-x)<=box.hx+threshold){testY(q.y-box.hy,{type:'dxf-point',x:q.x,y:q.y,snapType:q.type});testY(q.y+box.hy,{type:'dxf-point',x:q.x,y:q.y,snapType:q.type});}
+    }
   }
   if(bestX.d<Infinity){x=bestX.v;snapGuides.push(bestX.guide);}
   if(bestY.d<Infinity){y=bestY.v;snapGuides.push(bestY.guide);}
   const b2=itemAABBAt(it,x,y);
   x=clamp(x,b2.hx,canvas.width-b2.hx);y=clamp(y,b2.hy,canvas.height-b2.hy);
-  return {x,y};
+  return {x:x,y:y};
 }
 function drawSnapGuides(){
-  if(!snapGuides.length)return;const u=1/zoom;ctx.save();ctx.setLineDash([4*u,4*u]);ctx.lineWidth=1*u;ctx.strokeStyle='rgba(14,165,233,.75)';
-  for(const g of snapGuides){ctx.beginPath();if(g.axis==='x'){ctx.moveTo(g.v,0);ctx.lineTo(g.v,canvas.height);}else{ctx.moveTo(0,g.v);ctx.lineTo(canvas.width,g.v);}ctx.stroke();}
+  if(!snapGuides.length)return;const u=1/zoom;ctx.save();ctx.lineWidth=Math.max(1,1.4*u);
+  for(const g of snapGuides){
+    if(!g)continue;
+    if(g.type==='dxf-wall'&&g.a&&g.b){
+      ctx.setLineDash([]);ctx.strokeStyle='rgba(14,165,233,.95)';ctx.beginPath();ctx.moveTo(g.a.x,g.a.y);ctx.lineTo(g.b.x,g.b.y);ctx.stroke();
+    }else if(g.type==='dxf-point'){
+      ctx.setLineDash([]);ctx.strokeStyle='rgba(34,197,94,.95)';ctx.fillStyle='rgba(34,197,94,.95)';ctx.beginPath();ctx.arc(g.x,g.y,4.5*u,0,Math.PI*2);ctx.fill();
+    }else{
+      ctx.setLineDash([4*u,4*u]);ctx.strokeStyle='rgba(14,165,233,.75)';ctx.beginPath();
+      if(g.axis==='x'){ctx.moveTo(g.v,0);ctx.lineTo(g.v,canvas.height);}else{ctx.moveTo(0,g.v);ctx.lineTo(canvas.width,g.v);}ctx.stroke();
+    }
+  }
   ctx.restore();
 }
 function drawAutoDistances(){
@@ -1787,6 +1927,7 @@ function addItem(def,x,y){
     id:randId(),name:def.name,w:def.w,h:def.h,x:clamp(x??canvas.width/2,0,canvas.width),y:clamp(y??canvas.height/2,0,canvas.height),
     rot:0,color:def.color||'#bfa781',type:def.type||'generic',src:def.src||null,tintEnabled:false,locked:false,archType:def.archType||null,doorSwing:def.doorSwing||1
   };
+  const snapped=snapDraggedPosition(it,it.x,it.y);it.x=snapped.x;it.y=snapped.y;
   items.push(it);setSelection([it.id],it.id);selectedMeasureId=null;syncSelectedPanel();draw();commitHistory(before);return it;
 }
 
@@ -1808,7 +1949,9 @@ function toCanvasPos(ev){
 }
 function targetingCanvasPos(ev){
   const r=canvas.getBoundingClientRect(),t=targetClientPoint(ev);
-  return clampPointToCanvas({x:(t.x-r.left)*(canvas.width/r.width),y:(t.y-r.top)*(canvas.height/r.height)});
+  const p=clampPointToCanvas({x:(t.x-r.left)*(canvas.width/r.width),y:(t.y-r.top)*(canvas.height/r.height)});
+  if(mode==='measure'&&dxfModel)return snapPointToDxf(p);
+  dxfActiveSnap=null;return p;
 }
 
 function itemCorners(it){
@@ -2033,7 +2176,7 @@ canvas.addEventListener('pointermove',ev=>{
   }
   if(panDrag){mainScroll.scrollLeft=panDrag.left-(ev.clientX-panDrag.x);mainScroll.scrollTop=panDrag.top-(ev.clientY-panDrag.y);ev.preventDefault();}
 });
-canvas.addEventListener('pointerleave',()=>{if(mode==='calibrate'||mode==='measure'){targetCursor.style.display='none';hideLiveMeasureBadge();}});
+canvas.addEventListener('pointerleave',()=>{if(mode==='calibrate'||mode==='measure'){dxfActiveSnap=null;targetCursor.style.display='none';hideLiveMeasureBadge();updateDxfSnapTag();}});
 function endPointer(ev){
   if(ev?.pointerType==='touch'){
     const wasPinching=!!pinchState;
@@ -2481,9 +2624,12 @@ function drawMapLabels(){
 
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(bgImage){
+  if(hasPlan()){
     ctx.fillStyle='#f8fafc';ctx.fillRect(0,0,canvas.width,canvas.height);
-    if(visibleBackground())ctx.drawImage(bgImage,0,0,canvas.width,canvas.height);
+    if(visibleBackground()){
+      if(bgImage)ctx.drawImage(bgImage,0,0,canvas.width,canvas.height);
+      if(dxfModel)drawDxfVector();
+    }
   }else{
     ctx.fillStyle='#f8fafc';ctx.fillRect(0,0,canvas.width,canvas.height);
     const splashLogo=(companyLogoImage.complete&&companyLogoImage.naturalWidth)?companyLogoImage:promoLogoImage;
@@ -2515,7 +2661,7 @@ function draw(){
 }
 
 document.getElementById('addMapLabelBtn').onclick=()=>{
-  if(!bgImage){alert('ارفع الخارطة أولاً.');return;}
+  if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}
   const value=prompt('اكتب المسمى الذي تريد وضعه على الخارطة:','');
   if(value===null)return;const clean=value.trim();if(!clean)return;
   pendingMapLabelText=clean;mode='labelPlace';points=[];selectedMeasureId=null;selectedMapLabelId=null;clearFurnitureSelection();syncSelectedPanel();updateInteractionCursor();
@@ -2523,11 +2669,12 @@ document.getElementById('addMapLabelBtn').onclick=()=>{
 };
 
 document.getElementById('calibrateBtn').onclick=()=>{
-  if(!bgImage){alert('ارفع الخارطة أولاً.');return;}
+  if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}
+  if(dxfModel){alert('مخطط DXF يحمل مقياسه الحقيقي تلقائيًا ولا يحتاج معايرة يدوية. استخدم أداة القياس مباشرة.');setStatus('DXF: المقياس الحقيقي جاهز والسناب فعال');return;}
   selectedMeasureId=null;selectedMapLabelId=null;clearFurnitureSelection();pendingFurnitureDef=null;syncSelectedPanel();mode='calibrate';points=[];updateInteractionCursor();setStatus(isTouchDevice()?'المعايرة: أمسك مقبض العصا، حرّك رأسها للنقطة المطلوبة ثم ارفع إصبعك لتسجيلها':'المعايرة: حرّك علامة القنّاص وحدد النقطة الأولى ثم الثانية بدقة');draw();
 };
 document.getElementById('measureBtn').onclick=()=>{
-  if(!bgImage){alert('ارفع الخارطة أولاً.');return;}
+  if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}
   document.getElementById('measureLayerToggle').checked=true;
   if(!pxPerCm){alert('عاير الخارطة أولاً ثم استخدم قياس المسافة.');return;}
   measurements.forEach(m=>m.pinned=true);selectedMeasureId=null;selectedMapLabelId=null;clearFurnitureSelection();pendingFurnitureDef=null;syncSelectedPanel();mode='measure';points=[];updateInteractionCursor();setStatus(isTouchDevice()?'القياس: بعد النقطة الأولى سيظهر لك القياس الموقت قرب العصا؛ حرّكها حتى تصل للرقم الدقيق ثم ارفع إصبعك للنقطة الثانية':'القياس: بعد النقطة الأولى سيظهر قياس موقت مع حركة المؤشر حتى تحدد النقطة الثانية بدقة');draw();
@@ -2770,9 +2917,9 @@ function download(name,data,type){
 }
 
 function startNewProject(ask=true){
-  const hasWork=!!bgImage||items.length>0||measurements.length>0||!!pxPerCm;
+  const hasWork=!!bgImage||!!dxfModel||items.length>0||measurements.length>0||!!pxPerCm;
   if(ask&&hasWork&&!confirm('بدء مشروع جديد؟ سيتم مسح الخارطة والأثاث والقياسات الحالية، بينما ستبقى مكتبة الأثاث المحفوظة كما هي.'))return;
-  bgImage=null;bgData=null;items=[];measurements=[];mapLabels=[];selectedId=null;selectedIds=[];selectedMeasureId=null;selectedMapLabelId=null;pxPerCm=null;undoStack=[];redoStack=[];updateHistoryButtons();
+  bgImage=null;bgData=null;dxfModel=null;dxfSnapSegments=[];dxfSnapKeyPoints=[];dxfActiveSnap=null;items=[];measurements=[];mapLabels=[];selectedId=null;selectedIds=[];selectedMeasureId=null;selectedMapLabelId=null;pxPerCm=null;undoStack=[];redoStack=[];updateHistoryButtons();
   mode='select';points=[];drag=null;panDrag=null;measureDrag=null;mapLabelDrag=null;labelPlaceTap=null;pendingCalDistancePx=null;pendingFurnitureDef=null;pendingMapLabelText='';
   canvas.width=1100;canvas.height=750;zoom=1;measureDisplayScale=1;mapLabelDisplayScale=1;
   document.getElementById('zoomRange').value=100;document.getElementById('zoomLabel').textContent='100%';measureSizeRange.value=100;measureSizeLabel.textContent='100%';mapLabelSizeRange.value=100;mapLabelSizeValue.textContent='100%';
@@ -2785,7 +2932,7 @@ document.getElementById('measureLockToggle').checked=false;document.getElementBy
 document.getElementById('newProjectBtn').onclick=()=>startNewProject(true);
 
 document.getElementById('saveBtn').onclick=()=>{
-  const project={version:35,projectMeta,brandInfo,bgData,pxPerCm,items,measurements,mapLabels,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
+  const project={version:61,projectMeta,brandInfo,bgData,dxfModel,pxPerCm,items,measurements,mapLabels,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
   download('furniture-project.json',JSON.stringify(project),'application/json')
 };
 
@@ -2801,7 +2948,8 @@ document.getElementById('loadInput').onchange=e=>{
         furniture=p.library.map((x,i)=>({id:x.id||`project_${i}_${Date.now()}`,name:x.name||'قطعة',w:+x.w||100,h:+x.h||60,src:x.src||null,category:x.category||'أخرى',color:x.color||'#bfa781',isCustom:x.isCustom!==false}));
         saveLibraryState();activeCategory='الكل';buildCategoryButtons();renderLibrary();
       }
-      pxPerCm=p.pxPerCm||null;
+      dxfModel=p.dxfModel||null;if(dxfModel)rebuildDxfSnapGeometry();else{dxfSnapSegments=[];dxfSnapKeyPoints=[];dxfActiveSnap=null;}
+      pxPerCm=p.pxPerCm||(dxfModel?(dxfModel.scale/dxfModel.unitCm):null);
       items=(p.items||[]).map(it=>({color:'#bfa781',type:'generic',rot:0,tintEnabled:false,locked:false,...it}));
       items.forEach(ensureSpriteForDef);
       measurements=(p.measurements||[]).map(m=>({id:m.id||randId(),pinned:m.pinned!==false,offsetX:0,offsetY:0,...m}));selectedMeasureId=null;
@@ -2815,16 +2963,19 @@ document.getElementById('loadInput').onchange=e=>{
       if(p.zoom){zoom=p.zoom;document.getElementById('zoomRange').value=Math.round(zoom*100);document.getElementById('zoomLabel').textContent=Math.round(zoom*100)+'%';}
       measureDisplayScale=clamp(Number(p.measureDisplayScale)||1,0.4,2);measureSizeRange.value=Math.round(measureDisplayScale*100);measureSizeLabel.textContent=Math.round(measureDisplayScale*100)+'%';
       mapLabelDisplayScale=clamp(Number(p.mapLabelDisplayScale)||1,0.4,2);mapLabelSizeRange.value=Math.round(mapLabelDisplayScale*100);mapLabelSizeValue.textContent=Math.round(mapLabelDisplayScale*100)+'%';
-      if(p.bgData){
+      if(dxfModel){
+        bgImage=null;bgData=null;canvas.width=p.canvas?.width||dxfModel.width||1100;canvas.height=p.canvas?.height||dxfModel.height||750;
+        updateStageSize();draw();setStatus('تم فتح المشروع — DXF متجه حقيقي والسناب فعال');fitToViewport();
+      }else if(p.bgData){
         const img=new Image();
         img.onload=()=>{
-          bgImage=img;bgData=p.bgData;
+          bgImage=img;bgData=p.bgData;dxfModel=null;dxfSnapSegments=[];dxfSnapKeyPoints=[];dxfActiveSnap=null;
           canvas.width=p.canvas?.width||img.width;
           canvas.height=p.canvas?.height||img.height;
           updateStageSize();draw();setStatus('تم فتح المشروع');fitToViewport();
         };
         img.src=p.bgData;
-      }else{bgImage=null;bgData=null;updateStageSize();draw();}
+      }else{bgImage=null;bgData=null;dxfModel=null;dxfSnapSegments=[];dxfSnapKeyPoints=[];dxfActiveSnap=null;updateStageSize();draw();}
     }catch{alert('ملف المشروع غير صالح')}
   };
   r.readAsText(f)
@@ -3022,7 +3173,8 @@ document.getElementById('doPrintBtn').onclick=async()=>{
   // افتح نافذة الطباعة فوراً داخل نقرة المستخدم، قبل أي await، حتى لا يحظرها Safari.
   const page=window.open('','_blank');
   if(!page){alert('تعذر فتح نافذة الطباعة. تحقق من إعداد حظر النوافذ المنبثقة في Safari ثم حاول مرة أخرى.');return;}
-  page.document.write('<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...</body></html>');
+  page.document.write('<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...<!-- V61 DXF Vector Snap -->
+</body></html>');
   page.document.close();
   try{
     const sheet=await buildBrandedSheet({paper,orient,title:projectMeta.name,mapTitle:projectMeta.mapTitle,client:projectMeta.client,location:projectMeta.location});
