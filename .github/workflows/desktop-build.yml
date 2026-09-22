@@ -35,9 +35,9 @@ jobs:
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
-          name: Taatheethi-V57-Windows-Installer
+          name: Taatheethi-V58-Windows-Installer
           path: dist/*.exe
           if-no-files-found: error
           retention-days: 30
 
-# retry-desktop-3
+# retry-desktop-v58-1
