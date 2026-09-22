@@ -5,7 +5,7 @@ p=Path('index.html')
 c=p.read_text(encoding='utf-8')
 
 if 'V58 Shared Assistant' in c and "button('v58Assistant'" in c:
-    print('V58 assistant already applied')
+    print('V58 assistant base already applied')
 else:
     c=c.replace('<title>تأثيثي V57 — أيقونات الأبواب والشبابيك</title>','<title>تأثيثي V58 — المساعد</title>')
 
@@ -118,6 +118,23 @@ refreshAssistantUrl(false);
         c=c.replace(old,new,1)
 
     p.write_text(c,encoding='utf-8')
+
+
+# V58 desktop-safe shared config: dynamic script works from file:// without CORS.
+if "ASSISTANT_REMOTE_SCRIPT" not in c:
+    old="const ASSISTANT_REMOTE_URL='https://sadeer66.github.io/sadeer/assistant.json';"
+    new=old+"\nconst ASSISTANT_REMOTE_SCRIPT='https://sadeer66.github.io/sadeer/assistant-link.js';"
+    if old not in c: raise SystemExit('assistant remote URL anchor missing')
+    c=c.replace(old,new,1)
+
+old_refresh="""async function refreshAssistantUrl(showState=true){if(showState)assistantState.textContent='جاري تحديث رابط الشرح…';try{const r=await fetch(ASSISTANT_REMOTE_URL+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const data=await r.json();if(isValidAssistantUrl(data.youtube_url)){setAssistantUrl(data.youtube_url,'remote');return true;}setAssistantUrl('','remote');return true;}catch(e){let fallback='';try{fallback=localStorage.getItem(ASSISTANT_FALLBACK_KEY)||''}catch(_){}setAssistantUrl(fallback,'local');assistantState.textContent=fallback?'تعذر الاتصال بالموقع — تم استخدام آخر رابط محفوظ':'تعذر الوصول إلى رابط الشرح الآن';return false;}}"""
+new_refresh="""async function refreshAssistantUrl(showState=true){if(showState)assistantState.textContent='جاري تحديث رابط الشرح…';try{delete window.TAATHEETHI_ASSISTANT_URL;await new Promise((resolve,reject)=>{const old=document.getElementById('taatheethiAssistantRemoteScript');if(old)old.remove();const s=document.createElement('script');s.id='taatheethiAssistantRemoteScript';s.src=ASSISTANT_REMOTE_SCRIPT+'?v='+Date.now();s.async=true;s.onload=resolve;s.onerror=reject;document.head.appendChild(s);});const remote=window.TAATHEETHI_ASSISTANT_URL||'';if(isValidAssistantUrl(remote)){setAssistantUrl(remote,'remote');return true;}setAssistantUrl('','remote');return true;}catch(e){try{const r=await fetch(ASSISTANT_REMOTE_URL+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const data=await r.json();if(isValidAssistantUrl(data.youtube_url)){setAssistantUrl(data.youtube_url,'remote');return true;}}catch(_){}let fallback='';try{fallback=localStorage.getItem(ASSISTANT_FALLBACK_KEY)||''}catch(_){}setAssistantUrl(fallback,'local');assistantState.textContent=fallback?'تعذر الاتصال بالموقع — تم استخدام آخر رابط محفوظ':'تعذر الوصول إلى رابط الشرح الآن';return false;}}"""
+if old_refresh in c:
+    c=c.replace(old_refresh,new_refresh,1)
+elif 'taatheethiAssistantRemoteScript' not in c:
+    raise SystemExit('assistant refresh function anchor missing')
+
+p.write_text(c,encoding='utf-8')
 
 sw=Path('service-worker.js')
 if sw.exists():
