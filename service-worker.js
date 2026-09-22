@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v59-assistant-auth";
+const CACHE_NAME = "taatheethi-v60-autocad-dxf";
 
 self.addEventListener('install', event => {
   self.skipWaiting();

@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="مخطط الأثاث" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-<title>تأثيثي V59 — المساعد المحمي</title>
+<title>تأثيثي V60 — AutoCAD DXF</title>
 <meta name="taatheethi-version" content="44-layout-reset">
 <style>
   :root{
@@ -112,7 +112,7 @@
   .palette{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}
   .swatch{width:100%;height:26px;border-radius:8px;border:1px solid #475569;cursor:pointer}
   .twoCols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  #fileInput,#loadInput{display:none}
+  #fileInput,#loadInput,#dxfInput{display:none}
   .scrollHint{font-size:11px;color:#94a3b8;margin-top:6px}
   .modalOverlay{position:fixed;inset:0;background:rgba(2,6,23,.72);display:none;align-items:center;justify-content:center;z-index:1000}
   .modalCard{width:min(440px,calc(100vw - 30px));background:#0b1220;border:1px solid #334155;border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.5);padding:18px}
@@ -422,6 +422,7 @@ main{position:relative!important}
     <div class="toolbar toolbarRow workToolbar">
       <button id="sidebarToggle" class="ipadOnly primary">☰ المكتبة</button>
       <label class="btn" for="fileInput"><span class="actionIcon">▣</span>رفع الخارطة</label><input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" />
+      <label class="btn" for="dxfInput"><span class="actionIcon">DXF</span>AutoCAD DXF</label><input id="dxfInput" type="file" accept=".dxf,application/dxf,text/plain" />
       <button id="calibrateBtn"><span class="actionIcon">⌖</span>معايرة القياس</button>
       <button id="measureBtn"><span class="actionIcon">⟷</span>قياس مسافة</button>
       <button id="addMapLabelBtn"><span class="actionIcon">✎</span>إضافة مسمى</button>
@@ -1406,6 +1407,146 @@ async function prepareMapImage(file){
     return await blobToDataURL(blob);
   }finally{ cleanup(); }
 }
+
+
+// ===== V60 AutoCAD DXF import =====
+function dxfPairs(text){
+  const lines=String(text||'').replace(/\r/g,'').split('\n');
+  const out=[];
+  for(let i=0;i+1<lines.length;i+=2){
+    const code=parseInt(lines[i].trim(),10);if(!Number.isFinite(code))continue;
+    out.push({code,value:lines[i+1].trim()});
+  }
+  return out;
+}
+function dxfNumber(v,def=0){const n=Number(v);return Number.isFinite(n)?n:def;}
+function dxfFirst(chunk,code,def=null){const p=chunk.find(x=>x.code===code);return p?dxfNumber(p.value,def):def;}
+function dxfText(chunk,code,def=''){const p=chunk.find(x=>x.code===code);return p?String(p.value||''):def;}
+function dxfInsUnits(pairs){
+  for(let i=0;i<pairs.length;i++)if(pairs[i].code===9&&pairs[i].value==='$INSUNITS'){
+    for(let j=i+1;j<Math.min(pairs.length,i+10);j++)if(pairs[j].code===70)return parseInt(pairs[j].value,10)||0;
+  }
+  return 0;
+}
+function dxfUnitInfo(code){
+  const common={
+    1:{cm:2.54,label:'إنش'},2:{cm:30.48,label:'قدم'},4:{cm:.1,label:'ملم'},5:{cm:1,label:'سم'},6:{cm:100,label:'متر'},
+    10:{cm:91.44,label:'ياردة'},14:{cm:10,label:'ديسيمتر'}
+  };
+  return common[code]||null;
+}
+function askDxfUnitInfo(code){
+  const known=dxfUnitInfo(code);if(known)return known;
+  const answer=prompt('ملف DXF لا يحدد وحدة رسم مدعومة. اكتب وحدة الرسم: mm أو cm أو m','mm');
+  if(answer===null)return null;
+  const s=String(answer).trim().toLowerCase();
+  if(['m','meter','meters','م','متر'].includes(s))return {cm:100,label:'متر (اختيار يدوي)'};
+  if(['cm','centimeter','centimeters','سم'].includes(s))return {cm:1,label:'سم (اختيار يدوي)'};
+  if(['in','inch','inches'].includes(s))return {cm:2.54,label:'إنش (اختيار يدوي)'};
+  return {cm:.1,label:'ملم (اختيار يدوي)'};
+}
+function parseAsciiDxf(text){
+  if(/^AutoCAD Binary DXF/i.test(String(text||'').trimStart()))throw new Error('BINARY_DXF');
+  const pairs=dxfPairs(text);if(!pairs.length)throw new Error('EMPTY_DXF');
+  const insUnits=dxfInsUnits(pairs);
+  let inEntities=false,entities=[];
+  for(let i=0;i<pairs.length;){
+    const p=pairs[i];
+    if(p.code===0&&p.value==='SECTION'&&pairs[i+1]?.code===2&&pairs[i+1]?.value==='ENTITIES'){inEntities=true;i+=2;continue;}
+    if(inEntities&&p.code===0&&p.value==='ENDSEC'){break;}
+    if(!inEntities){i++;continue;}
+    if(p.code!==0){i++;continue;}
+    const type=p.value;
+    if(type==='POLYLINE'){
+      let header=[],verts=[],closed=false;i++;
+      while(i<pairs.length&&pairs[i].code!==0){header.push(pairs[i++]);}
+      closed=((dxfFirst(header,70,0)||0)&1)!==0;
+      while(i<pairs.length){
+        if(pairs[i].code!==0){i++;continue;}
+        if(pairs[i].value==='SEQEND'){i++;break;}
+        if(pairs[i].value!=='VERTEX')break;
+        i++;let ch=[];while(i<pairs.length&&pairs[i].code!==0)ch.push(pairs[i++]);
+        const x=dxfFirst(ch,10,null),y=dxfFirst(ch,20,null);if(x!==null&&y!==null)verts.push({x,y});
+      }
+      if(verts.length>1)entities.push({type:'POLYLINE',verts,closed});
+      continue;
+    }
+    i++;let ch=[];while(i<pairs.length&&pairs[i].code!==0)ch.push(pairs[i++]);
+    if(type==='LINE'){
+      const x1=dxfFirst(ch,10,null),y1=dxfFirst(ch,20,null),x2=dxfFirst(ch,11,null),y2=dxfFirst(ch,21,null);
+      if([x1,y1,x2,y2].every(v=>v!==null))entities.push({type,x1,y1,x2,y2});
+    }else if(type==='LWPOLYLINE'){
+      const verts=[];let cur=null;for(const q of ch){if(q.code===10){if(cur&&cur.y!==undefined)verts.push(cur);cur={x:dxfNumber(q.value)};}else if(q.code===20&&cur){cur.y=dxfNumber(q.value);} }
+      if(cur&&cur.y!==undefined)verts.push(cur);
+      if(verts.length>1)entities.push({type,verts,closed:((dxfFirst(ch,70,0)||0)&1)!==0});
+    }else if(type==='CIRCLE'){
+      const cx=dxfFirst(ch,10,null),cy=dxfFirst(ch,20,null),r=dxfFirst(ch,40,null);if(cx!==null&&cy!==null&&r>0)entities.push({type,cx,cy,r});
+    }else if(type==='ARC'){
+      const cx=dxfFirst(ch,10,null),cy=dxfFirst(ch,20,null),r=dxfFirst(ch,40,null),a1=dxfFirst(ch,50,0),a2=dxfFirst(ch,51,0);if(cx!==null&&cy!==null&&r>0)entities.push({type,cx,cy,r,a1,a2});
+    }else if(type==='POINT'){
+      const x=dxfFirst(ch,10,null),y=dxfFirst(ch,20,null);if(x!==null&&y!==null)entities.push({type,x,y});
+    }
+  }
+  if(!entities.length)throw new Error('NO_2D_ENTITIES');
+  return {entities,insUnits};
+}
+function dxfBounds(entities){
+  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+  const add=(x,y)=>{if(!Number.isFinite(x)||!Number.isFinite(y))return;minX=Math.min(minX,x);minY=Math.min(minY,y);maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);};
+  for(const e of entities){
+    if(e.type==='LINE'){add(e.x1,e.y1);add(e.x2,e.y2);}else if(e.verts){e.verts.forEach(v=>add(v.x,v.y));}
+    else if(e.type==='CIRCLE'||e.type==='ARC'){add(e.cx-e.r,e.cy-e.r);add(e.cx+e.r,e.cy+e.r);}else if(e.type==='POINT')add(e.x,e.y);
+  }
+  if(!Number.isFinite(minX)||!(maxX>minX)||!(maxY>minY))throw new Error('BAD_BOUNDS');
+  return {minX,minY,maxX,maxY,w:maxX-minX,h:maxY-minY};
+}
+function renderDxfMap(parsed,unit){
+  const b=dxfBounds(parsed.entities),touch=isTouchDevice();
+  const maxW=touch?1400:1700,maxH=touch?1000:1150,margin=42;
+  const scale=Math.min((maxW-margin*2)/b.w,(maxH-margin*2)/b.h);
+  if(!Number.isFinite(scale)||scale<=0)throw new Error('BAD_SCALE');
+  const w=Math.max(320,Math.ceil(b.w*scale+margin*2)),h=Math.max(240,Math.ceil(b.h*scale+margin*2));
+  const off=document.createElement('canvas');off.width=w;off.height=h;const g=off.getContext('2d');
+  g.fillStyle='#fff';g.fillRect(0,0,w,h);g.strokeStyle='#111827';g.fillStyle='#111827';g.lineWidth=Math.max(1,Math.min(2.2,scale*.6));g.lineJoin='round';g.lineCap='round';
+  const X=x=>margin+(x-b.minX)*scale,Y=y=>margin+(b.maxY-y)*scale;
+  for(const e of parsed.entities){
+    g.beginPath();
+    if(e.type==='LINE'){g.moveTo(X(e.x1),Y(e.y1));g.lineTo(X(e.x2),Y(e.y2));g.stroke();}
+    else if(e.verts){g.moveTo(X(e.verts[0].x),Y(e.verts[0].y));for(let i=1;i<e.verts.length;i++)g.lineTo(X(e.verts[i].x),Y(e.verts[i].y));if(e.closed)g.closePath();g.stroke();}
+    else if(e.type==='CIRCLE'){g.arc(X(e.cx),Y(e.cy),e.r*scale,0,Math.PI*2);g.stroke();}
+    else if(e.type==='ARC'){
+      // Canvas Y is inverted relative to DXF, therefore angle signs are inverted.
+      const s=-e.a1*Math.PI/180,t=-e.a2*Math.PI/180;g.arc(X(e.cx),Y(e.cy),e.r*scale,s,t,true);g.stroke();
+    }else if(e.type==='POINT'){const x=X(e.x),y=Y(e.y);g.arc(x,y,2.2,0,Math.PI*2);g.fill();}
+  }
+  return {data:off.toDataURL('image/png'),width:w,height:h,pxPerCm:scale/unit.cm,entityCount:parsed.entities.length};
+}
+function loadDxfRenderedMap(result,unit,fileName=''){
+  const img=new Image();
+  img.onload=()=>{
+    bgImage=img;bgData=result.data;
+    items=[];clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;points=[];measurements=[];mapLabels=[];mode='select';pendingFurnitureDef=null;pendingMapLabelText='';
+    pxPerCm=result.pxPerCm;undoStack=[];redoStack=[];updateHistoryButtons();syncSelectedPanel();updateScaleUI();
+    canvas.width=result.width;canvas.height=result.height;updateStageSize();draw();fitToViewport();
+    if(fileName&&!projectMeta.mapTitle)projectMeta.mapTitle=fileName.replace(/\.dxf$/i,'');
+    setStatus(`تم فتح DXF — ${result.entityCount} عنصر — الوحدة ${unit.label} — المقياس مضبوط تلقائيًا`);
+  };
+  img.src=result.data;
+}
+document.getElementById('dxfInput').onchange=async e=>{
+  const input=e.currentTarget,f=input.files&&input.files[0];if(!f)return;
+  input.disabled=true;setStatus('جاري قراءة مخطط AutoCAD DXF…');
+  await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));
+  try{
+    const text=await f.text(),parsed=parseAsciiDxf(text),unit=askDxfUnitInfo(parsed.insUnits);if(!unit){setStatus('تم إلغاء استيراد DXF');return;}
+    const result=renderDxfMap(parsed,unit);loadDxfRenderedMap(result,unit,f.name||'');
+  }catch(err){
+    console.error(err);
+    const msg=err&&err.message==='BINARY_DXF'?'هذا ملف DXF ثنائي. من AutoCAD استخدم Save As واختر DXF بصيغة ASCII ثم أعد فتحه.':'تعذر قراءة ملف DXF. جرّب حفظه من AutoCAD بصيغة DXF ASCII (يفضل 2013 أو 2018) وتأكد أن المخطط ثنائي الأبعاد.';
+    alert(msg);setStatus('لم يتم تحميل ملف DXF');
+  }finally{input.disabled=false;input.value='';}
+};
+// ===== End V60 AutoCAD DXF import =====
 
 document.getElementById('fileInput').onchange=async e=>{
   const input=e.currentTarget,f=input.files&&input.files[0];if(!f)return;
@@ -2635,7 +2776,7 @@ function startNewProject(ask=true){
   mode='select';points=[];drag=null;panDrag=null;measureDrag=null;mapLabelDrag=null;labelPlaceTap=null;pendingCalDistancePx=null;pendingFurnitureDef=null;pendingMapLabelText='';
   canvas.width=1100;canvas.height=750;zoom=1;measureDisplayScale=1;mapLabelDisplayScale=1;
   document.getElementById('zoomRange').value=100;document.getElementById('zoomLabel').textContent='100%';measureSizeRange.value=100;measureSizeLabel.textContent='100%';mapLabelSizeRange.value=100;mapLabelSizeValue.textContent='100%';
-  document.getElementById('fileInput').value='';document.getElementById('loadInput').value='';
+  document.getElementById('fileInput').value='';document.getElementById('loadInput').value='';document.getElementById('dxfInput').value='';
 document.getElementById('measureLockToggle').checked=false;document.getElementById('mapLabelLockToggle').checked=false;document.getElementById('measureLayerToggle').checked=true;mapLabelLayerToggle.checked=true;measureArrowsToggle.checked=true;furnitureSummaryToggle.checked=true;syncQuickDisplayButtons();scheduleUsedFurnitureSync(true);
   scaleModal.style.display='none';targetCursor.style.display='none';hideLiveMeasureBadge();
   updateScaleUI();updateStageSize();updateInteractionCursor();syncSelectedPanel();draw();centerStage();
@@ -2992,6 +3133,7 @@ draw();
     image:svg('<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="9" r="1.5"/><path d="m5 17 4-4 3 3 2-2 5 5"/>'),
     print:svg('<path d="M7 8V4h10v4M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v6H7z"/>'),
     upload:svg('<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 16V8M9 11l3-3 3 3"/>'),
+    cad:svg('<path d="M5 3h10l4 4v14H5z"/><path d="M15 3v5h5M8 16l3-6 3 6M9 14h4M16 11v5h3"/>'),
     target:svg('<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>'),
     ruler:svg('<path d="m5 17 12-12 3 3-12 12z"/><path d="m9 13 2 2M12 10l2 2M15 7l2 2"/>'),
     text:svg('<path d="M5 5h14M12 5v14M8 19h8"/>'),
@@ -3033,8 +3175,10 @@ draw();
 
   const loadInput=document.getElementById('loadInput');
   const fileInput=document.getElementById('fileInput');
+  const dxfInput=document.getElementById('dxfInput');
   if(loadInput)document.body.appendChild(loadInput);
   if(fileInput)document.body.appendChild(fileInput);
+  if(dxfInput)document.body.appendChild(dxfInput);
 
   const iconMarkup=(icon,text='')=>`${I[icon]||I.info}<span class="iconLabel ${String(text||'').length>7?'short':''}">${text||''}</span>`;
   const button=(id,icon,title,fn,cls='',text='')=>{const b=document.createElement('button');b.type='button';b.id=id;b.className='modernIconBtn '+cls;b.title=title;b.setAttribute('aria-label',title);b.innerHTML=iconMarkup(icon,text||title);b.addEventListener('click',fn);return b;};
@@ -3047,7 +3191,8 @@ draw();
       button('v44New','newfile','مشروع جديد',()=>click('newProjectBtn'),'','جديد'),
       label('v44Open','folder','فتح مشروع','loadInput','','فتح'),
       button('v44Save','save','حفظ المشروع',()=>click('saveBtn'),'','حفظ'),
-      label('v44Upload','upload','رفع الخارطة','fileInput','','خارطة')
+      label('v44Upload','upload','رفع الخارطة','fileInput','','خارطة'),
+      label('v60Dxf','cad','فتح مخطط AutoCAD DXF','dxfInput','','DXF')
     ],
     [
       button('v44Calibrate','target','معايرة القياس',()=>click('calibrateBtn'),'','معايرة'),
@@ -3167,5 +3312,6 @@ draw();
 })();
 </script>
 
+<!-- V60 AutoCAD DXF -->
 </body>
 </html>
