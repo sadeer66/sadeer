@@ -1,6 +1,6 @@
 {
   "name": "taatheethi-desktop",
-  "version": "1.0.61",
+  "version": "1.0.62",
   "description": "تأثيثي - مخطط توزيع الأثاث",
   "main": "desktop/main.js",
   "author": "سدير ياسين محمد",
@@ -15,7 +15,7 @@
   "build": {
     "appId": "com.sadeer.taatheethi",
     "productName": "تأثيثي",
-    "artifactName": "Taatheethi-Setup-V61-${arch}.exe",
+    "artifactName": "Taatheethi-Setup-V62-${arch}.exe",
     "asar": true,
     "directories": {
       "output": "dist",
