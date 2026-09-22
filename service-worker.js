@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v46-2-visible-bounds";
+const CACHE_NAME = "taatheethi-v54-restored-display-locks";
 
 self.addEventListener('install', event => {
   self.skipWaiting();
