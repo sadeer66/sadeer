@@ -1490,16 +1490,17 @@ function askDxfUnitInfo(code){
     detectedBox.innerHTML=detected
       ?('الوحدة المكتشفة داخل ملف DXF: <b>'+detected.label+'</b> <span style="color:#94a3b8">($INSUNITS = '+code+')</span><br><span style="color:#fbbf24">يمكنك تغييرها إذا كان الرسم فعليًا بوحدة أخرى.</span>')
       :('ملف DXF لا يحتوي وحدة مدعومة بوضوح <span style="color:#94a3b8">($INSUNITS = '+(code||0)+')</span>.<br><span style="color:#fbbf24">اختر الوحدة الصحيحة حسب طريقة رسم المخطط في AutoCAD.</span>');
-    const supported=['m','cm','mm','in'];
-    const defaultKey=detected&&supported.includes(detected.key)?detected.key:'mm';
-    for(const r of modal.querySelectorAll('input[name="dxfUnitChoice"]'))r.checked=r.value===defaultKey;
+    const choices=[...modal.querySelectorAll('input[name="dxfUnitChoice"]')];
+    for(const r of choices)r.checked=false;
+    const applyBtn=modal.querySelector('#applyDxfUnitBtn');applyBtn.disabled=true;
+    for(const r of choices)r.onchange=()=>{applyBtn.disabled=false;};
     const finish=value=>{
       modal.style.display='none';
-      modal.querySelector('#applyDxfUnitBtn').onclick=null;modal.querySelector('#cancelDxfUnitBtn').onclick=null;modal.onclick=null;
+      modal.querySelector('#applyDxfUnitBtn').onclick=null;modal.querySelector('#cancelDxfUnitBtn').onclick=null;modal.onclick=null;for(const r of modal.querySelectorAll('input[name="dxfUnitChoice"]'))r.onchange=null;
       resolve(value);
     };
     modal.querySelector('#applyDxfUnitBtn').onclick=()=>{
-      const key=modal.querySelector('input[name="dxfUnitChoice"]:checked')?.value||defaultKey;
+      const key=modal.querySelector('input[name="dxfUnitChoice"]:checked')?.value;if(!key){alert('اختر وحدة الرسم أولاً.');return;}
       const unit={...dxfManualUnitInfo(key),manual:true,detectedCode:code||0,detectedLabel:detected?.label||'غير محددة'};
       finish(unit);
     };
