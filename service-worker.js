@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v61-dxf-vector-snap";
+const CACHE_NAME = "taatheethi-v62-dxf-unit-confirm";
 
 self.addEventListener('install', event => {
   self.skipWaiting();
