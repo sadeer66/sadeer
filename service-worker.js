@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v58-assistant";
+const CACHE_NAME = "taatheethi-v59-assistant-auth";
 
 self.addEventListener('install', event => {
   self.skipWaiting();

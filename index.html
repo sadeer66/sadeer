@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="مخطط الأثاث" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-<title>تأثيثي V58 — المساعد</title>
+<title>تأثيثي V59 — المساعد المحمي</title>
 <meta name="taatheethi-version" content="44-layout-reset">
 <style>
   :root{
@@ -610,9 +610,9 @@ main{position:relative!important}
     <div id="assistantState" class="assistantState">جاري التحقق من رابط الشرح…</div>
     <div id="assistantAdminPanel" class="assistantAdminPanel">
       <div class="field"><label>رابط YouTube</label><input id="assistantUrlInput" type="url" inputmode="url" dir="ltr" placeholder="https://www.youtube.com/watch?v=..."></div>
-      <div class="assistantAdminHint">زر «تحديث للجميع» يفتح صفحة تأكيد آمنة في GitHub. بعد الضغط على Submit new issue يتم تحديث الرابط المشترك تلقائيًا، ثم تراه نسخة الويب ونسخة الكمبيوتر عند فتح المساعد.</div>
+      <div class="assistantAdminHint">الدخول إلى إدارة الرابط محمي بباسورد يتم التحقق منه من الموقع، وليس من داخل البرنامج. زر «تحديث للجميع» يفتح GitHub، ولا يعتمد التغيير النهائي إلا من حساب مالك المستودع.</div>
       <div class="assistantAdminActions"><button id="assistantSaveLocalBtn" type="button">حفظ مؤقت على هذا الجهاز</button><button id="assistantPublishBtn" type="button" class="primary">تحديث الرابط للجميع</button></div>
-      <div class="assistantAdminActions"><button id="assistantChangePasswordBtn" type="button">تغيير باسورد الإدارة</button><button id="assistantRefreshBtn" type="button">تحديث الرابط من الموقع</button></div>
+      <div class="assistantAdminActions"><button id="assistantRefreshBtn" type="button">تحديث الرابط من الموقع</button></div>
     </div>
     <div class="modalActions"><button id="closeAssistantBtn" type="button">إغلاق</button></div>
   </div>
@@ -944,11 +944,12 @@ function resizeLogoFile(file){
 }
 
 
-// ===== V58 Shared Assistant =====
+// ===== V59 Shared Assistant =====
 const ASSISTANT_REMOTE_URL='https://sadeer66.github.io/sadeer/assistant.json';
+const ASSISTANT_AUTH_URL='https://sadeer66.github.io/sadeer/assistant-auth.json';
+const ASSISTANT_AUTH_SCRIPT='https://sadeer66.github.io/sadeer/assistant-auth.js';
 const ASSISTANT_REMOTE_SCRIPT='https://sadeer66.github.io/sadeer/assistant-link.js';
 const ASSISTANT_FALLBACK_KEY='taatheethiAssistantUrlFallbackV1';
-const ASSISTANT_ADMIN_HASH_KEY='taatheethiAssistantAdminHashV1';
 let assistantCurrentUrl='';
 const assistantModal=document.getElementById('assistantModal');
 const assistantWatchBtn=document.getElementById('assistantWatchBtn');
@@ -961,22 +962,45 @@ async function refreshAssistantUrl(showState=true){if(showState)assistantState.t
 function openAssistantDialog(){assistantModal.style.display='flex';assistantAdminPanel.classList.remove('open');refreshAssistantUrl(true);}
 function closeAssistantDialog(){assistantModal.style.display='none';assistantAdminPanel.classList.remove('open');}
 async function sha256Text(s){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');}
-async function ensureAssistantAdminUnlocked(){let saved='';try{saved=localStorage.getItem(ASSISTANT_ADMIN_HASH_KEY)||''}catch(e){}if(!saved){const p1=prompt('أنشئ باسورد إدارة رابط المساعد لهذا الجهاز:');if(!p1)return false;if(p1.length<4){alert('اجعل الباسورد 4 أحرف أو أرقام على الأقل.');return false;}const p2=prompt('أعد كتابة الباسورد للتأكيد:');if(p1!==p2){alert('الباسورد غير متطابق.');return false;}const h=await sha256Text(p1);try{localStorage.setItem(ASSISTANT_ADMIN_HASH_KEY,h)}catch(e){}return true;}const p=prompt('أدخل باسورد إدارة رابط المساعد:');if(!p)return false;if(await sha256Text(p)!==saved){alert('الباسورد غير صحيح.');return false;}return true;}
+async function fetchAssistantAdminHash(){
+  try{
+    delete window.TAATHEETHI_ASSISTANT_HASH;
+    await new Promise((resolve,reject)=>{
+      const old=document.getElementById('taatheethiAssistantAuthScript');if(old)old.remove();
+      const s=document.createElement('script');s.id='taatheethiAssistantAuthScript';s.src=ASSISTANT_AUTH_SCRIPT+'?v='+Date.now();s.async=true;s.onload=resolve;s.onerror=reject;document.head.appendChild(s);
+    });
+    const h=String(window.TAATHEETHI_ASSISTANT_HASH||'').trim().toLowerCase();
+    if(/^[a-f0-9]{64}$/.test(h))return h;
+  }catch(e){}
+  try{
+    const r=await fetch(ASSISTANT_AUTH_URL+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);
+    const data=await r.json();const h=String(data.sha256||'').trim().toLowerCase();
+    if(/^[a-f0-9]{64}$/.test(h))return h;
+  }catch(e){}
+  return '';
+}
+async function ensureAssistantAdminUnlocked(){
+  const p=prompt('أدخل باسورد إدارة رابط المساعد:');if(!p)return false;
+  assistantState.textContent='جاري التحقق من الباسورد من الموقع…';
+  const remoteHash=await fetchAssistantAdminHash();
+  if(!remoteHash){assistantState.textContent='تعذر التحقق من الباسورد الآن';alert('تعذر الاتصال بملف التحقق على الموقع. تأكد من وجود الإنترنت وحاول مرة أخرى.');return false;}
+  const entered=await sha256Text(p);
+  if(entered!==remoteHash){assistantState.textContent='الباسورد غير صحيح';alert('الباسورد غير صحيح.');return false;}
+  assistantState.textContent='تم التحقق من باسورد الإدارة';return true;
+}
 async function openAssistantAdmin(){if(!await ensureAssistantAdminUnlocked())return;assistantAdminPanel.classList.add('open');assistantUrlInput.value=assistantCurrentUrl||'';}
-async function changeAssistantPassword(){let saved='';try{saved=localStorage.getItem(ASSISTANT_ADMIN_HASH_KEY)||''}catch(e){}if(saved){const old=prompt('أدخل الباسورد الحالي:');if(!old||await sha256Text(old)!==saved){alert('الباسورد الحالي غير صحيح.');return;}}const p1=prompt('أدخل الباسورد الجديد:');if(!p1)return;if(p1.length<4){alert('اجعل الباسورد 4 أحرف أو أرقام على الأقل.');return;}const p2=prompt('أعد كتابة الباسورد الجديد:');if(p1!==p2){alert('الباسورد غير متطابق.');return;}try{localStorage.setItem(ASSISTANT_ADMIN_HASH_KEY,await sha256Text(p1));alert('تم تغيير باسورد الإدارة على هذا الجهاز.');}catch(e){alert('تعذر حفظ الباسورد.');}}
 function saveAssistantLocal(){const url=assistantUrlInput.value.trim();if(!isValidAssistantUrl(url)){alert('أدخل رابط YouTube صحيحًا يبدأ بـ https://');return;}setAssistantUrl(url,'local');assistantState.textContent='تم حفظ الرابط مؤقتًا على هذا الجهاز';}
 function publishAssistantLink(){const url=assistantUrlInput.value.trim();if(!isValidAssistantUrl(url)){alert('أدخل رابط YouTube صحيحًا قبل التحديث.');return;}setAssistantUrl(url,'local');const title='[Taatheethi Assistant] Update YouTube link';const body='TAATHEETHI_ASSISTANT_URL\n'+url+'\n\nتم إنشاء هذا الطلب من صفحة المساعد في برنامج تأثيثي.';const issue='https://github.com/sadeer66/sadeer/issues/new?title='+encodeURIComponent(title)+'&body='+encodeURIComponent(body);window.open(issue,'_blank','noopener');assistantState.textContent='تم فتح GitHub — اضغط Submit new issue لإكمال تحديث الرابط للجميع';}
 assistantWatchBtn?.addEventListener('click',()=>{if(assistantCurrentUrl)window.open(assistantCurrentUrl,'_blank','noopener');});
 document.getElementById('assistantAdminBtn')?.addEventListener('click',openAssistantAdmin);
 document.getElementById('assistantSaveLocalBtn')?.addEventListener('click',saveAssistantLocal);
 document.getElementById('assistantPublishBtn')?.addEventListener('click',publishAssistantLink);
-document.getElementById('assistantChangePasswordBtn')?.addEventListener('click',changeAssistantPassword);
 document.getElementById('assistantRefreshBtn')?.addEventListener('click',()=>refreshAssistantUrl(true));
 document.getElementById('closeAssistantBtn')?.addEventListener('click',closeAssistantDialog);
 document.getElementById('assistantBtn')?.addEventListener('click',openAssistantDialog);
 assistantModal?.addEventListener('click',e=>{if(e.target===assistantModal)closeAssistantDialog();});
 refreshAssistantUrl(false);
-// ===== End V58 Shared Assistant =====
+// ===== End V59 Shared Assistant =====
 
 document.getElementById('infoBtn').onclick=openBrandDialog;
 document.getElementById('cancelBrandBtn').onclick=()=>brandModal.style.display='none';
