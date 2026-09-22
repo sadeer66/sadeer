@@ -1,0 +1,1 @@
+window.TAATHEETHI_ASSISTANT_URL = '';
