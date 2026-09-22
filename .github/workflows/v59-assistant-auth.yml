@@ -1,0 +1,44 @@
+name: Patch Taatheethi V59 Assistant Auth
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/v59-assistant-auth.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-v59:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Apply V59 remote password verification
+        run: python .github/scripts/apply_v59.py
+      - name: Validate inline JavaScript syntax
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          c=Path('index.html').read_text(encoding='utf-8')
+          scripts=re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',c,re.S|re.I)
+          inline='\n'.join(s for s in scripts if s.strip())
+          Path('/tmp/taatheethi-inline.js').write_text(inline,encoding='utf-8')
+          PY
+          node --check /tmp/taatheethi-inline.js
+      - name: Commit V59
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html service-worker.js
+          if git diff --cached --quiet; then
+            echo "No changes needed"
+          else
+            git commit -m "Taatheethi V59: verify assistant password from website"
+            git pull --rebase origin master
+            git push
+          fi
