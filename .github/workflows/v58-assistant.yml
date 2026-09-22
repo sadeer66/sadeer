@@ -1,0 +1,31 @@
+name: Patch Taatheethi V58 Assistant
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/v58-assistant.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-v58:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Apply V58 assistant patch
+        run: python .github/scripts/apply_v58.py
+      - name: Commit V58
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html service-worker.js
+          if git diff --cached --quiet; then
+            echo "No changes needed"
+          else
+            git commit -m "Taatheethi V58: add shared assistant next to Info"
+            git push
+          fi
