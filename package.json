@@ -38,7 +38,8 @@
             "x64"
           ]
         }
-      ]
+      ],
+      "icon": "build/taatheethi.png"
     },
     "nsis": {
       "oneClick": false,
