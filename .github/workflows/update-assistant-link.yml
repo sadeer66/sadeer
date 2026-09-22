@@ -38,6 +38,8 @@ jobs:
             'updated_at': event.get('issue',{}).get('updated_at') or event.get('issue',{}).get('created_at')
           }
           pathlib.Path('assistant.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          js='window.TAATHEETHI_ASSISTANT_URL = '+json.dumps(url,ensure_ascii=False)+';\n'
+          pathlib.Path('assistant-link.js').write_text(js,encoding='utf-8')
           PY
 
       - name: Commit shared assistant link
@@ -45,7 +47,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assistant.json
+          git add assistant.json assistant-link.js
           if git diff --cached --quiet; then
             echo "No link change"
           else
