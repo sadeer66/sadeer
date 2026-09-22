@@ -39,3 +39,5 @@ jobs:
           path: dist/*.exe
           if-no-files-found: error
           retention-days: 30
+
+# retry-desktop-1
