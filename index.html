@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="مخطط الأثاث" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-<title>تأثيثي V66 — Area & Ungroup Fix</title>
+<title>تأثيثي V67 — Area & Ungroup Final Fix</title>
 <meta name="taatheethi-version" content="44-layout-reset">
 <style>
   :root{
@@ -2063,7 +2063,7 @@ function placeMapLabelAt(p){
 
 canvas.addEventListener('click',ev=>{
   if(Date.now()<suppressCanvasClickUntil){ev.preventDefault();return;}
-  if(mode==='areaMeasure'){if(ev.pointerType==='touch')return;let p=clampPointToCanvas(toCanvasPos(ev));if(dxfModel)p=snapPointToDxf(p);areaDraft.push({...p});setStatus('تم تحديد '+areaDraft.length+' نقطة — اضغط «إنهاء مساحة» بعد آخر زاوية');draw();return;}
+  if(mode==='areaMeasure'){if(ev.pointerType==='touch')return;let p=clampPointToCanvas(toCanvasPos(ev));if(dxfModel)p=snapPointToDxf(p);addAreaPoint(p);return;}
   if(mode==='labelPlace'){
     placeMapLabelAt(toCanvasPos(ev));return;
   }
@@ -2262,8 +2262,7 @@ function endPointer(ev){
     if(areaTouchTap&&areaTouchTap.pointerId===ev.pointerId&&mode==='areaMeasure'){
       const tap=areaTouchTap;areaTouchTap=null;suppressCanvasClickUntil=Date.now()+700;
       if(ev.type!=='pointercancel'&&!tap.moved){
-        let p=clampPointToCanvas(toCanvasPos(ev));if(dxfModel)p=snapPointToDxf(p);areaDraft.push({...p});
-        setStatus('تم تحديد '+areaDraft.length+' نقطة — اضغط «إنهاء مساحة» بعد آخر زاوية');draw();
+        let p=clampPointToCanvas(toCanvasPos(ev));if(dxfModel)p=snapPointToDxf(p);addAreaPoint(p);
       }
       ev.preventDefault();return;
     }
@@ -2688,21 +2687,42 @@ function polygonAreaStats(pts){
   let twice=0,per=0;for(let i=0;i<pts.length;i++){const a=pts[i],b=pts[(i+1)%pts.length];twice+=a.x*b.y-b.x*a.y;per+=Math.hypot(b.x-a.x,b.y-a.y);}
   return {areaM2:Math.abs(twice)/2/(pxPerCm*pxPerCm)/10000,perimeterM:per/pxPerCm/100};
 }
-function syncAreaToolLabel(){const b=document.getElementById('v65Area'),s=b?.querySelector('.iconLabel');if(s)s.textContent=mode==='areaMeasure'?'إنهاء مساحة':'مساحة';b?.classList.toggle('active',mode==='areaMeasure');}
+function areaStatsText(st,prefix='المساحة'){return prefix+' '+st.areaM2.toFixed(2)+' م² — المحيط '+st.perimeterM.toFixed(2)+' م';}
+function showAreaBadge(text){areaResultBadge.textContent=text;areaResultBadge.style.display='block';}
+function updateAreaLiveResult(){
+  if(mode!=='areaMeasure')return;
+  if(areaDraft.length>=3){
+    const st=polygonAreaStats(areaDraft);
+    const txt=areaStatsText(st,'مساحة مؤقتة')+' — اضغط «إنهاء مساحة» أو المس النقطة الأولى';
+    showAreaBadge(txt);setStatus(txt);
+  }else{
+    const need=3-areaDraft.length;
+    showAreaBadge(areaDraft.length?('تم تحديد '+areaDraft.length+' نقطة — بقي '+need+' قبل ظهور المساحة'):'حدد زوايا الغرفة — تظهر المساحة مباشرة بعد النقطة الثالثة');
+  }
+}
+function addAreaPoint(p){
+  if(mode!=='areaMeasure')return;
+  if(areaDraft.length>=3&&areaDraft[0]){
+    const closeRadius=Math.max(10,18/Math.max(.4,zoom));
+    if(Math.hypot(p.x-areaDraft[0].x,p.y-areaDraft[0].y)<=closeRadius){finishAreaTool();return;}
+  }
+  areaDraft.push({...p});updateAreaLiveResult();draw();
+}
+function syncAreaToolLabel(){const b=document.getElementById('v65Area'),sp=b?.querySelector('.iconLabel');if(sp)sp.textContent=mode==='areaMeasure'?'إنهاء مساحة':'مساحة';b?.classList.toggle('active',mode==='areaMeasure');}
 function finishAreaTool(){
   if(mode!=='areaMeasure')return;
   if(areaDraft.length>=3){
     const st=polygonAreaStats(areaDraft),name=(prompt('اسم الغرفة أو المساحة:','غرفة '+(areaPolygons.length+1))||('غرفة '+(areaPolygons.length+1))).trim();
     const before=cloneEditState();const result={id:randId(),name,points:areaDraft.map(p=>({...p})),areaM2:st.areaM2,perimeterM:st.perimeterM};areaPolygons.push(result);lastAreaResult=result;areaDraft=[];mode='select';commitHistory(before);
-    const areaText='المساحة '+st.areaM2.toFixed(2)+' م² — المحيط '+st.perimeterM.toFixed(2)+' م';
-    setStatus(areaText);areaResultBadge.textContent=areaText;areaResultBadge.style.display='block';setTimeout(()=>{areaResultBadge.style.display='none';},5000);
-  }else{areaDraft=[];mode='select';setStatus('تم إلغاء أداة المساحة — يلزم 3 نقاط على الأقل');}
+    const areaText=areaStatsText(st);
+    setStatus(areaText);showAreaBadge(areaText);setTimeout(()=>{if(mode!=='areaMeasure')areaResultBadge.style.display='none';},8000);
+  }else{areaDraft=[];mode='select';areaResultBadge.style.display='none';setStatus('تم إلغاء أداة المساحة — يلزم 3 نقاط على الأقل');}
   updateInteractionCursor();syncAreaToolLabel();draw();
 }
 function toggleAreaTool(){
   if(mode==='areaMeasure'){finishAreaTool();return;}
   if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}if(!pxPerCm){alert('عاير الخارطة أولاً حتى يمكن حساب المساحة والمحيط.');return;}
-  mode='areaMeasure';areaDraft=[];clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;pendingFurnitureDef=null;updateInteractionCursor();syncSelectedPanel();syncAreaToolLabel();setStatus('المساحة: اضغط زوايا الغرفة بالترتيب، ثم اضغط «إنهاء مساحة»');draw();
+  mode='areaMeasure';areaDraft=[];clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;pendingFurnitureDef=null;updateInteractionCursor();syncSelectedPanel();syncAreaToolLabel();updateAreaLiveResult();setStatus('المساحة: حدد زوايا الغرفة — تظهر النتيجة بعد النقطة الثالثة');draw();
 }
 function drawAreaPolygons(){
   if(!pxPerCm)return;ctx.save();ctx.lineJoin='round';
@@ -2710,20 +2730,40 @@ function drawAreaPolygons(){
     const cx=a.points.reduce((s,p)=>s+p.x,0)/a.points.length,cy=a.points.reduce((s,p)=>s+p.y,0)/a.points.length,txt=a.name+'  '+a.areaM2.toFixed(2)+' م² • '+a.perimeterM.toFixed(2)+' م',fs=Math.max(10,13/zoom);ctx.font='700 '+fs+'px Tahoma';const tw=ctx.measureText(txt).width;ctx.fillStyle='rgba(255,255,255,.94)';roundRectPath(cx-tw/2-6,cy-fs*.8,tw+12,fs*1.6,5);ctx.fill();ctx.strokeStyle='#0284c7';ctx.lineWidth=1;ctx.stroke();ctx.fillStyle='#0f172a';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,cx,cy);}
   if(mode==='areaMeasure'&&areaDraft.length){
     ctx.beginPath();ctx.moveTo(areaDraft[0].x,areaDraft[0].y);for(let i=1;i<areaDraft.length;i++)ctx.lineTo(areaDraft[i].x,areaDraft[i].y);
+    if(areaDraft.length>=3)ctx.closePath();
     ctx.strokeStyle='#0ea5e9';ctx.lineWidth=Math.max(1.2,2/zoom);ctx.setLineDash([6/zoom,4/zoom]);ctx.stroke();ctx.setLineDash([]);
+    if(areaDraft.length>=3){
+      ctx.fillStyle='rgba(14,165,233,.09)';ctx.fill();
+      const st=polygonAreaStats(areaDraft),cx=areaDraft.reduce((v,p)=>v+p.x,0)/areaDraft.length,cy=areaDraft.reduce((v,p)=>v+p.y,0)/areaDraft.length;
+      const txt=st.areaM2.toFixed(2)+' م²',fs=Math.max(13,16/zoom);ctx.font='700 '+fs+'px Tahoma';const tw=ctx.measureText(txt).width;
+      ctx.fillStyle='rgba(255,255,255,.96)';roundRectPath(cx-tw/2-8,cy-fs*.85,tw+16,fs*1.7,7);ctx.fill();ctx.strokeStyle='#0284c7';ctx.lineWidth=1;ctx.stroke();ctx.fillStyle='#0f172a';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,cx,cy);
+    }
     for(const p of areaDraft){ctx.beginPath();ctx.arc(p.x,p.y,5/zoom,0,Math.PI*2);ctx.fillStyle='#0ea5e9';ctx.fill();}
   }
   ctx.restore();
 }
-function groupSelectedItems(){const list=selectedItems().filter(it=>!it.locked);if(list.length<2){setStatus('حدد قطعتين أو أكثر ثم اضغط جروب');return;}const before=cloneEditState(),gid='grp_'+randId();list.forEach(it=>it.groupId=gid);commitHistory(before);syncSelectedPanel();draw();setStatus('تم إنشاء جروب من '+list.length+' قطع');}
+function groupSelectedItems(){
+  const list=selectedItems().filter(it=>!it.locked);
+  if(list.length<2){setStatus('حدد قطعتين أو أكثر ثم اضغط جروب');return;}
+  const before=cloneEditState(),gid='grp_'+randId();
+  list.forEach(it=>it.groupId=gid);
+  setSelection(list.map(it=>it.id),list[0].id);
+  const mt=document.getElementById('multiSelectToggle');if(mt)mt.checked=false;
+  commitHistory(before);syncSelectedPanel();draw();setStatus('تم إنشاء جروب من '+list.length+' قطع — يتحرك الآن كقطعة واحدة');
+}
 function ungroupSelectedItems(){
-  const list=selectedItems(),gids=new Set(list.map(it=>it.groupId).filter(Boolean));
-  if(!gids.size){setStatus('المحدد ليس ضمن جروب');return;}
-  const before=cloneEditState(),primary=list[0]?.id||null;
-  items.forEach(it=>{if(gids.has(it.groupId))it.groupId=null;});
-  const mt=document.getElementById('multiSelectToggle');if(mt){mt.checked=false;mt.dispatchEvent(new Event('change',{bubbles:true}));}
-  if(primary)setSelection([primary],primary);else clearFurnitureSelection();
-  commitHistory(before);syncSelectedPanel();draw();setStatus('تم فك الجروب — أصبحت القطع مستقلة ويمكن تحديد كل قطعة وحدها');
+  const list=selectedItems();
+  const gids=new Set(list.map(it=>it.groupId).filter(Boolean));
+  if(!gids.size&&selectedId){const one=items.find(it=>it.id===selectedId);if(one?.groupId)gids.add(one.groupId);}
+  if(!gids.size){setStatus('اختر أي قطعة من الجروب ثم اضغط «فك جروب»');return;}
+  const affected=items.filter(it=>gids.has(it.groupId));
+  if(!affected.length){setStatus('لم يتم العثور على قطع الجروب');return;}
+  const before=cloneEditState();
+  affected.forEach(it=>{it.groupId=null;});
+  const keep=list.find(it=>affected.some(a=>a.id===it.id))||affected[0]||null;
+  const mt=document.getElementById('multiSelectToggle');if(mt)mt.checked=false;
+  if(keep)setSelection([keep.id],keep.id);else clearFurnitureSelection();
+  commitHistory(before);syncSelectedPanel();draw();setStatus('تم فك الجروب إلى '+affected.length+' قطع مستقلة');
 }
 function alignSelectedItems(kind){const list=selectedItems().filter(it=>!it.locked);if(list.length<2){setStatus('حدد قطعتين أو أكثر للترتيب');return;}const before=cloneEditState(),boxes=list.map(it=>({it,b:itemAABBAt(it)}));
   if(kind==='left'){const t=Math.min(...boxes.map(x=>x.b.minX));boxes.forEach(x=>x.it.x+=t-x.b.minX);}if(kind==='right'){const t=Math.max(...boxes.map(x=>x.b.maxX));boxes.forEach(x=>x.it.x+=t-x.b.maxX);}if(kind==='top'){const t=Math.min(...boxes.map(x=>x.b.minY));boxes.forEach(x=>x.it.y+=t-x.b.minY);}if(kind==='bottom'){const t=Math.max(...boxes.map(x=>x.b.maxY));boxes.forEach(x=>x.it.y+=t-x.b.maxY);}if(kind==='centerX'){const t=(Math.min(...boxes.map(x=>x.b.minX))+Math.max(...boxes.map(x=>x.b.maxX)))/2;boxes.forEach(x=>x.it.x+=t-x.b.cx);}if(kind==='centerY'){const t=(Math.min(...boxes.map(x=>x.b.minY))+Math.max(...boxes.map(x=>x.b.maxY)))/2;boxes.forEach(x=>x.it.y+=t-x.b.cy);}if(kind==='distX'&&list.length>=3){const s=[...list].sort((a,b)=>a.x-b.x),x0=s[0].x,x1=s.at(-1).x,step=(x1-x0)/(s.length-1);s.forEach((it,i)=>it.x=x0+step*i);}if(kind==='distY'&&list.length>=3){const s=[...list].sort((a,b)=>a.y-b.y),y0=s[0].y,y1=s.at(-1).y,step=(y1-y0)/(s.length-1);s.forEach((it,i)=>it.y=y0+step*i);}commitHistory(before);syncSelectedPanel();draw();setStatus('تم ترتيب القطع المحددة');}
@@ -3608,5 +3648,6 @@ draw();
 <!-- V63 Hi-Res Map Display -->
 <!-- V65 Stable Interaction Fix -->
 <!-- V66 Area & Ungroup Fix -->
+<!-- V67 Area & Ungroup Final Fix -->
 </body>
 </html>
