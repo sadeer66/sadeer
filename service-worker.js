@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v68-ipad-area-wand-delete";
+const CACHE_NAME = "taatheethi-v69-ui-icon-label-scale";
 
 self.addEventListener('install', event => {
   self.skipWaiting();
