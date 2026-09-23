@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="مخطط الأثاث" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-<title>تأثيثي V66 — Area & Ungroup Fix</title>
+<title>تأثيثي V67 — Reliable Area & Ungroup</title>
 <meta name="taatheethi-version" content="44-layout-reset">
 <style>
   :root{
@@ -698,7 +698,8 @@ const stage=document.getElementById('stage');
 const mainScroll=document.getElementById('mainScroll');
 const areaResultBadge=document.createElement('div');
 areaResultBadge.id='areaResultBadge';
-areaResultBadge.style.cssText='display:none;position:fixed;z-index:4500;left:50%;bottom:18px;transform:translateX(-50%);direction:rtl;background:rgba(2,6,23,.94);color:#fff;border:1px solid #38bdf8;border-radius:12px;padding:9px 14px;font:700 13px Tahoma;box-shadow:0 10px 30px rgba(0,0,0,.35);pointer-events:none;white-space:nowrap';
+areaResultBadge.style.cssText='display:none;position:fixed;z-index:6500;left:50%;top:calc(env(safe-area-inset-top, 0px) + 128px);bottom:auto;transform:translateX(-50%);direction:rtl;background:rgba(2,6,23,.96);color:#fff;border:2px solid #38bdf8;border-radius:14px;padding:11px 16px;font:700 14px/1.5 Tahoma;box-shadow:0 12px 34px rgba(0,0,0,.42);pointer-events:none;max-width:calc(100vw - 28px);white-space:normal;text-align:center';
+areaResultBadge.setAttribute('role','status');areaResultBadge.setAttribute('aria-live','polite');
 document.body.appendChild(areaResultBadge);
 
 const usedFurniturePanel=document.getElementById('usedFurniturePanel');
@@ -780,7 +781,7 @@ const mapLabelTextInput=document.getElementById('mapLabelTextInput');
 const deleteMapLabelBtn=document.getElementById('deleteMapLabelBtn');
 
 
-let bgImage=null,bgData=null,dxfModel=null,dxfSnapSegments=[],dxfSnapKeyPoints=[],dxfActiveSnap=null,items=[],selectedId=null,selectedIds=[],selectedMeasureId=null,selectedMapLabelId=null,pxPerCm=null,mode='select',points=[],drag=null,panDrag=null,measureDrag=null,mapLabelDrag=null,zoom=1,measureDisplayScale=1,mapLabelDisplayScale=1,measurements=[],mapLabels=[],areaPolygons=[],areaDraft=[],areaTouchTap=null,lastAreaResult=null,pendingCalDistancePx=null,pendingFurnitureDef=null,pendingMapLabelText='',libraryDragActive=false;
+let bgImage=null,bgData=null,dxfModel=null,dxfSnapSegments=[],dxfSnapKeyPoints=[],dxfActiveSnap=null,items=[],selectedId=null,selectedIds=[],selectedMeasureId=null,selectedMapLabelId=null,pxPerCm=null,mode='select',points=[],drag=null,panDrag=null,measureDrag=null,mapLabelDrag=null,zoom=1,measureDisplayScale=1,mapLabelDisplayScale=1,measurements=[],mapLabels=[],areaPolygons=[],areaDraft=[],areaTouchTap=null,lastAreaResult=null,areaResultTimer=null,pendingCalDistancePx=null,pendingFurnitureDef=null,pendingMapLabelText='',libraryDragActive=false;
 function hasPlan(){return !!(bgImage||dxfModel);}
 let undoStack=[],redoStack=[],snapGuides=[],inspectorEditBefore=null;
 let touchLibraryDrag=null,touchDragGhost=null;
@@ -2063,7 +2064,7 @@ function placeMapLabelAt(p){
 
 canvas.addEventListener('click',ev=>{
   if(Date.now()<suppressCanvasClickUntil){ev.preventDefault();return;}
-  if(mode==='areaMeasure'){if(ev.pointerType==='touch')return;let p=clampPointToCanvas(toCanvasPos(ev));if(dxfModel)p=snapPointToDxf(p);areaDraft.push({...p});setStatus('تم تحديد '+areaDraft.length+' نقطة — اضغط «إنهاء مساحة» بعد آخر زاوية');draw();return;}
+  if(mode==='areaMeasure'){if(ev.pointerType==='touch')return;let p=clampPointToCanvas(toCanvasPos(ev));if(dxfModel)p=snapPointToDxf(p);areaDraft.push({...p});updateAreaDraftFeedback();draw();return;}
   if(mode==='labelPlace'){
     placeMapLabelAt(toCanvasPos(ev));return;
   }
@@ -2263,7 +2264,7 @@ function endPointer(ev){
       const tap=areaTouchTap;areaTouchTap=null;suppressCanvasClickUntil=Date.now()+700;
       if(ev.type!=='pointercancel'&&!tap.moved){
         let p=clampPointToCanvas(toCanvasPos(ev));if(dxfModel)p=snapPointToDxf(p);areaDraft.push({...p});
-        setStatus('تم تحديد '+areaDraft.length+' نقطة — اضغط «إنهاء مساحة» بعد آخر زاوية');draw();
+        updateAreaDraftFeedback();draw();
       }
       ev.preventDefault();return;
     }
@@ -2688,21 +2689,41 @@ function polygonAreaStats(pts){
   let twice=0,per=0;for(let i=0;i<pts.length;i++){const a=pts[i],b=pts[(i+1)%pts.length];twice+=a.x*b.y-b.x*a.y;per+=Math.hypot(b.x-a.x,b.y-a.y);}
   return {areaM2:Math.abs(twice)/2/(pxPerCm*pxPerCm)/10000,perimeterM:per/pxPerCm/100};
 }
+function showAreaResultText(text,autoHide=false){
+  if(areaResultTimer){clearTimeout(areaResultTimer);areaResultTimer=null;}
+  areaResultBadge.textContent=text;areaResultBadge.style.display='block';
+  if(autoHide)areaResultTimer=setTimeout(()=>{areaResultBadge.style.display='none';areaResultTimer=null;},7000);
+}
+function updateAreaDraftFeedback(){
+  if(mode!=='areaMeasure')return;
+  if(areaDraft.length>=3){
+    const st=polygonAreaStats(areaDraft);
+    const text='المساحة الحالية '+st.areaM2.toFixed(2)+' م² — المحيط '+st.perimeterM.toFixed(2)+' م';
+    showAreaResultText(text,false);
+    setStatus(text+' — أضف زاوية أو اضغط «إنهاء مساحة»');
+  }else{
+    const remain=3-areaDraft.length;
+    const text='تم تحديد '+areaDraft.length+' نقطة — بقي '+remain+' لبدء حساب المساحة';
+    showAreaResultText(text,false);setStatus(text);
+  }
+}
 function syncAreaToolLabel(){const b=document.getElementById('v65Area'),s=b?.querySelector('.iconLabel');if(s)s.textContent=mode==='areaMeasure'?'إنهاء مساحة':'مساحة';b?.classList.toggle('active',mode==='areaMeasure');}
 function finishAreaTool(){
   if(mode!=='areaMeasure')return;
   if(areaDraft.length>=3){
-    const st=polygonAreaStats(areaDraft),name=(prompt('اسم الغرفة أو المساحة:','غرفة '+(areaPolygons.length+1))||('غرفة '+(areaPolygons.length+1))).trim();
+    const st=polygonAreaStats(areaDraft),name='غرفة '+(areaPolygons.length+1);
     const before=cloneEditState();const result={id:randId(),name,points:areaDraft.map(p=>({...p})),areaM2:st.areaM2,perimeterM:st.perimeterM};areaPolygons.push(result);lastAreaResult=result;areaDraft=[];mode='select';commitHistory(before);
     const areaText='المساحة '+st.areaM2.toFixed(2)+' م² — المحيط '+st.perimeterM.toFixed(2)+' م';
-    setStatus(areaText);areaResultBadge.textContent=areaText;areaResultBadge.style.display='block';setTimeout(()=>{areaResultBadge.style.display='none';},5000);
-  }else{areaDraft=[];mode='select';setStatus('تم إلغاء أداة المساحة — يلزم 3 نقاط على الأقل');}
+    showAreaResultText(areaText,false);setStatus('تم حساب '+areaText);
+  }else{
+    areaDraft=[];mode='select';showAreaResultText('يلزم تحديد 3 زوايا على الأقل لحساب المساحة',true);setStatus('تم إلغاء أداة المساحة — يلزم 3 نقاط على الأقل');
+  }
   updateInteractionCursor();syncAreaToolLabel();draw();
 }
 function toggleAreaTool(){
   if(mode==='areaMeasure'){finishAreaTool();return;}
   if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}if(!pxPerCm){alert('عاير الخارطة أولاً حتى يمكن حساب المساحة والمحيط.');return;}
-  mode='areaMeasure';areaDraft=[];clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;pendingFurnitureDef=null;updateInteractionCursor();syncSelectedPanel();syncAreaToolLabel();setStatus('المساحة: اضغط زوايا الغرفة بالترتيب، ثم اضغط «إنهاء مساحة»');draw();
+  mode='areaMeasure';areaDraft=[];lastAreaResult=null;clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;pendingFurnitureDef=null;updateInteractionCursor();syncSelectedPanel();syncAreaToolLabel();showAreaResultText('حدد زوايا الغرفة — بعد النقطة الثالثة ستظهر المساحة مباشرة',false);setStatus('المساحة: اضغط زوايا الغرفة بالترتيب، ثم اضغط «إنهاء مساحة»');draw();
 }
 function drawAreaPolygons(){
   if(!pxPerCm)return;ctx.save();ctx.lineJoin='round';
@@ -2715,15 +2736,26 @@ function drawAreaPolygons(){
   }
   ctx.restore();
 }
-function groupSelectedItems(){const list=selectedItems().filter(it=>!it.locked);if(list.length<2){setStatus('حدد قطعتين أو أكثر ثم اضغط جروب');return;}const before=cloneEditState(),gid='grp_'+randId();list.forEach(it=>it.groupId=gid);commitHistory(before);syncSelectedPanel();draw();setStatus('تم إنشاء جروب من '+list.length+' قطع');}
+function groupSelectedItems(){
+  const list=selectedItems().filter(it=>!it.locked);
+  if(list.length<2){setStatus('حدد قطعتين أو أكثر ثم اضغط جروب');return;}
+  const before=cloneEditState(),gid='grp_'+randId();list.forEach(it=>it.groupId=gid);
+  const primary=selectedId&&list.some(it=>it.id===selectedId)?selectedId:list[list.length-1].id;
+  setSelection(list.map(it=>it.id),primary);commitHistory(before);syncSelectedPanel();draw();setStatus('تم إنشاء جروب من '+list.length+' قطع');
+}
 function ungroupSelectedItems(){
-  const list=selectedItems(),gids=new Set(list.map(it=>it.groupId).filter(Boolean));
+  const ids=getSelectedIds(),primaryId=selectedId||ids[ids.length-1]||null;
+  const primary=primaryId?items.find(it=>it.id===primaryId):null;
+  const gids=new Set();
+  if(primary?.groupId)gids.add(primary.groupId);
+  for(const id of ids){const it=items.find(x=>x.id===id);if(it?.groupId)gids.add(it.groupId);}
   if(!gids.size){setStatus('المحدد ليس ضمن جروب');return;}
-  const before=cloneEditState(),primary=list[0]?.id||null;
-  items.forEach(it=>{if(gids.has(it.groupId))it.groupId=null;});
+  const before=cloneEditState(),affected=items.filter(it=>it.groupId&&gids.has(it.groupId));
+  affected.forEach(it=>{it.groupId=null;});
+  const keepId=(primaryId&&affected.some(it=>it.id===primaryId))?primaryId:(affected[0]?.id||null);
   const mt=document.getElementById('multiSelectToggle');if(mt){mt.checked=false;mt.dispatchEvent(new Event('change',{bubbles:true}));}
-  if(primary)setSelection([primary],primary);else clearFurnitureSelection();
-  commitHistory(before);syncSelectedPanel();draw();setStatus('تم فك الجروب — أصبحت القطع مستقلة ويمكن تحديد كل قطعة وحدها');
+  if(keepId)setSelection([keepId],keepId);else clearFurnitureSelection();
+  commitHistory(before);syncSelectedPanel();draw();setStatus('تم فك الجروب بنجاح — '+affected.length+' قطعة أصبحت مستقلة');
 }
 function alignSelectedItems(kind){const list=selectedItems().filter(it=>!it.locked);if(list.length<2){setStatus('حدد قطعتين أو أكثر للترتيب');return;}const before=cloneEditState(),boxes=list.map(it=>({it,b:itemAABBAt(it)}));
   if(kind==='left'){const t=Math.min(...boxes.map(x=>x.b.minX));boxes.forEach(x=>x.it.x+=t-x.b.minX);}if(kind==='right'){const t=Math.max(...boxes.map(x=>x.b.maxX));boxes.forEach(x=>x.it.x+=t-x.b.maxX);}if(kind==='top'){const t=Math.min(...boxes.map(x=>x.b.minY));boxes.forEach(x=>x.it.y+=t-x.b.minY);}if(kind==='bottom'){const t=Math.max(...boxes.map(x=>x.b.maxY));boxes.forEach(x=>x.it.y+=t-x.b.maxY);}if(kind==='centerX'){const t=(Math.min(...boxes.map(x=>x.b.minX))+Math.max(...boxes.map(x=>x.b.maxX)))/2;boxes.forEach(x=>x.it.x+=t-x.b.cx);}if(kind==='centerY'){const t=(Math.min(...boxes.map(x=>x.b.minY))+Math.max(...boxes.map(x=>x.b.maxY)))/2;boxes.forEach(x=>x.it.y+=t-x.b.cy);}if(kind==='distX'&&list.length>=3){const s=[...list].sort((a,b)=>a.x-b.x),x0=s[0].x,x1=s.at(-1).x,step=(x1-x0)/(s.length-1);s.forEach((it,i)=>it.x=x0+step*i);}if(kind==='distY'&&list.length>=3){const s=[...list].sort((a,b)=>a.y-b.y),y0=s[0].y,y1=s.at(-1).y,step=(y1-y0)/(s.length-1);s.forEach((it,i)=>it.y=y0+step*i);}commitHistory(before);syncSelectedPanel();draw();setStatus('تم ترتيب القطع المحددة');}
@@ -3064,7 +3096,7 @@ document.getElementById('measureLockToggle').checked=false;document.getElementBy
 document.getElementById('newProjectBtn').onclick=()=>startNewProject(true);
 
 document.getElementById('saveBtn').onclick=()=>{
-  const project={version:65,projectMeta,brandInfo,bgData,dxfModel,pxPerCm,items,measurements,mapLabels,areaPolygons,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
+  const project={version:67,projectMeta,brandInfo,bgData,dxfModel,pxPerCm,items,measurements,mapLabels,areaPolygons,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
   download('furniture-project.json',JSON.stringify(project),'application/json')
 };
 
@@ -3608,5 +3640,6 @@ draw();
 <!-- V63 Hi-Res Map Display -->
 <!-- V65 Stable Interaction Fix -->
 <!-- V66 Area & Ungroup Fix -->
+<!-- V67 Reliable Area & Ungroup -->
 </body>
 </html>
