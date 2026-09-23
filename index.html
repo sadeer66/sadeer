@@ -12,8 +12,8 @@
 <meta name="apple-mobile-web-app-title" content="مخطط الأثاث" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-<title>تأثيثي V70 — iPad Map-Only Pinch Zoom</title>
-<meta name="taatheethi-version" content="70-ipad-map-only-pinch">
+<title>تأثيثي V71 — Sticky Tools Workflow</title>
+<meta name="taatheethi-version" content="71-sticky-tools-workflow">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -957,7 +957,7 @@ function appendArchitectureGroup(title, defs){
     d.innerHTML=`<div class="archThumbWrap"><img class="archThumb" src="${archPreviewData(def)}" alt="${def.name}"></div><b>${def.name}</b><span>اسحب إلى الخارطة</span><button class="touchDragHandle" type="button" aria-label="اسحب إلى الخارطة">⠿</button>`;
     d.addEventListener('dragstart',e=>{e.dataTransfer.setData('application/x-arch-id',def.id);e.dataTransfer.effectAllowed='copy';});
     const h=d.querySelector('.touchDragHandle');h.addEventListener('pointerdown',e=>startTouchLibraryDrag(e,def,true));h.addEventListener('pointermove',moveTouchLibraryDrag);h.addEventListener('pointerup',endTouchLibraryDrag);h.addEventListener('pointercancel',endTouchLibraryDrag);
-    d.onclick=e=>{if(e.target.closest('.touchDragHandle'))return;if(!pxPerCm){alert('عاير القياس أولاً.');return;}pendingFurnitureDef=def;mode='place';updateInteractionCursor();setStatus(`المس مكان وضع ${def.name} على الخارطة`);if(isIPadLayout())setSidebarOpen(false);};
+    d.onclick=e=>{if(e.target.closest('.touchDragHandle'))return;if(!pxPerCm){alert('عاير القياس أولاً.');return;}pendingFurnitureDef=def;activateWorkingTool('place');setStatus(`المس مكان وضع ${def.name} على الخارطة — ستبقى الأداة فعّالة حتى تختار أداة أخرى`);if(isIPadLayout())setSidebarOpen(false);};
     archLibrary.appendChild(d);
   });
 }
@@ -1279,7 +1279,20 @@ function updateInteractionCursor(){
   mainScroll.classList.toggle('placing',mode==='place'||mode==='labelPlace');
   if(!targeting){dxfActiveSnap=null;targetCursor.style.display='none';hideLiveMeasureBadge();updateDxfSnapTag();}
   updatePanState();
+  window.syncModernToolStates?.();
 }
+function activateWorkingTool(nextMode){
+  if(mode!==nextMode){
+    points=[];hideLiveMeasureBadge();aimingTouchId=null;areaTouchTap=null;labelPlaceTap=null;
+    if(mode==='areaMeasure')areaDraft=[];
+    if(mode==='labelPlace')pendingMapLabelText='';
+    if(mode==='place'&&nextMode!=='place')pendingFurnitureDef=null;
+  }
+  mode=nextMode;
+  updateInteractionCursor();
+  syncAreaToolLabel?.();
+}
+window.activateWorkingTool=activateWorkingTool;
 function showTargetCursor(ev){
   if(mode!=='calibrate'&&mode!=='measure'&&mode!=='areaMeasure'){
     dxfActiveSnap=null;targetCursor.style.display='none';targetCursor.classList.remove('touchWand');hideLiveMeasureBadge();updateDxfSnapTag();return;
@@ -2039,7 +2052,7 @@ function armFurniturePlacement(def){
   ensureSpriteForDef(def);
   document.getElementById('furnitureLayerToggle').checked=true;
   if(!pxPerCm){alert('يجب معايرة القياس أولاً حتى يظهر الأثاث بحجمه الحقيقي.');return;}
-  pendingFurnitureDef=def;mode='place';points=[];clearFurnitureSelection();selectedMeasureId=null;
+  pendingFurnitureDef=def;activateWorkingTool('place');points=[];clearFurnitureSelection();selectedMeasureId=null;
   syncSelectedPanel();updateInteractionCursor();
   setStatus(`اختر مكان ${def.name} على الخارطة — أو اسحبه من المكتبة مباشرة`);draw();
 }
@@ -2114,6 +2127,10 @@ function commitTargetPoint(ev){
   const p=targetingCanvasPos(ev);
   points.push(p);draw();
   if(points.length===1){
+    if(mode==='measure'){
+      measurements.forEach(m=>m.pinned=true);
+      selectedMeasureId=null;syncSelectedPanel();
+    }
     setStatus(isFingerTargetEvent(ev)?'تم تسجيل النقطة الأولى — حرّك العصا للنقطة الثانية ثم ارفع إصبعك':'تم تسجيل النقطة الأولى — وجّه علامة القنّاص بدقة إلى النقطة الثانية');
     return true;
   }
@@ -2128,19 +2145,25 @@ function commitTargetPoint(ev){
       const before=cloneEditState();
       const p1=points[0],p2=points[1];const d=Math.hypot(p2.x-p1.x,p2.y-p1.y),cm=d/pxPerCm;
       const m={id:randId(),p1:{...p1},p2:{...p2},cm,pinned:false,offsetX:0,offsetY:0};
-      measurements.push(m);selectedMeasureId=m.id;clearFurnitureSelection();points=[];mode='select';updateInteractionCursor();syncSelectedPanel();
-      setStatus(`القياس ${formatMeasureNumber(cm)} مؤقت — ثبته أو حرّكه ثم ثبته`);draw();commitHistory(before);
+      measurements.push(m);selectedMeasureId=m.id;clearFurnitureSelection();points=[];updateInteractionCursor();syncSelectedPanel();
+      setStatus(`القياس ${formatMeasureNumber(cm)} تم — أداة القياس ما زالت فعّالة؛ ابدأ القياس التالي أو حرّك/احذف قياسًا موجودًا، وللإنهاء اختر أداة أخرى`);draw();commitHistory(before);
     }
   }
   return true;
 }
 
 function placeMapLabelAt(p){
-  if(mode!=='labelPlace'||!pendingMapLabelText)return false;
+  if(mode!=='labelPlace')return false;
+  if(!pendingMapLabelText){
+    const value=prompt('اكتب المسمى الذي تريد وضعه في هذا المكان:','');
+    if(value===null){setStatus('أداة المسمى ما زالت فعّالة — اضغط مكانًا آخر أو اختر أداة أخرى');return false;}
+    const clean=value.trim();if(!clean)return false;pendingMapLabelText=clean;
+  }
   const before=cloneEditState(),pos=clampPointToCanvas(p);
   const l={id:randId(),text:pendingMapLabelText,x:pos.x,y:pos.y};
   mapLabels.push(l);selectedMapLabelId=l.id;selectedMeasureId=null;clearFurnitureSelection();
-  pendingMapLabelText='';mode='select';labelPlaceTap=null;updateInteractionCursor();syncSelectedPanel();draw();commitHistory(before);setStatus('تمت إضافة المسمى إلى الخارطة');
+  pendingMapLabelText='';labelPlaceTap=null;updateInteractionCursor();syncSelectedPanel();draw();commitHistory(before);
+  setStatus('تمت إضافة المسمى — أداة المسمى ما زالت فعّالة؛ اضغط مكان المسمى التالي أو اختر أداة أخرى');
   return true;
 }
 
@@ -2154,8 +2177,8 @@ canvas.addEventListener('click',ev=>{
     if(!pendingFurnitureDef)return;
     const p=clampPointToCanvas(toCanvasPos(ev));
     const def=pendingFurnitureDef;addItem(def,p.x,p.y);
-    pendingFurnitureDef=null;mode='select';updateInteractionCursor();
-    setStatus(`تم وضع ${def.name} في المكان المحدد`);draw();return;
+    updateInteractionCursor();
+    setStatus(`تم وضع ${def.name} — نفس أداة الوضع ما زالت فعّالة؛ المس مكانًا آخر لإضافة قطعة أخرى أو اختر أداة أخرى`);draw();return;
   }
   // الماوس يعتمد click، أما اللمس فتسجل نقطته عند رفع الإصبع من العصا.
   if(isFingerTargetEvent(ev))return;
@@ -2187,7 +2210,6 @@ function hitTestMeasurement(p){
   return null;
 }
 function hitTestAreaDelete(p){
-  if(mode==='areaMeasure')return null;
   for(let i=areaPolygons.length-1;i>=0;i--){const a=areaPolygons[i];if(pointInBox(p,a._deleteBox))return a;}
   return null;
 }
@@ -2221,6 +2243,29 @@ canvas.addEventListener('pointerdown',ev=>{
       beginPinchZoom();
       try{canvas.setPointerCapture(ev.pointerId)}catch{}
       ev.preventDefault();return;
+    }
+  }
+  // V71: while the measurement tool stays active, touching an existing measurement edits it instead of starting a new point.
+  if(mode==='measure'&&points.length===0){
+    const p=toCanvasPos(ev),mh=hitTestMeasurement(p);
+    if(mh){
+      aimingTouchId=null;targetCursor.style.display='none';hideLiveMeasureBadge();suppressCanvasClickUntil=Date.now()+700;
+      if(mh.part==='delete'){
+        const before=cloneEditState();measurements=measurements.filter(m=>m.id!==mh.m.id);selectedMeasureId=null;syncSelectedPanel();draw();commitHistory(before);
+        setStatus('تم حذف القياس — أداة القياس ما زالت فعّالة');ev.preventDefault();return;
+      }
+      selectedMeasureId=mh.m.id;selectedMapLabelId=null;clearFurnitureSelection();
+      measureDrag={id:mh.m.id,start:{...p},startX:mh.m.offsetX||0,startY:mh.m.offsetY||0,before:cloneEditState(),moved:false};
+      try{canvas.setPointerCapture(ev.pointerId)}catch{}
+      syncSelectedPanel();draw();ev.preventDefault();return;
+    }
+  }
+  if(mode==='areaMeasure'&&areaDraft.length===0){
+    const p=toCanvasPos(ev),aHit=hitTestAreaDelete(p);
+    if(aHit){
+      aimingTouchId=null;targetCursor.style.display='none';suppressCanvasClickUntil=Date.now()+700;
+      const before=cloneEditState();areaPolygons=areaPolygons.filter(a=>a.id!==aHit.id);if(lastAreaResult?.id===aHit.id)lastAreaResult=null;
+      draw();commitHistory(before);showAreaResultText('تم حذف المساحة',true);setStatus('تم حذف المساحة — أداة المساحة ما زالت فعّالة');ev.preventDefault();return;
     }
   }
   if(mode==='calibrate'||mode==='measure'||mode==='areaMeasure'){
@@ -2796,24 +2841,25 @@ function updateAreaDraftFeedback(){
     const text='تم تحديد '+areaDraft.length+' نقطة — بقي '+remain+' لبدء حساب المساحة';
     showAreaResultText(text,false);setStatus(text);
   }
+  syncAreaToolLabel();
 }
-function syncAreaToolLabel(){const b=document.getElementById('v65Area'),s=b?.querySelector('.iconLabel');if(s)s.textContent=mode==='areaMeasure'?'إنهاء مساحة':'مساحة';b?.classList.toggle('active',mode==='areaMeasure');}
+function syncAreaToolLabel(){const b=document.getElementById('v65Area'),s=b?.querySelector('.iconLabel');if(s)s.textContent=mode==='areaMeasure'?(areaDraft.length>=3?'إنهاء مساحة':'مساحة نشطة'):'مساحة';b?.classList.toggle('active',mode==='areaMeasure');}
 function finishAreaTool(){
   if(mode!=='areaMeasure')return;
   if(areaDraft.length>=3){
     const st=polygonAreaStats(areaDraft),name='غرفة '+(areaPolygons.length+1);
-    const before=cloneEditState();const result={id:randId(),name,points:areaDraft.map(p=>({...p})),areaM2:st.areaM2,perimeterM:st.perimeterM};areaPolygons.push(result);lastAreaResult=result;areaDraft=[];mode='select';commitHistory(before);
+    const before=cloneEditState();const result={id:randId(),name,points:areaDraft.map(p=>({...p})),areaM2:st.areaM2,perimeterM:st.perimeterM};areaPolygons.push(result);lastAreaResult=result;areaDraft=[];commitHistory(before);
     const areaText='المساحة '+st.areaM2.toFixed(2)+' م² — المحيط '+st.perimeterM.toFixed(2)+' م';
-    showAreaResultText(areaText,false);setStatus('تم حساب '+areaText);
+    showAreaResultText(areaText,false);setStatus('تم حساب '+areaText+' — أداة المساحة ما زالت فعّالة؛ ابدأ مساحة جديدة أو اختر أداة أخرى');
   }else{
-    areaDraft=[];mode='select';showAreaResultText('يلزم تحديد 3 زوايا على الأقل لحساب المساحة',true);setStatus('تم إلغاء أداة المساحة — يلزم 3 نقاط على الأقل');
+    showAreaResultText('يلزم تحديد 3 زوايا على الأقل لإنهاء المساحة',true);setStatus('أداة المساحة ما زالت فعّالة — حدد 3 زوايا على الأقل أو اختر أداة أخرى');
   }
   updateInteractionCursor();syncAreaToolLabel();draw();
 }
 function toggleAreaTool(){
   if(mode==='areaMeasure'){finishAreaTool();return;}
   if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}if(!pxPerCm){alert('عاير الخارطة أولاً حتى يمكن حساب المساحة والمحيط.');return;}
-  mode='areaMeasure';areaDraft=[];lastAreaResult=null;clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;pendingFurnitureDef=null;updateInteractionCursor();syncSelectedPanel();syncAreaToolLabel();showAreaResultText('حدد زوايا الغرفة — بعد النقطة الثالثة ستظهر المساحة مباشرة',false);setStatus(isTouchDevice()?'المساحة: أمسك مقبض العصا، حرّك رأسها لكل زاوية وارفع إصبعك لتسجيلها، ثم اضغط «إنهاء مساحة»':'المساحة: حدد زوايا الغرفة بالترتيب، ثم اضغط «إنهاء مساحة»');draw();
+  activateWorkingTool('areaMeasure');areaDraft=[];lastAreaResult=null;clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;pendingFurnitureDef=null;updateInteractionCursor();syncSelectedPanel();syncAreaToolLabel();showAreaResultText('حدد زوايا الغرفة — بعد النقطة الثالثة اضغط «إنهاء مساحة»',false);setStatus(isTouchDevice()?'المساحة المستمرة: حرّك رأس العصا لكل زاوية، ثم اضغط «إنهاء مساحة»؛ ستبقى الأداة فعّالة للغرفة التالية':'المساحة المستمرة: حدد الزوايا ثم اضغط «إنهاء مساحة»؛ ستبقى الأداة فعّالة للغرفة التالية');draw();
 }
 function drawAreaPolygons(){
   if(!pxPerCm)return;ctx.save();ctx.lineJoin='round';const touch=isTouchDevice();
@@ -2829,14 +2875,14 @@ function drawAreaPolygons(){
     ctx.strokeStyle='#0284c7';ctx.lineWidth=Math.max(.8,1/zoom);ctx.stroke();
     ctx.fillStyle='#0f172a';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='700 '+fs+'px Tahoma';ctx.fillText(txt,cx,cy);
 
-    if(mode!=='areaMeasure'){
+    {
       const xs=Math.max(17,19/zoom),gap=Math.max(5,6/zoom),xc=bx+bw+gap+xs/2,yc=cy;
       ctx.fillStyle='rgba(255,255,255,.99)';ctx.strokeStyle='#111827';ctx.lineWidth=Math.max(1,1.1/zoom);
       ctx.beginPath();ctx.arc(xc,yc,xs/2,0,Math.PI*2);ctx.fill();ctx.stroke();
       ctx.fillStyle='#050505';ctx.font='700 '+Math.max(12,Math.round(fs*.9))+'px Arial';ctx.fillText('×',xc,yc+.2);
       const hitPad=touch?Math.max(9,10/zoom):5;
       a._deleteBox={x:xc-xs/2-hitPad,y:yc-xs/2-hitPad,w:xs+hitPad*2,h:xs+hitPad*2};
-    }else a._deleteBox=null;
+    }
   }
   if(mode==='areaMeasure'&&areaDraft.length){
     ctx.beginPath();ctx.moveTo(areaDraft[0].x,areaDraft[0].y);for(let i=1;i<areaDraft.length;i++)ctx.lineTo(areaDraft[i].x,areaDraft[i].y);
@@ -2934,20 +2980,20 @@ document.getElementById('addMapLabelBtn').onclick=()=>{
   if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}
   const value=prompt('اكتب المسمى الذي تريد وضعه على الخارطة:','');
   if(value===null)return;const clean=value.trim();if(!clean)return;
-  pendingMapLabelText=clean;mode='labelPlace';points=[];selectedMeasureId=null;selectedMapLabelId=null;clearFurnitureSelection();syncSelectedPanel();updateInteractionCursor();
-  setStatus(isTouchDevice()?`اضغط ضغطة واحدة على مكان «${clean}» في الخارطة لإنشائه`:`انقر نقرة واحدة على مكان «${clean}» في الخارطة لإنشائه`);draw();
+  pendingMapLabelText=clean;activateWorkingTool('labelPlace');points=[];selectedMeasureId=null;selectedMapLabelId=null;clearFurnitureSelection();syncSelectedPanel();updateInteractionCursor();
+  setStatus(isTouchDevice()?`اضغط مكان «${clean}» — أداة المسمى ستبقى فعّالة بعد وضعه`:`انقر مكان «${clean}» — أداة المسمى ستبقى فعّالة بعد وضعه`);draw();
 };
 
 document.getElementById('calibrateBtn').onclick=()=>{
   if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}
   if(dxfModel){alert('مخطط DXF يستخدم الوحدة التي اعتمدتها عند الفتح ('+(dxfModel.unitLabel||'')+'). إذا كانت القياسات غير صحيحة، أعد فتح ملف DXF واختر الوحدة الصحيحة.');setStatus('DXF: الوحدة المعتمدة '+(dxfModel.unitLabel||'')+' — السناب فعال');return;}
-  selectedMeasureId=null;selectedMapLabelId=null;clearFurnitureSelection();pendingFurnitureDef=null;syncSelectedPanel();mode='calibrate';points=[];updateInteractionCursor();setStatus(isTouchDevice()?'المعايرة: أمسك مقبض العصا، حرّك رأسها للنقطة المطلوبة ثم ارفع إصبعك لتسجيلها':'المعايرة: حرّك علامة القنّاص وحدد النقطة الأولى ثم الثانية بدقة');draw();
+  selectedMeasureId=null;selectedMapLabelId=null;clearFurnitureSelection();pendingFurnitureDef=null;syncSelectedPanel();activateWorkingTool('calibrate');points=[];updateInteractionCursor();setStatus(isTouchDevice()?'المعايرة: أمسك مقبض العصا، حرّك رأسها للنقطة المطلوبة ثم ارفع إصبعك لتسجيلها':'المعايرة: حرّك علامة القنّاص وحدد النقطة الأولى ثم الثانية بدقة');draw();
 };
 document.getElementById('measureBtn').onclick=()=>{
   if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}
   document.getElementById('measureLayerToggle').checked=true;
   if(!pxPerCm){alert('عاير الخارطة أولاً ثم استخدم قياس المسافة.');return;}
-  measurements.forEach(m=>m.pinned=true);selectedMeasureId=null;selectedMapLabelId=null;clearFurnitureSelection();pendingFurnitureDef=null;syncSelectedPanel();mode='measure';points=[];updateInteractionCursor();setStatus(isTouchDevice()?'القياس: بعد النقطة الأولى سيظهر لك القياس الموقت قرب العصا؛ حرّكها حتى تصل للرقم الدقيق ثم ارفع إصبعك للنقطة الثانية':'القياس: بعد النقطة الأولى سيظهر قياس موقت مع حركة المؤشر حتى تحدد النقطة الثانية بدقة');draw();
+  measurements.forEach(m=>m.pinned=true);selectedMeasureId=null;selectedMapLabelId=null;clearFurnitureSelection();pendingFurnitureDef=null;syncSelectedPanel();activateWorkingTool('measure');points=[];updateInteractionCursor();setStatus(isTouchDevice()?'القياس المستمر: أكمل نقطتين لكل قياس، ثم ابدأ التالي مباشرة؛ اختر أداة أخرى عند الانتهاء':'القياس المستمر: أكمل نقطتين لكل قياس، ثم ابدأ التالي مباشرة؛ اختر أداة أخرى عند الانتهاء');draw();
 };
 document.getElementById('resetScaleBtn').onclick=()=>{
   const ok = confirm('سيتم إعادة ضبط المقياس وحذف الأثاث وخطوط القياس الحالية مع إبقاء الخارطة. هل تريد المتابعة؟');
@@ -2963,7 +3009,7 @@ function updateCalPreview(){
   calPreview.textContent=`سيكون 1 متر ≈ ${(candidate*100).toFixed(1)} بكسل`;
 }
 calValue.oninput=updateCalPreview;calUnit.onchange=updateCalPreview;
-document.getElementById('cancelCalBtn').onclick=()=>{scaleModal.style.display='none';pendingCalDistancePx=null;points=[];hideLiveMeasureBadge();mode='select';updateInteractionCursor();setStatus('تم إلغاء المعايرة');draw();};
+document.getElementById('cancelCalBtn').onclick=()=>{scaleModal.style.display='none';pendingCalDistancePx=null;points=[];hideLiveMeasureBadge();activateWorkingTool('select');setStatus('تم إلغاء المعايرة');draw();};
 document.getElementById('applyCalBtn').onclick=()=>{
   const val=parseFloat(calValue.value||0);const cm=calUnit.value==='m'?val*100:val;
   if(!(cm>0) || !pendingCalDistancePx){alert('أدخل مسافة صحيحة.');return;}
@@ -2971,7 +3017,7 @@ document.getElementById('applyCalBtn').onclick=()=>{
   if(!isFinite(candidate)||candidate<=0){alert('تعذر حساب المقياس.');return;}
   const test=170*candidate;
   if(test>canvas.width*0.95){alert('المقياس الناتج كبير جدًا. تحقق من الرقم والوحدة.');return;}
-  pxPerCm=candidate;scaleModal.style.display='none';pendingCalDistancePx=null;points=[];hideLiveMeasureBadge();mode='select';updateInteractionCursor();updateScaleUI();setStatus('تم اعتماد المقياس بنجاح');draw();
+  pxPerCm=candidate;scaleModal.style.display='none';pendingCalDistancePx=null;points=[];hideLiveMeasureBadge();activateWorkingTool('select');updateScaleUI();setStatus('تم اعتماد المقياس بنجاح');draw();
 };
 function formatLength(cm){return cm>=100?`${(cm/100).toFixed(2)} م`:`${cm.toFixed(1)} سم`;}
 function formatMeasureNumber(cm){return cm>=100?(cm/100).toFixed(2):cm.toFixed(1);}
@@ -3205,7 +3251,7 @@ document.getElementById('measureLockToggle').checked=false;document.getElementBy
 document.getElementById('newProjectBtn').onclick=()=>startNewProject(true);
 
 document.getElementById('saveBtn').onclick=()=>{
-  const project={version:70,projectMeta,brandInfo,bgData,dxfModel,pxPerCm,items,measurements,mapLabels,areaPolygons,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
+  const project={version:71,projectMeta,brandInfo,bgData,dxfModel,pxPerCm,items,measurements,mapLabels,areaPolygons,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
   download('furniture-project.json',JSON.stringify(project),'application/json')
 };
 
@@ -3710,7 +3756,7 @@ draw();
 
   const sep=()=>{const s=document.createElement('div');s.className='toolSep';return s;};
   const leftDefs=[
-    ['lMove','move','تحريك الأثاث',()=>{try{mode='select';pendingFurnitureDef=null;updateInteractionCursor?.();setStatus?.('وضع تحريك الأثاث');}catch(e){}},'', 'تحريك'],
+    ['lMove','move','تحريك الأثاث',()=>{try{window.activateWorkingTool?.('select');pendingFurnitureDef=null;updateInteractionCursor?.();setStatus?.('وضع التحريك — تم إنهاء الأداة السابقة');}catch(e){}},'', 'تحريك'],
     ['lMulti','select','تحديد متعدد',()=>toggle('multiSelectToggle'),'', 'متعدد'],
     ['lAll','selectAll','تحديد كل الأثاث',()=>click('selectAllBtn'),'', 'الكل'],
     ['lGroup','layers','تجميع القطع المحددة في جروب',()=>groupSelectedItems(),'', 'جروب'],
@@ -3765,6 +3811,8 @@ draw();
   };
   function syncStates(){
     Object.entries(checkMap).forEach(([bid,cid])=>{const b=document.getElementById(bid),c=document.getElementById(cid);if(b&&c)b.classList.toggle('active',!!c.checked);});
+    const toolModes={v44Calibrate:'calibrate',v44Measure:'measure',v44Label:'labelPlace',v65Area:'areaMeasure',lMove:'select'};
+    Object.entries(toolModes).forEach(([id,m])=>document.getElementById(id)?.classList.toggle('active',mode===m));
     const setToolLabel=(id,text)=>{const b=document.getElementById(id),sp=b?.querySelector('.iconLabel');if(sp){sp.textContent=text;sp.classList.toggle('short',String(text).length>7);}};
     const stateLabel=(cid,onText,offText)=>document.getElementById(cid)?.checked?onText:offText;
     setToolLabel('v54MeasureLine',stateLabel('measureArrowsToggle','إخفاء خط','إظهار خط'));
@@ -3783,6 +3831,7 @@ draw();
   document.getElementById('canvas')?.addEventListener('pointerup',()=>requestAnimationFrame(syncStates));
   document.addEventListener('keyup',()=>requestAnimationFrame(syncStates));
   window.addEventListener('resize',syncStates);
+  window.syncModernToolStates=syncStates;
   syncStates();
 })();
 </script>
