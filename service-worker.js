@@ -1,4 +1,4 @@
-const CACHE_NAME = "furniplan-v72-professional-export";
+const CACHE_NAME = "furniplan-v73-splash-screen";
 
 self.addEventListener('install', event => {
   self.skipWaiting();
