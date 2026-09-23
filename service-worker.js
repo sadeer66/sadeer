@@ -1,4 +1,4 @@
-const CACHE_NAME = "furniplan-v73-splash-screen";
+const CACHE_NAME = "furniplan-v73-approved-splash-art";
 
 self.addEventListener('install', event => {
   self.skipWaiting();
