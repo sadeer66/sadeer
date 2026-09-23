@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="مخطط الأثاث" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-<title>تأثيثي V62 — DXF Unit Confirm</title>
+<title>تأثيثي V63 — Hi-Res Map Display</title>
 <meta name="taatheethi-version" content="44-layout-reset">
 <style>
   :root{
@@ -76,7 +76,7 @@
   .mapTopbar .miniBtn:disabled{opacity:.38;cursor:not-allowed;background:#10203d}
   .snapOn{color:#dff7ff}
   .mapTopbar .mapInfo{font-size:12px;color:#9fb4d1}
-  .mapViewport{position:relative;flex:1;min-height:0;background:#2f415d;border:1px solid #435771;border-radius:14px;overflow:scroll;padding:18px;direction:ltr;scrollbar-gutter:stable both-edges;cursor:default}
+  .mapViewport{position:relative;flex:1;min-height:0;background:linear-gradient(145deg,#314761 0%,#293d55 52%,#223248 100%);border:1px solid #58708d;border-radius:16px;overflow:scroll;padding:18px;direction:ltr;scrollbar-gutter:stable both-edges;cursor:default;box-shadow:inset 0 0 0 1px rgba(255,255,255,.035),inset 0 12px 32px rgba(2,6,23,.22),0 8px 24px rgba(2,6,23,.18)}
   .mapViewport.pannable canvas{cursor:grab}
   .mapViewport.panning canvas{cursor:grabbing}
   .mapViewport.targeting canvas{cursor:none}
@@ -101,8 +101,8 @@
   .mapViewport::-webkit-scrollbar-thumb{background:#60748d;border:3px solid #172033;border-radius:10px}
   .mapViewport::-webkit-scrollbar-thumb:hover{background:#7f96b1}
   .canvasWrap{position:relative;display:flex;align-items:flex-start;justify-content:flex-start;width:max-content;height:max-content;min-width:100%;min-height:100%;direction:ltr}
-  .stage{position:relative;box-shadow:0 20px 60px #0008;background:#fff;overflow:hidden;flex:0 0 auto;border-radius:6px;margin:auto}
-  canvas{display:block;touch-action:none;user-select:none;cursor:grab}
+  .stage{position:relative;box-shadow:0 22px 58px rgba(2,6,23,.52),0 3px 12px rgba(2,6,23,.34);background:#fff;overflow:hidden;flex:0 0 auto;border-radius:10px;margin:auto;border:1px solid rgba(255,255,255,.42)}
+  canvas{display:block;touch-action:none;user-select:none;cursor:grab;image-rendering:auto}
   .hint{font-size:12px;color:#94a3b8;line-height:1.7}
   .badge{display:inline-block;background:#0f766e;padding:3px 7px;border-radius:999px;font-size:11px}
   .badge.off{background:#475569}
@@ -1284,7 +1284,7 @@ function updateStageSize(){
 }
 
 function resizeToImage(img){
-  const maxW=1400,maxH=900;
+  const maxW=2100,maxH=1350;
   let w=img.width,h=img.height,s=Math.min(1,maxW/w,maxH/h);
   canvas.width=Math.round(w*s);
   canvas.height=Math.round(h*s);
@@ -1399,7 +1399,7 @@ async function imageElementFromFile(file){
 async function prepareMapImage(file){
   const appleMobile=/iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
   const coarse=isTouchDevice();
-  const maxLongSide=(appleMobile||coarse)?1800:2600;
+  const maxLongSide=(appleMobile||coarse)?2300:3200;
   let source=null,width=0,height=0,cleanup=()=>{};
   // على أجهزة Apple نطلب من المتصفح تصغير الصورة أثناء فكها متى أمكن،
   // حتى لا نحتفظ بنسخة كاميرا كاملة الذاكرة ثم نحولها إلى Base64.
@@ -2674,6 +2674,8 @@ function drawMapLabels(){
 }
 
 function draw(){
+  ctx.imageSmoothingEnabled=true;
+  ctx.imageSmoothingQuality='high';
   ctx.clearRect(0,0,canvas.width,canvas.height);
   if(hasPlan()){
     ctx.fillStyle='#f8fafc';ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -3516,5 +3518,6 @@ draw();
 
 <!-- V60 AutoCAD DXF -->
 <!-- V62 DXF Unit Confirm -->
+<!-- V63 Hi-Res Map Display -->
 </body>
 </html>
