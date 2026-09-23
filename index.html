@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="مخطط الأثاث" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-<title>تأثيثي V64 — Pro Tools & Auto Recovery</title>
+<title>تأثيثي V65 — Stable Interaction Fix</title>
 <meta name="taatheethi-version" content="44-layout-reset">
 <style>
   :root{
@@ -775,7 +775,7 @@ const mapLabelTextInput=document.getElementById('mapLabelTextInput');
 const deleteMapLabelBtn=document.getElementById('deleteMapLabelBtn');
 
 
-let bgImage=null,bgData=null,dxfModel=null,dxfSnapSegments=[],dxfSnapKeyPoints=[],dxfActiveSnap=null,items=[],selectedId=null,selectedIds=[],selectedMeasureId=null,selectedMapLabelId=null,pxPerCm=null,mode='select',points=[],drag=null,panDrag=null,measureDrag=null,mapLabelDrag=null,zoom=1,measureDisplayScale=1,mapLabelDisplayScale=1,measurements=[],mapLabels=[],pendingCalDistancePx=null,pendingFurnitureDef=null,pendingMapLabelText='',libraryDragActive=false;
+let bgImage=null,bgData=null,dxfModel=null,dxfSnapSegments=[],dxfSnapKeyPoints=[],dxfActiveSnap=null,items=[],selectedId=null,selectedIds=[],selectedMeasureId=null,selectedMapLabelId=null,pxPerCm=null,mode='select',points=[],drag=null,panDrag=null,measureDrag=null,mapLabelDrag=null,zoom=1,measureDisplayScale=1,mapLabelDisplayScale=1,measurements=[],mapLabels=[],areaPolygons=[],areaDraft=[],pendingCalDistancePx=null,pendingFurnitureDef=null,pendingMapLabelText='',libraryDragActive=false;
 function hasPlan(){return !!(bgImage||dxfModel);}
 let undoStack=[],redoStack=[],snapGuides=[],inspectorEditBefore=null;
 let touchLibraryDrag=null,touchDragGhost=null;
@@ -1209,7 +1209,7 @@ function updateLiveMeasureBadge(ev){
 function updateInteractionCursor(){
   const targeting=mode==='calibrate'||mode==='measure';
   mainScroll.classList.toggle('targeting',targeting);
-  mainScroll.classList.toggle('placing',mode==='place'||mode==='labelPlace');
+  mainScroll.classList.toggle('placing',mode==='place'||mode==='labelPlace'||mode==='areaMeasure');
   if(!targeting){dxfActiveSnap=null;targetCursor.style.display='none';hideLiveMeasureBadge();updateDxfSnapTag();}
   updatePanState();
 }
@@ -1853,9 +1853,9 @@ document.getElementById('saveCustomToLibrary').onclick=()=>openLibraryEditor(nul
 
 
 function cloneEditState(){
-  return {items:JSON.parse(JSON.stringify(items)),measurements:JSON.parse(JSON.stringify(measurements)),mapLabels:JSON.parse(JSON.stringify(mapLabels)),areas:(typeof areaPolygons!=='undefined'?JSON.parse(JSON.stringify(areaPolygons)):[]),selectedId,selectedIds:getSelectedIds(),selectedMeasureId,selectedMapLabelId};
+  return {items:JSON.parse(JSON.stringify(items)),measurements:JSON.parse(JSON.stringify(measurements)),mapLabels:JSON.parse(JSON.stringify(mapLabels)),areaPolygons:JSON.parse(JSON.stringify(areaPolygons)),selectedId,selectedIds:getSelectedIds(),selectedMeasureId,selectedMapLabelId};
 }
-function stateSignature(s){return JSON.stringify({items:s.items,measurements:s.measurements,mapLabels:s.mapLabels,areas:s.areas||[]});}
+function stateSignature(s){return JSON.stringify({items:s.items,measurements:s.measurements,mapLabels:s.mapLabels,areaPolygons:s.areaPolygons||[]});}
 function updateHistoryButtons(){
   const u=document.getElementById('undoBtn'),r=document.getElementById('redoBtn');
   if(u)u.disabled=undoStack.length===0;if(r)r.disabled=redoStack.length===0;
@@ -1866,7 +1866,7 @@ function commitHistory(before){
   undoStack.push(before);if(undoStack.length>60)undoStack.shift();redoStack=[];updateHistoryButtons();
 }
 function restoreEditState(s){
-  items=JSON.parse(JSON.stringify(s.items||[]));measurements=JSON.parse(JSON.stringify(s.measurements||[]));mapLabels=JSON.parse(JSON.stringify(s.mapLabels||[]));if(typeof areaPolygons!=='undefined')areaPolygons=JSON.parse(JSON.stringify(s.areas||[]));
+  items=JSON.parse(JSON.stringify(s.items||[]));measurements=JSON.parse(JSON.stringify(s.measurements||[]));mapLabels=JSON.parse(JSON.stringify(s.mapLabels||[]));areaPolygons=JSON.parse(JSON.stringify(s.areaPolygons||[]));
   selectedIds=uniqueIds(s.selectedIds||[]);
   selectedId=s.selectedId&&items.some(x=>x.id===s.selectedId)?s.selectedId:(selectedIds[selectedIds.length-1]||null);
   if(selectedId&&!selectedIds.includes(selectedId))selectedIds.push(selectedId);
@@ -2058,6 +2058,7 @@ function placeMapLabelAt(p){
 
 canvas.addEventListener('click',ev=>{
   if(Date.now()<suppressCanvasClickUntil){ev.preventDefault();return;}
+  if(mode==='areaMeasure'){let p=clampPointToCanvas(toCanvasPos(ev));if(dxfModel)p=snapPointToDxf(p);areaDraft.push({...p});setStatus('تم تحديد '+areaDraft.length+' نقطة — اضغط «إنهاء مساحة» بعد آخر زاوية');draw();return;}
   if(mode==='labelPlace'){
     placeMapLabelAt(toCanvasPos(ev));return;
   }
@@ -2150,17 +2151,18 @@ canvas.addEventListener('pointerdown',ev=>{
   }
   if(hit){
     let ids=getSelectedIds();
-    const groupedIds=hit.groupId?items.filter(x=>x.groupId===hit.groupId).map(x=>x.id):[];
-    if(!multiMode&&groupedIds.length>1){
-      setSelection(groupedIds,hit.id);ids=groupedIds;
-    }else if(multiMode){
-      if(ids.includes(hit.id)&&(ev.ctrlKey||ev.metaKey||ev.shiftKey||!!document.getElementById('multiSelectToggle')?.checked)){
-        const removeIds=hit.groupId?new Set(groupedIds):new Set([hit.id]);
-        ids=ids.filter(id=>!removeIds.has(id));setSelection(ids,ids[ids.length-1]||null);syncSelectedPanel();draw();return;
+    const groupIds=hit.groupId?items.filter(x=>x.groupId===hit.groupId).map(x=>x.id):[hit.id];
+    if(multiMode){
+      if(!ids.includes(hit.id)){
+        for(const id of groupIds)if(!ids.includes(id))ids.push(id);
+        setSelection(ids,hit.id);selectedMeasureId=null;selectedMapLabelId=null;syncSelectedPanel();draw();
+        setStatus('تم تحديد '+ids.length+' قطع — المس قطعة محددة واسحبها لتحريك المحدد معًا');return;
       }
-      const addIds=hit.groupId?groupedIds:[hit.id];
-      for(const id of addIds)if(!ids.includes(id))ids.push(id);
       setSelection(ids,hit.id);
+    }else if(hit.groupId&&groupIds.length>1){
+      setSelection(groupIds,hit.id);
+    }else if(ids.includes(hit.id)&&ids.length>1){
+      selectedId=hit.id;
     }else if(!ids.includes(hit.id)||ids.length!==1){
       setSelection([hit.id],hit.id);
     }else selectedId=hit.id;
@@ -2445,17 +2447,21 @@ function getTintedSprite(src,color){
   const key=src+'|'+color;
   if(tintedCache.has(key))return tintedCache.get(key);
   const base=spriteImages[src],layers=tintLayers[src];
-  if(!base||!base.complete||!base.naturalWidth||!layers||!layers.neutral.complete||!layers.shade.complete)return null;
+  if(!base||!base.complete||!base.naturalWidth)return null;
   const off=document.createElement('canvas');off.width=base.naturalWidth;off.height=base.naturalHeight;
-  const oc=off.getContext('2d');
-  oc.clearRect(0,0,off.width,off.height);
-  // New color exists only where the original artwork has a colored material region.
-  oc.fillStyle=color;oc.fillRect(0,0,off.width,off.height);
-  oc.globalCompositeOperation='destination-in';oc.drawImage(layers.shade,0,0,off.width,off.height);
-  oc.globalCompositeOperation='multiply';oc.drawImage(layers.shade,0,0,off.width,off.height);
-  oc.globalCompositeOperation='source-over';oc.drawImage(layers.neutral,0,0,off.width,off.height);
-  oc.globalCompositeOperation='source-over';
-  tintedCache.set(key,off);return off;
+  const oc=off.getContext('2d');oc.clearRect(0,0,off.width,off.height);
+  const layered=layers&&layers.neutral&&layers.shade&&layers.neutral.complete&&layers.shade.complete&&layers.neutral.naturalWidth&&layers.shade.naturalWidth;
+  if(layered){
+    oc.fillStyle=color;oc.fillRect(0,0,off.width,off.height);
+    oc.globalCompositeOperation='destination-in';oc.drawImage(layers.shade,0,0,off.width,off.height);
+    oc.globalCompositeOperation='multiply';oc.drawImage(layers.shade,0,0,off.width,off.height);
+    oc.globalCompositeOperation='source-over';oc.drawImage(layers.neutral,0,0,off.width,off.height);
+  }else{
+    oc.drawImage(base,0,0,off.width,off.height);
+    oc.globalCompositeOperation='source-atop';oc.globalAlpha=.72;oc.fillStyle=color;oc.fillRect(0,0,off.width,off.height);
+    oc.globalAlpha=.34;oc.globalCompositeOperation='multiply';oc.drawImage(base,0,0,off.width,off.height);oc.globalAlpha=1;
+  }
+  oc.globalCompositeOperation='source-over';tintedCache.set(key,off);return off;
 }
 function drawSprite(it,w,h){
   const im=it.src?spriteImages[it.src]:null;
@@ -2601,28 +2607,23 @@ function scheduleUsedFurnitureSync(force=false){
 async function makeFurnitureGuideVisual(g){
   if(!g?.src)return null;
   const baseSrc=resolveAssetSrc(g.src);
-  if(!g.tintEnabled || !String(g.src).startsWith('assets/furniture/')){
-    try{return await loadDataImage(baseSrc);}catch{return null;}
-  }
+  let base=null;try{base=await loadDataImage(baseSrc);}catch{return null;}
+  if(!g.tintEnabled)return base;
+  const off=document.createElement('canvas');off.width=base.naturalWidth||base.width;off.height=base.naturalHeight||base.height;
+  const oc=off.getContext('2d');oc.clearRect(0,0,off.width,off.height);
   try{
-    const stem=String(g.src).split('/').pop().replace(/\.png$/i,'');
-    const [base,neutral,shadeIm]=await Promise.all([
-      loadDataImage(baseSrc),
-      loadDataImage(resolveAssetSrc(`assets/furniture_layers/${stem}_neutral.png`)),
-      loadDataImage(resolveAssetSrc(`assets/furniture_layers/${stem}_shade.png`))
-    ]);
-    const off=document.createElement('canvas');off.width=base.naturalWidth||base.width;off.height=base.naturalHeight||base.height;
-    const oc=off.getContext('2d');
-    oc.clearRect(0,0,off.width,off.height);
+    const stem=String(g.src).split('/').pop().replace(/.png$/i,'');
+    const [neutral,shadeIm]=await Promise.all([loadDataImage(resolveAssetSrc('assets/furniture_layers/'+stem+'_neutral.png')),loadDataImage(resolveAssetSrc('assets/furniture_layers/'+stem+'_shade.png'))]);
     oc.fillStyle=g.color||'#bfa781';oc.fillRect(0,0,off.width,off.height);
     oc.globalCompositeOperation='destination-in';oc.drawImage(shadeIm,0,0,off.width,off.height);
     oc.globalCompositeOperation='multiply';oc.drawImage(shadeIm,0,0,off.width,off.height);
     oc.globalCompositeOperation='source-over';oc.drawImage(neutral,0,0,off.width,off.height);
-    oc.globalCompositeOperation='source-over';
-    return off;
   }catch{
-    try{return await loadDataImage(baseSrc);}catch{return null;}
+    oc.globalCompositeOperation='source-over';oc.drawImage(base,0,0,off.width,off.height);
+    oc.globalCompositeOperation='source-atop';oc.globalAlpha=.72;oc.fillStyle=g.color||'#bfa781';oc.fillRect(0,0,off.width,off.height);
+    oc.globalAlpha=.34;oc.globalCompositeOperation='multiply';oc.drawImage(base,0,0,off.width,off.height);oc.globalAlpha=1;
   }
+  oc.globalCompositeOperation='source-over';return off;
 }
 async function paintFurnitureGuideThumb(canvasEl,g){
   if(!canvasEl)return;
@@ -2658,6 +2659,37 @@ function syncUsedFurniturePanel(force=false){
   usedFurnitureGrid.replaceChildren(frag);
 }
 function syncQuickDisplayButtons(){}
+
+function polygonAreaStats(pts){
+  if(!pxPerCm||pts.length<3)return {areaM2:0,perimeterM:0};
+  let twice=0,per=0;for(let i=0;i<pts.length;i++){const a=pts[i],b=pts[(i+1)%pts.length];twice+=a.x*b.y-b.x*a.y;per+=Math.hypot(b.x-a.x,b.y-a.y);}
+  return {areaM2:Math.abs(twice)/2/(pxPerCm*pxPerCm)/10000,perimeterM:per/pxPerCm/100};
+}
+function syncAreaToolLabel(){const b=document.getElementById('v65Area'),s=b?.querySelector('.iconLabel');if(s)s.textContent=mode==='areaMeasure'?'إنهاء مساحة':'مساحة';b?.classList.toggle('active',mode==='areaMeasure');}
+function finishAreaTool(){
+  if(mode!=='areaMeasure')return;
+  if(areaDraft.length>=3){
+    const st=polygonAreaStats(areaDraft),name=(prompt('اسم الغرفة أو المساحة:','غرفة '+(areaPolygons.length+1))||('غرفة '+(areaPolygons.length+1))).trim();
+    const before=cloneEditState();areaPolygons.push({id:randId(),name,points:areaDraft.map(p=>({...p})),areaM2:st.areaM2,perimeterM:st.perimeterM});areaDraft=[];mode='select';commitHistory(before);setStatus('المساحة '+st.areaM2.toFixed(2)+' م² — المحيط '+st.perimeterM.toFixed(2)+' م');
+  }else{areaDraft=[];mode='select';setStatus('تم إلغاء أداة المساحة — يلزم 3 نقاط على الأقل');}
+  updateInteractionCursor();syncAreaToolLabel();draw();
+}
+function toggleAreaTool(){
+  if(mode==='areaMeasure'){finishAreaTool();return;}
+  if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}if(!pxPerCm){alert('عاير الخارطة أولاً حتى يمكن حساب المساحة والمحيط.');return;}
+  mode='areaMeasure';areaDraft=[];clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;pendingFurnitureDef=null;updateInteractionCursor();syncSelectedPanel();syncAreaToolLabel();setStatus('المساحة: اضغط زوايا الغرفة بالترتيب، ثم اضغط «إنهاء مساحة»');draw();
+}
+function drawAreaPolygons(){
+  if(!pxPerCm)return;ctx.save();ctx.lineJoin='round';
+  for(const a of areaPolygons){if(!a.points||a.points.length<3)continue;ctx.beginPath();ctx.moveTo(a.points[0].x,a.points[0].y);for(let i=1;i<a.points.length;i++)ctx.lineTo(a.points[i].x,a.points[i].y);ctx.closePath();ctx.fillStyle='rgba(14,165,233,.07)';ctx.fill();ctx.strokeStyle='#0284c7';ctx.lineWidth=Math.max(1.2,2/zoom);ctx.stroke();
+    const cx=a.points.reduce((s,p)=>s+p.x,0)/a.points.length,cy=a.points.reduce((s,p)=>s+p.y,0)/a.points.length,txt=a.name+'  '+a.areaM2.toFixed(2)+' م² • '+a.perimeterM.toFixed(2)+' م',fs=Math.max(10,13/zoom);ctx.font='700 '+fs+'px Tahoma';const tw=ctx.measureText(txt).width;ctx.fillStyle='rgba(255,255,255,.94)';roundRectPath(cx-tw/2-6,cy-fs*.8,tw+12,fs*1.6,5);ctx.fill();ctx.strokeStyle='#0284c7';ctx.lineWidth=1;ctx.stroke();ctx.fillStyle='#0f172a';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,cx,cy);}
+  if(mode==='areaMeasure'&&areaDraft.length){ctx.beginPath();ctx.moveTo(areaDraft[0].x,areaDraft[0].y);for(let i=1;i<areaDraft.length;i++)ctx.lineTo(areaDraft[i].x,areaDraft[i].y);ctx.strokeStyle='#0ea5e9';ctx.lineWidth=Math.max(1.2,2/zoom);ctx.setLineDash([6/zoom,4/zoom]);ctx.stroke();ctx.setLineDash([]);for(const p of areaDraft){ctx.beginPath();ctx.arc(p.x,p.y,4/zoom,0,Math.PI*2);ctx.fillStyle='#0ea5e9';ctx.fill();}}ctx.restore();
+}
+function groupSelectedItems(){const list=selectedItems().filter(it=>!it.locked);if(list.length<2){setStatus('حدد قطعتين أو أكثر ثم اضغط جروب');return;}const before=cloneEditState(),gid='grp_'+randId();list.forEach(it=>it.groupId=gid);commitHistory(before);syncSelectedPanel();draw();setStatus('تم إنشاء جروب من '+list.length+' قطع');}
+function ungroupSelectedItems(){const list=selectedItems(),gids=new Set(list.map(it=>it.groupId).filter(Boolean));if(!gids.size){setStatus('المحدد ليس ضمن جروب');return;}const before=cloneEditState();items.forEach(it=>{if(gids.has(it.groupId))it.groupId=null;});commitHistory(before);syncSelectedPanel();draw();setStatus('تم فك الجروب');}
+function alignSelectedItems(kind){const list=selectedItems().filter(it=>!it.locked);if(list.length<2){setStatus('حدد قطعتين أو أكثر للترتيب');return;}const before=cloneEditState(),boxes=list.map(it=>({it,b:itemAABBAt(it)}));
+  if(kind==='left'){const t=Math.min(...boxes.map(x=>x.b.minX));boxes.forEach(x=>x.it.x+=t-x.b.minX);}if(kind==='right'){const t=Math.max(...boxes.map(x=>x.b.maxX));boxes.forEach(x=>x.it.x+=t-x.b.maxX);}if(kind==='top'){const t=Math.min(...boxes.map(x=>x.b.minY));boxes.forEach(x=>x.it.y+=t-x.b.minY);}if(kind==='bottom'){const t=Math.max(...boxes.map(x=>x.b.maxY));boxes.forEach(x=>x.it.y+=t-x.b.maxY);}if(kind==='centerX'){const t=(Math.min(...boxes.map(x=>x.b.minX))+Math.max(...boxes.map(x=>x.b.maxX)))/2;boxes.forEach(x=>x.it.x+=t-x.b.cx);}if(kind==='centerY'){const t=(Math.min(...boxes.map(x=>x.b.minY))+Math.max(...boxes.map(x=>x.b.maxY)))/2;boxes.forEach(x=>x.it.y+=t-x.b.cy);}if(kind==='distX'&&list.length>=3){const s=[...list].sort((a,b)=>a.x-b.x),x0=s[0].x,x1=s.at(-1).x,step=(x1-x0)/(s.length-1);s.forEach((it,i)=>it.x=x0+step*i);}if(kind==='distY'&&list.length>=3){const s=[...list].sort((a,b)=>a.y-b.y),y0=s[0].y,y1=s.at(-1).y,step=(y1-y0)/(s.length-1);s.forEach((it,i)=>it.y=y0+step*i);}commitHistory(before);syncSelectedPanel();draw();setStatus('تم ترتيب القطع المحددة');}
+function showArrangeMenu(){let p=document.getElementById('v65ArrangeMenu');if(!p){p=document.createElement('div');p.id='v65ArrangeMenu';p.dir='rtl';p.style.cssText='position:fixed;z-index:6000;left:50%;top:50%;transform:translate(-50%,-50%);width:min(360px,calc(100vw - 30px));background:#0b1220;border:1px solid #475569;border-radius:14px;padding:12px;box-shadow:0 25px 70px rgba(0,0,0,.55);display:grid;grid-template-columns:repeat(2,1fr);gap:7px';[['يسار','left'],['يمين','right'],['وسط أفقي','centerX'],['أعلى','top'],['أسفل','bottom'],['وسط عمودي','centerY'],['توزيع أفقي','distX'],['توزيع عمودي','distY']].forEach(([t,k])=>{const b=document.createElement('button');b.textContent=t;b.onclick=()=>{alignSelectedItems(k);p.style.display='none';};p.appendChild(b);});const close=document.createElement('button');close.textContent='إغلاق';close.style.gridColumn='1/3';close.onclick=()=>p.style.display='none';p.appendChild(close);document.body.appendChild(p);}else p.style.display='grid';}
 
 function drawMapLabels(){
   if(!mapLabels.length)return;
@@ -2714,7 +2746,7 @@ function draw(){
   if(visibleFurniture())drawAutoDistances();
   if(visibleMeasurements())drawMeasurements();
   if(visibleMapLabels())drawMapLabels();
-  if(typeof drawAreaPolygons==='function')drawAreaPolygons();
+  drawAreaPolygons();
   drawMode();
   scheduleUsedFurnitureSync();
 }
@@ -2922,7 +2954,10 @@ function applyToSelection(fn,statusText){
   const list=selectedItems().filter(it=>!it.locked);if(!list.length){setStatus('القطع المحددة مقفلة');return false;}
   const before=cloneEditState();list.forEach(fn);syncSelectedPanel();draw();commitHistory(before);if(statusText)setStatus(statusText);return true;
 }
-function addRotationAngle(a){applyToSelection(it=>{it.rot=((it.rot+a)%360+360)%360;},`تم تدوير المحدد ${a}°`);}
+function addRotationAngle(a){
+  if(furnitureGloballyLocked()){setStatus('الأثاث مقفل من الشريط العلوي');return;}const list=selectedItems().filter(it=>!it.locked);if(!list.length)return;const before=cloneEditState(),sameGroup=list.length>1&&list[0].groupId&&list.every(it=>it.groupId===list[0].groupId);
+  if(sameGroup){const boxes=list.map(it=>itemAABBAt(it)),cx=(Math.min(...boxes.map(b=>b.minX))+Math.max(...boxes.map(b=>b.maxX)))/2,cy=(Math.min(...boxes.map(b=>b.minY))+Math.max(...boxes.map(b=>b.maxY)))/2,r=a*Math.PI/180,co=Math.cos(r),si=Math.sin(r);list.forEach(it=>{const dx=it.x-cx,dy=it.y-cy;it.x=cx+dx*co-dy*si;it.y=cy+dx*si+dy*co;it.rot=((it.rot+a)%360+360)%360;});}else list.forEach(it=>it.rot=((it.rot+a)%360+360)%360);syncSelectedPanel();draw();commitHistory(before);setStatus('تم تدوير المحدد '+a+'°');
+}
 document.getElementById('rotate90').onclick=()=>addRotationAngle(90);
 document.getElementById('rotate45').onclick=()=>addRotationAngle(45);
 document.getElementById('rotate180').onclick=()=>addRotationAngle(180);
@@ -2978,7 +3013,7 @@ function download(name,data,type){
 function startNewProject(ask=true){
   const hasWork=!!bgImage||!!dxfModel||items.length>0||measurements.length>0||!!pxPerCm;
   if(ask&&hasWork&&!confirm('بدء مشروع جديد؟ سيتم مسح الخارطة والأثاث والقياسات الحالية، بينما ستبقى مكتبة الأثاث المحفوظة كما هي.'))return;
-  bgImage=null;bgData=null;dxfModel=null;dxfSnapSegments=[];dxfSnapKeyPoints=[];dxfActiveSnap=null;items=[];measurements=[];mapLabels=[];if(typeof areaPolygons!=='undefined')areaPolygons=[];selectedId=null;selectedIds=[];selectedMeasureId=null;selectedMapLabelId=null;pxPerCm=null;undoStack=[];redoStack=[];updateHistoryButtons();
+  bgImage=null;bgData=null;dxfModel=null;dxfSnapSegments=[];dxfSnapKeyPoints=[];dxfActiveSnap=null;items=[];measurements=[];mapLabels=[];areaPolygons=[];areaDraft=[];selectedId=null;selectedIds=[];selectedMeasureId=null;selectedMapLabelId=null;pxPerCm=null;undoStack=[];redoStack=[];updateHistoryButtons();
   mode='select';points=[];drag=null;panDrag=null;measureDrag=null;mapLabelDrag=null;labelPlaceTap=null;pendingCalDistancePx=null;pendingFurnitureDef=null;pendingMapLabelText='';
   canvas.width=1100;canvas.height=750;zoom=1;measureDisplayScale=1;mapLabelDisplayScale=1;
   document.getElementById('zoomRange').value=100;document.getElementById('zoomLabel').textContent='100%';measureSizeRange.value=100;measureSizeLabel.textContent='100%';mapLabelSizeRange.value=100;mapLabelSizeValue.textContent='100%';
@@ -2991,7 +3026,7 @@ document.getElementById('measureLockToggle').checked=false;document.getElementBy
 document.getElementById('newProjectBtn').onclick=()=>startNewProject(true);
 
 document.getElementById('saveBtn').onclick=()=>{
-  const project={version:64,projectMeta,brandInfo,bgData,dxfModel,pxPerCm,items,measurements,mapLabels,areas:(typeof areaPolygons!=='undefined'?areaPolygons:[]),zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
+  const project={version:65,projectMeta,brandInfo,bgData,dxfModel,pxPerCm,items,measurements,mapLabels,areaPolygons,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
   download('furniture-project.json',JSON.stringify(project),'application/json')
 };
 
@@ -3013,7 +3048,7 @@ document.getElementById('loadInput').onchange=e=>{
       items.forEach(ensureSpriteForDef);
       measurements=(p.measurements||[]).map(m=>({id:m.id||randId(),pinned:m.pinned!==false,offsetX:0,offsetY:0,...m}));selectedMeasureId=null;
       mapLabels=(p.mapLabels||[]).map(l=>({id:l.id||randId(),text:l.text||'مسمى',x:+l.x||0,y:+l.y||0}));selectedMapLabelId=null;
-      if(typeof areaPolygons!=='undefined')areaPolygons=(p.areas||[]).map(a=>({id:a.id||randId(),name:a.name||'مساحة',points:Array.isArray(a.points)?a.points:[],areaM2:+a.areaM2||0,perimeterM:+a.perimeterM||0}));
+      areaPolygons=(p.areaPolygons||p.areas||[]).map(a=>({id:a.id||randId(),name:a.name||'مساحة',points:Array.isArray(a.points)?a.points:[],areaM2:+a.areaM2||0,perimeterM:+a.perimeterM||0}));areaDraft=[];
       selectedId=null;selectedIds=[];undoStack=[];redoStack=[];updateHistoryButtons();
       updateScaleUI();
       if(p.view){
@@ -3408,7 +3443,8 @@ draw();
     [
       button('v44Calibrate','target','معايرة القياس',()=>click('calibrateBtn'),'','معايرة'),
       button('v44Measure','ruler','قياس مسافة',()=>click('measureBtn'),'','قياس'),
-      button('v44Label','text','إضافة مسمى',()=>click('addMapLabelBtn'),'','مسمى')
+      button('v44Label','text','إضافة مسمى',()=>click('addMapLabelBtn'),'','مسمى'),
+      button('v65Area','ruler','حساب مساحة ومحيط غرفة',()=>toggleAreaTool(),'','مساحة')
     ],
     [
       button('v54MeasureLine','measureLine','إخفاء / إظهار خط القياس مع إبقاء الرقم',()=>toggle('measureArrowsToggle'),'','خط القياس'),
@@ -3455,6 +3491,9 @@ draw();
     ['lMove','move','تحريك الأثاث',()=>{try{mode='select';pendingFurnitureDef=null;updateInteractionCursor?.();setStatus?.('وضع تحريك الأثاث');}catch(e){}},'', 'تحريك'],
     ['lMulti','select','تحديد متعدد',()=>toggle('multiSelectToggle'),'', 'متعدد'],
     ['lAll','selectAll','تحديد كل الأثاث',()=>click('selectAllBtn'),'', 'الكل'],
+    ['lGroup','layers','تجميع القطع المحددة في جروب',()=>groupSelectedItems(),'', 'جروب'],
+    ['lUngroup','close','فك الجروب المحدد',()=>ungroupSelectedItems(),'', 'فك جروب'],
+    ['lArrange','grid','محاذاة وتوزيع القطع المحددة',()=>showArrangeMenu(),'', 'ترتيب'],
     ['lPlus','plus','تكبير القطعة 5%',()=>{if(typeof applyToSelection==='function')applyToSelection(it=>{it.w=Math.max(1,it.w*1.05);it.h=Math.max(1,it.h*1.05);},'تم تكبير القطعة');},'', 'تكبير'],
     ['lMinus','minus','تصغير القطعة 5%',()=>{if(typeof applyToSelection==='function')applyToSelection(it=>{it.w=Math.max(1,it.w*.95);it.h=Math.max(1,it.h*.95);},'تم تصغير القطعة');},'', 'تصغير'],
     ['lRot90','rotate','دوران 90°',()=>click('rotate90'),'', '90°'],
@@ -3473,7 +3512,7 @@ draw();
     ['lSummary','layers','دليل الأثاث',()=>toggle('furnitureSummaryToggle'),'', 'دليل'],
     ['lDelete','trash','حذف المحدد',()=>click('deleteBtn'),'dangerIcon', 'حذف']
   ];
-  leftDefs.forEach((d,i)=>{if([3,9,15,19].includes(i))left.appendChild(sep());left.appendChild(button(...d));});
+  leftDefs.forEach((d,i)=>{if([6,12,18,22].includes(i))left.appendChild(sep());left.appendChild(button(...d));});
 
   const colorButton=document.getElementById('lColor');
   const picker=document.createElement('input');
@@ -3486,8 +3525,11 @@ draw();
   }else{
     document.body.appendChild(picker);
   }
-  picker.addEventListener('click',()=>{const it=(typeof current==='function'?current():null);if(it)picker.value=it.color||'#bfa781';});
-  picker.addEventListener('input',()=>{const it=(typeof current==='function'?current():null);if(!it)return;const src=document.getElementById('selColor');if(!src)return;src.value=picker.value;src.dispatchEvent(new Event('input',{bubbles:true}));src.dispatchEvent(new Event('change',{bubbles:true}));syncStates();});
+  let colorEditBefore=null;
+  picker.addEventListener('pointerdown',()=>{if(typeof cloneEditState==='function')colorEditBefore=cloneEditState();});
+  picker.addEventListener('click',()=>{const it=(typeof current==='function'?current():null);if(it)picker.value=it.color||'#bfa781';if(!colorEditBefore&&typeof cloneEditState==='function')colorEditBefore=cloneEditState();});
+  picker.addEventListener('input',()=>{const list=(typeof selectedItems==='function'?selectedItems():[]).filter(it=>typeof canEditItem!=='function'||canEditItem(it));if(!list.length)return;list.forEach(it=>{it.color=picker.value;if(it.src)it.tintEnabled=true;});const src=document.getElementById('selColor');if(src&&list.length===1){src.value=picker.value;const te=document.getElementById('selTintEnabled');if(te)te.checked=!!list[0].tintEnabled;}if(typeof tintedCache!=='undefined')tintedCache.clear();draw();if(typeof scheduleUsedFurnitureSync==='function')scheduleUsedFurnitureSync(true);syncStates();});
+  picker.addEventListener('change',()=>{if(colorEditBefore&&typeof commitHistory==='function')commitHistory(colorEditBefore);colorEditBefore=null;if(typeof setStatus==='function')setStatus('تم تطبيق اللون على المحدد');});
 
   const originalDrawItem=typeof drawItem==='function'?drawItem:null;
   if(originalDrawItem){window.drawItem=function(it){if(it?.uiHidden&&!isItemSelected(it.id))return;if(it?.uiHidden){ctx.save();ctx.globalAlpha=.16;originalDrawItem(it);ctx.restore();}else originalDrawItem(it);};}
@@ -3526,280 +3568,6 @@ draw();
 <!-- V60 AutoCAD DXF -->
 <!-- V62 DXF Unit Confirm -->
 <!-- V63 Hi-Res Map Display -->
-
-<style id="v64ProToolsStyles">
-#v64ArrangePanel{position:fixed;z-index:5200;display:none;direction:rtl;width:min(330px,calc(100vw - 28px));background:#0b1220;border:1px solid #475569;border-radius:14px;box-shadow:0 22px 60px rgba(0,0,0,.48);padding:10px}
-#v64ArrangePanel .v64Head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;font-size:12px;font-weight:800;color:#e2e8f0}
-#v64ArrangePanel .v64Grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-#v64ArrangePanel button{min-height:38px;padding:6px 5px;font-size:10px;border-radius:8px}
-#v64ArrangePanel .v64Wide{grid-column:span 3}
-.v64AutoBadge{position:absolute;right:7px;top:5px;width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 2px rgba(34,197,94,.16)}
-#v64AreaTip{position:fixed;z-index:5100;display:none;left:50%;bottom:18px;transform:translateX(-50%);direction:rtl;background:rgba(2,6,23,.94);border:1px solid #38bdf8;color:#e0f2fe;border-radius:999px;padding:7px 12px;font-size:11px;box-shadow:0 7px 24px rgba(0,0,0,.3);pointer-events:none;white-space:nowrap}
-</style>
-<div id="v64ArrangePanel">
-  <div class="v64Head"><span>ترتيب وتجميع الأثاث</span><button id="v64ArrangeClose" type="button">✕</button></div>
-  <div class="v64Grid">
-    <button data-act="left">يسار</button><button data-act="centerX">وسط أفقي</button><button data-act="right">يمين</button>
-    <button data-act="top">أعلى</button><button data-act="centerY">وسط عمودي</button><button data-act="bottom">أسفل</button>
-    <button data-act="distX">توزيع أفقي</button><button data-act="distY">توزيع عمودي</button><button data-act="group">تجميع</button>
-    <button data-act="ungroup" class="v64Wide">فك التجميع</button>
-  </div>
-</div>
-<div id="v64AreaTip">اضغط زوايا الغرفة بالترتيب، ثم اضغط «إنهاء مساحة»</div>
-<script id="v64ProTools">
-(()=>{
-  // ===== V64 state =====
-  window.areaPolygons=window.areaPolygons||[];
-  let areaDraft=[],areaActive=false;
-  const areaTip=document.getElementById('v64AreaTip');
-  const arrangePanel=document.getElementById('v64ArrangePanel');
-
-  // Keep the global lexical binding used by the core draw/save functions in sync.
-  try{ areaPolygons=window.areaPolygons; }catch(_){}
-
-  const svg=(body)=>'<svg viewBox="0 0 24 24" aria-hidden="true">'+body+'</svg>';
-  const mkBtn=(id,label,title,icon,fn)=>{
-    const b=document.createElement('button');b.type='button';b.id=id;b.className='modernIconBtn';b.title=title;b.setAttribute('aria-label',title);
-    b.innerHTML=svg(icon)+'<span class="iconLabel">'+label+'</span>';b.addEventListener('click',fn);return b;
-  };
-
-  // ===== Project snapshot / Auto recovery (IndexedDB) =====
-  const DB_NAME='taatheethi-v64',STORE='recovery',KEY='latest';
-  let lastAutoSig='',autoBusy=false,restoreInProgress=false;
-  function currentView(){
-    const g=id=>!!document.getElementById(id)?.checked;
-    return {grid:g('gridToggle'),dims:g('dimsToggle'),labels:g('labelsToggle'),shadow:g('shadowToggle'),snap:g('snapToggle'),autoDims:g('autoDimsToggle'),bg:g('bgLayerToggle'),furniture:g('furnitureLayerToggle'),measures:g('measureLayerToggle'),mapLabels:g('mapLabelLayerToggle'),measureArrows:g('measureArrowsToggle'),furnitureSummary:g('furnitureSummaryToggle'),measureLock:g('measureLockToggle'),mapLabelLock:g('mapLabelLockToggle')};
-  }
-  function snapshot(){
-    return {version:64,savedAt:Date.now(),projectMeta,brandInfo,bgData,dxfModel,pxPerCm,items,measurements,mapLabels,areas:areaPolygons,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:currentView(),canvas:{width:canvas.width,height:canvas.height}};
-  }
-  function lightSig(){
-    return JSON.stringify({bg:bgData?bgData.length+':'+bgData.slice(-48):'',dxf:dxfModel?((dxfModel.fileName||'')+':'+(dxfModel.entities?.length||0)+':'+(dxfModel.width||0)+'x'+(dxfModel.height||0)):'',px:pxPerCm,n:items.length,m:measurements.length,l:mapLabels.length,a:areaPolygons.length,
-      i:items.map(x=>[x.id,Math.round(x.x),Math.round(x.y),x.rot,x.w,x.h,x.groupId||'',x.locked?1:0]),
-      me:measurements.map(x=>[x.id,x.offsetX||0,x.offsetY||0,x.pinned?1:0]),la:mapLabels.map(x=>[x.id,x.text,Math.round(x.x),Math.round(x.y)]),
-      ar:areaPolygons.map(x=>[x.id,x.name,x.points?.length||0,x.areaM2,x.perimeterM])});
-  }
-  function openDb(){
-    return new Promise((resolve,reject)=>{
-      const r=indexedDB.open(DB_NAME,1);
-      r.onupgradeneeded=()=>{const db=r.result;if(!db.objectStoreNames.contains(STORE))db.createObjectStore(STORE);};
-      r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);
-    });
-  }
-  async function idbPut(value){
-    const db=await openDb();return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(value,KEY);tx.oncomplete=()=>{db.close();resolve();};tx.onerror=()=>{db.close();reject(tx.error);};});
-  }
-  async function idbGet(){
-    const db=await openDb();return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,'readonly');const r=tx.objectStore(STORE).get(KEY);r.onsuccess=()=>{const v=r.result;db.close();resolve(v);};r.onerror=()=>{db.close();reject(r.error);};});
-  }
-  async function autoSave(){
-    if(autoBusy||restoreInProgress)return;
-    const sig=lightSig();if(sig===lastAutoSig)return;
-    autoBusy=true;
-    try{await idbPut(snapshot());lastAutoSig=sig;}catch(e){console.warn('Taatheethi autosave',e);}finally{autoBusy=false;}
-  }
-  setInterval(autoSave,2200);
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')autoSave();});
-  window.addEventListener('pagehide',autoSave);
-
-  async function restoreSnapshot(p){
-    if(!p)return;restoreInProgress=true;
-    try{
-      projectMeta={name:p.projectMeta?.name||'مشروع مستعاد',mapTitle:p.projectMeta?.mapTitle||'',client:p.projectMeta?.client||'',location:p.projectMeta?.location||''};
-      if(p.brandInfo){brandInfo={...defaultBrandInfo(),...p.brandInfo};saveBrandInfoState();refreshCompanyLogo();}
-      if(Array.isArray(p.library)&&p.library.length){
-        furniture=p.library.map((x,i)=>({id:x.id||('recover_'+i+'_'+Date.now()),name:x.name||'قطعة',w:+x.w||100,h:+x.h||60,src:x.src||null,category:x.category||'أخرى',color:x.color||'#bfa781',isCustom:x.isCustom!==false}));
-        saveLibraryState();activeCategory='الكل';buildCategoryButtons();renderLibrary();
-      }
-      dxfModel=p.dxfModel||null;if(dxfModel)rebuildDxfSnapGeometry();else{dxfSnapSegments=[];dxfSnapKeyPoints=[];dxfActiveSnap=null;}
-      pxPerCm=p.pxPerCm||(dxfModel?(dxfModel.scale/dxfModel.unitCm):null);
-      items=(p.items||[]).map(it=>({color:'#bfa781',type:'generic',rot:0,tintEnabled:false,locked:false,...it}));items.forEach(ensureSpriteForDef);
-      measurements=(p.measurements||[]).map(m=>({id:m.id||randId(),pinned:m.pinned!==false,offsetX:0,offsetY:0,...m}));
-      mapLabels=(p.mapLabels||[]).map(l=>({id:l.id||randId(),text:l.text||'مسمى',x:+l.x||0,y:+l.y||0}));
-      areaPolygons=(p.areas||[]).map(a=>({id:a.id||randId(),name:a.name||'مساحة',points:Array.isArray(a.points)?a.points:[],areaM2:+a.areaM2||0,perimeterM:+a.perimeterM||0}));window.areaPolygons=areaPolygons;
-      clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;undoStack=[];redoStack=[];updateHistoryButtons();updateScaleUI();
-      if(p.view){const vm={grid:'gridToggle',dims:'dimsToggle',labels:'labelsToggle',shadow:'shadowToggle',snap:'snapToggle',autoDims:'autoDimsToggle',bg:'bgLayerToggle',furniture:'furnitureLayerToggle',measures:'measureLayerToggle',mapLabels:'mapLabelLayerToggle',measureArrows:'measureArrowsToggle',furnitureSummary:'furnitureSummaryToggle',measureLock:'measureLockToggle',mapLabelLock:'mapLabelLockToggle'};for(const [k,id] of Object.entries(vm))if(k in p.view)document.getElementById(id).checked=!!p.view[k];}
-      zoom=Number(p.zoom)||1;measureDisplayScale=clamp(Number(p.measureDisplayScale)||1,.4,2);mapLabelDisplayScale=clamp(Number(p.mapLabelDisplayScale)||1,.4,2);
-      document.getElementById('zoomRange').value=Math.round(zoom*100);document.getElementById('zoomLabel').textContent=Math.round(zoom*100)+'%';
-      measureSizeRange.value=Math.round(measureDisplayScale*100);measureSizeLabel.textContent=Math.round(measureDisplayScale*100)+'%';
-      mapLabelSizeRange.value=Math.round(mapLabelDisplayScale*100);mapLabelSizeValue.textContent=Math.round(mapLabelDisplayScale*100)+'%';
-      if(dxfModel){bgImage=null;bgData=null;canvas.width=p.canvas?.width||dxfModel.width||1100;canvas.height=p.canvas?.height||dxfModel.height||750;updateStageSize();draw();fitToViewport();}
-      else if(p.bgData){await new Promise(resolve=>{const img=new Image();img.onload=()=>{bgImage=img;bgData=p.bgData;canvas.width=p.canvas?.width||img.width;canvas.height=p.canvas?.height||img.height;updateStageSize();draw();fitToViewport();resolve();};img.onerror=resolve;img.src=p.bgData;});}
-      else{bgImage=null;bgData=null;canvas.width=p.canvas?.width||1100;canvas.height=p.canvas?.height||750;updateStageSize();draw();}
-      syncSelectedPanel();syncQuickDisplayButtons();scheduleUsedFurnitureSync(true);setStatus('تمت استعادة آخر نسخة محفوظة تلقائيًا');
-      lastAutoSig=lightSig();
-    }finally{restoreInProgress=false;}
-  }
-  setTimeout(async()=>{
-    if(sessionStorage.getItem('taatheethi-v64-recovery-checked'))return;
-    sessionStorage.setItem('taatheethi-v64-recovery-checked','1');
-    try{
-      const p=await idbGet();
-      const empty=!bgImage&&!dxfModel&&!items.length&&!measurements.length&&!mapLabels.length&&!areaPolygons.length;
-      if(p&&p.savedAt&&empty){
-        const d=new Date(p.savedAt),stamp=d.toLocaleString('ar-IQ');
-        if(confirm('وجدت نسخة محفوظة تلقائيًا من '+stamp+'.\nهل تريد استعادة آخر عمل؟'))await restoreSnapshot(p);
-      }
-    }catch(e){console.warn(e);}
-  },700);
-
-  // ===== Arrange / align / group =====
-  function editableSelection(){return selectedItems().filter(it=>!it.locked&&!furnitureGloballyLocked());}
-  function applyArrange(act){
-    const list=editableSelection();if(!list.length){setStatus('حدد قطع الأثاث أولًا');return;}
-    const before=cloneEditState();
-    const boxes=()=>list.map(it=>({it,b:itemAABBAt(it)}));
-    if(['left','right','centerX','top','bottom','centerY'].includes(act)&&list.length<2){setStatus('حدد قطعتين على الأقل للمحاذاة');return;}
-    if(act==='left'){const bs=boxes(),t=Math.min(...bs.map(x=>x.b.minX));bs.forEach(x=>x.it.x+=t-x.b.minX);}
-    if(act==='right'){const bs=boxes(),t=Math.max(...bs.map(x=>x.b.maxX));bs.forEach(x=>x.it.x+=t-x.b.maxX);}
-    if(act==='centerX'){const bs=boxes(),t=(Math.min(...bs.map(x=>x.b.minX))+Math.max(...bs.map(x=>x.b.maxX)))/2;bs.forEach(x=>x.it.x+=t-x.b.cx);}
-    if(act==='top'){const bs=boxes(),t=Math.min(...bs.map(x=>x.b.minY));bs.forEach(x=>x.it.y+=t-x.b.minY);}
-    if(act==='bottom'){const bs=boxes(),t=Math.max(...bs.map(x=>x.b.maxY));bs.forEach(x=>x.it.y+=t-x.b.maxY);}
-    if(act==='centerY'){const bs=boxes(),t=(Math.min(...bs.map(x=>x.b.minY))+Math.max(...bs.map(x=>x.b.maxY)))/2;bs.forEach(x=>x.it.y+=t-x.b.cy);}
-    if(act==='distX'){
-      if(list.length<3){setStatus('التوزيع يحتاج 3 قطع على الأقل');return;}
-      const s=[...list].sort((a,b)=>a.x-b.x),a=s[0].x,b=s[s.length-1].x,step=(b-a)/(s.length-1);s.forEach((it,i)=>it.x=a+step*i);
-    }
-    if(act==='distY'){
-      if(list.length<3){setStatus('التوزيع يحتاج 3 قطع على الأقل');return;}
-      const s=[...list].sort((a,b)=>a.y-b.y),a=s[0].y,b=s[s.length-1].y,step=(b-a)/(s.length-1);s.forEach((it,i)=>it.y=a+step*i);
-    }
-    if(act==='group'){
-      if(list.length<2){setStatus('حدد قطعتين على الأقل للتجميع');return;}
-      const gid='grp_'+randId();list.forEach(it=>it.groupId=gid);setStatus('تم تجميع '+list.length+' قطع — أصبحت تتحرك وتدور كمجموعة واحدة');
-    }
-    if(act==='ungroup'){const gids=new Set(list.map(x=>x.groupId).filter(Boolean));items.forEach(it=>{if(gids.has(it.groupId))it.groupId=null;});setStatus('تم فك التجميع');}
-    syncSelectedPanel();draw();commitHistory(before);autoSave();
-  }
-  arrangePanel.addEventListener('click',e=>{const b=e.target.closest('button[data-act]');if(b)applyArrange(b.dataset.act);});
-  document.getElementById('v64ArrangeClose').onclick=()=>arrangePanel.style.display='none';
-
-  // Smart group rotation around group center.
-  function rotateSmart(deg,reset=false){
-    if(furnitureGloballyLocked()){setStatus('الأثاث مقفل من الشريط العلوي');return;}
-    const list=selectedItems().filter(it=>!it.locked);if(!list.length)return;
-    const before=cloneEditState(),sameGroup=list.length>1&&list[0].groupId&&list.every(x=>x.groupId===list[0].groupId);
-    if(sameGroup&&!reset){
-      const minX=Math.min(...list.map(x=>itemAABBAt(x).minX)),maxX=Math.max(...list.map(x=>itemAABBAt(x).maxX));
-      const minY=Math.min(...list.map(x=>itemAABBAt(x).minY)),maxY=Math.max(...list.map(x=>itemAABBAt(x).maxY));
-      const cx=(minX+maxX)/2,cy=(minY+maxY)/2,a=deg*Math.PI/180,co=Math.cos(a),si=Math.sin(a);
-      list.forEach(it=>{const dx=it.x-cx,dy=it.y-cy;it.x=cx+dx*co-dy*si;it.y=cy+dx*si+dy*co;it.rot=((it.rot+deg)%360+360)%360;});
-    }else if(reset){list.forEach(it=>it.rot=0);}
-    else list.forEach(it=>it.rot=((it.rot+deg)%360+360)%360);
-    syncSelectedPanel();draw();commitHistory(before);setStatus(reset?'تمت إعادة الدوران':'تم تدوير المحدد '+deg+'°');
-  }
-  document.getElementById('rotate90').onclick=()=>rotateSmart(90);
-  document.getElementById('rotate45').onclick=()=>rotateSmart(45);
-  document.getElementById('rotate180').onclick=()=>rotateSmart(180);
-  document.getElementById('rotate360').onclick=()=>rotateSmart(0,true);
-
-  // Duplicate groups without linking the copy to the original group.
-  document.getElementById('dupBtn').onclick=()=>{
-    if(furnitureGloballyLocked()){setStatus('الأثاث مقفل من الشريط العلوي');return;}
-    const list=selectedItems();if(!list.length)return;const before=cloneEditState(),newIds=[],gm=new Map();
-    for(const it of list){let gid=null;if(it.groupId){if(!gm.has(it.groupId))gm.set(it.groupId,'grp_'+randId());gid=gm.get(it.groupId);}const n={...it,id:randId(),x:it.x+20,y:it.y+20,locked:false,groupId:gid};items.push(n);newIds.push(n.id);}
-    setSelection(newIds,newIds.at(-1));syncSelectedPanel();draw();commitHistory(before);setStatus('تم نسخ '+newIds.length+' قطعة');
-  };
-
-  // ===== Area / perimeter measurement =====
-  function polygonStats(pts){
-    let twice=0,per=0;for(let i=0;i<pts.length;i++){const a=pts[i],b=pts[(i+1)%pts.length];twice+=a.x*b.y-b.x*a.y;per+=Math.hypot(b.x-a.x,b.y-a.y);}
-    return {areaM2:Math.abs(twice)/2/(pxPerCm*pxPerCm)/10000,perimeterM:per/pxPerCm/100};
-  }
-  window.drawAreaPolygons=function(){
-    if(!pxPerCm)return;ctx.save();ctx.lineJoin='round';ctx.lineCap='round';
-    for(const a of areaPolygons){
-      if(!a.points||a.points.length<3)continue;ctx.beginPath();ctx.moveTo(a.points[0].x,a.points[0].y);for(let i=1;i<a.points.length;i++)ctx.lineTo(a.points[i].x,a.points[i].y);ctx.closePath();
-      ctx.fillStyle='rgba(14,165,233,.07)';ctx.fill();ctx.strokeStyle='rgba(2,132,199,.72)';ctx.lineWidth=Math.max(1.4,2/zoom);ctx.stroke();
-      const cx=a.points.reduce((s,p)=>s+p.x,0)/a.points.length,cy=a.points.reduce((s,p)=>s+p.y,0)/a.points.length;
-      const label=(a.name||'مساحة')+'  '+a.areaM2.toFixed(2)+' م²  •  '+a.perimeterM.toFixed(2)+' م';
-      const fs=Math.max(10,14/zoom);ctx.font='700 '+fs+'px Tahoma';const tw=ctx.measureText(label).width;ctx.fillStyle='rgba(255,255,255,.94)';roundRectPath(cx-tw/2-6,cy-fs*.75,tw+12,fs*1.5,5);ctx.fill();ctx.strokeStyle='#0284c7';ctx.lineWidth=1;ctx.stroke();ctx.fillStyle='#0f172a';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,cx,cy);
-    }
-    if(areaActive&&areaDraft.length){
-      ctx.strokeStyle='#0ea5e9';ctx.fillStyle='rgba(14,165,233,.10)';ctx.lineWidth=Math.max(1.4,2/zoom);ctx.setLineDash([7/zoom,5/zoom]);ctx.beginPath();ctx.moveTo(areaDraft[0].x,areaDraft[0].y);for(let i=1;i<areaDraft.length;i++)ctx.lineTo(areaDraft[i].x,areaDraft[i].y);ctx.stroke();ctx.setLineDash([]);
-      for(const p of areaDraft){ctx.beginPath();ctx.arc(p.x,p.y,4/zoom,0,Math.PI*2);ctx.fillStyle='#0ea5e9';ctx.fill();}
-    }
-    ctx.restore();
-  };
-  function finishArea(){
-    if(areaDraft.length<3){areaActive=false;areaDraft=[];mode='select';areaTip.style.display='none';setStatus('تم إلغاء أداة المساحة');draw();return;}
-    const st=polygonStats(areaDraft),name=(prompt('اسم الغرفة أو المساحة:','غرفة '+(areaPolygons.length+1))||('غرفة '+(areaPolygons.length+1))).trim();
-    const before=cloneEditState();areaPolygons.push({id:randId(),name,points:areaDraft.map(p=>({...p})),...st});window.areaPolygons=areaPolygons;
-    areaActive=false;areaDraft=[];mode='select';areaTip.style.display='none';draw();commitHistory(before);setStatus('المساحة '+st.areaM2.toFixed(2)+' م² — المحيط '+st.perimeterM.toFixed(2)+' م');autoSave();
-  }
-  function toggleArea(){
-    if(areaActive){finishArea();return;}
-    if(!pxPerCm){alert('عاير الخارطة أولاً أو افتح DXF حقيقي حتى يمكن حساب المساحة.');return;}
-    areaActive=true;areaDraft=[];mode='areaMeasure';clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;areaTip.style.display='block';setStatus('أداة المساحة: اضغط زوايا الغرفة بالترتيب ثم اضغط إنهاء مساحة');draw();syncAreaButton();
-  }
-  canvas.addEventListener('click',e=>{if(!areaActive||mode!=='areaMeasure')return;const p=dxfModel?snapPointToDxf(clampPointToCanvas(toCanvasPos(e))):clampPointToCanvas(toCanvasPos(e));areaDraft.push({...p});draw();syncAreaButton();e.preventDefault();},true);
-  window.addEventListener('keydown',e=>{if(e.key==='Escape'&&areaActive){areaActive=false;areaDraft=[];mode='select';areaTip.style.display='none';draw();syncAreaButton();setStatus('تم إلغاء أداة المساحة');}});
-
-  // ===== DXF export =====
-  function safeName(s){return String(s||'TAATHEETHI').replace(/[\\/:*?"<>|]+/g,'_').trim()||'TAATHEETHI';}
-  function cadPoint(p){return {x:p.x/pxPerCm,y:(canvas.height-p.y)/pxPerCm};}
-  function dxfPair(code,val){return code+'\r\n'+val+'\r\n';}
-  function lwpoly(pts,layer,closed=true){
-    let s=dxfPair(0,'LWPOLYLINE')+dxfPair(8,layer)+dxfPair(90,pts.length)+dxfPair(70,closed?1:0);
-    for(const p of pts){s+=dxfPair(10,p.x.toFixed(4))+dxfPair(20,p.y.toFixed(4));}return s;
-  }
-  function dxfLine(a,b,layer){return dxfPair(0,'LINE')+dxfPair(8,layer)+dxfPair(10,a.x.toFixed(4))+dxfPair(20,a.y.toFixed(4))+dxfPair(11,b.x.toFixed(4))+dxfPair(21,b.y.toFixed(4));}
-  function dxfText(p,text,h=18,layer='LABELS'){return dxfPair(0,'TEXT')+dxfPair(8,layer)+dxfPair(10,p.x.toFixed(4))+dxfPair(20,p.y.toFixed(4))+dxfPair(40,h)+dxfPair(1,String(text||''));}
-  function exportDXF(){
-    if(!pxPerCm){alert('يجب أن تكون الخارطة معايرة أو DXF حقيقي قبل التصدير.');return;}
-    let out=dxfPair(0,'SECTION')+dxfPair(2,'HEADER')+dxfPair(9,'$ACADVER')+dxfPair(1,'AC1027')+dxfPair(9,'$INSUNITS')+dxfPair(70,5)+dxfPair(0,'ENDSEC');
-    out+=dxfPair(0,'SECTION')+dxfPair(2,'ENTITIES');
-    if(dxfModel&&Array.isArray(dxfModel.entities)){
-      const P=(x,y)=>cadPoint(dxfToCanvasPoint(dxfModel,x,y));
-      for(const e of dxfModel.entities){
-        if(e.type==='LINE')out+=dxfLine(P(e.x1,e.y1),P(e.x2,e.y2),'PLAN');
-        else if(e.verts&&e.verts.length)out+=lwpoly(e.verts.map(v=>P(v.x,v.y)),'PLAN',!!e.closed);
-        else if(e.type==='CIRCLE'){const q=P(e.cx,e.cy),r=e.r*dxfModel.scale/pxPerCm;out+=dxfPair(0,'CIRCLE')+dxfPair(8,'PLAN')+dxfPair(10,q.x.toFixed(4))+dxfPair(20,q.y.toFixed(4))+dxfPair(40,r.toFixed(4));}
-        else if(e.type==='ARC'){
-          const ai=dxfArcInfo(e),q=P(e.cx,e.cy),r=e.r*dxfModel.scale/pxPerCm;
-          const rad=d=>d*Math.PI/180;
-          const ps=P(e.cx+e.r*Math.cos(rad(ai.start)),e.cy+e.r*Math.sin(rad(ai.start)));
-          const pe=P(e.cx+e.r*Math.cos(rad(ai.start+ai.sweep)),e.cy+e.r*Math.sin(rad(ai.start+ai.sweep)));
-          const ang=p=>{let a=Math.atan2(p.y-q.y,p.x-q.x)*180/Math.PI;return (a%360+360)%360;};
-          out+=dxfPair(0,'ARC')+dxfPair(8,'PLAN')+dxfPair(10,q.x.toFixed(4))+dxfPair(20,q.y.toFixed(4))+dxfPair(40,r.toFixed(4))+dxfPair(50,ang(ps).toFixed(4))+dxfPair(51,ang(pe).toFixed(4));
-        }
-        else if(e.type==='POINT'){const q=P(e.x,e.y);out+=dxfPair(0,'POINT')+dxfPair(8,'PLAN')+dxfPair(10,q.x.toFixed(4))+dxfPair(20,q.y.toFixed(4));}
-      }
-    }
-    for(const it of items){
-      const pts=itemCorners(it).map(cadPoint);out+=lwpoly(pts,'FURNITURE',true);out+=dxfText(cadPoint({x:it.x,y:it.y}),it.name||'Furniture',Math.max(8,Math.min(it.w,it.h)*.12),'FURNITURE_TEXT');
-    }
-    for(const a of areaPolygons){if(a.points?.length>=3){out+=lwpoly(a.points.map(cadPoint),'AREAS',true);const cx=a.points.reduce((s,p)=>s+p.x,0)/a.points.length,cy=a.points.reduce((s,p)=>s+p.y,0)/a.points.length;out+=dxfText(cadPoint({x:cx,y:cy}),(a.name||'Area')+' '+a.areaM2.toFixed(2)+'m2',14,'AREAS_TEXT');}}
-    for(const l of mapLabels)out+=dxfText(cadPoint({x:l.x,y:l.y}),l.text||'Label',14,'LABELS');
-    out+=dxfPair(0,'ENDSEC')+dxfPair(0,'EOF');
-    download(safeName(projectMeta?.name||projectMeta?.mapTitle||'Taatheethi')+'.dxf',out,'application/dxf');setStatus('تم تصدير DXF بالسنتيمتر مع الأثاث والمساحات');
-  }
-
-  // ===== UI injection =====
-  const top=document.getElementById('modernTopToolbar'),left=document.getElementById('furnitureIconToolbar');
-  let areaBtn=null;
-  function syncAreaButton(){if(!areaBtn)return;const sp=areaBtn.querySelector('.iconLabel');if(sp)sp.textContent=areaActive?'إنهاء مساحة':'مساحة';areaBtn.classList.toggle('active',areaActive);}
-  if(top){
-    const g=document.createElement('div');g.className='topToolGroup';
-    areaBtn=mkBtn('v64Area','مساحة','حساب مساحة ومحيط غرفة','<path d="M5 18 8 6l9-2 3 10-7 6z"/><path d="m8 6 5 14M17 4l-4 16"/>',toggleArea);
-    const dxfBtn=mkBtn('v64ExportDxf','DXF خروج','تصدير العمل إلى AutoCAD DXF','<path d="M5 3h10l4 4v14H5z"/><path d="M15 3v5h5M8 16l3-6 3 6M9 14h4"/><path d="m16 12 4 4m0-4-4 4"/>',exportDXF);
-    const autoBtn=mkBtn('v64Auto','حفظ تلقائي','الحفظ التلقائي والاستعادة مفعّلان','<path d="M5 4h12l2 2v14H5z"/><path d="M8 4v6h8V4M9 15a3 3 0 1 0 6 0"/><path d="M15 12v3h-3"/>',()=>{autoSave();setStatus('الحفظ التلقائي مفعّل — تم حفظ آخر حالة');});
-    const badge=document.createElement('span');badge.className='v64AutoBadge';autoBtn.appendChild(badge);
-    g.append(areaBtn,dxfBtn,autoBtn);top.appendChild(g);
-  }
-  if(left){
-    const arrangeBtn=mkBtn('v64Arrange','ترتيب','محاذاة وتوزيع وتجميع الأثاث','<path d="M5 5h6v6H5zM13 13h6v6h-6zM14 5h5M5 15v4h4"/><path d="M12 4v16"/>',()=>{
-      const r=arrangeBtn.getBoundingClientRect();arrangePanel.style.left=Math.min(window.innerWidth-arrangePanel.offsetWidth-10,r.right+8)+'px';arrangePanel.style.top=Math.max(10,Math.min(window.innerHeight-330,r.top))+'px';arrangePanel.style.display=arrangePanel.style.display==='block'?'none':'block';
-    });
-    left.insertBefore(arrangeBtn,left.lastElementChild);
-  }
-  document.addEventListener('pointerdown',e=>{if(arrangePanel.style.display==='block'&&!arrangePanel.contains(e.target)&&!e.target.closest('#v64Arrange'))arrangePanel.style.display='none';});
-
-  // V64 marker
-  setTimeout(()=>setStatus(statusEl.textContent||'V64 جاهز'),50);
-})();
-</script>
-<!-- V64 Pro Tools & Auto Recovery -->
-
+<!-- V65 Stable Interaction Fix -->
 </body>
 </html>
