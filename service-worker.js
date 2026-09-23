@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v62-dxf-unit-confirm";
+const CACHE_NAME = "taatheethi-v68-ipad-area-wand-delete";
 
 self.addEventListener('install', event => {
   self.skipWaiting();
