@@ -12,8 +12,8 @@
 <meta name="apple-mobile-web-app-title" content="مخطط الأثاث" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-<title>تأثيثي V71 — Sticky Tools Workflow</title>
-<meta name="taatheethi-version" content="71-sticky-tools-workflow">
+<title>FurniPlan V72 — Professional Export Layout</title>
+<meta name="taatheethi-version" content="72-professional-export-layout">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -487,7 +487,7 @@ header{min-height:var(--tool-header-h)!important}
 <div class="app">
 <header>
   <div class="headerBrand">
-    <h1>تأثيثي</h1>
+    <h1>FurniPlan</h1>
     <div class="status" id="status">ارفع مخططًا للبدء</div>
   </div>
   <div class="toolbarStack">
@@ -720,7 +720,7 @@ header{min-height:var(--tool-header-h)!important}
 <div class="modalOverlay" id="printModal">
   <div class="modalCard">
     <h3 id="printDialogTitle">طباعة المخطط</h3>
-    <p id="printDialogDesc">أدخل بيانات المشروع واختر حجم الورق. ستظهر الخارطة مع شعارك ومعلومات الشركة المحفوظة في «معلوماتك» وشريط مقياس 1 متر.</p>
+    <p id="printDialogDesc">أدخل بيانات المشروع واختر حجم الورق. سيقوم FurniPlan بتكبير الخارطة تلقائيًا وترتيب دليل الأثاث مع الشعار في لوحة عرض احترافية.</p>
     <div class="printMeta">
       <div class="field wide"><label>اسم المشروع</label><input id="printProjectName" type="text" value="مشروع جديد"></div>
       <div class="field wide"><label>عنوان الخارطة</label><input id="printMapTitle" type="text" placeholder="مثال: قياسات، توزيع أثاث، الطابق الأرضي"></div>
@@ -737,9 +737,9 @@ header{min-height:var(--tool-header-h)!important}
 <div class="modalOverlay" id="exportModal">
   <div class="modalCard">
     <h3>تصدير PNG</h3>
-    <p>يمكنك حفظ الخارطة كصورة عادية، أو إضافة الشعار ومعلومات المشروع بشكل اختياري داخل الصورة نفسها.</p>
+    <p>يتم تصدير المشروع كلوحة FurniPlan احترافية عالية الدقة مع الشريط العلوي والشعار والخارطة ودليل الأثاث.</p>
     <div class="printMeta">
-      <div class="field wide"><label><input id="pngBrandingToggle" type="checkbox" checked style="width:auto;margin-left:8px"> إضافة الشعار ومعلومات المشروع والشركة داخل PNG</label></div>
+      <div class="field wide"><label><input id="pngBrandingToggle" type="checkbox" checked style="width:auto;margin-left:8px"> إظهار بيانات المشروع والعميل التفصيلية</label></div>
       <div class="field wide"><label>اسم المشروع</label><input id="pngProjectName" type="text" value="مشروع جديد"></div>
       <div class="field wide"><label>عنوان الخارطة</label><input id="pngMapTitle" type="text" placeholder="مثال: قياسات، توزيع أثاث، الطابق الأرضي"></div>
       <div class="field"><label>العميل</label><input id="pngClient" type="text" placeholder="اسم العميل"></div>
@@ -747,7 +747,7 @@ header{min-height:var(--tool-header-h)!important}
       <div class="field"><label>حجم اللوحة</label><select id="pngPaper"><option value="A4">A4</option><option value="A3">A3</option></select></div>
       <div class="field"><label>الاتجاه</label><select id="pngOrientation"><option value="landscape">أفقي</option><option value="portrait">عمودي</option></select></div>
     </div>
-    <div class="printNote" style="margin-top:10px">إذا ألغيت الخيار أعلاه فسيتم حفظ الخارطة فقط. وإذا أبقيته مفعلاً فسيتم حفظها بنفس تنسيق الشعار ومعلومات العميل والموقع بشكل مرتب ومتوازن.</div>
+    <div class="printNote" style="margin-top:10px">الشريط العلوي والشعار ودليل الأثاث يبقون دائمًا. هذا الخيار يتحكم فقط بإظهار بيانات المشروع والعميل التفصيلية.</div>
     <div class="modalActions"><button id="cancelExportBtn">إلغاء</button><button id="doExportBtn" class="primary">حفظ PNG</button></div>
   </div>
 </div>
@@ -3251,7 +3251,7 @@ document.getElementById('measureLockToggle').checked=false;document.getElementBy
 document.getElementById('newProjectBtn').onclick=()=>startNewProject(true);
 
 document.getElementById('saveBtn').onclick=()=>{
-  const project={version:71,projectMeta,brandInfo,bgData,dxfModel,pxPerCm,items,measurements,mapLabels,areaPolygons,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
+  const project={version:72,projectMeta,brandInfo,bgData,dxfModel,pxPerCm,items,measurements,mapLabels,areaPolygons,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
   download('furniture-project.json',JSON.stringify(project),'application/json')
 };
 
@@ -3302,121 +3302,68 @@ document.getElementById('loadInput').onchange=e=>{
 };
 
 
-function captureCleanPlanCanvas(){
+function captureCleanPlanCanvas(includeScale=true){
   const oldIds=selectedIds.slice(),oldId=selectedId,oldMeasure=selectedMeasureId,oldMapLabel=selectedMapLabelId,oldGuides=snapGuides.slice();
   const auto=document.getElementById('autoDimsToggle'),oldAuto=auto.checked;
   clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;snapGuides=[];auto.checked=false;draw();
   const out=document.createElement('canvas');out.width=canvas.width;out.height=canvas.height;const oc=out.getContext('2d');oc.drawImage(canvas,0,0);
-  if(pxPerCm){const len=100*pxPerCm,x=28,y=out.height-34;oc.strokeStyle='#111';oc.fillStyle='#111';oc.lineWidth=Math.max(2,out.width/900);oc.beginPath();oc.moveTo(x,y);oc.lineTo(x+len,y);oc.stroke();oc.beginPath();oc.moveTo(x,y-7);oc.lineTo(x,y+7);oc.moveTo(x+len,y-7);oc.lineTo(x+len,y+7);oc.stroke();oc.font=`bold ${Math.max(12,out.width/95)}px Tahoma`;oc.textAlign='center';oc.fillText('1 متر',x+len/2,y-10);}
-  selectedIds=oldIds;selectedId=oldId;selectedMeasureId=oldMeasure;selectedMapLabelId=oldMapLabel;snapGuides=oldGuides;auto.checked=oldAuto;draw();
-  return out;
+  if(includeScale&&pxPerCm){const len=100*pxPerCm,x=28,y=out.height-34;oc.strokeStyle='#111';oc.fillStyle='#111';oc.lineWidth=Math.max(2,out.width/900);oc.beginPath();oc.moveTo(x,y);oc.lineTo(x+len,y);oc.stroke();oc.beginPath();oc.moveTo(x,y-7);oc.lineTo(x,y+7);oc.moveTo(x+len,y-7);oc.lineTo(x+len,y+7);oc.stroke();oc.font=`bold ${Math.max(12,out.width/95)}px Tahoma`;oc.textAlign='center';oc.fillText('1 متر',x+len/2,y-10);}
+  selectedIds=oldIds;selectedId=oldId;selectedMeasureId=oldMeasure;selectedMapLabelId=oldMapLabel;snapGuides=oldGuides;auto.checked=oldAuto;draw();return out;
+}
+function trimPlanWhitespace(src){
+  const w=src.width,h=src.height;if(w<80||h<80)return {canvas:src,offsetX:0,offsetY:0,originalWidth:w,originalHeight:h};
+  const c=src.getContext('2d',{willReadFrequently:true}),d=c.getImageData(0,0,w,h).data,step=Math.max(1,Math.floor(Math.min(w,h)/650));
+  let minX=w,minY=h,maxX=-1,maxY=-1,hits=0;
+  for(let y=0;y<h;y+=step)for(let x=0;x<w;x+=step){const k=(y*w+x)*4,a=d[k+3],r=d[k],g=d[k+1],b=d[k+2];if(a>20&&(r<244||g<244||b<244)){minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);hits++;}}
+  if(!hits||maxX<=minX||maxY<=minY)return {canvas:src,offsetX:0,offsetY:0,originalWidth:w,originalHeight:h};
+  const contentW=maxX-minX+step,contentH=maxY-minY+step;if(contentW>w*.94&&contentH>h*.94)return {canvas:src,offsetX:0,offsetY:0,originalWidth:w,originalHeight:h};
+  const pad=Math.max(16,Math.round(Math.min(w,h)*.025)),x=Math.max(0,minX-pad),y=Math.max(0,minY-pad),x2=Math.min(w,maxX+step+pad),y2=Math.min(h,maxY+step+pad),cw=Math.max(1,x2-x),ch=Math.max(1,y2-y);
+  const out=document.createElement('canvas');out.width=cw;out.height=ch;out.getContext('2d').drawImage(src,x,y,cw,ch,0,0,cw,ch);return {canvas:out,offsetX:x,offsetY:y,originalWidth:w,originalHeight:h};
 }
 function paperPixels(paper,orient){
-  const portrait=paper==='A3'?{w:1754,h:2480}:{w:1240,h:1754};
-  return orient==='landscape'?{w:portrait.h,h:portrait.w}:{w:portrait.w,h:portrait.h};
+  // V72: about 220 DPI for clearer furniture names, dimensions, PNG and PDF.
+  const portrait=paper==='A3'?{w:2573,h:3638}:{w:1819,h:2573};return orient==='landscape'?{w:portrait.h,h:portrait.w}:{w:portrait.w,h:portrait.h};
 }
-function loadDataImage(src){
-  return new Promise((resolve,reject)=>{
-    const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=src;
-  });
-}
-async function renderFurnitureScheduleCanvas(targetWidth){
-  const groups=usedFurnitureGroups();
-  if(!furnitureSummaryVisible()||!groups.length)return null;
-  const width=Math.max(600,Math.round(targetWidth||1100));
-  const pad=Math.max(10,Math.round(width*0.010));
-  const gap=Math.max(7,Math.round(width*0.006));
-  const titleH=Math.max(26,Math.min(38,Math.round(width*0.020)));
-  // V33: بطاقات التصدير صغيرة وثابتة نسبيًا، ولا تتمدد عند وجود قطعة واحدة فقط.
-  const desiredCardW=Math.max(145,Math.min(205,Math.round(width*0.13)));
-  const cols=Math.max(1,Math.min(groups.length,Math.floor((width-pad*2+gap)/(desiredCardW+gap))));
-  const cardW=Math.min(desiredCardW,Math.floor((width-pad*2-gap*(cols-1))/cols));
-  const cardH=Math.max(82,Math.min(108,Math.round(cardW*0.52)));
-  const rows=Math.ceil(groups.length/cols);
-  const height=pad+titleH+gap+rows*cardH+(rows-1)*gap+pad;
-  const out=document.createElement('canvas');out.width=width;out.height=height;const c=out.getContext('2d');
-  c.fillStyle='#fbfdff';c.fillRect(0,0,width,height);c.strokeStyle='#cbd5e1';c.lineWidth=1;c.strokeRect(1,1,width-2,height-2);
-  c.fillStyle='#334155';c.textAlign='right';c.textBaseline='middle';c.font=`700 ${Math.max(12,Math.min(18,Math.round(width*0.011)))}px Tahoma,Arial,sans-serif`;c.fillText('الأثاث المستخدم',width-pad,pad+titleH/2);
-  c.strokeStyle='#e2e8f0';c.beginPath();c.moveTo(pad,pad+titleH);c.lineTo(width-pad,pad+titleH);c.stroke();
+function loadDataImage(src){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=src;});}
+function roundedRect(c,x,y,w,h,r,fill,stroke){c.beginPath();if(c.roundRect)c.roundRect(x,y,w,h,r);else{c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);}if(fill){c.fillStyle=fill;c.fill();}if(stroke){c.strokeStyle=stroke;c.stroke();}}
+async function renderFurnitureScheduleCanvas(targetWidth,{layout='bottom'}={}){
+  const groups=usedFurnitureGroups();if(!furnitureSummaryVisible()||!groups.length)return null;
+  const width=Math.max(layout==='side'?420:760,Math.round(targetWidth||1200)),pad=Math.max(18,Math.round(width*.025)),gap=Math.max(12,Math.round(width*.016)),titleH=Math.max(46,Math.round(width*(layout==='side'?.090:.040)));
+  let cols=layout==='side'?(width>=560&&groups.length>5?2:1):Math.max(2,Math.min(5,Math.floor((width-pad*2+gap)/300)));
+  const cardW=Math.floor((width-pad*2-gap*(cols-1))/cols),cardH=Math.max(layout==='side'?150:165,Math.min(layout==='side'?220:245,Math.round(cardW*(layout==='side'?.62:.50)))),rows=Math.ceil(groups.length/cols),height=pad+titleH+gap+rows*cardH+(rows-1)*gap+pad;
+  const out=document.createElement('canvas');out.width=width;out.height=height;const c=out.getContext('2d');c.fillStyle='#f8fafc';c.fillRect(0,0,width,height);c.lineWidth=Math.max(1,Math.round(width/850));roundedRect(c,1,1,width-2,height-2,16,'#f8fafc','#cbd5e1');
+  c.fillStyle='#0f172a';c.textAlign='right';c.textBaseline='middle';c.font=`800 ${Math.max(21,Math.round(titleH*.45))}px Tahoma,Arial,sans-serif`;c.fillText('دليل الأثاث المستخدم',width-pad,pad+titleH/2);
+  c.fillStyle='#64748b';c.textAlign='left';c.font=`600 ${Math.max(13,Math.round(titleH*.28))}px Tahoma,Arial,sans-serif`;c.fillText(groups.length+' نوع',pad,pad+titleH/2);c.strokeStyle='#dbe3ec';c.beginPath();c.moveTo(pad,pad+titleH);c.lineTo(width-pad,pad+titleH);c.stroke();
   const imgs=await Promise.all(groups.map(async g=>g.src?await makeFurnitureGuideVisual(g):null));
   for(let i=0;i<groups.length;i++){
-    const g=groups[i],row=Math.floor(i/cols),col=i%cols;
-    const x=width-pad-cardW-col*(cardW+gap),y=pad+titleH+gap+row*(cardH+gap);
-    c.fillStyle='#fff';c.strokeStyle='#d6dee8';c.lineWidth=1;c.beginPath();c.roundRect(x,y,cardW,cardH,7);c.fill();c.stroke();
-    const namePx=Math.max(9,Math.min(13,Math.round(cardW*0.065)));
-    c.fillStyle='#0f172a';c.textAlign='center';c.textBaseline='middle';c.font=`700 ${namePx}px Tahoma,Arial,sans-serif`;
-    let nm=String(g.name||'قطعة');while(nm.length>2&&c.measureText(nm).width>cardW-18)nm=nm.slice(0,-1);if(nm!==g.name)nm+='…';c.fillText(nm,x+cardW/2,y+13);
-    if(g.count>1){c.fillStyle='#0f766e';c.beginPath();c.roundRect(x+5,y+5,28,16,8);c.fill();c.fillStyle='#fff';c.font='700 9px Tahoma';c.fillText('×'+g.count,x+19,y+13);}
-    const imgArea={x:x+18,y:y+24,w:cardW-36,h:cardH-48},im=imgs[i];
-    if(im){const sc=Math.min(imgArea.w/im.width,imgArea.h/im.height);const iw=im.width*sc,ih=im.height*sc;c.drawImage(im,imgArea.x+(imgArea.w-iw)/2,imgArea.y+(imgArea.h-ih)/2,iw,ih);}
-    else{c.fillStyle=g.color||'#e2e8f0';c.strokeStyle='#64748b';c.beginPath();c.roundRect(imgArea.x+imgArea.w*.22,imgArea.y+imgArea.h*.2,imgArea.w*.56,imgArea.h*.58,5);c.fill();c.stroke();}
-    c.fillStyle='#334155';c.font=`700 ${Math.max(8,Math.min(11,Math.round(cardW*0.055)))}px Tahoma,Arial,sans-serif`;c.textAlign='center';c.fillText(`${formatCardCm(g.w)} × ${formatCardCm(g.h)} سم`,x+cardW/2,y+cardH-10);
-  }
-  return out;
+    const g=groups[i],row=Math.floor(i/cols),col=i%cols,x=width-pad-cardW-col*(cardW+gap),y=pad+titleH+gap+row*(cardH+gap);
+    c.lineWidth=Math.max(1,Math.round(cardW/280));roundedRect(c,x,y,cardW,cardH,12,'#fff','#cbd5e1');
+    const namePx=Math.max(16,Math.min(25,Math.round(cardW*.075)));c.fillStyle='#0f172a';c.textAlign='center';c.textBaseline='middle';c.font=`800 ${namePx}px Tahoma,Arial,sans-serif`;
+    let nm=String(g.name||'قطعة');while(nm.length>2&&c.measureText(nm).width>cardW-30)nm=nm.slice(0,-1);if(nm!==String(g.name||'قطعة'))nm+='…';c.fillText(nm,x+cardW/2,y+Math.max(20,namePx*.9));
+    if(g.count>1){const qw=Math.max(42,Math.round(cardW*.16)),qh=Math.max(24,Math.round(namePx*1.35));roundedRect(c,x+10,y+10,qw,qh,qh/2,'#0f766e',null);c.fillStyle='#fff';c.font=`800 ${Math.max(13,Math.round(namePx*.62))}px Tahoma`;c.fillText('×'+g.count,x+10+qw/2,y+10+qh/2);}
+    const topTextY=y+Math.max(38,namePx*1.75),bottomBand=Math.max(34,Math.round(cardH*.20)),imgArea={x:x+18,y:topTextY,w:cardW-36,h:Math.max(32,cardH-(topTextY-y)-bottomBand-7)},im=imgs[i];
+    if(im){const sc=Math.min(imgArea.w/im.width,imgArea.h/im.height),iw=im.width*sc,ih=im.height*sc;c.drawImage(im,imgArea.x+(imgArea.w-iw)/2,imgArea.y+(imgArea.h-ih)/2,iw,ih);}else roundedRect(c,imgArea.x+imgArea.w*.20,imgArea.y+imgArea.h*.18,imgArea.w*.60,imgArea.h*.62,8,g.color||'#e2e8f0','#64748b');
+    c.fillStyle='#eef2f7';c.fillRect(x+1,y+cardH-bottomBand,cardW-2,bottomBand-1);c.fillStyle='#0f172a';c.font=`800 ${Math.max(15,Math.min(22,Math.round(cardW*.064)))}px Tahoma,Arial,sans-serif`;c.textAlign='center';c.fillText(`${formatCardCm(g.w)} × ${formatCardCm(g.h)} سم`,x+cardW/2,y+cardH-bottomBand/2);
+  }return out;
 }
-async function buildPlanWithFurnitureSchedule(){
-  const plan=captureCleanPlanCanvas(),schedule=await renderFurnitureScheduleCanvas(plan.width);
-  if(!schedule)return plan;
-  const gap=Math.max(7,Math.round(plan.width*0.007));
-  const out=document.createElement('canvas');out.width=Math.max(plan.width,schedule.width);out.height=plan.height+gap+schedule.height;const c=out.getContext('2d');
-  c.fillStyle='#fff';c.fillRect(0,0,out.width,out.height);c.drawImage(plan,(out.width-plan.width)/2,0);c.drawImage(schedule,(out.width-schedule.width)/2,plan.height+gap);return out;
-}
-async function buildBrandedSheet({paper='A4',orient='landscape',title='',mapTitle='',client='',location='',planCanvas=null}){
-  const plan=planCanvas||captureCleanPlanCanvas();
-  const size=paperPixels(paper,orient);
-  const sheet=document.createElement('canvas');sheet.width=size.w;sheet.height=size.h;
-  const c=sheet.getContext('2d');
-  c.fillStyle='#fff';c.fillRect(0,0,sheet.width,sheet.height);
-  const margin=Math.round(Math.min(sheet.width,sheet.height)*0.035);
-  const headH=Math.round(sheet.height*0.125);
-  const footH=Math.round(sheet.height*0.05);
-  const gap=Math.round(sheet.height*0.014);
-  const planTop=margin+headH+gap;
-  const planBottom=sheet.height-margin-footH-gap;
-  const planAreaW=sheet.width-margin*2;
-  const schedule=await renderFurnitureScheduleCanvas(planAreaW);
-  let scheduleW=0,scheduleH=0;
-  if(schedule){const maxScheduleH=(planBottom-planTop)*0.15,sc=Math.min(1,planAreaW/schedule.width,maxScheduleH/schedule.height);scheduleW=schedule.width*sc;scheduleH=schedule.height*sc;}
-  const scheduleGap=scheduleH?gap:0;
-  const planAreaH=Math.max(80,planBottom-planTop-scheduleH-scheduleGap);
-  const scale=Math.min(planAreaW/plan.width,planAreaH/plan.height);
-  const drawW=plan.width*scale, drawH=plan.height*scale;
-  const drawX=Math.round((sheet.width-drawW)/2), drawY=Math.round(planTop+(planAreaH-drawH)/2);
-  const logo=await loadDataImage(brandInfo.logoData||PRINT_LOGO_DATA);
-  const logoMaxW=Math.round(sheet.width*0.14), logoMaxH=Math.round(headH*0.68);
-  const logoScale=Math.min(logoMaxW/logo.width, logoMaxH/logo.height);
-  const logoW=logo.width*logoScale, logoH=logo.height*logoScale;
-  const logoX=margin, logoY=margin+Math.round((headH-logoH)/2);
-  c.drawImage(logo,logoX,logoY,logoW,logoH);
-  if(brandInfo.companyName){c.fillStyle='#334155';c.textAlign='left';c.font=`600 ${Math.round(headH*0.10)}px Tahoma,Arial,sans-serif`;c.fillText(brandInfo.companyName,logoX,margin+headH-Math.round(headH*0.08));}
-  c.strokeStyle='#111';c.lineWidth=Math.max(2,Math.round(sheet.width/900));
-  c.beginPath();c.moveTo(margin,margin+headH);c.lineTo(sheet.width-margin,margin+headH);c.stroke();
-  c.fillStyle='#111';
-  c.textAlign='center';
-  c.font=`700 ${Math.round(headH*0.28)}px Tahoma,Arial,sans-serif`;
-  c.fillText(title||'مشروع جديد', sheet.width/2, margin+Math.round(headH*0.34));
-  c.font=`${Math.round(headH*0.17)}px Tahoma,Arial,sans-serif`;
-  if(mapTitle)c.fillText(mapTitle, sheet.width/2, margin+Math.round(headH*0.66));
-  const metaX=sheet.width-margin;
-  const metaStartY=margin+Math.round(headH*0.23);
-  c.textAlign='right';
-  c.font=`${Math.round(headH*0.15)}px Tahoma,Arial,sans-serif`;
-  let lineY=metaStartY;
-  const metaLines=[];
-  if(client)metaLines.push(`العميل: ${client}`);
-  if(location)metaLines.push(`الموقع: ${location}`);
-  metaLines.push(`الحالة: ${pxPerCm?'المقياس معاير':'غير معاير'}`);
-  metaLines.push(`التاريخ: ${new Date().toLocaleDateString('ar-IQ')}`);
-  for(const line of metaLines){ c.fillText(line, metaX, lineY); lineY += Math.round(headH*0.18); }
-  c.drawImage(plan, drawX, drawY, drawW, drawH);
-  if(schedule){c.drawImage(schedule,Math.round((sheet.width-scheduleW)/2),Math.round(planTop+planAreaH+scheduleGap),scheduleW,scheduleH);}
-  c.fillStyle='#555';
-  const companyLine=[brandInfo.companyName,brandInfo.address,brandInfo.email].filter(Boolean).join('  •  ');
-  const footerY=sheet.height-margin+Math.round(footH*0.08);
-  c.font=`${Math.round(footH*0.34)}px Tahoma,Arial,sans-serif`;
-  if(companyLine){c.textAlign='center';c.fillText(companyLine,sheet.width/2,footerY);}
-  c.textAlign='right';c.font=`${Math.round(footH*0.30)}px Tahoma,Arial,sans-serif`;c.fillText(`${paper} — ${orient==='landscape'?'أفقي':'عمودي'}`, sheet.width-margin, footerY);
-  return sheet;
+async function buildPlanWithFurnitureSchedule(){const raw=captureCleanPlanCanvas(false),plan=trimPlanWhitespace(raw).canvas,schedule=await renderFurnitureScheduleCanvas(plan.width,{layout:'bottom'});if(!schedule)return plan;const gap=Math.max(12,Math.round(plan.width*.012)),out=document.createElement('canvas');out.width=Math.max(plan.width,schedule.width);out.height=plan.height+gap+schedule.height;const c=out.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,out.width,out.height);c.drawImage(plan,(out.width-plan.width)/2,0);c.drawImage(schedule,(out.width-schedule.width)/2,plan.height+gap);return out;}
+function drawExportScaleBar(c,x,y,displayPx,baseFont){if(!pxPerCm||displayPx<45)return;const tick=Math.max(7,baseFont*.32);c.save();c.strokeStyle='#111827';c.fillStyle='#111827';c.lineWidth=Math.max(2,baseFont*.10);c.beginPath();c.moveTo(x,y);c.lineTo(x+displayPx,y);c.moveTo(x,y-tick);c.lineTo(x,y+tick);c.moveTo(x+displayPx,y-tick);c.lineTo(x+displayPx,y+tick);c.stroke();c.textAlign='center';c.textBaseline='bottom';c.font=`800 ${Math.max(14,baseFont)}px Tahoma,Arial,sans-serif`;c.fillText('1 متر',x+displayPx/2,y-tick-3);c.restore();}
+async function buildBrandedSheet({paper='A4',orient='landscape',title='',mapTitle='',client='',location='',planCanvas=null,showProjectMeta=true}){
+  const rawPlan=planCanvas||captureCleanPlanCanvas(false),plan=trimPlanWhitespace(rawPlan).canvas,size=paperPixels(paper,orient),sheet=document.createElement('canvas');sheet.width=size.w;sheet.height=size.h;const c=sheet.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,sheet.width,sheet.height);
+  const short=Math.min(sheet.width,sheet.height),margin=Math.round(short*.018),gap=Math.round(short*.012),headH=Math.round(sheet.height*(orient==='landscape'?.105:.085)),footH=Math.round(sheet.height*.030),bodyTop=margin+headH+gap,bodyBottom=sheet.height-margin-footH-gap,bodyW=sheet.width-margin*2,bodyH=Math.max(120,bodyBottom-bodyTop),groups=usedFurnitureGroups(),hasSchedule=furnitureSummaryVisible()&&groups.length>0,sideSchedule=hasSchedule&&orient==='landscape';
+  let mapBox={x:margin,y:bodyTop,w:bodyW,h:bodyH},scheduleBox=null,schedule=null,scheduleScale=1;
+  if(sideSchedule){const panelW=Math.round(bodyW*(groups.length>12?.31:.27));mapBox.w=bodyW-panelW-gap;scheduleBox={x:margin+mapBox.w+gap,y:bodyTop,w:panelW,h:bodyH};schedule=await renderFurnitureScheduleCanvas(panelW,{layout:'side'});scheduleScale=Math.min(1,scheduleBox.w/schedule.width,scheduleBox.h/schedule.height);}
+  else if(hasSchedule){schedule=await renderFurnitureScheduleCanvas(bodyW,{layout:'bottom'});const maxSH=Math.round(bodyH*(groups.length>15?.34:groups.length>8?.29:.24));scheduleScale=Math.min(1,bodyW/schedule.width,maxSH/schedule.height);const sh=Math.round(schedule.height*scheduleScale);mapBox.h=bodyH-sh-gap;scheduleBox={x:margin,y:bodyTop+mapBox.h+gap,w:bodyW,h:sh};}
+  c.save();c.shadowColor='rgba(15,23,42,.12)';c.shadowBlur=Math.max(8,short*.008);c.shadowOffsetY=Math.max(3,short*.002);roundedRect(c,mapBox.x,mapBox.y,mapBox.w,mapBox.h,Math.max(12,short*.008),'#fff','#cbd5e1');c.restore();
+  const inset=Math.max(10,Math.round(short*.008)),inner={x:mapBox.x+inset,y:mapBox.y+inset,w:mapBox.w-inset*2,h:mapBox.h-inset*2},scale=Math.min(inner.w/plan.width,inner.h/plan.height),drawW=plan.width*scale,drawH=plan.height*scale,drawX=Math.round(inner.x+(inner.w-drawW)/2),drawY=Math.round(inner.y+(inner.h-drawH)/2);
+  c.drawImage(plan,drawX,drawY,drawW,drawH);c.strokeStyle='#94a3b8';c.lineWidth=Math.max(1,short/1100);c.strokeRect(drawX,drawY,drawW,drawH);drawExportScaleBar(c,drawX+Math.max(22,short*.016),Math.min(drawY+drawH-Math.max(25,short*.020),inner.y+inner.h-12),100*pxPerCm*scale,Math.max(16,short*.012));
+  if(schedule&&scheduleBox){c.save();c.shadowColor='rgba(15,23,42,.09)';c.shadowBlur=Math.max(7,short*.006);c.shadowOffsetY=3;roundedRect(c,scheduleBox.x,scheduleBox.y,scheduleBox.w,scheduleBox.h,Math.max(12,short*.008),'#f8fafc','#cbd5e1');c.restore();const sw=schedule.width*scheduleScale,sh=schedule.height*scheduleScale,sx=scheduleBox.x+(scheduleBox.w-sw)/2,sy=scheduleBox.y+(scheduleBox.h-sh)/2;c.drawImage(schedule,sx,sy,sw,sh);}
+  const headerY=margin*.55,headerX=margin,headerW=sheet.width-margin*2,headerH=headH;roundedRect(c,headerX,headerY,headerW,headerH,Math.max(14,short*.010),'#0f172a',null);
+  const logo=await loadDataImage(brandInfo.logoData||PRINT_LOGO_DATA),logoTileH=Math.round(headerH*.72),logoTileW=Math.min(Math.round(headerW*.16),Math.round(logoTileH*1.75)),logoTileX=headerX+Math.round(headerH*.12),logoTileY=headerY+(headerH-logoTileH)/2;roundedRect(c,logoTileX,logoTileY,logoTileW,logoTileH,Math.max(9,short*.006),'#fff',null);const ls=Math.min((logoTileW-18)/logo.width,(logoTileH-16)/logo.height),lw=logo.width*ls,lh=logo.height*ls;c.drawImage(logo,logoTileX+(logoTileW-lw)/2,logoTileY+(logoTileH-lh)/2,lw,lh);
+  c.fillStyle='#fff';c.textAlign='left';c.textBaseline='middle';c.font=`800 ${Math.max(24,Math.round(headerH*.22))}px Tahoma,Arial,sans-serif`;c.fillText('FurniPlan',logoTileX+logoTileW+Math.round(headerH*.10),headerY+headerH*.42);if(brandInfo.companyName){c.fillStyle='#94a3b8';c.font=`600 ${Math.max(13,Math.round(headerH*.11))}px Tahoma,Arial,sans-serif`;c.fillText(brandInfo.companyName,logoTileX+logoTileW+Math.round(headerH*.10),headerY+headerH*.70);}
+  c.fillStyle='#fff';c.textAlign='center';c.font=`800 ${Math.max(24,Math.round(headerH*.25))}px Tahoma,Arial,sans-serif`;c.fillText(title||'مشروع جديد',sheet.width*.52,headerY+headerH*.38);if(mapTitle){c.fillStyle='#cbd5e1';c.font=`600 ${Math.max(15,Math.round(headerH*.13))}px Tahoma,Arial,sans-serif`;c.fillText(mapTitle,sheet.width*.52,headerY+headerH*.68);}
+  if(showProjectMeta){c.textAlign='right';c.textBaseline='middle';c.fillStyle='#e2e8f0';c.font=`600 ${Math.max(13,Math.round(headerH*.105))}px Tahoma,Arial,sans-serif`;const metaX=headerX+headerW-Math.round(headerH*.14),meta=[];if(client)meta.push('العميل: '+client);if(location)meta.push('الموقع: '+location);meta.push(new Date().toLocaleDateString('ar-IQ'));const start=headerY+headerH*.28,dy=headerH*.23;meta.slice(0,3).forEach((line,i)=>c.fillText(line,metaX,start+i*dy));}
+  const footerY=sheet.height-margin-footH*.52;c.strokeStyle='#cbd5e1';c.lineWidth=Math.max(1,short/1400);c.beginPath();c.moveTo(margin,footerY-footH*.55);c.lineTo(sheet.width-margin,footerY-footH*.55);c.stroke();c.fillStyle='#64748b';c.font=`600 ${Math.max(12,Math.round(footH*.30))}px Tahoma,Arial,sans-serif`;const companyLine=[brandInfo.companyName,brandInfo.address,brandInfo.email].filter(Boolean).join('  •  ');if(companyLine){c.textAlign='left';c.fillText(companyLine,margin,footerY);}c.textAlign='right';c.fillText(`FurniPlan • ${paper} • ${orient==='landscape'?'أفقي':'عمودي'}`,sheet.width-margin,footerY);return sheet;
 }
 function downloadCanvasAsPng(outCanvas, filename='furniture-layout.png'){
   outCanvas.toBlob(blob=>{
@@ -3432,8 +3379,8 @@ function openPrintDialog(outputMode='print'){
   const isPdf=outputMode==='pdf';
   printProjectName.value=projectMeta.name||'مشروع جديد';printMapTitle.value=projectMeta.mapTitle||'';printClient.value=projectMeta.client||'';printLocation.value=projectMeta.location||'';
   printDialogTitle.textContent=isPdf?'حفظ PDF':'طباعة المخطط';
-  printDialogDesc.textContent=isPdf?'أدخل بيانات المشروع واختر حجم الورق. سيتم إنشاء ملف PDF من صفحة واحدة بنفس الشعار والمحاذاة ومعلومات الشركة.':'أدخل بيانات المشروع واختر حجم الورق. ستظهر الخارطة مع شعارك ومعلومات الشركة المحفوظة في «معلوماتك» وشريط مقياس 1 متر.';
-  printDialogNote.textContent=isPdf?'سيتم حفظ PDF مباشرة بدون الحاجة إلى نافذة الطباعة.':'تُفتح نافذة الطباعة فور الضغط لتجنب حظر النوافذ المنبثقة على Safari في الآيباد.';
+  printDialogDesc.textContent=isPdf?'سيتم إنشاء PDF عالي الدقة كلوحة FurniPlan احترافية: شريط علوي وشعار، خارطة مكبرة تلقائيًا، ودليل أثاث واضح.':'سيتم تجهيز صفحة طباعة FurniPlan احترافية مع خارطة مكبرة تلقائيًا ودليل أثاث واضح حسب اتجاه الورقة.';
+  printDialogNote.textContent=isPdf?'سيتم حفظ PDF مباشرة بدقة أعلى مع تقليل الفراغات حول الخارطة.':'تُفتح نافذة الطباعة فور الضغط، والتخطيط سيتكيف تلقائيًا مع A4/A3 واتجاه الورقة.';
   document.getElementById('doPrintBtn').textContent=isPdf?'حفظ PDF':'فتح الطباعة';
   printModal.style.display='flex';
 }
@@ -3453,7 +3400,7 @@ function canvasToPdfBlob(sheet,paper,orient){
   const enc=new TextEncoder(),chunks=[];let length=0;const offsets=[0];
   const pushBytes=b=>{chunks.push(b);length+=b.length;};
   const pushText=s=>pushBytes(enc.encode(s));
-  pushText('%PDF-1.4\n%Ta2theethi\n');
+  pushText('%PDF-1.4\n%FurniPlan\n');
   const obj=(n,body)=>{offsets[n]=length;pushText(`${n} 0 obj\n${body}\nendobj\n`);};
   obj(1,'<< /Type /Catalog /Pages 2 0 R >>');
   obj(2,'<< /Type /Pages /Kids [3 0 R] /Count 1 >>');
@@ -3484,7 +3431,7 @@ document.getElementById('doPrintBtn').onclick=async()=>{
     try{
       const sheet=await buildBrandedSheet({paper,orient,title:projectMeta.name,mapTitle:projectMeta.mapTitle,client:projectMeta.client,location:projectMeta.location});
       const pdf=canvasToPdfBlob(sheet,paper,orient);
-      const safe=(projectMeta.name||'taatheethi').replace(/[\\/:*?"<>|]+/g,'-');
+      const safe=(projectMeta.name||'FurniPlan').replace(/[\\/:*?"<>|]+/g,'-');
       downloadBlob(pdf,`${safe}.pdf`);
       printModal.style.display='none';setStatus('تم حفظ ملف PDF');
     }catch(err){alert('تعذر إنشاء ملف PDF.');console.error(err);}
@@ -3518,19 +3465,12 @@ document.getElementById('cancelExportBtn').onclick=()=>exportModal.style.display
 document.getElementById('doExportBtn').onclick=async()=>{
   projectMeta={name:pngProjectName.value.trim()||'مشروع جديد',mapTitle:pngMapTitle.value.trim(),client:pngClient.value.trim(),location:pngLocation.value.trim()};
   try{
-    if(pngBrandingToggle.checked){
-      const sheet=await buildBrandedSheet({paper:pngPaper.value,orient:pngOrientation.value,title:projectMeta.name,mapTitle:projectMeta.mapTitle,client:projectMeta.client,location:projectMeta.location});
-      downloadCanvasAsPng(sheet,'furniture-layout-branded.png');
-      setStatus('تم تصدير PNG مع الشعار ومعلومات العميل');
-    }else{
-      const plan=await buildPlanWithFurnitureSchedule();
-      downloadCanvasAsPng(plan,'furniture-layout.png');
-      setStatus(furnitureSummaryVisible()?'تم تصدير PNG مع دليل الأثاث أسفل الخارطة':'تم تصدير PNG للخارطة فقط');
-    }
+    const sheet=await buildBrandedSheet({paper:pngPaper.value,orient:pngOrientation.value,title:projectMeta.name,mapTitle:projectMeta.mapTitle,client:projectMeta.client,location:projectMeta.location,showProjectMeta:pngBrandingToggle.checked});
+    const safe=(projectMeta.name||'FurniPlan').replace(/[\\/:*?"<>|]+/g,'-');
+    downloadCanvasAsPng(sheet,`${safe}-FurniPlan.png`);
+    setStatus('تم تصدير PNG عالي الدقة — الخارطة ودليل الأثاث مرتبان تلقائيًا');
     exportModal.style.display='none';
-  }catch(err){
-    alert('تعذر تصدير PNG.');console.error(err);
-  }
+  }catch(err){alert('تعذر تصدير PNG.');console.error(err);}
 };
 
 mainScroll.addEventListener('wheel',e=>{if(e.shiftKey){mainScroll.scrollLeft+=e.deltaY;e.preventDefault();}},{passive:false});
