@@ -12,8 +12,8 @@
 <meta name="apple-mobile-web-app-title" content="مخطط الأثاث" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-<title>تأثيثي V67 — Reliable Area & Ungroup</title>
-<meta name="taatheethi-version" content="44-layout-reset">
+<title>تأثيثي V68 — iPad Area Wand & Delete</title>
+<meta name="taatheethi-version" content="68-ipad-area-wand-delete">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -793,7 +793,7 @@ function isFingerTargetEvent(ev){return !!ev && (ev.pointerType==='touch' || (!e
 const TOUCH_AIM_OFFSET=82;
 function targetClientPoint(ev){
   let x=ev.clientX,y=ev.clientY,touchWand=false;
-  if((mode==='calibrate'||mode==='measure') && isFingerTargetEvent(ev)){
+  if((mode==='calibrate'||mode==='measure'||mode==='areaMeasure') && isFingerTargetEvent(ev)){
     const r=canvas.getBoundingClientRect();
     y=Math.max(r.top+20,ev.clientY-TOUCH_AIM_OFFSET);
     touchWand=true;
@@ -1213,14 +1213,14 @@ function updateLiveMeasureBadge(ev){
   liveMeasureBadge.style.display='block';
 }
 function updateInteractionCursor(){
-  const targeting=mode==='calibrate'||mode==='measure';
+  const targeting=mode==='calibrate'||mode==='measure'||mode==='areaMeasure';
   mainScroll.classList.toggle('targeting',targeting);
-  mainScroll.classList.toggle('placing',mode==='place'||mode==='labelPlace'||mode==='areaMeasure');
+  mainScroll.classList.toggle('placing',mode==='place'||mode==='labelPlace');
   if(!targeting){dxfActiveSnap=null;targetCursor.style.display='none';hideLiveMeasureBadge();updateDxfSnapTag();}
   updatePanState();
 }
 function showTargetCursor(ev){
-  if(mode!=='calibrate'&&mode!=='measure'){
+  if(mode!=='calibrate'&&mode!=='measure'&&mode!=='areaMeasure'){
     dxfActiveSnap=null;targetCursor.style.display='none';targetCursor.classList.remove('touchWand');hideLiveMeasureBadge();updateDxfSnapTag();return;
   }
   const r=canvas.getBoundingClientRect(),t=targetClientPoint(ev);
@@ -2007,7 +2007,7 @@ function toCanvasPos(ev){
 function targetingCanvasPos(ev){
   const r=canvas.getBoundingClientRect(),t=targetClientPoint(ev);
   const p=clampPointToCanvas({x:(t.x-r.left)*(canvas.width/r.width),y:(t.y-r.top)*(canvas.height/r.height)});
-  if(mode==='measure'&&dxfModel)return snapPointToDxf(p);
+  if((mode==='measure'||mode==='areaMeasure')&&dxfModel)return snapPointToDxf(p);
   dxfActiveSnap=null;return p;
 }
 
@@ -2028,6 +2028,12 @@ function pointInPoly(p,poly){
 function hitTest(p){if(!visibleFurniture())return null;for(let i=items.length-1;i>=0;i--)if(pointInPoly(p,itemCorners(items[i])))return items[i];return null}
 
 function commitTargetPoint(ev){
+  if(mode==='areaMeasure'){
+    let p=targetingCanvasPos(ev);
+    areaDraft.push({...p});
+    updateAreaDraftFeedback();draw();
+    return true;
+  }
   if(mode!=='calibrate' && mode!=='measure') return false;
   const p=targetingCanvasPos(ev);
   points.push(p);draw();
@@ -2064,7 +2070,7 @@ function placeMapLabelAt(p){
 
 canvas.addEventListener('click',ev=>{
   if(Date.now()<suppressCanvasClickUntil){ev.preventDefault();return;}
-  if(mode==='areaMeasure'){if(ev.pointerType==='touch')return;let p=clampPointToCanvas(toCanvasPos(ev));if(dxfModel)p=snapPointToDxf(p);areaDraft.push({...p});updateAreaDraftFeedback();draw();return;}
+  if(mode==='areaMeasure'){if(isFingerTargetEvent(ev))return;commitTargetPoint(ev);return;}
   if(mode==='labelPlace'){
     placeMapLabelAt(toCanvasPos(ev));return;
   }
@@ -2104,6 +2110,11 @@ function hitTestMeasurement(p){
   }
   return null;
 }
+function hitTestAreaDelete(p){
+  if(mode==='areaMeasure')return null;
+  for(let i=areaPolygons.length-1;i>=0;i--){const a=areaPolygons[i];if(pointInBox(p,a._deleteBox))return a;}
+  return null;
+}
 function hitTestMapLabel(p){
   if(!visibleMapLabels()||mapLabelsGloballyLocked())return null;
   for(let i=mapLabels.length-1;i>=0;i--){
@@ -2136,7 +2147,7 @@ canvas.addEventListener('pointerdown',ev=>{
       ev.preventDefault();return;
     }
   }
-  if(mode==='calibrate'||mode==='measure'){
+  if(mode==='calibrate'||mode==='measure'||mode==='areaMeasure'){
     showTargetCursor(ev);
     if(ev.pointerType==='touch'){aimingTouchId=ev.pointerId;ev.preventDefault();}
     return;
@@ -2152,8 +2163,11 @@ canvas.addEventListener('pointerdown',ev=>{
     ev.preventDefault();return;
   }
   if(mode!=='select') return;
-  const p=toCanvasPos(ev),labelHit=hitTestMapLabel(p),hit=hitTest(p);
+  const p=toCanvasPos(ev),areaDeleteHit=hitTestAreaDelete(p),labelHit=hitTestMapLabel(p),hit=hitTest(p);
   const multiMode=ev.ctrlKey||ev.metaKey||ev.shiftKey||!!document.getElementById('multiSelectToggle')?.checked;
+  if(areaDeleteHit){
+    const before=cloneEditState();areaPolygons=areaPolygons.filter(a=>a.id!==areaDeleteHit.id);if(lastAreaResult?.id===areaDeleteHit.id)lastAreaResult=null;draw();commitHistory(before);showAreaResultText('تم حذف المساحة',true);setStatus('تم حذف المساحة المحددة');ev.preventDefault();return;
+  }
   if(labelHit){
     selectedMapLabelId=labelHit.id;selectedMeasureId=null;clearFurnitureSelection();
     mapLabelDrag={id:labelHit.id,start:{...p},startX:labelHit.x,startY:labelHit.y,before:cloneEditState(),moved:false};
@@ -2282,8 +2296,8 @@ function endPointer(ev){
       return;
     }
     if(labelPlaceTap&&labelPlaceTap.pointerId===ev.pointerId)labelPlaceTap=null;
-    // V16: رأس العصا هو نقطة القياس الفعلية. حرّك العصا بالإصبع وارفعه لتسجيل النقطة.
-    if(ev.type!=='pointercancel' && aimingTouchId===ev.pointerId && (mode==='calibrate'||mode==='measure')){
+    // V68: رأس العصا هو نقطة القياس/المساحة الفعلية. حرّك العصا بالإصبع وارفعه لتسجيل النقطة.
+    if(ev.type!=='pointercancel' && aimingTouchId===ev.pointerId && (mode==='calibrate'||mode==='measure'||mode==='areaMeasure')){
       showTargetCursor(ev);
       aimingTouchId=null;
       suppressCanvasClickUntil=Date.now()+700;
@@ -2723,12 +2737,31 @@ function finishAreaTool(){
 function toggleAreaTool(){
   if(mode==='areaMeasure'){finishAreaTool();return;}
   if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}if(!pxPerCm){alert('عاير الخارطة أولاً حتى يمكن حساب المساحة والمحيط.');return;}
-  mode='areaMeasure';areaDraft=[];lastAreaResult=null;clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;pendingFurnitureDef=null;updateInteractionCursor();syncSelectedPanel();syncAreaToolLabel();showAreaResultText('حدد زوايا الغرفة — بعد النقطة الثالثة ستظهر المساحة مباشرة',false);setStatus('المساحة: اضغط زوايا الغرفة بالترتيب، ثم اضغط «إنهاء مساحة»');draw();
+  mode='areaMeasure';areaDraft=[];lastAreaResult=null;clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;pendingFurnitureDef=null;updateInteractionCursor();syncSelectedPanel();syncAreaToolLabel();showAreaResultText('حدد زوايا الغرفة — بعد النقطة الثالثة ستظهر المساحة مباشرة',false);setStatus(isTouchDevice()?'المساحة: أمسك مقبض العصا، حرّك رأسها لكل زاوية وارفع إصبعك لتسجيلها، ثم اضغط «إنهاء مساحة»':'المساحة: حدد زوايا الغرفة بالترتيب، ثم اضغط «إنهاء مساحة»');draw();
 }
 function drawAreaPolygons(){
-  if(!pxPerCm)return;ctx.save();ctx.lineJoin='round';
-  for(const a of areaPolygons){if(!a.points||a.points.length<3)continue;ctx.beginPath();ctx.moveTo(a.points[0].x,a.points[0].y);for(let i=1;i<a.points.length;i++)ctx.lineTo(a.points[i].x,a.points[i].y);ctx.closePath();ctx.fillStyle='rgba(14,165,233,.07)';ctx.fill();ctx.strokeStyle='#0284c7';ctx.lineWidth=Math.max(1.2,2/zoom);ctx.stroke();
-    const cx=a.points.reduce((s,p)=>s+p.x,0)/a.points.length,cy=a.points.reduce((s,p)=>s+p.y,0)/a.points.length,txt=a.name+'  '+a.areaM2.toFixed(2)+' م² • '+a.perimeterM.toFixed(2)+' م',fs=Math.max(10,13/zoom);ctx.font='700 '+fs+'px Tahoma';const tw=ctx.measureText(txt).width;ctx.fillStyle='rgba(255,255,255,.94)';roundRectPath(cx-tw/2-6,cy-fs*.8,tw+12,fs*1.6,5);ctx.fill();ctx.strokeStyle='#0284c7';ctx.lineWidth=1;ctx.stroke();ctx.fillStyle='#0f172a';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,cx,cy);}
+  if(!pxPerCm)return;ctx.save();ctx.lineJoin='round';const touch=isTouchDevice();
+  for(const a of areaPolygons){
+    if(!a.points||a.points.length<3)continue;
+    ctx.beginPath();ctx.moveTo(a.points[0].x,a.points[0].y);for(let i=1;i<a.points.length;i++)ctx.lineTo(a.points[i].x,a.points[i].y);ctx.closePath();
+    ctx.fillStyle='rgba(14,165,233,.07)';ctx.fill();ctx.strokeStyle='#0284c7';ctx.lineWidth=Math.max(1.2,2/zoom);ctx.stroke();
+    const cx=a.points.reduce((sum,p)=>sum+p.x,0)/a.points.length,cy=a.points.reduce((sum,p)=>sum+p.y,0)/a.points.length;
+    const txt=a.name+'  '+a.areaM2.toFixed(2)+' م² • '+a.perimeterM.toFixed(2)+' م',fs=Math.max(10,13/zoom);
+    ctx.font='700 '+fs+'px Tahoma';const tw=ctx.measureText(txt).width;
+    const padX=Math.max(6,6/zoom),bh=fs*1.65,bx=cx-tw/2-padX,by=cy-bh/2,bw=tw+padX*2;
+    ctx.fillStyle='rgba(255,255,255,.96)';roundRectPath(bx,by,bw,bh,Math.max(4,5/zoom));ctx.fill();
+    ctx.strokeStyle='#0284c7';ctx.lineWidth=Math.max(.8,1/zoom);ctx.stroke();
+    ctx.fillStyle='#0f172a';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='700 '+fs+'px Tahoma';ctx.fillText(txt,cx,cy);
+
+    if(mode!=='areaMeasure'){
+      const xs=Math.max(17,19/zoom),gap=Math.max(5,6/zoom),xc=bx+bw+gap+xs/2,yc=cy;
+      ctx.fillStyle='rgba(255,255,255,.99)';ctx.strokeStyle='#111827';ctx.lineWidth=Math.max(1,1.1/zoom);
+      ctx.beginPath();ctx.arc(xc,yc,xs/2,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.fillStyle='#050505';ctx.font='700 '+Math.max(12,Math.round(fs*.9))+'px Arial';ctx.fillText('×',xc,yc+.2);
+      const hitPad=touch?Math.max(9,10/zoom):5;
+      a._deleteBox={x:xc-xs/2-hitPad,y:yc-xs/2-hitPad,w:xs+hitPad*2,h:xs+hitPad*2};
+    }else a._deleteBox=null;
+  }
   if(mode==='areaMeasure'&&areaDraft.length){
     ctx.beginPath();ctx.moveTo(areaDraft[0].x,areaDraft[0].y);for(let i=1;i<areaDraft.length;i++)ctx.lineTo(areaDraft[i].x,areaDraft[i].y);
     ctx.strokeStyle='#0ea5e9';ctx.lineWidth=Math.max(1.2,2/zoom);ctx.setLineDash([6/zoom,4/zoom]);ctx.stroke();ctx.setLineDash([]);
