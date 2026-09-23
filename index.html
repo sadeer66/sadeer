@@ -2345,7 +2345,7 @@ canvas.addEventListener('pointermove',ev=>{
     activeCanvasTouches.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});
     if(pinchState&&activeCanvasTouches.size>=2){updatePinchZoom();ev.preventDefault();return;}
   }
-  showTargetCursor(ev);
+  if(measureDrag){targetCursor.style.display='none';hideLiveMeasureBadge();}else showTargetCursor(ev);
   if(mode==='areaMeasure'&&ev.pointerType==='touch'&&areaTouchTap&&areaTouchTap.pointerId===ev.pointerId){
     if(Math.hypot(ev.clientX-areaTouchTap.startX,ev.clientY-areaTouchTap.startY)>10)areaTouchTap.moved=true;
     ev.preventDefault();return;
