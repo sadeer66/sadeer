@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v70-map-only-pinch";
+const CACHE_NAME = "taatheethi-v71-sticky-tools";
 
 self.addEventListener('install', event => {
   self.skipWaiting();
