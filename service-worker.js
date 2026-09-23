@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v69-ui-icon-label-scale";
+const CACHE_NAME = "taatheethi-v70-map-only-pinch";
 
 self.addEventListener('install', event => {
   self.skipWaiting();
