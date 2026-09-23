@@ -1,4 +1,4 @@
-const CACHE_NAME = "taatheethi-v71-sticky-tools";
+const CACHE_NAME = "furniplan-v72-professional-export";
 
 self.addEventListener('install', event => {
   self.skipWaiting();
