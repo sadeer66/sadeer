@@ -3574,7 +3574,7 @@ draw();
     return {version:64,savedAt:Date.now(),projectMeta,brandInfo,bgData,dxfModel,pxPerCm,items,measurements,mapLabels,areas:areaPolygons,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:currentView(),canvas:{width:canvas.width,height:canvas.height}};
   }
   function lightSig(){
-    return JSON.stringify({bg:!!bgData,dxf:dxfModel?.fileName||'',px:pxPerCm,n:items.length,m:measurements.length,l:mapLabels.length,a:areaPolygons.length,
+    return JSON.stringify({bg:bgData?bgData.length+':'+bgData.slice(-48):'',dxf:dxfModel?((dxfModel.fileName||'')+':'+(dxfModel.entities?.length||0)+':'+(dxfModel.width||0)+'x'+(dxfModel.height||0)):'',px:pxPerCm,n:items.length,m:measurements.length,l:mapLabels.length,a:areaPolygons.length,
       i:items.map(x=>[x.id,Math.round(x.x),Math.round(x.y),x.rot,x.w,x.h,x.groupId||'',x.locked?1:0]),
       me:measurements.map(x=>[x.id,x.offsetX||0,x.offsetY||0,x.pinned?1:0]),la:mapLabels.map(x=>[x.id,x.text,Math.round(x.x),Math.round(x.y)]),
       ar:areaPolygons.map(x=>[x.id,x.name,x.points?.length||0,x.areaM2,x.perimeterM])});
@@ -3755,6 +3755,15 @@ draw();
         if(e.type==='LINE')out+=dxfLine(P(e.x1,e.y1),P(e.x2,e.y2),'PLAN');
         else if(e.verts&&e.verts.length)out+=lwpoly(e.verts.map(v=>P(v.x,v.y)),'PLAN',!!e.closed);
         else if(e.type==='CIRCLE'){const q=P(e.cx,e.cy),r=e.r*dxfModel.scale/pxPerCm;out+=dxfPair(0,'CIRCLE')+dxfPair(8,'PLAN')+dxfPair(10,q.x.toFixed(4))+dxfPair(20,q.y.toFixed(4))+dxfPair(40,r.toFixed(4));}
+        else if(e.type==='ARC'){
+          const ai=dxfArcInfo(e),q=P(e.cx,e.cy),r=e.r*dxfModel.scale/pxPerCm;
+          const rad=d=>d*Math.PI/180;
+          const ps=P(e.cx+e.r*Math.cos(rad(ai.start)),e.cy+e.r*Math.sin(rad(ai.start)));
+          const pe=P(e.cx+e.r*Math.cos(rad(ai.start+ai.sweep)),e.cy+e.r*Math.sin(rad(ai.start+ai.sweep)));
+          const ang=p=>{let a=Math.atan2(p.y-q.y,p.x-q.x)*180/Math.PI;return (a%360+360)%360;};
+          out+=dxfPair(0,'ARC')+dxfPair(8,'PLAN')+dxfPair(10,q.x.toFixed(4))+dxfPair(20,q.y.toFixed(4))+dxfPair(40,r.toFixed(4))+dxfPair(50,ang(ps).toFixed(4))+dxfPair(51,ang(pe).toFixed(4));
+        }
+        else if(e.type==='POINT'){const q=P(e.x,e.y);out+=dxfPair(0,'POINT')+dxfPair(8,'PLAN')+dxfPair(10,q.x.toFixed(4))+dxfPair(20,q.y.toFixed(4));}
       }
     }
     for(const it of items){
