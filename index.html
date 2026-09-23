@@ -12,8 +12,8 @@
 <meta name="apple-mobile-web-app-title" content="مخطط الأثاث" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-<title>FurniPlan V72 — Professional Export Layout</title>
-<meta name="taatheethi-version" content="72-professional-export-layout">
+<title>FurniPlan V73 — Branded Splash Screen</title>
+<meta name="taatheethi-version" content="73-branded-splash-screen">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -482,8 +482,69 @@ header{min-height:var(--tool-header-h)!important}
 .dxfUnitExample{font-size:11px;color:#94a3b8;line-height:1.7;margin-top:9px}
 @media(max-width:540px){.dxfUnitGrid{grid-template-columns:1fr 1fr}.dxfUnitChoice{min-height:50px}}
 </style>
+
+<style id="furniPlanSplashV73">
+:root{--fp-bronze:#b48343;--fp-bronze-2:#d3a367;--fp-ink:#171b1d;--fp-cream:#f7f2ea}
+#fpSplash{position:fixed;inset:0;z-index:2147483000;overflow:hidden;display:grid;place-items:center;background:radial-gradient(circle at 74% 20%,rgba(255,255,255,.96) 0 11%,rgba(255,255,255,0) 34%),radial-gradient(circle at 23% 52%,rgba(236,223,203,.92) 0 16%,rgba(236,223,203,0) 42%),linear-gradient(115deg,#e9e0d2 0%,#f8f4ed 47%,#ded2c3 100%);opacity:1;visibility:visible;transition:opacity .82s cubic-bezier(.22,.61,.36,1),visibility .82s;font-family:Tahoma,Arial,sans-serif;color:var(--fp-ink);isolation:isolate}
+#fpSplash.fpSplashOut{opacity:0;visibility:hidden;pointer-events:none}
+#fpSplash::before{content:"";position:absolute;inset:0;z-index:-4;background:linear-gradient(rgba(30,41,59,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(30,41,59,.055) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,transparent 2%,rgba(0,0,0,.20) 38%,transparent 96%)}
+#fpSplash::after{content:"";position:absolute;left:-8%;right:-8%;bottom:-17%;height:44%;z-index:-3;transform:perspective(620px) rotateX(63deg);transform-origin:center bottom;background:repeating-linear-gradient(0deg,rgba(74,61,48,.075) 0 1px,transparent 1px 36px),repeating-linear-gradient(90deg,rgba(74,61,48,.07) 0 1px,transparent 1px 72px),linear-gradient(#ddd0bf,#c9b9a4);box-shadow:0 -20px 60px rgba(70,53,35,.10)}
+.fpSplashSlats{position:absolute;left:18%;top:-3%;width:72px;height:48%;background:repeating-linear-gradient(90deg,#9c6c3f 0 8px,#6b482d 8px 12px,#ba8a59 12px 20px);opacity:.70;filter:blur(.25px);z-index:-2;box-shadow:12px 10px 40px rgba(68,48,29,.17)}
+.fpSplashWindow{position:absolute;left:0;top:0;width:28%;height:63%;z-index:-3;background:linear-gradient(145deg,rgba(233,245,252,.92),rgba(255,255,255,.72));border-right:4px solid rgba(44,52,56,.70);box-shadow:inset -24px 0 44px rgba(255,255,255,.45)}
+.fpSplashWindow::before{content:"";position:absolute;inset:auto 0 0;height:37%;background:linear-gradient(90deg,transparent 0 8%,#8b9aa2 8% 11%,transparent 11% 22%,#a6b1b7 22% 27%,transparent 27% 40%,#75848c 40% 45%,transparent 45% 63%,#91a0a7 63% 68%,transparent 68%),linear-gradient(#d9e5e9,#c9d4d8);opacity:.52;filter:blur(1px)}
+.fpSplashSofa{position:absolute;left:3.5%;bottom:20%;width:25%;height:18%;z-index:-1;border-radius:28px 28px 18px 18px;background:#e7dfd4;box-shadow:0 18px 35px rgba(55,43,33,.16),inset 0 0 0 1px rgba(98,77,58,.10)}
+.fpSplashSofa::before,.fpSplashSofa::after{content:"";position:absolute;top:13%;width:42%;height:58%;border-radius:18px;background:#f4eee6;box-shadow:inset 0 0 0 1px rgba(90,70,52,.07)}
+.fpSplashSofa::before{left:6%}.fpSplashSofa::after{right:6%}
+.fpSplashPlant{position:absolute;left:2%;bottom:3%;width:11%;height:34%;z-index:2;filter:drop-shadow(0 16px 18px rgba(24,58,30,.18))}
+.fpSplashPlant i{position:absolute;left:43%;bottom:7%;width:18%;height:76%;border-radius:50%;background:#2f6236;transform-origin:bottom center}
+.fpSplashPlant i:nth-child(1){transform:rotate(-34deg);height:62%;left:42%}.fpSplashPlant i:nth-child(2){transform:rotate(-17deg);height:82%}.fpSplashPlant i:nth-child(3){transform:rotate(7deg);height:88%}.fpSplashPlant i:nth-child(4){transform:rotate(26deg);height:73%}.fpSplashPlant i:nth-child(5){transform:rotate(42deg);height:56%}
+.fpSplashTablet{position:absolute;right:-2.3%;top:29%;width:25%;height:49%;z-index:-1;border:12px solid #16191b;border-radius:27px;background:#f8f6f1;transform:rotate(3deg);box-shadow:-22px 25px 50px rgba(41,32,25,.25)}
+.fpSplashTablet::before{content:"";position:absolute;inset:5%;background:linear-gradient(90deg,transparent 0 17%,rgba(32,46,56,.48) 17% 17.8%,transparent 17.8% 56%,rgba(32,46,56,.48) 56% 56.8%,transparent 56.8%),linear-gradient(0deg,transparent 0 22%,rgba(32,46,56,.45) 22% 22.8%,transparent 22.8% 48%,rgba(32,46,56,.45) 48% 48.8%,transparent 48.8% 75%,rgba(32,46,56,.45) 75% 75.8%,transparent 75.8%),repeating-linear-gradient(0deg,rgba(50,64,72,.11) 0 1px,transparent 1px 22px),repeating-linear-gradient(90deg,rgba(50,64,72,.11) 0 1px,transparent 1px 22px),#f4f1eb;box-shadow:inset 0 0 0 2px rgba(53,65,72,.35)}
+.fpSplashCenter{width:min(860px,72vw);padding:4vh 24px 3vh;text-align:center;display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.25vh,16px);transform:translateY(-1.2vh)}
+.fpSplashLogo{width:clamp(112px,12vw,178px);height:auto;filter:drop-shadow(0 11px 14px rgba(60,45,29,.16))}
+.fpSplashBrand{line-height:.9;letter-spacing:-.055em;font-weight:900;font-size:clamp(58px,7.6vw,118px);white-space:nowrap}.fpSplashBrand .dark{color:#15191b}.fpSplashBrand .bronze{color:var(--fp-bronze)}
+.fpSplashTag{font-size:clamp(13px,1.55vw,24px);font-weight:700;letter-spacing:.27em}.fpSplashArabic{font-size:clamp(15px,1.65vw,25px);font-weight:700;color:#2a2a2a;direction:rtl}
+.fpSplashFeatures{width:min(760px,92%);display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-top:clamp(4px,.6vh,10px);background:rgba(255,255,255,.46);border:1px solid rgba(80,66,51,.13);border-radius:16px;backdrop-filter:blur(8px);overflow:hidden;box-shadow:0 12px 32px rgba(76,60,45,.09)}
+.fpSplashFeature{padding:10px 6px 9px;min-width:0;position:relative}.fpSplashFeature:not(:last-child)::after{content:"";position:absolute;right:0;top:20%;bottom:20%;width:1px;background:rgba(49,44,39,.18)}
+.fpSplashFeature svg{width:28px;height:28px;stroke:#1f2426;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.fpSplashFeature b{display:block;font-size:clamp(9px,.9vw,13px);margin-top:3px}.fpSplashFeature span{display:block;font-size:clamp(8px,.8vw,11px);color:#574f47;margin-top:1px;direction:rtl}
+.fpSplashLoading{width:min(430px,66vw);margin-top:clamp(8px,1.2vh,16px)}.fpSplashTrack{height:12px;border-radius:999px;background:rgba(111,113,113,.46);overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.13),0 0 0 1px rgba(70,60,50,.05)}
+#fpSplashFill{width:0%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#a87439 0%,var(--fp-bronze) 52%,var(--fp-bronze-2) 100%);box-shadow:0 0 18px rgba(180,131,67,.30);will-change:width}
+.fpSplashLoadingLabel{font-size:clamp(12px,1.1vw,17px);letter-spacing:.24em;margin-top:8px;color:#32302e}
+.fpSplashRights{position:absolute;left:50%;bottom:max(16px,3.2vh);transform:translateX(-50%);width:min(92vw,820px);text-align:center;color:#272727;font-size:clamp(10px,.95vw,14px);letter-spacing:.08em;line-height:1.6}.fpSplashRights strong{font-weight:800}.fpSplashRights small{display:block;opacity:.72;letter-spacing:.16em}
+@media(max-width:900px){.fpSplashCenter{width:min(780px,88vw)}.fpSplashTablet{width:28%;right:-8%;opacity:.78}.fpSplashSofa{width:31%;left:-4%;opacity:.82}.fpSplashFeatures{grid-template-columns:repeat(3,1fr);width:min(580px,84vw)}.fpSplashFeature:nth-child(3)::after{display:none}.fpSplashFeature{padding:7px 5px}.fpSplashFeature svg{width:24px;height:24px}}
+@media(max-width:620px), (orientation:portrait) and (max-width:900px){.fpSplashWindow{width:48%;opacity:.5}.fpSplashSlats{left:27%;opacity:.42}.fpSplashTablet{right:-18%;top:45%;width:45%;height:36%;opacity:.48}.fpSplashSofa{left:-12%;bottom:19%;width:48%;height:13%;opacity:.55}.fpSplashPlant{opacity:.55}.fpSplashCenter{width:94vw;transform:translateY(-3vh);padding-left:14px;padding-right:14px}.fpSplashBrand{font-size:clamp(50px,16vw,86px)}.fpSplashTag{font-size:clamp(11px,3vw,16px);letter-spacing:.18em}.fpSplashArabic{font-size:clamp(13px,3.3vw,18px)}.fpSplashFeatures{width:min(520px,91vw);gap:0}.fpSplashRights{bottom:max(12px,2vh)}}
+@media(prefers-reduced-motion:reduce){#fpSplash{transition-duration:.25s}}
+</style>
 </head>
 <body>
+
+<div id="fpSplash" role="status" aria-label="FurniPlan loading">
+  <div class="fpSplashWindow"></div><div class="fpSplashSlats"></div><div class="fpSplashSofa"></div>
+  <div class="fpSplashPlant" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="fpSplashTablet" aria-hidden="true"></div>
+  <div class="fpSplashCenter">
+    <svg class="fpSplashLogo" viewBox="0 0 180 145" aria-hidden="true">
+      <defs><linearGradient id="fpBronze" x1="0" x2="1"><stop offset="0" stop-color="#9a6c38"/><stop offset="1" stop-color="#c7985d"/></linearGradient></defs>
+      <path d="M26 70 88 18l66 53v58H26Z" fill="#f5efe6" stroke="#202629" stroke-width="13" stroke-linejoin="round"/>
+      <rect x="126" y="31" width="20" height="37" rx="4" fill="url(#fpBronze)"/><path d="M90 20 27 70M88 20l66 52" stroke="#202629" stroke-width="13" stroke-linecap="round"/>
+      <rect x="46" y="72" width="28" height="56" rx="2" fill="#9b7047"/><path d="M98 97h22c7 0 12 5 12 12v14H91v-16c0-6 3-10 7-10Z" fill="#34383a"/><path d="M96 123v9m31-9v9" stroke="#25292b" stroke-width="4"/>
+      <ellipse cx="145" cy="111" rx="11" ry="16" fill="#2c5633"/><path d="M144 126v-32m0 9-9-8m10 14 11-11" stroke="#2b5834" stroke-width="3" stroke-linecap="round"/><path d="M137 125h17l-3 12h-11Z" fill="#292d2e"/>
+      <path d="M105 65v20" stroke="#6a4b2f" stroke-width="3"/><ellipse cx="105" cy="87" rx="11" ry="7" fill="url(#fpBronze)"/>
+    </svg>
+    <div class="fpSplashBrand"><span class="dark">Furni</span><span class="bronze">Plan</span></div>
+    <div class="fpSplashTag">SMART SPACE PLANNING</div><div class="fpSplashArabic">تخطيط أذكى .. لحياة أفضل</div>
+    <div class="fpSplashFeatures">
+      <div class="fpSplashFeature"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16"/><path d="M10 4v16M4 11h16M15 11v9"/></svg><b>Layout</b><span>مخططات</span></div>
+      <div class="fpSplashFeature"><svg viewBox="0 0 24 24"><path d="M5 13h14v5H5zM7 13V9a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v4M7 18v2M17 18v2"/></svg><b>Furniture</b><span>أثاث</span></div>
+      <div class="fpSplashFeature"><svg viewBox="0 0 24 24"><path d="m5 17 12-12 3 3-12 12Z"/><path d="m9 13 2 2m1-5 2 2m1-5 2 2"/></svg><b>Measurements</b><span>قياسات</span></div>
+      <div class="fpSplashFeature"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6Z"/><path d="M15 3v5h5M9 16l2-6 2 6m-3-2h3m3-4v6h2"/></svg><b>DXF Export</b><span>تصدير</span></div>
+      <div class="fpSplashFeature"><svg viewBox="0 0 24 24"><path d="M7 8V4h10v4M7 17H5a2 2 0 0 1-2-2v-4c0-1 1-2 2-2h14c1 0 2 1 2 2v4c0 1-1 2-2 2h-2"/><path d="M7 14h10v6H7Z"/></svg><b>Print</b><span>طباعة</span></div>
+      <div class="fpSplashFeature"><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M10 18.5h4"/></svg><b>Across Devices</b><span>متعدد الأجهزة</span></div>
+    </div>
+    <div class="fpSplashLoading" aria-hidden="true"><div class="fpSplashTrack"><div id="fpSplashFill"></div></div><div class="fpSplashLoadingLabel">Loading...</div></div>
+  </div>
+  <div class="fpSplashRights"><strong>© 2026 سدير ياسين محمد</strong><small>Sadeer Yaseen Mohammed · All Rights Reserved</small></div>
+</div>
+
 <div class="app">
 <header>
   <div class="headerBrand">
@@ -3251,7 +3312,7 @@ document.getElementById('measureLockToggle').checked=false;document.getElementBy
 document.getElementById('newProjectBtn').onclick=()=>startNewProject(true);
 
 document.getElementById('saveBtn').onclick=()=>{
-  const project={version:72,projectMeta,brandInfo,bgData,dxfModel,pxPerCm,items,measurements,mapLabels,areaPolygons,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
+  const project={version:73,projectMeta,brandInfo,bgData,dxfModel,pxPerCm,items,measurements,mapLabels,areaPolygons,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
   download('furniture-project.json',JSON.stringify(project),'application/json')
 };
 
@@ -3782,5 +3843,19 @@ draw();
 <!-- V65 Stable Interaction Fix -->
 <!-- V66 Area & Ungroup Fix -->
 <!-- V67 Reliable Area & Ungroup -->
+
+<script id="furniPlanSplashLogicV73">
+(()=>{
+  const splash=document.getElementById('fpSplash'),fill=document.getElementById('fpSplashFill');
+  if(!splash||!fill)return;
+  const DURATION=5000,FADE_MS=820,start=performance.now();
+  let finished=false;
+  const finish=()=>{if(finished)return;finished=true;fill.style.width='100%';splash.classList.add('fpSplashOut');setTimeout(()=>splash.remove(),FADE_MS+80);};
+  const frame=now=>{const elapsed=Math.max(0,now-start),pct=Math.min(100,(elapsed/DURATION)*100);fill.style.width=pct.toFixed(2)+'%';if(elapsed>=DURATION){finish();return;}requestAnimationFrame(frame);};
+  requestAnimationFrame(frame);
+  setTimeout(finish,DURATION+120);
+})();
+</script>
+
 </body>
 </html>
