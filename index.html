@@ -12,8 +12,8 @@
 <meta name="apple-mobile-web-app-title" content="مخطط الأثاث" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-<title>تأثيثي V68 — iPad Area Wand & Delete</title>
-<meta name="taatheethi-version" content="68-ipad-area-wand-delete">
+<title>تأثيثي V69 — Adjustable Icon & Label Size</title>
+<meta name="taatheethi-version" content="69-adjustable-icon-label-size">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -383,6 +383,66 @@ main{position:relative!important}
   #furnitureIconToolbar .modernIconBtn{width:42px!important;height:46px!important;min-width:42px!important;min-height:46px!important;flex-basis:42px!important}
   #furnitureIconToolbar .modernIconBtn svg{width:17px!important;height:17px!important}
   #furnitureIconToolbar .modernIconBtn .iconLabel{font-size:7px!important}
+}
+
+
+/* ===== V69: independent icon + icon-label size controls ===== */
+:root{
+  --tool-btn-w:87px;
+  --tool-btn-h:84px;
+  --tool-icon-size:41px;
+  --tool-label-size:13.8px;
+  --tool-label-short-size:12.8px;
+  --tool-side-width:97px;
+  --tool-header-h:148px;
+}
+header{min-height:var(--tool-header-h)!important}
+.modernIconBtn{
+  width:var(--tool-btn-w)!important;height:var(--tool-btn-h)!important;
+  min-width:var(--tool-btn-w)!important;min-height:var(--tool-btn-h)!important;
+  flex:0 0 var(--tool-btn-w)!important;
+}
+.modernIconBtn svg{
+  width:var(--tool-icon-size)!important;height:var(--tool-icon-size)!important;
+}
+.modernIconBtn .iconLabel{font-size:var(--tool-label-size)!important}
+.modernIconBtn .iconLabel.short{font-size:var(--tool-label-short-size)!important}
+#furnitureIconToolbar{
+  width:var(--tool-side-width)!important;
+}
+#furnitureIconToolbar .modernIconBtn{
+  width:var(--tool-btn-w)!important;height:var(--tool-btn-h)!important;
+  min-width:var(--tool-btn-w)!important;min-height:var(--tool-btn-h)!important;
+  flex:0 0 var(--tool-btn-h)!important;
+}
+#furnitureIconToolbar .modernIconBtn svg{
+  width:var(--tool-icon-size)!important;height:var(--tool-icon-size)!important;
+}
+#furnitureIconToolbar .modernIconBtn .iconLabel{font-size:var(--tool-label-size)!important}
+#furnitureIconToolbar .modernIconBtn .iconLabel.short{font-size:var(--tool-label-short-size)!important}
+#modernSliderRow{
+  grid-template-columns:minmax(205px,1.25fr) repeat(4,minmax(145px,1fr))!important;
+  overflow-x:auto!important;overflow-y:hidden!important;
+  scrollbar-width:thin!important;padding-bottom:2px!important;
+}
+.modernSliderBox.uiScaleBox{min-width:145px!important}
+.modernSliderBox .sliderCaption{
+  font-size:9px!important;color:#d7e4f3!important;font-weight:700!important;
+  white-space:nowrap!important;flex:0 0 auto!important;
+}
+@media(max-width:1100px){
+  #modernSliderRow{grid-template-columns:minmax(185px,1.2fr) repeat(4,minmax(132px,1fr))!important}
+  .modernSliderBox.uiScaleBox{min-width:132px!important}
+  .modernSliderBox .sliderCaption{font-size:8px!important}
+}
+@media(max-width:900px){
+  aside{top:calc(env(safe-area-inset-top) + var(--tool-header-h))!important}
+  .sidebarScrim{inset:calc(env(safe-area-inset-top) + var(--tool-header-h)) 0 env(safe-area-inset-bottom) 0!important}
+}
+@media(max-width:700px){
+  #modernSliderRow{grid-template-columns:minmax(175px,1.15fr) repeat(4,minmax(122px,1fr))!important}
+  .modernSliderBox.uiScaleBox{min-width:122px!important}
+  .modernSliderBox .sliderCaption{font-size:7.5px!important}
 }
 
 
@@ -3129,7 +3189,7 @@ document.getElementById('measureLockToggle').checked=false;document.getElementBy
 document.getElementById('newProjectBtn').onclick=()=>startNewProject(true);
 
 document.getElementById('saveBtn').onclick=()=>{
-  const project={version:67,projectMeta,brandInfo,bgData,dxfModel,pxPerCm,items,measurements,mapLabels,areaPolygons,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
+  const project={version:69,projectMeta,brandInfo,bgData,dxfModel,pxPerCm,items,measurements,mapLabels,areaPolygons,zoom,measureDisplayScale,mapLabelDisplayScale,library:furniture,view:{grid:document.getElementById('gridToggle').checked,dims:document.getElementById('dimsToggle').checked,labels:document.getElementById('labelsToggle').checked,shadow:document.getElementById('shadowToggle').checked,snap:document.getElementById('snapToggle').checked,autoDims:document.getElementById('autoDimsToggle').checked,bg:document.getElementById('bgLayerToggle').checked,furniture:document.getElementById('furnitureLayerToggle').checked,measures:document.getElementById('measureLayerToggle').checked,mapLabels:mapLabelLayerToggle.checked,measureArrows:measureArrowsToggle.checked,furnitureSummary:furnitureSummaryToggle.checked,measureLock:document.getElementById('measureLockToggle').checked,mapLabelLock:document.getElementById('mapLabelLockToggle').checked},canvas:{width:canvas.width,height:canvas.height}};
   download('furniture-project.json',JSON.stringify(project),'application/json')
 };
 
@@ -3581,13 +3641,56 @@ draw();
   ];
   topGroups.forEach((nodes)=>{const g=document.createElement('div');g.className='topToolGroup';nodes.forEach(n=>g.appendChild(n));top.appendChild(g);});
 
-  const sliderBox=(icon,nodes,value)=>{const box=document.createElement('div');box.className='modernSliderBox';const g=document.createElement('span');g.className='sliderGlyph';g.innerHTML=I[icon];box.appendChild(g);nodes.filter(Boolean).forEach(n=>box.appendChild(n));if(value){value.classList.add('sliderValue');box.appendChild(value);}return box;};
+  const sliderBox=(icon,nodes,value,extraClass='')=>{const box=document.createElement('div');box.className='modernSliderBox '+extraClass;const g=document.createElement('span');g.className='sliderGlyph';g.innerHTML=I[icon];box.appendChild(g);nodes.filter(Boolean).forEach(n=>box.appendChild(n));if(value){value.classList.add('sliderValue');box.appendChild(value);}return box;};
+  const sliderCaption=text=>{const sp=document.createElement('span');sp.className='sliderCaption';sp.textContent=text;return sp;};
+  const makeScaleRange=(id,value=150)=>{const r=document.createElement('input');r.id=id;r.type='range';r.min='70';r.max='200';r.step='10';r.value=String(value);r.setAttribute('aria-label',id==='uiIconSizeRange'?'حجم الأيقونات':'حجم مسميات الأيقونات');return r;};
+  const makeScaleValue=(id,value=150)=>{const sp=document.createElement('span');sp.id=id;sp.textContent=value+'%';return sp;};
+
   const zOut=document.getElementById('zoomOutBtn'),zRange=document.getElementById('zoomRange'),zVal=document.getElementById('zoomLabel'),zIn=document.getElementById('zoomInBtn');
   const mRange=document.getElementById('measureSizeRange'),mVal=document.getElementById('measureSizeLabel');
   const lRange=document.getElementById('mapLabelSizeRange'),lVal=document.getElementById('mapLabelSizeValue');
+
+  let savedUiScale={};
+  try{savedUiScale=JSON.parse(localStorage.getItem('taatheethi-ui-scale-v69')||'{}')||{};}catch{}
+  const normalizeUiScale=v=>Math.min(200,Math.max(70,Number(v)||150));
+  let uiIconScale=normalizeUiScale(savedUiScale.icon);
+  let uiLabelScale=normalizeUiScale(savedUiScale.label);
+  const uiIconRange=makeScaleRange('uiIconSizeRange',uiIconScale),uiIconValue=makeScaleValue('uiIconSizeValue',uiIconScale);
+  const uiLabelRange=makeScaleRange('uiLabelSizeRange',uiLabelScale),uiLabelValue=makeScaleValue('uiLabelSizeValue',uiLabelScale);
+
   sliders.appendChild(sliderBox('fit',[zOut,zRange,zIn],zVal));
   sliders.appendChild(sliderBox('ruler',[mRange],mVal));
   sliders.appendChild(sliderBox('text',[lRange],lVal));
+  sliders.appendChild(sliderBox('grid',[sliderCaption('أيقونات'),uiIconRange],uiIconValue,'uiScaleBox'));
+  sliders.appendChild(sliderBox('text',[sliderCaption('مسمياتها'),uiLabelRange],uiLabelValue,'uiScaleBox'));
+
+  function toolUiBase(){
+    const w=window.innerWidth;
+    if(w<=700)return {btnW:42,btnH:46,icon:17,label:7,side:48,sliderH:31,pad:20};
+    if(w<=1100)return {btnW:52,btnH:52,icon:21,label:8,side:60,sliderH:34,pad:26};
+    return {btnW:58,btnH:56,icon:27,label:9.2,side:68,sliderH:38,pad:26};
+  }
+  function persistUiScale(){
+    try{localStorage.setItem('taatheethi-ui-scale-v69',JSON.stringify({icon:uiIconScale,label:uiLabelScale}));}catch{}
+  }
+  function applyToolUiScale(){
+    const b=toolUiBase(),is=uiIconScale/100,ls=uiLabelScale/100,buttonScale=Math.max(is,ls);
+    const root=document.documentElement;
+    const btnW=Math.round(b.btnW*buttonScale),btnH=Math.round(b.btnH*buttonScale);
+    root.style.setProperty('--tool-btn-w',btnW+'px');
+    root.style.setProperty('--tool-btn-h',btnH+'px');
+    root.style.setProperty('--tool-icon-size',Math.max(12,Math.round(b.icon*is))+'px');
+    root.style.setProperty('--tool-label-size',Math.max(6,Math.round(b.label*ls*10)/10)+'px');
+    root.style.setProperty('--tool-label-short-size',Math.max(5.5,Math.round(b.label*.92*ls*10)/10)+'px');
+    root.style.setProperty('--tool-side-width',Math.max(b.side,btnW+10)+'px');
+    root.style.setProperty('--tool-header-h',Math.max(96,btnH+b.sliderH+b.pad)+'px');
+    uiIconRange.value=String(uiIconScale);uiIconValue.textContent=Math.round(uiIconScale)+'%';
+    uiLabelRange.value=String(uiLabelScale);uiLabelValue.textContent=Math.round(uiLabelScale)+'%';
+  }
+  uiIconRange.addEventListener('input',()=>{uiIconScale=normalizeUiScale(uiIconRange.value);applyToolUiScale();persistUiScale();});
+  uiLabelRange.addEventListener('input',()=>{uiLabelScale=normalizeUiScale(uiLabelRange.value);applyToolUiScale();persistUiScale();});
+  window.addEventListener('resize',applyToolUiScale);
+  applyToolUiScale();
 
   const sep=()=>{const s=document.createElement('div');s.className='toolSep';return s;};
   const leftDefs=[
