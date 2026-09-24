@@ -16,9 +16,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: wasoolat-desktop/package-lock.json
+          node-version: '24'
 
       - name: Prepare app files
         shell: pwsh
