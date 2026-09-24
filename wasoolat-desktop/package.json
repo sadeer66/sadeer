@@ -1,0 +1,49 @@
+{
+  "name": "wasoolat-desktop",
+  "version": "1.0.0",
+  "description": "برنامج الوصولات - نسخة سطح المكتب لنظام Windows",
+  "main": "main.js",
+  "author": "سدير ياسين محمد",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dist:win": "electron-builder --win nsis --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "latest",
+    "electron-builder": "latest"
+  },
+  "build": {
+    "appId": "com.sadeer.wasoolat",
+    "productName": "برنامج الوصولات",
+    "artifactName": "Wasoolat-Setup-V1.0-${arch}.exe",
+    "asar": true,
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "app/**/*",
+      "build/icon.ico"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "برنامج الوصولات",
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}
