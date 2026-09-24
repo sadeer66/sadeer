@@ -26,6 +26,12 @@ jobs:
           Copy-Item wasoolat/manifest.webmanifest wasoolat-desktop/app/manifest.webmanifest -Force
           Copy-Item wasoolat/apple-touch-icon.png wasoolat-desktop/app/apple-touch-icon.png -Force
 
+      - name: Create 512px Windows icon
+        shell: pwsh
+        run: |
+          python -m pip install pillow
+          python -c "from PIL import Image; im=Image.open('wasoolat/apple-touch-icon.png').convert('RGBA'); im=im.resize((512,512), Image.Resampling.LANCZOS); bg=Image.new('RGBA',(512,512),(40,89,103,255)); bg.alpha_composite(im); bg.convert('RGB').save('wasoolat-desktop/app/icon-512.png')"
+
       - name: Install dependencies
         shell: pwsh
         working-directory: wasoolat-desktop
