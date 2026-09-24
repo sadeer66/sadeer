@@ -2,10 +2,6 @@ name: Build Wasoolat Windows Installer
 
 on:
   workflow_dispatch:
-  push:
-    branches: [master]
-    paths:
-      - '.github/workflows/wasoolat-desktop-build.yml'
 
 permissions:
   contents: read
@@ -21,21 +17,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: wasoolat-desktop/package-lock.json
 
       - name: Prepare app files
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path wasoolat-desktop/app | Out-Null
-          Copy-Item wasoolat/index.html wasoolat-desktop/app/index.html
-          Copy-Item wasoolat/manifest.webmanifest wasoolat-desktop/app/manifest.webmanifest
-          Copy-Item wasoolat/apple-touch-icon.png wasoolat-desktop/app/apple-touch-icon.png
-          New-Item -ItemType Directory -Force -Path wasoolat-desktop/build | Out-Null
-
-      - name: Create Windows icon
-        shell: pwsh
-        run: |
-          python -m pip install pillow
-          python -c "from PIL import Image; im=Image.open('wasoolat/apple-touch-icon.png').convert('RGBA'); im=im.resize((256,256),Image.Resampling.LANCZOS); im.save('wasoolat-desktop/build/icon.ico', sizes=[(16,16),(32,32),(48,48),(64,64),(128,128),(256,256)])"
+          Copy-Item wasoolat/index.html wasoolat-desktop/app/index.html -Force
+          Copy-Item wasoolat/manifest.webmanifest wasoolat-desktop/app/manifest.webmanifest -Force
+          Copy-Item wasoolat/apple-touch-icon.png wasoolat-desktop/app/apple-touch-icon.png -Force
 
       - name: Install dependencies
         shell: pwsh
