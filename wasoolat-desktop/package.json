@@ -24,7 +24,7 @@
     "files": [
       "main.js",
       "app/**/*",
-      "build/icon.ico"
+      "app/apple-touch-icon.png"
     ],
     "win": {
       "target": [
@@ -33,7 +33,7 @@
           "arch": ["x64"]
         }
       ],
-      "icon": "build/icon.ico"
+      "icon": "app/apple-touch-icon.png"
     },
     "nsis": {
       "oneClick": false,
