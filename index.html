@@ -595,10 +595,10 @@ header{min-height:var(--tool-header-h)!important}
 @media(prefers-reduced-motion:reduce){#fpSplash{transition-duration:.2s}}
 </style>
 
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=93">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=93">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=93">
-<link rel="manifest" href="manifest.webmanifest?v=93">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=94">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=94">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=94">
+<link rel="manifest" href="manifest.webmanifest?v=94">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="FurniPlan">
@@ -704,23 +704,57 @@ input[type="range"]::-moz-range-thumb{
 </style>
 
 
-<style id="furniplan-top-toolbar-scroll-v93">
-/* V93: keep top icon rows at full size and make them horizontally scrollable */
-.toolbarStack{min-width:0;overflow:hidden}
+<style id="furniplan-v94-layout-toolbar">
+/* Keep map strictly inside its own area */
+.mapPanel{
+  height:100%;
+  min-height:0;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.mapViewport{
+  position:relative;
+  flex:1 1 0;
+  min-height:0;
+  overflow:hidden!important;
+}
+.canvasWrap{
+  width:100%;
+  height:100%;
+  min-width:0;
+  min-height:0;
+  overflow:auto!important;
+  position:relative;
+  z-index:1;
+}
+.usedFurniturePanel,
+.bottomInspector{
+  position:relative;
+  z-index:5;
+  flex:0 0 auto!important;
+}
+
+/* Top icon rows: full-size icons + horizontal scrolling */
+.toolbarStack{
+  min-width:0;
+  overflow:hidden;
+}
 .mainToolbar,
 .workToolbar{
+  display:flex!important;
   flex-wrap:nowrap!important;
   overflow-x:auto!important;
   overflow-y:hidden!important;
-  white-space:nowrap;
   width:100%;
-  min-width:0;
   max-width:100%;
+  min-width:0;
+  white-space:nowrap;
   -webkit-overflow-scrolling:touch;
   overscroll-behavior-x:contain;
   touch-action:pan-x;
   scrollbar-color:#7696ba #425a74;
-  scrollbar-width:auto;
 }
 .mainToolbar>button,
 .mainToolbar>.btn,
@@ -743,10 +777,6 @@ input[type="range"]::-moz-range-thumb{
   background:linear-gradient(90deg,#91accb,#7292b6);
   border:2px solid #425a74;
   border-radius:999px;
-}
-.mainToolbar::-webkit-scrollbar-thumb:hover,
-.workToolbar::-webkit-scrollbar-thumb:hover{
-  background:linear-gradient(90deg,#a5bdd6,#82a2c4);
 }
 </style>
 
@@ -3774,30 +3804,7 @@ document.getElementById('doPrintBtn').onclick=async()=>{
   // افتح نافذة الطباعة فوراً داخل نقرة المستخدم، قبل أي await، حتى لا يحظرها Safari.
   const page=window.open('','_blank');
   if(!page){alert('تعذر فتح نافذة الطباعة. تحقق من إعداد حظر النوافذ المنبثقة في Safari ثم حاول مرة أخرى.');return;}
-  page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...
-<script id="furniplan-top-toolbar-wheel-v93">
-(()=>{
-  const wire=()=>{
-    document.querySelectorAll('.mainToolbar,.workToolbar').forEach(el=>{
-      if(el.dataset.wheelScrollV93==='1')return;
-      el.dataset.wheelScrollV93='1';
-      el.addEventListener('wheel',ev=>{
-        if(el.scrollWidth<=el.clientWidth+2)return;
-        if(ev.target.closest('input,select,textarea'))return;
-        const delta=Math.abs(ev.deltaY)>=Math.abs(ev.deltaX)?ev.deltaY:ev.deltaX;
-        if(!delta)return;
-        ev.preventDefault();
-        const rtl=(getComputedStyle(el).direction==='rtl');
-        el.scrollBy({left:(rtl?-1:1)*delta,behavior:'auto'});
-      },{passive:false});
-    });
-  };
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire,{once:true});
-  else wire();
-})();
-</script>
-
-</body></html>`);
+  page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...</body></html>`);
   page.document.close();
   try{
     const sheet=await buildBrandedSheet({paper,orient,title:projectMeta.name,mapTitle:projectMeta.mapTitle,client:projectMeta.client,location:projectMeta.location});
@@ -4154,6 +4161,28 @@ draw();
 </script>
 
 
-<script src="v85-final-patch.js?v=93"></script>
+<script src="v85-final-patch.js?v=94"></script>
+
+<script id="furniplan-toolbar-wheel-v94">
+(()=>{
+  const setup=()=>{
+    document.querySelectorAll('.mainToolbar,.workToolbar').forEach(el=>{
+      if(el.dataset.fpWheel94)return;
+      el.dataset.fpWheel94='1';
+      el.addEventListener('wheel',ev=>{
+        if(el.scrollWidth<=el.clientWidth+2)return;
+        if(ev.target.closest('input,select,textarea'))return;
+        const delta=Math.abs(ev.deltaY)>=Math.abs(ev.deltaX)?ev.deltaY:ev.deltaX;
+        if(!delta)return;
+        ev.preventDefault();
+        el.scrollLeft += delta;
+      },{passive:false});
+    });
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});
+  else setup();
+})();
+</script>
+
 </body>
 </html>
