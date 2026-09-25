@@ -1,6 +1,6 @@
 {
   "name": "wasoolat-desktop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "برنامج الوصولات - نسخة سطح المكتب لنظام Windows",
   "main": "main.js",
   "author": "سدير ياسين محمد",
@@ -15,7 +15,7 @@
   "build": {
     "appId": "com.sadeer.wasoolat",
     "productName": "برنامج الوصولات",
-    "artifactName": "Wasoolat-Setup-V1.0-${arch}.exe",
+    "artifactName": "Wasoolat-Setup-V1.1-${arch}.exe",
     "asar": true,
     "directories": {
       "output": "dist",
