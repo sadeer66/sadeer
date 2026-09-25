@@ -7,8 +7,8 @@
 <meta http-equiv="Expires" content="0" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<title>FurniPlan V74 — Inline Approved Splash</title>
-<meta name="taatheethi-version" content="74-approved-splash-fixed">
+<title>FurniPlan</title>
+<meta name="furniplan-version" content="86">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -481,7 +481,7 @@ header{min-height:var(--tool-header-h)!important}
 <style id="furniPlanSplashV74">
 #fpSplash{
   position:fixed;inset:0;z-index:2147483000;overflow:hidden;
-  display:grid;place-items:center;background:#e9dfd2;
+  display:block;background:#e9dfd2;
   opacity:1;visibility:visible;
   transition:opacity .82s cubic-bezier(.22,.61,.36,1),visibility .82s;
   isolation:isolate;
@@ -492,16 +492,15 @@ header{min-height:var(--tool-header-h)!important}
   background:rgba(244,238,229,.12);
 }
 .fpSplashArt{
-  position:relative;z-index:1;
-  width:min(100vw,177.68vh);
-  aspect-ratio:1672/941;
+  position:absolute;inset:0;z-index:1;
+  width:100vw;height:100vh;
   overflow:hidden;
-  box-shadow:0 18px 55px rgba(48,35,24,.20);
   background:#eee5d9;
 }
 .fpSplashArt>img{
   position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;display:block;user-select:none;-webkit-user-drag:none;
+  object-fit:cover;object-position:center center;
+  display:block;user-select:none;-webkit-user-drag:none;
   image-rendering:auto;
 }
 .fpSplashTrack{
@@ -517,15 +516,22 @@ header{min-height:var(--tool-header-h)!important}
   box-shadow:0 0 14px rgba(183,131,68,.34);
   will-change:width;
 }
-@media(max-width:700px){.fpSplashArt{width:min(100vw,177.68vh)}}
-@media(orientation:portrait){.fpSplashArt{width:min(100vw,177.68vh)}}
 @media(prefers-reduced-motion:reduce){#fpSplash{transition-duration:.25s}}
+
+@media(max-width:900px){
+  .fpSplashArt{width:100vw;height:100dvh}
+  .fpSplashArt>img{object-fit:cover;object-position:center center}
+}
+@media(orientation:portrait) and (max-width:1100px){
+  .fpSplashArt>img{object-fit:cover;object-position:center center}
+}
+
 </style>
 
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=85">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=85">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=85">
-<link rel="manifest" href="manifest.webmanifest?v=85">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=86">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=86">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=86">
+<link rel="manifest" href="manifest.webmanifest?v=86">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="FurniPlan">
@@ -3497,7 +3503,6 @@ document.getElementById('doPrintBtn').onclick=async()=>{
   const page=window.open('','_blank');
   if(!page){alert('تعذر فتح نافذة الطباعة. تحقق من إعداد حظر النوافذ المنبثقة في Safari ثم حاول مرة أخرى.');return;}
   page.document.write('<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...
-<script src="v85-final-patch.js?v=85"></script>
 </body></html>');
   page.document.close();
   try{
@@ -3854,5 +3859,7 @@ draw();
 })();
 </script>
 
+
+<script src="v85-final-patch.js?v=86"></script>
 </body>
 </html>
