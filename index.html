@@ -478,57 +478,76 @@ header{min-height:var(--tool-header-h)!important}
 @media(max-width:540px){.dxfUnitGrid{grid-template-columns:1fr 1fr}.dxfUnitChoice{min-height:50px}}
 </style>
 
-<style id="furniPlanSplashV74">
+<style id="furniPlanSplashV87">
 #fpSplash{
-  position:fixed;inset:0;z-index:2147483000;
-  background:#e9dfd2;overflow:hidden;
-  opacity:1;visibility:visible;
-  transition:opacity .82s cubic-bezier(.22,.61,.36,1),visibility .82s;
+  position:fixed;inset:0;z-index:2147483000;overflow:hidden;
+  background:#efe8df;opacity:1;visibility:visible;
+  transition:opacity .78s cubic-bezier(.22,.61,.36,1),visibility .78s;
 }
 #fpSplash.fpSplashOut{opacity:0;visibility:hidden;pointer-events:none}
-#fpSplash::after{content:"";position:absolute;inset:0;pointer-events:none;background:transparent}
-.fpSplashArt{
-  position:absolute;inset:0;width:100vw;height:100dvh;
-  overflow:hidden;background:#e9dfd2;
+.fpSplashBg{
+  position:absolute;inset:-1.5%;
+  background:
+    linear-gradient(90deg,rgba(248,244,238,.06),rgba(248,244,238,.18)),
+    url('assets/furniplan-splash-approved-v74.webp?v=87') center/cover no-repeat;
+  filter:blur(.35px) saturate(1.05) brightness(1.03);
+  transform:scale(1.02);
 }
-.fpSplashArt>img{
-  position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;object-position:center center;
-  display:block;user-select:none;-webkit-user-drag:none;
-  image-rendering:auto;
-  filter:contrast(1.045) saturate(1.025);
-  transform:translateZ(0);
-  backface-visibility:hidden;
+.fpSplashShade{
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(255,248,239,.08),rgba(255,248,239,.34) 34%,rgba(255,248,239,.62) 50%,rgba(255,248,239,.26) 68%,rgba(255,248,239,.04));
 }
+.fpSplashContent{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(760px,60vw);min-height:72vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:2vh 2.2vw 1.8vh;
+  text-align:center;color:#171717;
+  text-shadow:0 1px 0 rgba(255,255,255,.35);
+}
+.fpHouseLogo{width:clamp(110px,10vw,175px);height:auto;margin-bottom:.5vh}
+.fpHouseLogo svg{display:block;width:100%;height:auto;filter:drop-shadow(0 5px 8px rgba(0,0,0,.08))}
+.fpBrand{font-family:Arial,Helvetica,sans-serif;font-weight:900;line-height:.92;font-size:clamp(54px,6.2vw,104px);letter-spacing:-.06em}
+.fpBrand span{color:#111}.fpBrand b{color:#b97816}
+.fpSub{margin-top:1.2vh;font:700 clamp(15px,1.45vw,28px)/1.1 Arial,Helvetica,sans-serif;letter-spacing:.24em}
+.fpArabic{margin-top:1.4vh;font:700 clamp(18px,1.65vw,32px)/1.25 Tahoma,Arial,sans-serif}
+.fpFeatures{
+  width:min(760px,57vw);display:grid;grid-template-columns:repeat(6,1fr);
+  gap:0;margin-top:3.6vh;color:#111
+}
+.fpFeature{display:flex;flex-direction:column;align-items:center;gap:.6vh;padding:0 .5vw;position:relative}
+.fpFeature:not(:last-child)::after{content:"";position:absolute;right:-1px;top:7%;height:70%;width:1px;background:rgba(176,118,35,.55)}
+.fpFeature svg{width:clamp(30px,2.5vw,48px);height:auto}
+.fpFeature span{font:700 clamp(11px,.95vw,18px)/1.15 Tahoma,Arial,sans-serif;white-space:nowrap}
 .fpSplashTrack{
-  position:absolute;left:50%;transform:translateX(-50%);
-  bottom:11.6%;width:min(420px,28vw);height:12px;
-  min-height:8px;border-radius:999px;overflow:hidden;
-  background:rgba(122,122,122,.36);
-  box-shadow:inset 0 1px 2px rgba(0,0,0,.18),0 0 0 1px rgba(255,255,255,.32);
+  margin-top:4vh;width:min(430px,32vw);height:14px;border-radius:999px;overflow:hidden;
+  background:rgba(136,136,136,.30);box-shadow:inset 0 1px 3px rgba(0,0,0,.15),0 0 0 1px rgba(255,255,255,.55)
 }
-#fpSplashFill{
-  width:0%;height:100%;border-radius:inherit;
-  background:linear-gradient(90deg,#bd8748 0%,#b78344 60%,#d0a060 100%);
-  box-shadow:0 0 14px rgba(183,131,68,.34);
-}
-@media(max-width:900px){
-  .fpSplashTrack{bottom:10.5%;width:min(420px,48vw);height:10px}
-}
-@media(orientation:portrait) and (max-width:1100px){
-  .fpSplashArt>img{object-fit:cover;object-position:center center}
-  .fpSplashTrack{bottom:12%;width:52vw}
-}
-@media(prefers-reduced-motion:reduce){#fpSplash{transition-duration:.25s}}
+#fpSplashFill{width:0%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#d59a31,#b87315,#d4a558);box-shadow:0 0 12px rgba(184,115,21,.28);will-change:width}
+.fpLoadingText{margin-top:1vh;font:500 clamp(12px,.9vw,16px)/1 Arial,sans-serif;letter-spacing:.42em;color:#343434}
+.fpCopyright{margin-top:5.2vh;font:500 clamp(11px,.9vw,15px)/1 Arial,sans-serif;color:#444}
 
 @media(max-width:900px){
-  .fpSplashArt{width:100vw;height:100dvh}
-  .fpSplashArt>img{object-fit:cover;object-position:center center}
+  .fpSplashContent{width:92vw;min-height:84vh;padding:2vh 3vw}
+  .fpBrand{font-size:clamp(48px,10vw,82px)}
+  .fpSub{font-size:clamp(12px,2.5vw,20px)}
+  .fpArabic{font-size:clamp(17px,3vw,24px)}
+  .fpFeatures{width:88vw;grid-template-columns:repeat(3,1fr);row-gap:2vh}
+  .fpFeature:nth-child(3)::after{display:none}
+  .fpSplashTrack{width:min(430px,58vw);margin-top:3vh}
+  .fpCopyright{margin-top:3vh}
 }
-@media(orientation:portrait) and (max-width:1100px){
-  .fpSplashArt>img{object-fit:cover;object-position:center center}
+@media(max-width:540px){
+  .fpSplashShade{background:rgba(255,248,239,.58)}
+  .fpSplashContent{width:96vw}
+  .fpHouseLogo{width:110px}
+  .fpBrand{font-size:50px}
+  .fpSub{font-size:12px;letter-spacing:.18em}
+  .fpArabic{font-size:18px}
+  .fpFeatures{width:92vw}
+  .fpFeature span{font-size:11px}
 }
-
+@media(prefers-reduced-motion:reduce){#fpSplash{transition-duration:.2s}}
 </style>
 
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=86">
@@ -543,9 +562,54 @@ header{min-height:var(--tool-header-h)!important}
 <body>
 
 <div id="fpSplash" role="status" aria-label="FurniPlan loading">
-  <div class="fpSplashArt">
-    <img id="fpSplashImage" src="assets/furniplan-splash-approved-v74.webp?v=86" alt="FurniPlan" fetchpriority="high" decoding="sync">
+  <div class="fpSplashBg"></div>
+  <div class="fpSplashShade"></div>
+  <div class="fpSplashContent">
+    <div class="fpHouseLogo" aria-hidden="true">
+      <svg viewBox="0 0 160 150" role="img">
+        <path d="M24 68 L80 18 L136 68 V132 H24 Z" fill="none" stroke="#161616" stroke-width="16" stroke-linejoin="round"/>
+        <rect x="56" y="84" width="34" height="30" rx="7" fill="#242424"/>
+        <rect x="98" y="87" width="15" height="28" rx="6" fill="#161616"/>
+        <circle cx="105" cy="80" r="8" fill="#c78b2b"/>
+        <rect x="75" y="49" width="10" height="28" rx="5" fill="#c78b2b"/>
+        <circle cx="80" cy="77" r="10" fill="#c78b2b"/>
+      </svg>
+    </div>
+
+    <div class="fpBrand"><span>Furni</span><b>Plan</b></div>
+    <div class="fpSub">SMART SPACE PLANNING</div>
+    <div class="fpArabic">تخطيط أذكى .. لحياة أفضل</div>
+
+    <div class="fpFeatures" aria-hidden="true">
+      <div class="fpFeature">
+        <svg viewBox="0 0 64 64"><path d="M10 12h18v16H10zM36 12h18v26H36zM10 36h26v16H10zM44 46h10v6H44z" fill="none" stroke="currentColor" stroke-width="4"/></svg>
+        <span>مخططات</span>
+      </div>
+      <div class="fpFeature">
+        <svg viewBox="0 0 64 64"><path d="M13 31v-8c0-6 4-10 10-10h18c6 0 10 4 10 10v8M10 31h44v17H10zM15 48v5M49 48v5" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+        <span>أثاث</span>
+      </div>
+      <div class="fpFeature">
+        <svg viewBox="0 0 64 64"><path d="M14 49l8-3 28-28-7-7-28 28-1 10zM37 17l7 7" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>تصميمات</span>
+      </div>
+      <div class="fpFeature">
+        <svg viewBox="0 0 64 64"><path d="M16 10h26l7 7v37H16zM23 10v14h19V10M23 45h19" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>
+        <span>احفظ</span>
+      </div>
+      <div class="fpFeature">
+        <svg viewBox="0 0 64 64"><path d="M18 22V10h28v12M15 45H9V27c0-4 3-7 7-7h32c4 0 7 3 7 7v18h-7M18 37h28v17H18z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/></svg>
+        <span>اطبع</span>
+      </div>
+      <div class="fpFeature">
+        <svg viewBox="0 0 64 64"><rect x="21" y="8" width="22" height="48" rx="5" fill="none" stroke="currentColor" stroke-width="4"/><path d="M29 48h6" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+        <span>مشاركة سهلة</span>
+      </div>
+    </div>
+
     <div class="fpSplashTrack" aria-hidden="true"><div id="fpSplashFill"></div></div>
+    <div class="fpLoadingText">LOADING</div>
+    <div class="fpCopyright">© 2026 FurniPlan. All Rights Reserved.</div>
   </div>
 </div>
 
