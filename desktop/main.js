@@ -2,7 +2,7 @@ const { app, BrowserWindow, shell, screen } = require('electron');
 const path = require('path');
 
 app.setName('FurniPlan');
-app.setAppUserModelId('com.sadeer.furniplan.v86');
+app.setAppUserModelId('com.sadeer.furniplan');
 
 function createWindow() {
   const { workArea } = screen.getPrimaryDisplay();
