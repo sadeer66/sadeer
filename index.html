@@ -580,10 +580,10 @@ header{min-height:var(--tool-header-h)!important}
 @media(prefers-reduced-motion:reduce){#fpSplash{transition-duration:.2s}}
 </style>
 
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=88">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=88">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=88">
-<link rel="manifest" href="manifest.webmanifest?v=88">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=89">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=89">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=89">
+<link rel="manifest" href="manifest.webmanifest?v=89">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="FurniPlan">
@@ -642,7 +642,7 @@ header{min-height:var(--tool-header-h)!important}
 
     <div class="fpSplashTrack" aria-hidden="true"><div id="fpSplashFill"></div></div>
     <div class="fpLoadingText">LOADING</div>
-    <div class="fpCopyright">© 2026 FurniPlan. All Rights Reserved.</div>
+    <div class="fpCopyright">© 2026 FurniPlan — جميع الحقوق محفوظة — سدير ياسين محمد</div>
   </div>
 </div>
 
@@ -797,7 +797,7 @@ header{min-height:var(--tool-header-h)!important}
     </div>
   </div>
 </main>
-  <div class="appRights">حقوق البرنامج © سدير ياسين — الهاتف: 07903827624</div>
+  <div class="appRights">© 2026 FurniPlan — جميع الحقوق محفوظة — سدير ياسين محمد</div>
 </div>
 <div class="sidebarScrim" id="sidebarScrim"></div>
 
@@ -3108,24 +3108,52 @@ function draw(){
       if(dxfModel)drawDxfVector();
     }
   }else{
-    ctx.fillStyle='#f8fafc';ctx.fillRect(0,0,canvas.width,canvas.height);
-    const splashLogo=(companyLogoImage.complete&&companyLogoImage.naturalWidth)?companyLogoImage:promoLogoImage;
-    if(splashLogo.complete && splashLogo.naturalWidth){
-      const maxW=Math.min(canvas.width*0.42,390),maxH=Math.min(canvas.height*0.46,340);
-      const sc=Math.min(maxW/splashLogo.naturalWidth,maxH/splashLogo.naturalHeight);
-      const w=splashLogo.naturalWidth*sc,h=splashLogo.naturalHeight*sc;
-      const cy=canvas.height/2-42;
-      ctx.save();ctx.shadowColor='rgba(0,0,0,.18)';ctx.shadowBlur=18;ctx.shadowOffsetY=6;ctx.drawImage(splashLogo,(canvas.width-w)/2,cy-h/2,w,h);ctx.restore();
-      ctx.textAlign='center';
-      let ty=cy+h/2+30;
-      if(brandInfo.companyName){ctx.fillStyle='#0f172a';ctx.font='700 21px Tahoma';ctx.fillText(brandInfo.companyName,canvas.width/2,ty);ty+=27;}
-      const sub=[brandInfo.address,brandInfo.email].filter(Boolean).join('  •  ');
-      if(sub){ctx.fillStyle='#64748b';ctx.font='14px Tahoma';ctx.fillText(sub,canvas.width/2,ty);ty+=25;}
-      ctx.fillStyle='#334155';ctx.font='bold 17px Tahoma';ctx.fillText('ارفع الخارطة لبدء مشروع جديد',canvas.width/2,ty+5);
-    }else{
-      ctx.fillStyle='#64748b';ctx.font='22px Tahoma';ctx.textAlign='center';
-      ctx.fillText('ارفع صورة الخارطة من الزر العلوي',canvas.width/2,canvas.height/2);
-    }
+    // FurniPlan empty project screen — same warm palette as the approved login screen.
+    const bg=ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+    bg.addColorStop(0,'#f8f3ec');
+    bg.addColorStop(.48,'#efe4d4');
+    bg.addColorStop(1,'#eadcc8');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    const cx=canvas.width/2, cy=canvas.height/2-30;
+    const unit=Math.max(0.72,Math.min(canvas.width/1200,canvas.height/800));
+    ctx.save();
+
+    // house logo
+    ctx.translate(cx,cy-135*unit);
+    ctx.lineJoin='round';ctx.lineCap='round';
+    ctx.strokeStyle='#161616';ctx.lineWidth=15*unit;
+    ctx.beginPath();
+    ctx.moveTo(-54*unit,12*unit);ctx.lineTo(0,-38*unit);ctx.lineTo(54*unit,12*unit);
+    ctx.lineTo(54*unit,70*unit);ctx.lineTo(-54*unit,70*unit);ctx.closePath();ctx.stroke();
+
+    // furniture marks inside logo
+    ctx.fillStyle='#242424';
+    ctx.beginPath();ctx.roundRect(-25*unit,30*unit,35*unit,28*unit,6*unit);ctx.fill();
+    ctx.beginPath();ctx.roundRect(18*unit,34*unit,14*unit,25*unit,5*unit);ctx.fill();
+    ctx.fillStyle='#c78b2b';
+    ctx.beginPath();ctx.roundRect(-5*unit,-5*unit,10*unit,28*unit,5*unit);ctx.fill();
+    ctx.beginPath();ctx.arc(0,24*unit,9*unit,0,Math.PI*2);ctx.fill();
+    ctx.restore();
+
+    // FurniPlan wordmark
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    const brandSize=Math.round(72*unit);
+    ctx.font='900 '+brandSize+'px Arial,Helvetica,sans-serif';
+    const furni='Furni',plan='Plan';
+    const fw=ctx.measureText(furni).width,pw=ctx.measureText(plan).width,total=fw+pw;
+    let sx=cx-total/2;
+    ctx.textAlign='left';ctx.fillStyle='#111827';ctx.fillText(furni,sx,cy+30*unit);
+    ctx.fillStyle='#b97816';ctx.fillText(plan,sx+fw,cy+30*unit);
+
+    ctx.textAlign='center';
+    ctx.fillStyle='#111827';ctx.font='700 '+Math.round(18*unit)+'px Arial,Helvetica,sans-serif';
+    ctx.fillText('SMART SPACE PLANNING',cx,cy+82*unit);
+    ctx.font='700 '+Math.round(19*unit)+'px Tahoma,Arial,sans-serif';
+    ctx.fillText('تخطيط أذكى .. لحياة أفضل',cx,cy+116*unit);
+
+    ctx.fillStyle='#5b6470';ctx.font='700 '+Math.round(16*unit)+'px Tahoma,Arial,sans-serif';
+    ctx.fillText('ارفع الخارطة لبدء مشروع جديد',cx,cy+166*unit);
   }
   drawGrid();
   if(pxPerCm&&visibleFurniture())items.forEach(drawItem);
@@ -3602,8 +3630,7 @@ document.getElementById('doPrintBtn').onclick=async()=>{
   // افتح نافذة الطباعة فوراً داخل نقرة المستخدم، قبل أي await، حتى لا يحظرها Safari.
   const page=window.open('','_blank');
   if(!page){alert('تعذر فتح نافذة الطباعة. تحقق من إعداد حظر النوافذ المنبثقة في Safari ثم حاول مرة أخرى.');return;}
-  page.document.write('<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...
-</body></html>');
+  page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...</body></html>`);
   page.document.close();
   try{
     const sheet=await buildBrandedSheet({paper,orient,title:projectMeta.name,mapTitle:projectMeta.mapTitle,client:projectMeta.client,location:projectMeta.location});
@@ -3960,6 +3987,6 @@ draw();
 </script>
 
 
-<script src="v85-final-patch.js?v=88"></script>
+<script src="v85-final-patch.js?v=89"></script>
 </body>
 </html>
