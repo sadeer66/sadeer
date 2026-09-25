@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>FurniPlan</title>
-<meta name="furniplan-version" content="98">
+<meta name="furniplan-version" content="99">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -787,6 +787,32 @@ input[type="range"]::-moz-range-thumb{
 #mainScroll #stage{margin:0!important;display:block!important;position:relative!important}
 .fcard,.archCard{touch-action:none!important}
 </style>
+
+<style id="furniplan-v99-core-pan-drag">
+#mainScroll{
+  overflow:auto!important;
+  direction:ltr!important;
+  touch-action:pan-x pan-y!important;
+  scrollbar-gutter:stable both-edges!important;
+}
+#mainScroll .canvasWrap{
+  position:relative!important;
+  display:block!important;
+  overflow:visible!important;
+  box-sizing:border-box!important;
+}
+#mainScroll #stage{transform:none!important}
+.fcard,.archCard{
+  touch-action:none!important;
+  -webkit-user-drag:none!important;
+  user-select:none!important;
+}
+.fcard img,.archCard img{
+  -webkit-user-drag:none!important;
+  pointer-events:none!important;
+}
+.fcard.v99Dragging,.archCard.v99Dragging{opacity:.72!important}
+</style>
 </head>
 <body>
 
@@ -1327,9 +1353,8 @@ function appendArchitectureGroup(title, defs){
   if(!defs.length)return;
   const head=document.createElement('div');head.className='archGroupTitle';head.textContent=title;archLibrary.appendChild(head);
   defs.forEach(def=>{
-    const d=document.createElement('div');d.className='archCard';d.draggable=true;d.style.position='relative';
+    const d=document.createElement('div');d.className='archCard';d.draggable=false;d.style.position='relative';
     d.innerHTML=`<div class="archThumbWrap"><img class="archThumb" src="${archPreviewData(def)}" alt="${def.name}"></div><b>${def.name}</b><span>اسحب إلى الخارطة</span><button class="touchDragHandle" type="button" aria-label="اسحب إلى الخارطة">⠿</button>`;
-    d.addEventListener('dragstart',e=>{e.dataTransfer.setData('application/x-arch-id',def.id);e.dataTransfer.effectAllowed='copy';});
     v98WireWholeCardDrag(d,def,true);
     const h=d.querySelector('.touchDragHandle');h.addEventListener('pointerdown',e=>startTouchLibraryDrag(e,def,true));h.addEventListener('pointermove',moveTouchLibraryDrag);h.addEventListener('pointerup',endTouchLibraryDrag);h.addEventListener('pointercancel',endTouchLibraryDrag);
     d.onclick=e=>{if(e.target.closest('.touchDragHandle'))return;if(!pxPerCm){alert('عاير القياس أولاً.');return;}pendingFurnitureDef=def;activateWorkingTool('place');setStatus(`المس مكان وضع ${def.name} على الخارطة — ستبقى الأداة فعّالة حتى تختار أداة أخرى`);if(isIPadLayout())setSidebarOpen(false);};
@@ -1736,15 +1761,31 @@ function updateStageSize(){
   stage.style.height=displayH+'px';
   canvas.style.width=displayW+'px';
   canvas.style.height=displayH+'px';
-  // V98: give the scroll viewport a real content size in BOTH axes.
+
   const wrap=stage.parentElement;
-  if(wrap){
-    const pad=36;
-    wrap.style.setProperty('width',Math.max(mainScroll?.clientWidth||0,displayW+pad)+'px','important');
-    wrap.style.setProperty('height',Math.max(mainScroll?.clientHeight||0,displayH+pad)+'px','important');
+  if(wrap && mainScroll){
+    const pad=18;
+    const viewW=Math.max(1,mainScroll.clientWidth);
+    const viewH=Math.max(1,mainScroll.clientHeight);
+    const contentW=Math.max(viewW,displayW+pad*2);
+    const contentH=Math.max(viewH,displayH+pad*2);
+    const left=Math.max(pad,Math.round((contentW-displayW)/2));
+    const top=Math.max(pad,Math.round((contentH-displayH)/2));
+
+    wrap.style.setProperty('position','relative','important');
+    wrap.style.setProperty('display','block','important');
+    wrap.style.setProperty('width',contentW+'px','important');
+    wrap.style.setProperty('height',contentH+'px','important');
     wrap.style.setProperty('min-width','0','important');
     wrap.style.setProperty('min-height','0','important');
+    wrap.style.setProperty('padding','0','important');
+    wrap.style.setProperty('margin','0','important');
     wrap.style.setProperty('overflow','visible','important');
+
+    stage.style.setProperty('position','absolute','important');
+    stage.style.setProperty('left',left+'px','important');
+    stage.style.setProperty('top',top+'px','important');
+    stage.style.setProperty('margin','0','important');
   }
 }
 
@@ -2248,93 +2289,20 @@ requestAnimationFrame(()=>setTimeout(renderLibrary,0));};
   }
 }
 function wireFurnitureCard(d,obj,index){
-  d.draggable=true;
-  d.addEventListener('dragstart',e=>{
-    if(e.target.closest('.editLibBtn')){e.preventDefault();return;}
-    if(!pxPerCm){e.preventDefault();alert('عاير الخارطة أولاً ثم اسحب الأثاث.');return;}
-    libraryDragActive=true;e.dataTransfer.effectAllowed='copy';
-    e.dataTransfer.setData('application/x-furniture-id',obj.id);
-    e.dataTransfer.setData('text/plain',obj.id);
-    setStatus(`اسحب ${obj.name} وارمه في مكانه على الخارطة`);
-  });
-  d.addEventListener('dragend',()=>{setTimeout(()=>libraryDragActive=false,0);});
-  d.onclick=e=>{if(e.target.closest('.editLibBtn,.touchDragHandle'))return;if(!libraryDragActive){armFurniturePlacement(obj);if(isIPadLayout())setSidebarOpen(false);}};
-}
-
-// V98: reliable pointer drag from the WHOLE furniture/architecture card.
-// Keeps click-to-place as a separate second method.
-let v98LibraryPointerDrag=null;
-function v98BeginLibraryCardDrag(ev,def,isArch=false,card=null){
-  if(ev.button!==undefined && ev.button!==0)return;
-  if(ev.target.closest('.editLibBtn'))return;
-  if(!pxPerCm)return; // normal click handler will explain calibration if needed
-  v98LibraryPointerDrag={
-    pointerId:ev.pointerId,def,isArch,card,
-    startX:ev.clientX,startY:ev.clientY,
-    dragging:false
+  d.draggable=false;
+  d.onclick=e=>{
+    if(e.target.closest('.editLibBtn,.touchDragHandle'))return;
+    if(!libraryDragActive){
+      armFurniturePlacement(obj);
+      if(isIPadLayout())setSidebarOpen(false);
+    }
   };
 }
-function v98MoveLibraryCardDrag(ev){
-  const d=v98LibraryPointerDrag;
-  if(!d||d.pointerId!==ev.pointerId)return;
-  const dist=Math.hypot(ev.clientX-d.startX,ev.clientY-d.startY);
-  if(!d.dragging && dist>7){
-    d.dragging=true;
-    libraryDragActive=true;
-    createTouchDragGhost(d.def,d.isArch);
-    positionTouchGhost(ev.clientX,ev.clientY);
-    try{d.card?.setPointerCapture(ev.pointerId)}catch{}
-  }
-  if(!d.dragging)return;
-  ev.preventDefault();
-  positionTouchGhost(ev.clientX,ev.clientY);
-  const r=canvas.getBoundingClientRect();
-  const inside=ev.clientX>=r.left&&ev.clientX<=r.right&&ev.clientY>=r.top&&ev.clientY<=r.bottom;
-  mainScroll.classList.toggle('touchDropReady',inside);
-
-  // Auto-scroll near viewport edges while dragging.
-  const vr=mainScroll.getBoundingClientRect(),edge=54,step=22;
-  if(ev.clientX<vr.left+edge)mainScroll.scrollLeft-=step;
-  else if(ev.clientX>vr.right-edge)mainScroll.scrollLeft+=step;
-  if(ev.clientY<vr.top+edge)mainScroll.scrollTop-=step;
-  else if(ev.clientY>vr.bottom-edge)mainScroll.scrollTop+=step;
-}
-function v98EndLibraryCardDrag(ev){
-  const d=v98LibraryPointerDrag;
-  if(!d||d.pointerId!==ev.pointerId)return;
-  v98LibraryPointerDrag=null;
-  if(!d.dragging)return; // allow ordinary click-to-place
-  ev.preventDefault();ev.stopPropagation();
-  const r=canvas.getBoundingClientRect();
-  const inside=ev.clientX>=r.left&&ev.clientX<=r.right&&ev.clientY>=r.top&&ev.clientY<=r.bottom;
-  if(inside){
-    const p=clampPointToCanvas(clientToCanvasPos(ev.clientX,ev.clientY));
-    addItem(d.def,p.x,p.y);
-    pendingFurnitureDef=null;mode='select';updateInteractionCursor();
-    setStatus(`تم سحب وإفلات ${d.def.name} في المكان المحدد`);
-    if(isIPadLayout())setSidebarOpen(false);
-  }
-  removeTouchDragGhost();
-  setTimeout(()=>libraryDragActive=false,0);
-}
-function v98WireWholeCardDrag(card,def,isArch=false){
-  if(!card||card.dataset.v98Drag==='1')return;
-  card.dataset.v98Drag='1';
-  card.addEventListener('pointerdown',ev=>v98BeginLibraryCardDrag(ev,def,isArch,card));
-  card.addEventListener('pointermove',v98MoveLibraryCardDrag,{passive:false});
-  card.addEventListener('pointerup',v98EndLibraryCardDrag);
-  card.addEventListener('pointercancel',ev=>{
-    if(v98LibraryPointerDrag?.pointerId===ev.pointerId){
-      v98LibraryPointerDrag=null;removeTouchDragGhost();setTimeout(()=>libraryDragActive=false,0);
-    }
-  });
-}
-
 function renderLibrary(){
   lib.innerHTML='';
   furniture.forEach((obj,index)=>{
     if(activeCategory!=='الكل'&&obj.category!==activeCategory)return;
-    const d=document.createElement('div');d.className='fcard';
+    const d=document.createElement('div');d.className='fcard';d.draggable=false;
     const visual=obj.src?`<img loading="lazy" decoding="async" src="${resolveAssetSrc(obj.src)}" alt="${obj.name}">`:`<div class="genericThumb" style="box-shadow:inset 0 0 0 999px ${obj.color||'#bfa781'}33">بدون صورة</div>`;
     d.innerHTML=`<button class="editLibBtn" title="تعديل القطعة">✎</button>${obj.isCustom?'<span class="customMark">مضافة</span>':''}${visual}<b>${obj.name}</b><span>${obj.w} × ${obj.h} سم</span><button class="touchDragHandle" type="button" aria-label="اسحب إلى الخارطة">⠿</button>`;
     d.querySelector('.editLibBtn').onclick=e=>{e.stopPropagation();openLibraryEditor(obj.id);};
@@ -4250,7 +4218,7 @@ draw();
 </script>
 
 
-<script src="v85-final-patch.js?v=98"></script>
+<script src="v85-final-patch.js?v=99"></script>
 
 <script id="furniplan-toolbar-wheel-v94">
 (()=>{
