@@ -25,8 +25,14 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install Pillow
-        run: python -m pip install --disable-pip-version-check pillow
+      - name: Install image tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y webp
+          python -m pip install --disable-pip-version-check pillow
+
+      - name: Decode original splash
+        run: dwebp assets/furniplan-splash-v74.webp -o /tmp/furniplan-splash-source.png
 
       - name: Build HQ splash
         run: python .github/scripts/build_furniplan_splash_v86.py
