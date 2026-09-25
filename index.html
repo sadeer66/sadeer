@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>FurniPlan</title>
-<meta name="furniplan-version" content="99">
+<meta name="furniplan-version" content="100">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -813,6 +813,14 @@ input[type="range"]::-moz-range-thumb{
 }
 .fcard.v99Dragging,.archCard.v99Dragging{opacity:.72!important}
 </style>
+
+<style id="furniplan-v100-pan-release">
+#mainScroll{cursor:default!important}
+#mainScroll.pannable{cursor:grab!important}
+#mainScroll.panning{cursor:grabbing!important}
+#mainScroll.touchDropReady{cursor:copy!important}
+.fcard.v99Dragging,.archCard.v99Dragging{cursor:grabbing!important}
+</style>
 </head>
 <body>
 
@@ -1373,6 +1381,8 @@ function v98WireWholeCardDrag(card,def,isArch=false){
     if(!d.dragging&&dist>7){
       d.dragging=true;
       libraryDragActive=true;
+      panDrag=null;
+      mainScroll.classList.remove('panning');
       d.card.classList.add('v99Dragging');
       createTouchDragGhost(d.def,d.isArch);
       positionTouchGhost(ev.clientX,ev.clientY);
@@ -1406,6 +1416,8 @@ function v98WireWholeCardDrag(card,def,isArch=false){
       if(isIPadLayout())setSidebarOpen(false);
     }
     d.card.classList.remove('v99Dragging');
+    panDrag=null;
+    mainScroll.classList.remove('panning');
     removeTouchDragGhost();
     setTimeout(()=>libraryDragActive=false,80);
   };
@@ -1415,6 +1427,8 @@ function v98WireWholeCardDrag(card,def,isArch=false){
     if(!d||d.pointerId!==ev.pointerId)return;
     v99LibraryPointerDrag=null;
     d.card.classList.remove('v99Dragging');
+    panDrag=null;
+    mainScroll.classList.remove('panning');
     removeTouchDragGhost();
     setTimeout(()=>libraryDragActive=false,80);
   });
@@ -1960,6 +1974,19 @@ function updatePanState(){
     mainScroll.classList.toggle('pannable',canPan);
   });
 }
+
+
+function v100EndMapPan(){
+  panDrag=null;
+  mainScroll?.classList.remove('panning');
+  if(mainScroll)mainScroll.style.cursor='';
+  if(canvas)canvas.style.cursor='';
+}
+window.addEventListener('pointerup',v100EndMapPan,true);
+window.addEventListener('pointercancel',v100EndMapPan,true);
+window.addEventListener('mouseup',v100EndMapPan,true);
+mainScroll?.addEventListener('mouseleave',e=>{if(!(e.buttons&1))v100EndMapPan();});
+canvas?.addEventListener('lostpointercapture',v100EndMapPan);
 
 // V70: iPad/Safari must never zoom the whole app. Two-finger zoom belongs only to the map canvas.
 function preventNativePageGesture(ev){ev.preventDefault();}
@@ -2844,7 +2871,7 @@ canvas.addEventListener('pointerdown',ev=>{
     syncSelectedPanel();draw();return;
   }
   if(!multiMode){clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;syncSelectedPanel();draw();}
-  const canPan=!document.getElementById('mapLockToggle')?.checked && (mainScroll.scrollWidth>mainScroll.clientWidth+2 || mainScroll.scrollHeight>mainScroll.clientHeight+2);
+  const canPan=!libraryDragActive && !touchLibraryDrag && !v99LibraryPointerDrag && !document.getElementById('mapLockToggle')?.checked && (mainScroll.scrollWidth>mainScroll.clientWidth+2 || mainScroll.scrollHeight>mainScroll.clientHeight+2);
   if(canPan){
     panDrag={pointerId:ev.pointerId,x:ev.clientX,y:ev.clientY,left:mainScroll.scrollLeft,top:mainScroll.scrollTop};
     mainScroll.classList.add('panning');
@@ -4294,7 +4321,7 @@ draw();
 </script>
 
 
-<script src="v85-final-patch.js?v=99"></script>
+<script src="v85-final-patch.js?v=100"></script>
 
 <script id="furniplan-toolbar-wheel-v94">
 (()=>{
