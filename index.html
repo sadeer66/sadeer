@@ -496,6 +496,9 @@ header{min-height:var(--tool-header-h)!important}
   object-fit:cover;object-position:center center;
   display:block;user-select:none;-webkit-user-drag:none;
   image-rendering:auto;
+  filter:contrast(1.045) saturate(1.025);
+  transform:translateZ(0);
+  backface-visibility:hidden;
 }
 .fpSplashTrack{
   position:absolute;left:50%;transform:translateX(-50%);
@@ -541,7 +544,7 @@ header{min-height:var(--tool-header-h)!important}
 
 <div id="fpSplash" role="status" aria-label="FurniPlan loading">
   <div class="fpSplashArt">
-    <img id="fpSplashImage" src="assets/furniplan-splash-hq-v86.png?v=86" alt="FurniPlan" fetchpriority="high" decoding="sync">
+    <img id="fpSplashImage" src="assets/furniplan-splash-approved-v74.webp?v=86" alt="FurniPlan" fetchpriority="high" decoding="sync">
     <div class="fpSplashTrack" aria-hidden="true"><div id="fpSplashFill"></div></div>
   </div>
 </div>
