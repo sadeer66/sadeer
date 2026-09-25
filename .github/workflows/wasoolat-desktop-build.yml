@@ -9,6 +9,7 @@ permissions:
 jobs:
   build-windows:
     runs-on: windows-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -18,14 +19,35 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Prepare app files
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Prepare application files
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path wasoolat-desktop/app | Out-Null
+          New-Item -ItemType Directory -Force -Path wasoolat-desktop/build | Out-Null
+
           Copy-Item wasoolat/index.html wasoolat-desktop/app/index.html -Force
           Copy-Item wasoolat/manifest.webmanifest wasoolat-desktop/app/manifest.webmanifest -Force
           Copy-Item wasoolat/apple-touch-icon.png wasoolat-desktop/app/apple-touch-icon.png -Force
           Copy-Item wasoolat/icon-512.png wasoolat-desktop/app/icon-512.png -Force
+
+      - name: Create Windows ICO
+        shell: pwsh
+        run: |
+          python -m pip install --disable-pip-version-check pillow
+          python -c "from PIL import Image, ImageFile; ImageFile.LOAD_TRUNCATED_IMAGES=True; im=Image.open('wasoolat/icon-512.png').convert('RGBA'); bg=Image.new('RGBA', im.size, (40,89,103,255)); bg.alpha_composite(im); bg.save('wasoolat-desktop/build/icon.ico', format='ICO', sizes=[(16,16),(24,24),(32,32),(48,48),(64,64),(128,128),(256,256)])"
+
+      - name: Validate Windows ICO
+        shell: pwsh
+        run: |
+          if (!(Test-Path wasoolat-desktop/build/icon.ico)) { throw "icon.ico was not created" }
+          $size = (Get-Item wasoolat-desktop/build/icon.ico).Length
+          if ($size -lt 1000) { throw "icon.ico is too small or invalid" }
+          Write-Host "icon.ico size: $size bytes"
 
       - name: Install dependencies
         shell: pwsh
@@ -38,6 +60,13 @@ jobs:
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: npm run dist:win
+
+      - name: Verify installer
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem wasoolat-desktop/dist -Filter *.exe -Recurse
+          if (!$files) { throw "No Windows installer was created" }
+          $files | ForEach-Object { Write-Host $_.FullName }
 
       - name: Upload installer
         uses: actions/upload-artifact@v4
