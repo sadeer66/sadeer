@@ -55,3 +55,138 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
 // ===== End FurniPlan V85 Final Runtime Patch =====
+
+
+// ===== FurniPlan V95 Layout + Toolbar Scroll Fix =====
+(function(){
+  const style=document.createElement('style');
+  style.id='furniplan-v95-layout-scroll-fix';
+  style.textContent=`
+    /* The viewport itself is the scroller. This keeps the map and its own
+       scrollbars inside the map area, behind the bottom controls. */
+    .mapPanel{
+      height:100%!important;
+      min-height:0!important;
+      overflow:hidden!important;
+      display:flex!important;
+      flex-direction:column!important;
+      gap:10px!important;
+    }
+    #mainScroll.mapViewport{
+      position:relative!important;
+      flex:1 1 0!important;
+      min-height:0!important;
+      min-width:0!important;
+      overflow:auto!important;
+      scrollbar-gutter:stable both-edges!important;
+      z-index:1!important;
+      -webkit-overflow-scrolling:touch!important;
+      overscroll-behavior:contain!important;
+      touch-action:pan-x pan-y!important;
+    }
+    #mainScroll .canvasWrap{
+      position:relative!important;
+      z-index:1!important;
+      width:100%!important;
+      height:100%!important;
+      min-width:100%!important;
+      min-height:100%!important;
+      overflow:visible!important;
+      box-sizing:border-box!important;
+    }
+    .mapTopbar{
+      position:relative!important;
+      z-index:8!important;
+      flex:0 0 auto!important;
+    }
+    .usedFurniturePanel,
+    .bottomInspector{
+      position:relative!important;
+      z-index:12!important;
+      flex:0 0 auto!important;
+    }
+
+    /* Horizontal toolbar scrolling: desktop wheel/mouse + native touch on iPad/iPhone */
+    .toolbarStack{
+      min-width:0!important;
+      overflow:hidden!important;
+    }
+    .mainToolbar,
+    .workToolbar{
+      display:flex!important;
+      flex-wrap:nowrap!important;
+      overflow-x:auto!important;
+      overflow-y:hidden!important;
+      width:100%!important;
+      max-width:100%!important;
+      min-width:0!important;
+      white-space:nowrap!important;
+      -webkit-overflow-scrolling:touch!important;
+      overscroll-behavior-x:contain!important;
+      touch-action:pan-x!important;
+      scrollbar-gutter:stable!important;
+      cursor:grab;
+    }
+    .mainToolbar:active,
+    .workToolbar:active{cursor:grabbing}
+    .mainToolbar>button,.mainToolbar>.btn,
+    .workToolbar>button,.workToolbar>.btn{
+      flex:0 0 auto!important;
+    }
+  `;
+  document.head.appendChild(style);
+
+  function installToolbarScroll(){
+    document.querySelectorAll('.mainToolbar,.workToolbar').forEach(el=>{
+      if(el.dataset.fpV95Scroll==='1') return;
+      el.dataset.fpV95Scroll='1';
+
+      /* Mouse wheel -> horizontal scroll. Range/inputs keep their own wheel behavior. */
+      el.addEventListener('wheel',ev=>{
+        if(el.scrollWidth<=el.clientWidth+2) return;
+        if(ev.target.closest('input,select,textarea')) return;
+        const d=Math.abs(ev.deltaY)>=Math.abs(ev.deltaX)?ev.deltaY:ev.deltaX;
+        if(!d) return;
+        ev.preventDefault();
+        el.scrollLeft += d;
+      },{passive:false});
+
+      /* Mouse/pen drag without breaking button clicks. Touch uses native momentum scrolling. */
+      let dragging=false, moved=false, startX=0, startScroll=0, pointerId=null;
+      el.addEventListener('pointerdown',ev=>{
+        if(ev.pointerType==='touch' || ev.button!==0) return;
+        if(el.scrollWidth<=el.clientWidth+2) return;
+        dragging=true; moved=false; startX=ev.clientX; startScroll=el.scrollLeft; pointerId=ev.pointerId;
+      });
+      el.addEventListener('pointermove',ev=>{
+        if(!dragging || ev.pointerId!==pointerId) return;
+        const dx=ev.clientX-startX;
+        if(Math.abs(dx)>5){
+          moved=true;
+          try{el.setPointerCapture(pointerId)}catch{}
+          el.scrollLeft=startScroll-dx;
+          ev.preventDefault();
+        }
+      },{passive:false});
+      const stop=ev=>{
+        if(!dragging) return;
+        dragging=false;
+        try{if(pointerId!=null)el.releasePointerCapture(pointerId)}catch{}
+        pointerId=null;
+      };
+      el.addEventListener('pointerup',stop);
+      el.addEventListener('pointercancel',stop);
+      el.addEventListener('click',ev=>{
+        if(moved){
+          ev.preventDefault();
+          ev.stopPropagation();
+          moved=false;
+        }
+      },true);
+    });
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',installToolbarScroll,{once:true});
+  else installToolbarScroll();
+})();
+// ===== End FurniPlan V95 Layout + Toolbar Scroll Fix =====
