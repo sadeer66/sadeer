@@ -1,7 +1,7 @@
 {
   "name": "furniplan-desktop",
-  "version": "1.0.85",
-  "description": "FurniPlan - تأثيثي، مخطط توزيع الأثاث",
+  "version": "1.0.86",
+  "description": "FurniPlan - Smart Space Planning",
   "main": "desktop/main.js",
   "author": "سدير ياسين محمد",
   "license": "UNLICENSED",
@@ -13,9 +13,9 @@
     "electron-builder": "26.15.3"
   },
   "build": {
-    "appId": "com.sadeer.furniplan",
-    "productName": "FurniPlan - تأثيثي",
-    "artifactName": "FurniPlan-Setup-V85-${arch}.exe",
+    "appId": "com.sadeer.furniplan.v86",
+    "productName": "FurniPlan",
+    "artifactName": "FurniPlan-Setup-V86-${arch}.exe",
     "asar": true,
     "directories": {
       "output": "dist",
@@ -54,7 +54,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "FurniPlan - تأثيثي",
+      "shortcutName": "FurniPlan",
       "runAfterFinish": true,
       "deleteAppDataOnUninstall": false,
       "installerIcon": "build/furniplan.ico",
