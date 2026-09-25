@@ -1,0 +1,45 @@
+name: Diagnose FurniPlan JavaScript
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/diagnose-furniplan-js.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Extract inline scripts
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text(encoding='utf-8')
+          scripts=[]
+          for i,m in enumerate(re.finditer(r'<script\b([^>]*)>([\s\S]*?)</script>',s,re.I),1):
+              attrs=m.group(1)
+              if 'src=' in attrs.lower():
+                  continue
+              body=m.group(2)
+              p=Path(f'/tmp/furniplan-inline-{i}.js')
+              p.write_text(body,encoding='utf-8')
+              print(i, p, len(body))
+          PY
+      - name: Check inline scripts
+        run: |
+          set -e
+          for f in /tmp/furniplan-inline-*.js; do
+            echo "Checking $f"
+            node --check "$f"
+          done
+      - name: Check external patch
+        run: node --check v85-final-patch.js
