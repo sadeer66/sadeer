@@ -1,0 +1,207 @@
+name: Apply FurniPlan V85 Final
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/apply-furniplan-v85.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Pillow
+        run: python -m pip install --disable-pip-version-check pillow
+
+      - name: Apply final V85 files
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64, gzip, io, json, re
+          from PIL import Image, ImageDraw
+
+          root=Path('.')
+
+          patch_gz_b64='''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'''
+
+          patch=gzip.decompress(base64.b64decode(patch_gz_b64))
+          (root/'v85-final-patch.js').write_bytes(patch)
+
+          # Final web head + patch loader
+          index=root/'index.html'
+          html=index.read_text(encoding='utf-8', errors='ignore')
+          html=re.sub(r'<link[^>]+rel=["\']apple-touch-icon["\'][^>]*>\s*','',html,flags=re.I)
+          html=re.sub(r'<link[^>]+rel=["\']icon["\'][^>]*>\s*','',html,flags=re.I)
+          html=re.sub(r'<link[^>]+rel=["\']manifest["\'][^>]*>\s*','',html,flags=re.I)
+          html=re.sub(r'<meta[^>]+name=["\'](?:apple-mobile-web-app-capable|mobile-web-app-capable|apple-mobile-web-app-title|theme-color)["\'][^>]*>\s*','',html,flags=re.I)
+          head_block='''\n<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=85">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=85">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=85">
+<link rel="manifest" href="manifest.webmanifest?v=85">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="FurniPlan">
+<meta name="theme-color" content="#0f172a">
+'''
+          if '</head>' in html:
+              html=html.replace('</head>',head_block+'</head>',1)
+          html=re.sub(r'<script[^>]+src=["\']v85-final-patch\.js[^"\']*["\'][^>]*></script>\s*','',html,flags=re.I)
+          loader='\n<script src="v85-final-patch.js?v=85"></script>\n'
+          if '</body>' in html:
+              html=html.replace('</body>',loader+'</body>',1)
+          else:
+              html+=loader
+          index.write_text(html,encoding='utf-8')
+
+          # Unified opaque FurniPlan icon family
+          (root/'icons').mkdir(exist_ok=True)
+          (root/'build').mkdir(exist_ok=True)
+          def make_icon(size):
+              img=Image.new('RGB',(size,size),(9,47,72))
+              d=ImageDraw.Draw(img)
+              # subtle blueprint grid
+              step=max(12,size//8)
+              for x in range(step,size,step):
+                  d.line((x,0,x,size),fill=(19,72,99),width=max(1,size//256))
+              for y in range(step,size,step):
+                  d.line((0,y,size,y),fill=(19,72,99),width=max(1,size//256))
+              m=int(size*.12)
+              d.rounded_rectangle((m,m,size-m,size-m),radius=int(size*.14),outline=(42,189,216),width=max(3,int(size*.025)))
+              # clean white sofa / furniture plan mark
+              y=int(size*.50); x1=int(size*.24); x2=int(size*.76)
+              d.rounded_rectangle((x1,y,x2,int(size*.68)),radius=int(size*.055),fill=(245,250,252))
+              d.rounded_rectangle((int(size*.20),int(size*.45),int(size*.30),int(size*.68)),radius=int(size*.04),fill=(245,250,252))
+              d.rounded_rectangle((int(size*.70),int(size*.45),int(size*.80),int(size*.68)),radius=int(size*.04),fill=(245,250,252))
+              d.line((int(size*.34),int(size*.54),int(size*.34),int(size*.66)),fill=(9,47,72),width=max(2,int(size*.015)))
+              d.line((int(size*.66),int(size*.54),int(size*.66),int(size*.66)),fill=(9,47,72),width=max(2,int(size*.015)))
+              # floor plan corner
+              d.line((int(size*.28),int(size*.31),int(size*.55),int(size*.31),int(size*.55),int(size*.42)),fill=(245,250,252),width=max(4,int(size*.025)))
+              return img
+
+          for size,path in [
+              (180,root/'apple-touch-icon.png'),
+              (192,root/'icons/icon-192.png'),
+              (512,root/'icons/icon-512.png'),
+              (32,root/'favicon-32.png'),
+              (512,root/'build/furniplan.png')
+          ]:
+              make_icon(size).save(path,'PNG')
+
+          ico=make_icon(512)
+          ico.save(root/'build/furniplan.ico',format='ICO',sizes=[(16,16),(24,24),(32,32),(48,48),(64,64),(128,128),(256,256)])
+
+          manifest={
+            "name":"FurniPlan - تأثيثي",
+            "short_name":"FurniPlan",
+            "description":"مخطط توزيع الأثاث والقياسات",
+            "lang":"ar","dir":"rtl","start_url":"./","scope":"./","display":"standalone","orientation":"any",
+            "background_color":"#0f172a","theme_color":"#0f172a",
+            "icons":[
+              {"src":"icons/icon-192.png?v=85","sizes":"192x192","type":"image/png","purpose":"any"},
+              {"src":"icons/icon-512.png?v=85","sizes":"512x512","type":"image/png","purpose":"any"},
+              {"src":"icons/icon-512.png?v=85","sizes":"512x512","type":"image/png","purpose":"maskable"}
+            ]
+          }
+          (root/'manifest.webmanifest').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
+
+          sw='''const CACHE="furniplan-v85-final-20260925";
+self.addEventListener("install",()=>self.skipWaiting());
+self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;e.respondWith(fetch(e.request).then(r=>{const c=r.clone();caches.open(CACHE).then(x=>x.put(e.request,c)).catch(()=>{});return r;}).catch(()=>caches.match(e.request)));});
+'''
+          (root/'service-worker.js').write_text(sw,encoding='utf-8')
+
+          package={
+            "name":"furniplan-desktop",
+            "version":"1.0.85",
+            "description":"FurniPlan - تأثيثي، مخطط توزيع الأثاث",
+            "main":"desktop/main.js",
+            "author":"سدير ياسين محمد",
+            "license":"UNLICENSED",
+            "scripts":{"dist:win":"electron-builder --win nsis --x64 --publish never"},
+            "devDependencies":{"electron":"44.4.5","electron-builder":"26.15.3"},
+            "build":{
+              "appId":"com.sadeer.furniplan",
+              "productName":"FurniPlan - تأثيثي",
+              "artifactName":"FurniPlan-Setup-V85-${arch}.exe",
+              "asar":True,
+              "directories":{"output":"dist","buildResources":"build"},
+              "files":[
+                "index.html","catalog*.html","manifest.webmanifest","service-worker.js","v13-ipad-fix.js",
+                "v85-final-patch.js","startup_splash.png","v45*.*","assets/**/*","icons/**/*",
+                "build/furniplan.ico","desktop/main.js","assistant*.json","assistant*.js"
+              ],
+              "win":{"target":[{"target":"nsis","arch":["x64"]}],"icon":"build/furniplan.ico"},
+              "nsis":{
+                "oneClick":False,"perMachine":False,"allowToChangeInstallationDirectory":True,
+                "createDesktopShortcut":True,"createStartMenuShortcut":True,
+                "shortcutName":"FurniPlan - تأثيثي","runAfterFinish":True,"deleteAppDataOnUninstall":False,
+                "installerIcon":"build/furniplan.ico","uninstallerIcon":"build/furniplan.ico","installerHeaderIcon":"build/furniplan.ico"
+              }
+            }
+          }
+          (root/'package.json').write_text(json.dumps(package,ensure_ascii=False,indent=2),encoding='utf-8')
+
+          mainjs='''const { app, BrowserWindow, shell } = require("electron");
+const path = require("path");
+app.setName("FurniPlan - تأثيثي");
+app.setAppUserModelId("com.sadeer.furniplan");
+function createWindow(){
+  const win=new BrowserWindow({
+    width:1600,height:1000,minWidth:1100,minHeight:700,show:false,autoHideMenuBar:true,
+    backgroundColor:"#0f172a",icon:path.join(__dirname,"..","build","furniplan.ico"),
+    webPreferences:{contextIsolation:true,nodeIntegration:false,sandbox:true}
+  });
+  win.loadFile(path.join(__dirname,"..","index.html"));
+  win.once("ready-to-show",()=>{win.maximize();win.show();});
+  win.webContents.setWindowOpenHandler(({url})=>{
+    if(url&&(/^https?:/i).test(url)){shell.openExternal(url);return {action:"deny"};}
+    return {action:"allow"};
+  });
+}
+app.whenReady().then(()=>{createWindow();app.on("activate",()=>{if(BrowserWindow.getAllWindows().length===0)createWindow();});});
+app.on("window-all-closed",()=>{if(process.platform!=="darwin")app.quit();});
+'''
+          (root/'desktop').mkdir(exist_ok=True)
+          (root/'desktop/main.js').write_text(mainjs,encoding='utf-8')
+          PY
+
+      - name: Validate
+        run: |
+          node --check v85-final-patch.js
+          node --check desktop/main.js
+          python - <<'PY'
+          from PIL import Image
+          for p in ['apple-touch-icon.png','icons/icon-192.png','icons/icon-512.png','favicon-32.png']:
+              im=Image.open(p); im.verify()
+              print(p,'OK')
+          PY
+
+      - name: Commit final files
+        shell: bash
+        run: |
+          git config user.name "OpenAI FurniPlan Builder"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html v85-final-patch.js apple-touch-icon.png favicon-32.png icons build/furniplan.ico build/furniplan.png manifest.webmanifest service-worker.js package.json desktop/main.js
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "FurniPlan V85 final web, iOS icons and Windows packaging"
+          git pull --rebase origin master
+          git push origin master
