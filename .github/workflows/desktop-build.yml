@@ -42,25 +42,9 @@ jobs:
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
-          name: FurniPlan-V94-Windows-Installer
+          name: FurniPlan-V96-Windows-Installer
           path: dist/*.exe
           if-no-files-found: error
           retention-days: 30
 
-# FurniPlan V86 repaired build trigger
-
-# rebuild-v86
-
-# FurniPlan V88 clean splash rebuild
-
-# FurniPlan V89 fixed app rebuild
-
-# FurniPlan V90 beige workspace rebuild
-
-# FurniPlan V92 blue sliders rebuild
-
-# FurniPlan V93 horizontal toolbar scroll rebuild
-
-# FurniPlan V94 stable toolbar scroll rebuild
-
-# FurniPlan V94 layout containment rebuild
+# FurniPlan V96 stable build
