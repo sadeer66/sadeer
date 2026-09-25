@@ -486,16 +486,46 @@ header{min-height:var(--tool-header-h)!important}
 }
 #fpSplash.fpSplashOut{opacity:0;visibility:hidden;pointer-events:none}
 .fpSplashBg{
-  position:absolute;inset:-1.5%;
+  position:absolute;
+  inset:0;
   background:
-    linear-gradient(90deg,rgba(248,244,238,.06),rgba(248,244,238,.18)),
-    url('assets/furniplan-splash-approved-v74.webp?v=87') center/cover no-repeat;
-  filter:blur(.35px) saturate(1.05) brightness(1.03);
-  transform:scale(1.02);
+    radial-gradient(circle at 14% 78%, rgba(189,135,72,.18) 0%, rgba(189,135,72,0) 24%),
+    radial-gradient(circle at 84% 18%, rgba(208,160,96,.16) 0%, rgba(208,160,96,0) 22%),
+    radial-gradient(circle at 78% 82%, rgba(34,34,34,.055) 0%, rgba(34,34,34,0) 20%),
+    linear-gradient(135deg,#f8f3ec 0%,#efe4d4 44%,#eadcc8 100%);
+  filter:none;
+  transform:none;
 }
 .fpSplashShade{
-  position:absolute;inset:0;
-  background:linear-gradient(90deg,rgba(255,248,239,.08),rgba(255,248,239,.34) 34%,rgba(255,248,239,.62) 50%,rgba(255,248,239,.26) 68%,rgba(255,248,239,.04));
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(90deg,
+      rgba(255,248,239,.08) 0%,
+      rgba(255,248,239,.26) 34%,
+      rgba(255,248,239,.42) 50%,
+      rgba(255,248,239,.22) 68%,
+      rgba(255,248,239,.06) 100%);
+}
+.fpDecor{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(14px);
+  opacity:.55;
+  pointer-events:none;
+}
+.fpDecorLeft{
+  width:300px;height:300px;left:-70px;bottom:-35px;
+  background:radial-gradient(circle,rgba(172,122,58,.24) 0%,rgba(172,122,58,.07) 46%,rgba(172,122,58,0) 74%);
+}
+.fpDecorRight{
+  width:250px;height:250px;right:35px;top:70px;
+  background:radial-gradient(circle,rgba(52,52,52,.12) 0%,rgba(52,52,52,.04) 46%,rgba(52,52,52,0) 74%);
+}
+.fpDecorBottom{
+  width:460px;height:130px;left:50%;transform:translateX(-50%);bottom:22px;
+  border-radius:42px;filter:blur(25px);
+  background:radial-gradient(circle,rgba(212,165,88,.20) 0%,rgba(212,165,88,.08) 48%,rgba(212,165,88,0) 76%);
 }
 .fpSplashContent{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
@@ -550,10 +580,10 @@ header{min-height:var(--tool-header-h)!important}
 @media(prefers-reduced-motion:reduce){#fpSplash{transition-duration:.2s}}
 </style>
 
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=86">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=86">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=86">
-<link rel="manifest" href="manifest.webmanifest?v=86">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=88">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=88">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=88">
+<link rel="manifest" href="manifest.webmanifest?v=88">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="FurniPlan">
@@ -563,6 +593,9 @@ header{min-height:var(--tool-header-h)!important}
 
 <div id="fpSplash" role="status" aria-label="FurniPlan loading">
   <div class="fpSplashBg"></div>
+  <div class="fpDecor fpDecorLeft"></div>
+  <div class="fpDecor fpDecorRight"></div>
+  <div class="fpDecor fpDecorBottom"></div>
   <div class="fpSplashShade"></div>
   <div class="fpSplashContent">
     <div class="fpHouseLogo" aria-hidden="true">
@@ -3927,6 +3960,6 @@ draw();
 </script>
 
 
-<script src="v85-final-patch.js?v=86"></script>
+<script src="v85-final-patch.js?v=88"></script>
 </body>
 </html>
