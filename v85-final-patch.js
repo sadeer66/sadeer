@@ -180,3 +180,148 @@
   else installToolbarScroll();
 })();
 // ===== End FurniPlan V95 Layout + Toolbar Scroll Fix =====
+
+
+// ===== FurniPlan V96 Modern Toolbar Scroll Fix =====
+(function(){
+  const style=document.createElement('style');
+  style.id='furniplan-v96-modern-toolbar-scroll';
+  style.textContent=`
+    #modernToolbarArea{
+      min-width:0!important;
+      overflow:hidden!important;
+    }
+    #modernTopToolbar,
+    #modernSliderRow{
+      min-width:0!important;
+      width:100%!important;
+      max-width:100%!important;
+      overflow-x:auto!important;
+      overflow-y:hidden!important;
+      -webkit-overflow-scrolling:touch!important;
+      overscroll-behavior-x:contain!important;
+      touch-action:pan-x!important;
+      scrollbar-width:auto!important;
+      scrollbar-color:#91accb #425a74!important;
+      cursor:grab!important;
+    }
+    #modernTopToolbar:active,
+    #modernSliderRow:active{cursor:grabbing!important}
+
+    /* Keep all top icons on one row and make the row truly wider than its viewport */
+    #modernTopToolbar{
+      display:flex!important;
+      flex-wrap:nowrap!important;
+      justify-content:flex-start!important;
+      direction:rtl!important;
+      padding-bottom:13px!important;
+    }
+    #modernTopToolbar .topToolGroup{
+      flex:0 0 auto!important;
+      flex-wrap:nowrap!important;
+    }
+    #modernTopToolbar .modernIconBtn{
+      flex:0 0 var(--tool-btn-w)!important;
+      touch-action:pan-x!important;
+      -webkit-user-select:none!important;
+      user-select:none!important;
+    }
+
+    #modernTopToolbar::-webkit-scrollbar,
+    #modernSliderRow::-webkit-scrollbar{
+      display:block!important;
+      height:13px!important;
+    }
+    #modernTopToolbar::-webkit-scrollbar-track,
+    #modernSliderRow::-webkit-scrollbar-track{
+      background:#425a74!important;
+      border:1px solid #5f7895!important;
+      border-radius:999px!important;
+    }
+    #modernTopToolbar::-webkit-scrollbar-thumb,
+    #modernSliderRow::-webkit-scrollbar-thumb{
+      background:linear-gradient(90deg,#91accb,#7292b6)!important;
+      border:2px solid #425a74!important;
+      border-radius:999px!important;
+      min-width:42px!important;
+    }
+  `;
+  document.head.appendChild(style);
+
+  function makeHorizontalScroller(el){
+    if(!el || el.dataset.fpV96Scroll==='1')return;
+    el.dataset.fpV96Scroll='1';
+
+    // Mouse wheel / trackpad vertical motion -> horizontal toolbar motion
+    el.addEventListener('wheel',ev=>{
+      if(el.scrollWidth<=el.clientWidth+2)return;
+      if(ev.target.closest('input[type="range"],input[type="number"],select,textarea'))return;
+      const d=Math.abs(ev.deltaY)>=Math.abs(ev.deltaX)?ev.deltaY:ev.deltaX;
+      if(!d)return;
+      ev.preventDefault();
+      el.scrollLeft+=d;
+    },{passive:false});
+
+    // Desktop mouse / pen drag
+    let drag=false,moved=false,startX=0,startLeft=0,pid=null;
+    el.addEventListener('pointerdown',ev=>{
+      if(ev.pointerType==='touch' || ev.button!==0)return;
+      if(el.scrollWidth<=el.clientWidth+2)return;
+      drag=true;moved=false;startX=ev.clientX;startLeft=el.scrollLeft;pid=ev.pointerId;
+    });
+    el.addEventListener('pointermove',ev=>{
+      if(!drag||ev.pointerId!==pid)return;
+      const dx=ev.clientX-startX;
+      if(Math.abs(dx)>4){
+        moved=true;
+        try{el.setPointerCapture(pid)}catch{}
+        el.scrollLeft=startLeft-dx;
+        ev.preventDefault();
+      }
+    },{passive:false});
+    const end=()=>{
+      drag=false;
+      try{if(pid!=null)el.releasePointerCapture(pid)}catch{}
+      pid=null;
+    };
+    el.addEventListener('pointerup',end);
+    el.addEventListener('pointercancel',end);
+
+    // iPhone/iPad: explicit horizontal finger drag, including when starting on an icon.
+    let tActive=false,tMoved=false,tStartX=0,tStartY=0,tLeft=0;
+    el.addEventListener('touchstart',ev=>{
+      if(ev.touches.length!==1 || el.scrollWidth<=el.clientWidth+2)return;
+      const t=ev.touches[0];
+      tActive=true;tMoved=false;tStartX=t.clientX;tStartY=t.clientY;tLeft=el.scrollLeft;
+    },{passive:true});
+    el.addEventListener('touchmove',ev=>{
+      if(!tActive||ev.touches.length!==1)return;
+      const t=ev.touches[0],dx=t.clientX-tStartX,dy=t.clientY-tStartY;
+      if(!tMoved && Math.abs(dx)<6)return;
+      if(Math.abs(dx)>=Math.abs(dy)){
+        tMoved=true;
+        el.scrollLeft=tLeft-dx;
+        ev.preventDefault();
+      }
+    },{passive:false});
+    el.addEventListener('touchend',()=>{tActive=false;setTimeout(()=>{tMoved=false},0)},{passive:true});
+    el.addEventListener('touchcancel',()=>{tActive=false;tMoved=false},{passive:true});
+
+    // Prevent accidental icon activation only after a real drag.
+    el.addEventListener('click',ev=>{
+      if(moved||tMoved){
+        ev.preventDefault();
+        ev.stopPropagation();
+        moved=false;tMoved=false;
+      }
+    },true);
+  }
+
+  function install(){
+    makeHorizontalScroller(document.getElementById('modernTopToolbar'));
+    makeHorizontalScroller(document.getElementById('modernSliderRow'));
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
+})();
+// ===== End FurniPlan V96 Modern Toolbar Scroll Fix =====
