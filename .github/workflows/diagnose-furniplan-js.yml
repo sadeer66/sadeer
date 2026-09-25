@@ -6,6 +6,7 @@ on:
     branches: [master]
     paths:
       - '.github/workflows/diagnose-furniplan-js.yml'
+      - 'index.html'
 
 permissions:
   contents: read
@@ -43,3 +44,5 @@ jobs:
           done
       - name: Check external patch
         run: node --check v85-final-patch.js
+
+# verify-v89
