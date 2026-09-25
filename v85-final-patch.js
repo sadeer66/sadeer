@@ -10,9 +10,9 @@
   document.head.appendChild(style);
 
   function upsert(selector,make){let el=document.querySelector(selector);if(!el){el=make();document.head.appendChild(el)}return el}
-  let a=upsert('link[rel="apple-touch-icon"]',()=>document.createElement('link'));a.rel='apple-touch-icon';a.sizes='180x180';a.href='apple-touch-icon.png?v=85';
-  let f=upsert('link[rel="icon"][sizes="32x32"]',()=>document.createElement('link'));f.rel='icon';f.type='image/png';f.sizes='32x32';f.href='favicon-32.png?v=85';
-  let m=upsert('link[rel="manifest"]',()=>document.createElement('link'));m.rel='manifest';m.href='manifest.webmanifest?v=85';
+  let a=upsert('link[rel="apple-touch-icon"]',()=>document.createElement('link'));a.rel='apple-touch-icon';a.sizes='180x180';a.href='apple-touch-icon.png?v=100';
+  let f=upsert('link[rel="icon"][sizes="32x32"]',()=>document.createElement('link'));f.rel='icon';f.type='image/png';f.sizes='32x32';f.href='favicon-32.png?v=100';
+  let m=upsert('link[rel="manifest"]',()=>document.createElement('link'));m.rel='manifest';m.href='manifest.webmanifest?v=100';
   const metas=[['apple-mobile-web-app-capable','yes'],['mobile-web-app-capable','yes'],['apple-mobile-web-app-title','FurniPlan'],['theme-color','#0f172a']];
   for(const [name,content] of metas){let x=document.querySelector(`meta[name="${name}"]`);if(!x){x=document.createElement('meta');x.name=name;document.head.appendChild(x)}x.content=content}
 
