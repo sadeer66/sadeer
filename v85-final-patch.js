@@ -141,16 +141,6 @@
       if(el.dataset.fpV95Scroll==='1') return;
       el.dataset.fpV95Scroll='1';
 
-      /* Mouse wheel -> horizontal scroll. Range/inputs keep their own wheel behavior. */
-      el.addEventListener('wheel',ev=>{
-        if(el.scrollWidth<=el.clientWidth+2) return;
-        if(ev.target.closest('input,select,textarea')) return;
-        const d=Math.abs(ev.deltaY)>=Math.abs(ev.deltaX)?ev.deltaY:ev.deltaX;
-        if(!d) return;
-        ev.preventDefault();
-        el.scrollLeft += d;
-      },{passive:false});
-
       /* Mouse/pen drag without breaking button clicks. Touch uses native momentum scrolling. */
       let dragging=false, moved=false, startX=0, startScroll=0, pointerId=null;
       el.addEventListener('pointerdown',ev=>{
