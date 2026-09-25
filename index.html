@@ -480,22 +480,16 @@ header{min-height:var(--tool-header-h)!important}
 
 <style id="furniPlanSplashV74">
 #fpSplash{
-  position:fixed;inset:0;z-index:2147483000;overflow:hidden;
-  display:block;background:#e9dfd2;
+  position:fixed;inset:0;z-index:2147483000;
+  background:#e9dfd2;overflow:hidden;
   opacity:1;visibility:visible;
   transition:opacity .82s cubic-bezier(.22,.61,.36,1),visibility .82s;
-  isolation:isolate;
 }
 #fpSplash.fpSplashOut{opacity:0;visibility:hidden;pointer-events:none}
-#fpSplash::after{
-  content:"";position:absolute;inset:0;z-index:0;
-  background:rgba(244,238,229,.12);
-}
+#fpSplash::after{content:"";position:absolute;inset:0;pointer-events:none;background:transparent}
 .fpSplashArt{
-  position:absolute;inset:0;z-index:1;
-  width:100vw;height:100vh;
-  overflow:hidden;
-  background:#eee5d9;
+  position:absolute;inset:0;width:100vw;height:100dvh;
+  overflow:hidden;background:#e9dfd2;
 }
 .fpSplashArt>img{
   position:absolute;inset:0;width:100%;height:100%;
@@ -504,17 +498,23 @@ header{min-height:var(--tool-header-h)!important}
   image-rendering:auto;
 }
 .fpSplashTrack{
-  position:absolute;
-  left:37.38%;top:78.96%;width:25.24%;height:1.91%;
-  min-height:5px;border-radius:999px;overflow:hidden;
-  background:#b8b7b3;
-  box-shadow:inset 0 1px 2px rgba(0,0,0,.16),0 0 0 1px rgba(255,255,255,.28);
+  position:absolute;left:50%;transform:translateX(-50%);
+  bottom:11.6%;width:min(420px,28vw);height:12px;
+  min-height:8px;border-radius:999px;overflow:hidden;
+  background:rgba(122,122,122,.36);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.18),0 0 0 1px rgba(255,255,255,.32);
 }
 #fpSplashFill{
   width:0%;height:100%;border-radius:inherit;
   background:linear-gradient(90deg,#bd8748 0%,#b78344 60%,#d0a060 100%);
   box-shadow:0 0 14px rgba(183,131,68,.34);
-  will-change:width;
+}
+@media(max-width:900px){
+  .fpSplashTrack{bottom:10.5%;width:min(420px,48vw);height:10px}
+}
+@media(orientation:portrait) and (max-width:1100px){
+  .fpSplashArt>img{object-fit:cover;object-position:center center}
+  .fpSplashTrack{bottom:12%;width:52vw}
 }
 @media(prefers-reduced-motion:reduce){#fpSplash{transition-duration:.25s}}
 
@@ -541,7 +541,7 @@ header{min-height:var(--tool-header-h)!important}
 
 <div id="fpSplash" role="status" aria-label="FurniPlan loading">
   <div class="fpSplashArt">
-    <img id="fpSplashImage" src="assets/furniplan-splash-approved-v74.webp?v=74b" alt="FurniPlan" fetchpriority="high" decoding="sync">
+    <img id="fpSplashImage" src="assets/furniplan-splash-hq-v86.png?v=86" alt="FurniPlan" fetchpriority="high" decoding="sync">
     <div class="fpSplashTrack" aria-hidden="true"><div id="fpSplashFill"></div></div>
   </div>
 </div>
