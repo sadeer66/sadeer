@@ -1,7 +1,7 @@
 {
-  "name": "taatheethi-desktop",
-  "version": "1.0.62",
-  "description": "تأثيثي - مخطط توزيع الأثاث",
+  "name": "furniplan-desktop",
+  "version": "1.0.85",
+  "description": "FurniPlan - تأثيثي، مخطط توزيع الأثاث",
   "main": "desktop/main.js",
   "author": "سدير ياسين محمد",
   "license": "UNLICENSED",
@@ -9,13 +9,13 @@
     "dist:win": "electron-builder --win nsis --x64 --publish never"
   },
   "devDependencies": {
-    "electron": "latest",
-    "electron-builder": "latest"
+    "electron": "44.4.5",
+    "electron-builder": "26.15.3"
   },
   "build": {
-    "appId": "com.sadeer.taatheethi",
-    "productName": "تأثيثي",
-    "artifactName": "Taatheethi-Setup-V62-${arch}.exe",
+    "appId": "com.sadeer.furniplan",
+    "productName": "FurniPlan - تأثيثي",
+    "artifactName": "FurniPlan-Setup-V85-${arch}.exe",
     "asar": true,
     "directories": {
       "output": "dist",
@@ -23,16 +23,19 @@
     },
     "files": [
       "index.html",
-      "catalog_final.html",
+      "catalog*.html",
       "manifest.webmanifest",
       "service-worker.js",
       "v13-ipad-fix.js",
+      "v85-final-patch.js",
+      "startup_splash.png",
+      "v45*.*",
       "assets/**/*",
+      "icons/**/*",
+      "build/furniplan.ico",
       "desktop/main.js",
-      "assistant.json",
-      "assistant-link.js",
-      "assistant-auth.json",
-      "assistant-auth.js"
+      "assistant*.json",
+      "assistant*.js"
     ],
     "win": {
       "target": [
@@ -43,7 +46,7 @@
           ]
         }
       ],
-      "icon": "build/taatheethi.png"
+      "icon": "build/furniplan.ico"
     },
     "nsis": {
       "oneClick": false,
@@ -51,9 +54,12 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "تأثيثي",
+      "shortcutName": "FurniPlan - تأثيثي",
       "runAfterFinish": true,
-      "deleteAppDataOnUninstall": false
+      "deleteAppDataOnUninstall": false,
+      "installerIcon": "build/furniplan.ico",
+      "uninstallerIcon": "build/furniplan.ico",
+      "installerHeaderIcon": "build/furniplan.ico"
     }
   }
 }
