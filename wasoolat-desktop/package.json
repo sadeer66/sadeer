@@ -9,8 +9,8 @@
     "dist:win": "electron-builder --win nsis --x64 --publish never"
   },
   "devDependencies": {
-    "electron": "latest",
-    "electron-builder": "latest"
+    "electron": "44.4.5",
+    "electron-builder": "26.15.3"
   },
   "build": {
     "appId": "com.sadeer.wasoolat",
@@ -24,8 +24,7 @@
     "files": [
       "main.js",
       "app/**/*",
-      "app/apple-touch-icon.png",
-      "app/icon-512.png"
+      "build/icon.ico"
     ],
     "win": {
       "target": [
@@ -34,7 +33,7 @@
           "arch": ["x64"]
         }
       ],
-      "icon": "app/icon-512.png"
+      "icon": "build/icon.ico"
     },
     "nsis": {
       "oneClick": false,
@@ -44,7 +43,10 @@
       "createStartMenuShortcut": true,
       "shortcutName": "برنامج الوصولات",
       "runAfterFinish": true,
-      "deleteAppDataOnUninstall": false
+      "deleteAppDataOnUninstall": false,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico"
     }
   }
 }
