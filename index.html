@@ -1349,6 +1349,82 @@ function archPreviewData(def){
   return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
 }
 
+
+let v99LibraryPointerDrag=null;
+let v99SuppressLibraryClickUntil=0;
+function v98WireWholeCardDrag(card,def,isArch=false){
+  if(!card||card.dataset.v99Drag==='1')return;
+  card.dataset.v99Drag='1';
+
+  card.addEventListener('pointerdown',ev=>{
+    if(ev.button!==undefined&&ev.button!==0)return;
+    if(ev.target.closest('.editLibBtn,.touchDragHandle'))return;
+    if(!pxPerCm)return;
+    v99LibraryPointerDrag={
+      pointerId:ev.pointerId,def,isArch,card,
+      startX:ev.clientX,startY:ev.clientY,dragging:false
+    };
+  });
+
+  card.addEventListener('pointermove',ev=>{
+    const d=v99LibraryPointerDrag;
+    if(!d||d.pointerId!==ev.pointerId)return;
+    const dist=Math.hypot(ev.clientX-d.startX,ev.clientY-d.startY);
+    if(!d.dragging&&dist>7){
+      d.dragging=true;
+      libraryDragActive=true;
+      d.card.classList.add('v99Dragging');
+      createTouchDragGhost(d.def,d.isArch);
+      positionTouchGhost(ev.clientX,ev.clientY);
+      try{d.card.setPointerCapture(ev.pointerId)}catch{}
+    }
+    if(!d.dragging)return;
+    ev.preventDefault();
+    positionTouchGhost(ev.clientX,ev.clientY);
+    mainScroll.classList.toggle('touchDropReady',pointInsideCanvasClient(ev.clientX,ev.clientY));
+
+    const vr=mainScroll.getBoundingClientRect(),edge=54,step=24;
+    if(ev.clientX<vr.left+edge)mainScroll.scrollLeft-=step;
+    else if(ev.clientX>vr.right-edge)mainScroll.scrollLeft+=step;
+    if(ev.clientY<vr.top+edge)mainScroll.scrollTop-=step;
+    else if(ev.clientY>vr.bottom-edge)mainScroll.scrollTop+=step;
+  },{passive:false});
+
+  const finish=ev=>{
+    const d=v99LibraryPointerDrag;
+    if(!d||d.pointerId!==ev.pointerId)return;
+    v99LibraryPointerDrag=null;
+    if(!d.dragging)return;
+    v99SuppressLibraryClickUntil=Date.now()+350;
+    ev.preventDefault();ev.stopPropagation();
+
+    if(pointInsideCanvasClient(ev.clientX,ev.clientY)){
+      const p=clampPointToCanvas(clientToCanvasPos(ev.clientX,ev.clientY));
+      addItem(d.def,p.x,p.y);
+      pendingFurnitureDef=null;mode='select';updateInteractionCursor();
+      setStatus(`تم سحب وإفلات ${d.def.name} في المكان المحدد`);
+      if(isIPadLayout())setSidebarOpen(false);
+    }
+    d.card.classList.remove('v99Dragging');
+    removeTouchDragGhost();
+    setTimeout(()=>libraryDragActive=false,80);
+  };
+  card.addEventListener('pointerup',finish);
+  card.addEventListener('pointercancel',ev=>{
+    const d=v99LibraryPointerDrag;
+    if(!d||d.pointerId!==ev.pointerId)return;
+    v99LibraryPointerDrag=null;
+    d.card.classList.remove('v99Dragging');
+    removeTouchDragGhost();
+    setTimeout(()=>libraryDragActive=false,80);
+  });
+
+  card.addEventListener('click',ev=>{
+    if(Date.now()<v99SuppressLibraryClickUntil){
+      ev.preventDefault();ev.stopImmediatePropagation();
+    }
+  },true);
+}
 function appendArchitectureGroup(title, defs){
   if(!defs.length)return;
   const head=document.createElement('div');head.className='archGroupTitle';head.textContent=title;archLibrary.appendChild(head);
