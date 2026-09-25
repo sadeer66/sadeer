@@ -325,3 +325,133 @@
   else install();
 })();
 // ===== End FurniPlan V96 Modern Toolbar Scroll Fix =====
+
+
+// ===== FurniPlan V97 Map Pan + Dual Furniture Placement =====
+(function(){
+  const style=document.createElement('style');
+  style.id='furniplan-v97-map-pan-dnd';
+  style.textContent=`
+    /* Let the outer map viewport measure the real zoomed stage in BOTH directions. */
+    #mainScroll .canvasWrap{
+      width:max-content!important;
+      height:max-content!important;
+      min-width:100%!important;
+      min-height:100%!important;
+      overflow:visible!important;
+      display:block!important;
+      padding:18px!important;
+      box-sizing:border-box!important;
+    }
+    #mainScroll #stage{
+      position:relative!important;
+      display:block!important;
+      flex:0 0 auto!important;
+    }
+    #mainScroll{
+      overflow:auto!important;
+      touch-action:pan-x pan-y!important;
+      cursor:grab;
+    }
+    #mainScroll.panning{cursor:grabbing!important}
+    #mainScroll.touchDropReady{
+      outline:3px solid rgba(56,189,248,.95)!important;
+      outline-offset:-3px!important;
+    }
+    .fcard[draggable="true"],.archCard[draggable="true"]{cursor:grab!important}
+    .fcard[draggable="true"]:active,.archCard[draggable="true"]:active{cursor:grabbing!important}
+  `;
+  document.head.appendChild(style);
+
+  function canvasClientPointToMap(x,y){
+    const r=canvas.getBoundingClientRect();
+    return clampPointToCanvas({
+      x:(x-r.left)*(canvas.width/Math.max(1,r.width)),
+      y:(y-r.top)*(canvas.height/Math.max(1,r.height))
+    });
+  }
+
+  /* Accept desktop HTML5 drag anywhere over the visible map viewport,
+     but only place when the pointer is actually over the canvas. */
+  mainScroll.addEventListener('dragover',ev=>{
+    if(!pxPerCm)return;
+    const hasFurniture=ev.dataTransfer?.types?.includes?.('application/x-furniture-id');
+    const hasArch=ev.dataTransfer?.types?.includes?.('application/x-arch-id');
+    const hasText=ev.dataTransfer?.types?.includes?.('text/plain');
+    if(!(hasFurniture||hasArch||hasText))return;
+    ev.preventDefault();
+    if(ev.dataTransfer)ev.dataTransfer.dropEffect='copy';
+    const r=canvas.getBoundingClientRect();
+    mainScroll.classList.toggle('touchDropReady',ev.clientX>=r.left&&ev.clientX<=r.right&&ev.clientY>=r.top&&ev.clientY<=r.bottom);
+  },{passive:false});
+  mainScroll.addEventListener('dragleave',ev=>{
+    if(!mainScroll.contains(ev.relatedTarget))mainScroll.classList.remove('touchDropReady');
+  });
+  mainScroll.addEventListener('drop',ev=>{
+    mainScroll.classList.remove('touchDropReady');
+    if(!pxPerCm)return;
+    const r=canvas.getBoundingClientRect();
+    if(!(ev.clientX>=r.left&&ev.clientX<=r.right&&ev.clientY>=r.top&&ev.clientY<=r.bottom))return;
+    const aid=ev.dataTransfer?.getData('application/x-arch-id');
+    const fid=ev.dataTransfer?.getData('application/x-furniture-id')||ev.dataTransfer?.getData('text/plain');
+    const def=aid?architecture.find(x=>x.id===aid):furniture.find(x=>x.id===fid);
+    if(!def)return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    const p=canvasClientPointToMap(ev.clientX,ev.clientY);
+    addItem(def,p.x,p.y);
+    pendingFurnitureDef=null;
+    mode='select';
+    updateInteractionCursor();
+    setStatus(`تم سحب وإفلات ${def.name} في المكان المحدد`);
+  },true);
+
+  /* Desktop mouse panning fallback on the viewport itself.
+     Starts only from empty map background/canvas area and never steals furniture editing. */
+  let vpPan=null;
+  mainScroll.addEventListener('pointerdown',ev=>{
+    if(ev.pointerType==='touch'||ev.button!==0)return;
+    if(ev.target.closest('.usedFurniturePanel,.bottomInspector'))return;
+    if(document.getElementById('mapLockToggle')?.checked)return;
+    const canX=mainScroll.scrollWidth>mainScroll.clientWidth+2;
+    const canY=mainScroll.scrollHeight>mainScroll.clientHeight+2;
+    if(!(canX||canY))return;
+
+    /* Canvas has its own item/measure handlers. Start viewport pan only when
+       the pointer is not on an editable object. */
+    if(ev.target===canvas){
+      try{
+        const p=toCanvasPos(ev);
+        if(hitTest(p)||hitTestMeasurement(p)||hitTestMapLabel(p))return;
+      }catch(_){}
+    }
+    vpPan={id:ev.pointerId,x:ev.clientX,y:ev.clientY,left:mainScroll.scrollLeft,top:mainScroll.scrollTop,moved:false};
+  },true);
+  mainScroll.addEventListener('pointermove',ev=>{
+    if(!vpPan||vpPan.id!==ev.pointerId)return;
+    const dx=ev.clientX-vpPan.x,dy=ev.clientY-vpPan.y;
+    if(Math.hypot(dx,dy)>4){
+      vpPan.moved=true;
+      try{mainScroll.setPointerCapture(ev.pointerId)}catch{}
+      mainScroll.scrollLeft=vpPan.left-dx;
+      mainScroll.scrollTop=vpPan.top-dy;
+      mainScroll.classList.add('panning');
+      ev.preventDefault();
+    }
+  },{passive:false,capture:true});
+  const endVpPan=ev=>{
+    if(!vpPan||vpPan.id!==ev.pointerId)return;
+    if(vpPan.moved)suppressCanvasClickUntil=Date.now()+250;
+    vpPan=null;
+    mainScroll.classList.remove('panning');
+    try{mainScroll.releasePointerCapture(ev.pointerId)}catch{}
+  };
+  mainScroll.addEventListener('pointerup',endVpPan,true);
+  mainScroll.addEventListener('pointercancel',endVpPan,true);
+
+  /* Recompute pan availability after zoom/resize. */
+  const ro=new ResizeObserver(()=>{try{updatePanState()}catch{}});
+  try{ro.observe(stage);ro.observe(mainScroll)}catch{}
+  requestAnimationFrame(()=>{try{updateStageSize();updatePanState()}catch{}});
+})();
+// ===== End FurniPlan V97 Map Pan + Dual Furniture Placement =====
