@@ -42,9 +42,11 @@ jobs:
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
-          name: FurniPlan-V85-Windows-Installer
+          name: FurniPlan-V86-Windows-Installer
           path: dist/*.exe
           if-no-files-found: error
           retention-days: 30
 
-# FurniPlan V85 final build trigger
+# FurniPlan V86 repaired build trigger
+
+# rebuild-v86
