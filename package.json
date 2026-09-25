@@ -1,6 +1,6 @@
 {
   "name": "furniplan-desktop",
-  "version": "1.0.90",
+  "version": "1.0.92",
   "description": "FurniPlan - Smart Space Planning",
   "main": "desktop/main.js",
   "author": "سدير ياسين محمد",
@@ -15,7 +15,7 @@
   "build": {
     "appId": "com.sadeer.furniplan.v86",
     "productName": "FurniPlan",
-    "artifactName": "FurniPlan-Setup-V90-${arch}.exe",
+    "artifactName": "FurniPlan-Setup-V92-${arch}.exe",
     "asar": true,
     "directories": {
       "output": "dist",
