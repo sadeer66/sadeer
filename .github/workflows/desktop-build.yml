@@ -15,7 +15,7 @@ on:
       - '.github/workflows/desktop-build.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-windows:
@@ -46,5 +46,16 @@ jobs:
           path: dist/*.exe
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish V100 release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: FurniPlan-V100
+          name: FurniPlan V100
+          body: |
+            FurniPlan V100 stable Windows installer.
+            Includes FurniPlan installer icon and desktop/start-menu shortcut icon.
+          files: dist/*.exe
+          make_latest: true
 
 # FurniPlan V100 stable build
