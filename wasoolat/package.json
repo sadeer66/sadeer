@@ -1,7 +1,7 @@
 {
   "name": "wasoolat-desktop",
-  "version": "1.0.19",
-  "description": "برنامج الوصولات - النسخة النهائية",
+  "version": "1.0.20",
+  "description": "برنامج الوصولات - النسخة النهائية V20",
   "main": "desktop/main.js",
   "author": "سدير ياسين محمد",
   "license": "UNLICENSED",
@@ -15,7 +15,7 @@
   "build": {
     "appId": "com.sadeer.wasoolat",
     "productName": "برنامج الوصولات",
-    "artifactName": "Wasoolat-Setup-V19-${arch}.exe",
+    "artifactName": "Wasoolat-Setup-V20-${arch}.exe",
     "asar": true,
     "directories": {
       "output": "dist",
@@ -24,8 +24,7 @@
     "files": [
       "index.html",
       "manifest.webmanifest",
-      "icon-192-v19.png",
-      "icon-512-v19.png",
+      "icon-v20.png",
       "build/wasoolat.ico",
       "desktop/main.js"
     ],
