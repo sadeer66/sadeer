@@ -1,7 +1,7 @@
 {
   "name": "wasoolat-desktop",
-  "version": "1.0.20",
-  "description": "برنامج الوصولات - النسخة النهائية V20",
+  "version": "1.0.23",
+  "description": "الوصولات - النسخة النهائية V23",
   "main": "desktop/main.js",
   "author": "سدير ياسين محمد",
   "license": "UNLICENSED",
@@ -14,8 +14,8 @@
   },
   "build": {
     "appId": "com.sadeer.wasoolat",
-    "productName": "برنامج الوصولات",
-    "artifactName": "Wasoolat-Setup-V20-${arch}.exe",
+    "productName": "الوصولات",
+    "artifactName": "Wasoolat-Setup-V23-${arch}.exe",
     "asar": true,
     "directories": {
       "output": "dist",
@@ -45,7 +45,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "برنامج الوصولات",
+      "shortcutName": "الوصولات",
       "runAfterFinish": true,
       "deleteAppDataOnUninstall": false,
       "installerIcon": "build/wasoolat.ico",
