@@ -1,7 +1,7 @@
 {
   "name": "wasoolat-desktop",
-  "version": "1.0.23",
-  "description": "الوصولات - النسخة النهائية V23",
+  "version": "1.0.24",
+  "description": "الوصولات - النسخة النهائية V24",
   "main": "desktop/main.js",
   "author": "سدير ياسين محمد",
   "license": "UNLICENSED",
@@ -15,7 +15,7 @@
   "build": {
     "appId": "com.sadeer.wasoolat",
     "productName": "الوصولات",
-    "artifactName": "Wasoolat-Setup-V23-${arch}.exe",
+    "artifactName": "Wasoolat-Setup-V24-${arch}.exe",
     "asar": true,
     "directories": {
       "output": "dist",
