@@ -1,4 +1,4 @@
-name: Build Wasoolat V20 Windows Installer
+name: Build Wasoolat V23 Windows Installer
 
 on:
   workflow_dispatch:
@@ -34,17 +34,17 @@ jobs:
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Wasoolat-V20-Windows-Installer
+          name: Wasoolat-V23-Windows-Installer
           path: wasoolat/dist/*.exe
           if-no-files-found: error
           retention-days: 30
-      - name: Publish Wasoolat V20 release
+      - name: Publish Wasoolat V23 release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: Wasoolat-V20
-          name: برنامج الوصولات V20
+          tag_name: Wasoolat-V23
+          name: الوصولات V23
           body: |
-            النسخة النهائية المعتمدة V20.
-            نفس أيقونة برنامج الوصولات في التثبيت واختصار سطح المكتب ونسخة iPhone/iPad.
+            النسخة النهائية المعتمدة V23.
+            نفس أيقونة الوصولات في التثبيت واختصار سطح المكتب ونسخة iPhone/iPad.
           files: wasoolat/dist/*.exe
           make_latest: true
