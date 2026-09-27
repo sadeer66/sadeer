@@ -1,17 +1,17 @@
 {
-  "name": "برنامج الوصولات",
+  "name": "الوصولات",
   "short_name": "الوصولات",
-  "id": "./?v=25",
-  "start_url": "./install.html?source=home",
+  "id": "./?v=26",
+  "start_url": "./index.html?v=26&source=home",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#03132b",
-  "theme_color": "#03132b",
+  "background_color": "#083d5b",
+  "theme_color": "#083d5b",
   "dir": "rtl",
   "lang": "ar",
   "icons": [
     {
-      "src": "icon-v20.png?v=25",
+      "src": "icon-v20.png?v=26",
       "sizes": "256x256",
       "type": "image/png",
       "purpose": "any maskable"
