@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>الوصولات</title>
+<link rel="manifest" href="./manifest.webmanifest?v=25">
+<link rel="apple-touch-icon" href="./icon-v20.png?v=25">
+<link rel="icon" type="image/png" href="./icon-v20.png?v=25">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="الوصولات">
+<meta name="theme-color" content="#03132b">
+<style>
+*{box-sizing:border-box}
+html,body{min-height:100%;margin:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;background:linear-gradient(160deg,#03132b,#0b3560 55%,#0f527e);color:#fff;display:grid;place-items:center;padding:24px}
+.card{width:min(440px,100%);background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);box-shadow:0 20px 50px rgba(0,0,0,.30);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:28px;padding:26px;text-align:center}
+.icon{width:108px;height:108px;border-radius:24px;display:block;margin:0 auto 16px;box-shadow:0 12px 28px rgba(0,0,0,.3)}
+h1{margin:4px 0 8px;font-size:28px}
+p{line-height:1.8;margin:8px 0;color:#eaf5ff}
+.status{margin:18px 0;padding:12px;border-radius:14px;background:rgba(0,0,0,.18);font-weight:700}
+.steps{text-align:right;background:rgba(255,255,255,.08);border-radius:18px;padding:14px 16px;margin:16px 0;line-height:2}
+button{width:100%;border:0;border-radius:16px;padding:15px 18px;font-size:18px;font-weight:800;cursor:pointer;background:#fff;color:#06213c}
+.small{font-size:13px;opacity:.8;margin-top:12px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<main class="card">
+  <img class="icon" src="./icon-v20.png?v=25" alt="أيقونة الوصولات">
+  <h1>الوصولات</h1>
+  <p>تم تجهيز هذه النسخة لتعمل بدون إنترنت بعد أول فتح ناجح.</p>
+  <div id="status" class="status">جاري تجهيز العمل بدون إنترنت…</div>
+  <div id="iosHelp" class="steps">
+    <b>لإضافة الأيقونة إلى شاشة iPhone أو iPad:</b><br>
+    1) اضغط زر <b>المشاركة</b> في Safari.<br>
+    2) اختر <b>إضافة إلى الشاشة الرئيسية</b>.<br>
+    3) اضغط <b>إضافة</b>.<br>
+    بعدها افتح «الوصولات» من الأيقونة حتى لو انقطع الإنترنت.
+  </div>
+  <button id="openBtn" type="button">فتح برنامج الوصولات</button>
+  <div class="small">ملاحظة: نظام iPhone/iPad يتطلب منك الضغط على «إضافة إلى الشاشة الرئيسية» مرة واحدة؛ لا يسمح للموقع بإضافة الأيقونة تلقائيًا.</div>
+</main>
+<script>
+const statusEl=document.getElementById('status');
+const openBtn=document.getElementById('openBtn');
+const isStandalone=window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true;
+
+async function setupOffline(){
+  if(!('serviceWorker' in navigator)){
+    statusEl.textContent='هذا المتصفح لا يدعم العمل بدون إنترنت. افتح الرابط في Safari.';
+    return;
+  }
+  try{
+    const reg=await navigator.serviceWorker.register('./service-worker.js?v=25',{scope:'./'});
+    await navigator.serviceWorker.ready;
+    statusEl.textContent='✓ جاهز للعمل بدون إنترنت';
+    if(isStandalone){
+      location.replace('./index.html');
+    }
+  }catch(err){
+    statusEl.textContent='تعذر تجهيز العمل بدون إنترنت. افتح الرابط مع وجود الإنترنت مرة واحدة ثم أعد المحاولة.';
+  }
+}
+openBtn.addEventListener('click',()=>location.href='./index.html');
+setupOffline();
+</script>
+</body>
+</html>
