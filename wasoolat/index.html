@@ -532,14 +532,34 @@ body{-webkit-overflow-scrolling:touch}
  .table-wrap{touch-action:auto!important;overscroll-behavior:auto}
 }
 
+
+/* PWA V26 — inline offline status + iOS install help */
+.pwa-footer{max-width:1180px;margin:2px auto 24px;padding:0 22px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:12px}
+.pwa-status{display:inline-flex;align-items:center;gap:7px;min-height:30px;padding:5px 9px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.72)}
+.pwa-state-icon{display:inline-grid;place-items:center;flex:0 0 auto}
+.pwa-state-icon.wait{width:14px;height:14px;border-radius:50%;background:#f3b23b;color:#4b3300;font-size:10px;font-weight:900;line-height:14px}
+.pwa-state-icon.wait::before{content:"!"}
+.pwa-state-icon.ready{width:9px;height:9px;border-radius:50%;background:#22a447;box-shadow:0 0 0 3px rgba(34,164,71,.12)}
+.pwa-state-icon.error{width:14px;height:14px;border-radius:50%;background:#f3b23b;color:#4b3300;font-size:10px;font-weight:900;line-height:14px}
+.pwa-state-icon.error::before{content:"!"}
+.pwa-install-btn{padding:7px 11px;border-radius:999px;font-size:12px;background:#fff;border:1px solid var(--line);color:var(--accent)}
+.pwa-install-btn:hover{background:var(--soft)}
+.pwa-install-dialog{width:min(430px,calc(100vw - 28px));padding:22px;border-radius:18px;text-align:right}
+.pwa-install-dialog h2{font-size:19px;margin:0 0 10px}
+.pwa-install-dialog p{margin:7px 0;color:var(--muted);line-height:1.9}
+.pwa-install-dialog ol{margin:10px 0 14px;padding-right:22px;line-height:2}
+.pwa-install-dialog .actions{justify-content:flex-start}
+@media(max-width:600px){.pwa-footer{padding:0 12px;margin-bottom:72px}.pwa-status{font-size:11px}.pwa-install-btn{font-size:11px}}
+@media print{.pwa-footer,.pwa-install-dialog{display:none!important}}
+
 </style>
 
-<link rel="manifest" href="manifest.webmanifest?v=20">
-<link rel="apple-touch-icon" href="icon-v20.png?v=20">
+<link rel="manifest" href="manifest.webmanifest?v=26">
+<link rel="apple-touch-icon" href="icon-v20.png?v=26">
 <link rel="icon" type="image/png" href="icon-v20.png?v=20">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="برنامج الوصولات">
+<meta name="apple-mobile-web-app-title" content="الوصولات">
 
 </head>
 <body>
@@ -578,6 +598,26 @@ body{-webkit-overflow-scrolling:touch}
   </main>
  </div>
 </div>
+
+<div class="pwa-footer no-print" id="pwaFooter">
+ <div class="pwa-status" id="pwaOfflineStatus" role="status" aria-live="polite">
+  <span class="pwa-state-icon wait" id="pwaStateIcon" aria-hidden="true"></span>
+  <span id="pwaStateText">جاري تجهيز البرنامج ليعمل بدون نت…</span>
+ </div>
+ <button type="button" class="pwa-install-btn" id="pwaInstallHelp">حوّله لبرنامج</button>
+</div>
+<dialog id="pwaInstallDialog" class="pwa-install-dialog no-print" aria-labelledby="pwaInstallTitle">
+ <h2 id="pwaInstallTitle">ضع أيقونة «الوصولات» على شاشة الآيفون</h2>
+ <p>من Safari اتبع هذه الخطوات مرة واحدة:</p>
+ <ol>
+  <li>اضغط زر <b>المشاركة</b>.</li>
+  <li>اختر <b>إضافة إلى الشاشة الرئيسية</b>.</li>
+  <li>اضغط <b>إضافة</b>.</li>
+ </ol>
+ <p>بعدها افتح «الوصولات» من الأيقونة. وبعد اكتمال تجهيز العمل بدون نت، سيعمل البرنامج حتى عند انقطاع الإنترنت.</p>
+ <div class="actions"><button type="button" class="primary" id="pwaCloseHelp">إغلاق</button></div>
+</dialog>
+
 <div id="iosInputBar" class="ios-input-bar no-print" hidden>
  <button type="button" id="iosPrev" aria-label="الحقل السابق">السابق</button>
  <span id="iosFieldLabel">إدخال</span>
@@ -905,6 +945,58 @@ installMobileKeyboardUX();db=load();render();if(startNotice)notice(startNotice);
      window.scrollBy({top:e.deltaY,left:0,behavior:'auto'});
    },{passive:false});
  });
+})();
+</script>
+
+
+<script>
+/* PWA V26 — offline preparation + install help */
+(function(){
+ const statusBox=document.getElementById('pwaOfflineStatus');
+ const stateIcon=document.getElementById('pwaStateIcon');
+ const stateText=document.getElementById('pwaStateText');
+ const helpBtn=document.getElementById('pwaInstallHelp');
+ const helpDialog=document.getElementById('pwaInstallDialog');
+ const closeHelp=document.getElementById('pwaCloseHelp');
+ if(!statusBox||!stateIcon||!stateText) return;
+
+ const standalone=window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true;
+ if(standalone && helpBtn) helpBtn.hidden=true;
+
+ function setState(kind,text){
+   stateIcon.className='pwa-state-icon '+kind;
+   stateText.textContent=text;
+ }
+ if(helpBtn&&helpDialog){
+   helpBtn.addEventListener('click',()=>helpDialog.showModal());
+ }
+ if(closeHelp&&helpDialog){
+   closeHelp.addEventListener('click',()=>helpDialog.close());
+   helpDialog.addEventListener('click',e=>{
+     const r=helpDialog.getBoundingClientRect();
+     if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom) helpDialog.close();
+   });
+ }
+
+ async function prepareOffline(){
+   if(!('serviceWorker' in navigator)){
+     setState('error','تعذر تجهيز العمل بدون نت في هذا المتصفح');
+     return;
+   }
+   try{
+     let reg=await navigator.serviceWorker.getRegistration('./');
+     if(!reg){
+       reg=await navigator.serviceWorker.register('./service-worker.js?v=26',{scope:'./'});
+     }else{
+       try{await reg.update()}catch(_){}
+     }
+     await navigator.serviceWorker.ready;
+     setState('ready','البرنامج لا يحتاج النت ليعمل');
+   }catch(err){
+     setState('error','افتح البرنامج مع وجود الإنترنت مرة واحدة لإكمال العمل بدون نت');
+   }
+ }
+ prepareOffline();
 })();
 </script>
 
