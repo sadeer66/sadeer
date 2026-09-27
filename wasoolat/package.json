@@ -1,7 +1,7 @@
 {
   "name": "wasoolat-desktop",
-  "version": "1.0.24",
-  "description": "الوصولات - النسخة النهائية V24",
+  "version": "1.0.26",
+  "description": "الوصولات V26 – Offline PWA Final",
   "main": "desktop/main.js",
   "author": "سدير ياسين محمد",
   "license": "UNLICENSED",
@@ -15,7 +15,7 @@
   "build": {
     "appId": "com.sadeer.wasoolat",
     "productName": "الوصولات",
-    "artifactName": "Wasoolat-Setup-V24-${arch}.exe",
+    "artifactName": "Wasoolat-Setup-V26-${arch}.exe",
     "asar": true,
     "directories": {
       "output": "dist",
@@ -24,19 +24,15 @@
     "files": [
       "index.html",
       "manifest.webmanifest",
+      "service-worker.js",
+      "install.html",
       "icon-v20.png",
+      "apple-touch-icon.png",
       "build/wasoolat.ico",
       "desktop/main.js"
     ],
     "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        }
-      ],
+      "target": [{"target":"nsis","arch":["x64"]}],
       "icon": "build/wasoolat.ico"
     },
     "nsis": {
