@@ -1,4 +1,4 @@
-name: Build Wasoolat V24 Windows Installer
+name: Build Wasoolat V26 Windows Installer
 
 on:
   workflow_dispatch:
@@ -31,17 +31,22 @@ jobs:
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: npm run dist:win
-      - name: Create V24 archive ZIP
+      - name: Create V26 archive ZIP
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path wasoolat-save | Out-Null
-          Copy-Item wasoolat/index.html wasoolat-save/Wasoolat-V24-Save.html -Force
-          Compress-Archive -Path wasoolat-save/* -DestinationPath Wasoolat-V24-Save.zip -Force
+          Copy-Item wasoolat/index.html wasoolat-save/index.html -Force
+          Copy-Item wasoolat/manifest.webmanifest wasoolat-save/manifest.webmanifest -Force
+          Copy-Item wasoolat/service-worker.js wasoolat-save/service-worker.js -Force
+          Copy-Item wasoolat/install.html wasoolat-save/install.html -Force
+          Copy-Item wasoolat/icon-v20.png wasoolat-save/icon-v20.png -Force
+          Copy-Item wasoolat/apple-touch-icon.png wasoolat-save/apple-touch-icon.png -Force
+          Compress-Archive -Path wasoolat-save/* -DestinationPath Wasoolat-V26-Offline-PWA-Final.zip -Force
 
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Wasoolat-V24-Windows-Installer
+          name: Wasoolat-V26-Windows-Installer
           path: wasoolat/dist/*.exe
           if-no-files-found: error
           retention-days: 30
@@ -49,19 +54,20 @@ jobs:
       - name: Upload save archive artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Wasoolat-V24-Save
-          path: Wasoolat-V24-Save.zip
+          name: Wasoolat-V26-Offline-PWA-Final
+          path: Wasoolat-V26-Offline-PWA-Final.zip
           if-no-files-found: error
           retention-days: 30
-      - name: Publish Wasoolat V24 release
+
+      - name: Publish Wasoolat V26 release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: Wasoolat-V24
-          name: الوصولات V24
+          tag_name: Wasoolat-V26
+          name: الوصولات V26 – Offline PWA Final
           body: |
-            النسخة النهائية المعتمدة V24.
-            نفس أيقونة الوصولات في التثبيت واختصار سطح المكتب ونسخة iPhone/iPad.
+            النسخة النهائية المعتمدة V26.
+            تشغيل PWA بدون إنترنت بعد أول فتح، زر «حوّله لبرنامج»، وأيقونة موحدة.
           files: |
             wasoolat/dist/*.exe
-            Wasoolat-V24-Save.zip
+            Wasoolat-V26-Offline-PWA-Final.zip
           make_latest: true
