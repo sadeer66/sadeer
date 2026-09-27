@@ -1,10 +1,11 @@
-const CACHE_NAME = 'wasoolat-v25-offline-20260927';
+const CACHE_NAME = 'wasoolat-v26-offline-20260927';
 const APP_SHELL = [
   './',
   './index.html',
+  './index.html?v=26',
   './install.html',
-  './manifest.webmanifest',
-  './icon-v20.png'
+  './manifest.webmanifest?v=26',
+  './icon-v20.png?v=26'
 ];
 
 self.addEventListener('install', event => {
@@ -41,7 +42,9 @@ self.addEventListener('fetch', event => {
         })
         .catch(async () => {
           return (await caches.match(event.request)) ||
+                 (await caches.match('./index.html?v=26')) ||
                  (await caches.match('./index.html')) ||
+                 (await caches.match('./')) ||
                  Response.error();
         })
     );
