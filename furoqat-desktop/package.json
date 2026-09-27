@@ -1,0 +1,46 @@
+{
+  "name": "furoqat-v56",
+  "version": "1.0.0",
+  "description": "الفروقات V56",
+  "main": "main.js",
+  "author": "Sadeer Yaseen Mohammed",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dist": "electron-builder --win nsis --x64"
+  },
+  "devDependencies": {
+    "electron": "^37.2.6",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.sadeer.furoqat",
+    "productName": "الفروقات",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "../furoqat/**/*"
+    ],
+    "extraMetadata": {
+      "name": "furoqat"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "artifactName": "Furoqat-V56-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "الفروقات",
+      "uninstallDisplayName": "الفروقات"
+    }
+  }
+}
