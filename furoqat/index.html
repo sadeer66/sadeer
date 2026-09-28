@@ -3601,17 +3601,17 @@ async function buildBackupWordBlob(){
  let ownerTotal=0,officeTotal=0;
  const rows=[];
  for(let i=0;i<sorted.length;i++){
-   const x=sorted[i],base=Number(x.amount)||0,pct=x.kind==='office'?(Number(x.percent)||0):0,pctAmt=x.kind==='office'?(Number(x.percentAmount)||0):0,total=x.kind==='office'?(Number(x.finalAmount)||base+pctAmt):base;
-   if(x.kind==='owner')ownerTotal+=total;else officeTotal+=total;
+   const x=sorted[i],base=Number(x.amount)||0,pct=x.kind==='office'?(Number(x.percent)||0):0,pctAmt=x.kind==='office'?(Number(x.commission)||0):0,total=x.kind==='office'?(Number(x.net)||base+pctAmt):base;
+   if(x.kind==='owner')ownerTotal+=base;else officeTotal+=base+pctAmt;
    const rowClass=x.kind==='owner'?'ownerRow':'officeRow';
    rows.push(`<tr class="${rowClass}"><td>${i+1}</td><td>${escWord(x.receipt||'-')}</td><td>${escWord(x.date||'-')}</td><td>${x.kind==='owner'?'المالك':'المكتب'}</td><td class="details">${escWord(x.details||'')}</td><td>${fmtWordAmount(base)}</td><td>${x.kind==='office'?(pct?escWord(pct)+'%':'-'):'-'}</td><td>${x.kind==='office'&&pct?fmtWordAmount(pctAmt):'-'}</td><td>${fmtWordAmount(total)}</td></tr>`);
  }
- const diff=ownerTotal-officeTotal;
+ const appTotals=totals(); ownerTotal=appTotals.owner; officeTotal=appTotals.office; const diff=appTotals.diff;
  let result='لا توجد إدخالات بعد';
  if(sorted.length){if(Math.abs(diff)<0.000001)result='الحساب متعادل';else if(diff>0)result='باقي للمالك مبلغ وقدره '+fmtWordAmount(diff);else result='تبقى للمكتب مبلغ وقدره '+fmtWordAmount(Math.abs(diff));}
  let receiptHtml='';
  for(const e of sorted){let src=await getReceiptImage(e.id);if(!src&&e.receiptImage)src=e.receiptImage;if(src)receiptHtml+=`<div class="receipt"><h2>رقم القائمة ${escWord(e.receipt||'-')} من ${e.kind==='owner'?'المالك':'المكتب'}</h2><img src="${src}"></div>`;}
- const logo=company&&company.logo?`<img class="logo" src="${company.logo}">`:'';
+ const logo=company&&company.logo?`<img class="logo" src="${company.logo}" width="38" height="38">`:'';
  const companyName=escWord((company&&company.name)||'');
  const companyPhone=escWord((company&&company.phone)||'');
  const html=`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><style>
@@ -3619,33 +3619,33 @@ async function buildBackupWordBlob(){
  body{font-family:Tahoma,Arial,sans-serif;direction:rtl;color:#111;background:#fff;margin:0;font-weight:700;-webkit-print-color-adjust:exact;print-color-adjust:exact}
  table{direction:rtl}
  .brandHead{width:100%;border-collapse:collapse;table-layout:fixed;background:#07356b;border:1.5px solid #061f3f;margin:0 0 5px 0}
- .brandHead td{background:#07356b;color:#fff;border:0;padding:7px 10px;vertical-align:middle;font-weight:900}
- .brandLogo{width:66px;text-align:center}
- .logo{width:50px;height:50px;object-fit:contain;background:#fff;border:1px solid rgba(255,255,255,.55)}
+ .brandHead td{background:#07356b;color:#fff;border:0;padding:4px 7px;vertical-align:middle;font-weight:900;height:42px}
+ .brandLogo{width:50px;text-align:center}
+ .logo{width:38px!important;height:38px!important;max-width:38px!important;max-height:38px!important;object-fit:contain;background:#fff;border:1px solid rgba(255,255,255,.55)}
  .brandText{text-align:right}
- .brandText .company{font-size:20px;font-weight:900;line-height:1.2;color:#fff}
- .brandText .sub{font-size:10.5px;font-weight:900;margin-top:3px;color:#fff}
- .brandPhone{width:125px;text-align:left;font-size:10px;font-weight:900;color:#fff}
+ .brandText .company{font-size:17px;font-weight:900;line-height:1.05;color:#fff}
+ .brandText .sub{font-size:10px;font-weight:900;margin-top:1px;color:#fff}
+ .brandPhone{width:100px;text-align:left;font-size:10px;font-weight:900;color:#fff}
  .meta{width:100%;border-collapse:collapse;table-layout:fixed;margin:0 0 7px 0;background:#1c64aa}
- .meta td{border:1px solid #7daee0;padding:7px 6px;background:#1c64aa;color:#fff;text-align:center;font-size:11px;font-weight:900;vertical-align:middle}
- .meta .lbl{display:block;font-size:9px;color:#eaf4ff;font-weight:900;margin-bottom:3px}
- .meta .val{display:block;font-size:12px;color:#fff;font-weight:900}
- .title{background:#0c5ea8;color:#fff;border:1.5px solid #073b6e;padding:5px;text-align:center;font-size:15px;font-weight:900;margin:0}
- table.accounts{width:100%;border-collapse:collapse;table-layout:fixed;font-size:9.4px;margin:0}
- table.accounts th,table.accounts td{border:1px solid #272727;padding:4px 3px;text-align:center;vertical-align:middle;font-weight:900;line-height:1.25}
- table.accounts th{background:#0c5ea8;color:#fff;font-size:9.2px;font-weight:900}
+ .meta td{border:1px solid #7daee0;padding:5px 5px;background:#1c64aa;color:#fff;text-align:center;font-size:12px;font-weight:900;vertical-align:middle}
+ .meta .lbl{display:block;font-size:10.5px;color:#eaf4ff;font-weight:900;margin-bottom:2px}
+ .meta .val{display:block;font-size:13.5px;color:#fff;font-weight:900}
+ .title{background:#0c5ea8;color:#fff;border:1.5px solid #073b6e;padding:5px;text-align:center;font-size:16px;font-weight:900;margin:0}
+ table.accounts{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11.2px;margin:0}
+ table.accounts th,table.accounts td{border:1px solid #272727;padding:5px 4px;text-align:center;vertical-align:middle;font-weight:900;line-height:1.3}
+ table.accounts th{background:#0c5ea8;color:#fff;font-size:11px;font-weight:900}
  table.accounts td{color:#111}
  table.accounts .ownerRow td{background:#ffe5bd}
  table.accounts .officeRow td{background:#fffbe6}
- .details{text-align:right!important;width:29%;font-size:9.8px!important;font-weight:900!important}
+ .details{text-align:right!important;width:29%;font-size:11.5px!important;font-weight:900!important}
  .summary{width:100%;border-collapse:collapse;table-layout:fixed;margin-top:7px}
- .summary td{border:1px solid #6e9ed0;padding:7px 5px;text-align:center;background:#0c5ea8;color:#fff;font-size:11px;font-weight:900}
+ .summary td{border:1px solid #6e9ed0;padding:7px 5px;text-align:center;background:#0c5ea8;color:#fff;font-size:12.5px;font-weight:900}
  .summary b{font-weight:900;color:#fff}
- .result{margin-top:0;border:1px solid #6e9ed0;background:#0b3d76;color:#fff;padding:9px;text-align:center;font-size:14px;font-weight:900}
+ .result{margin-top:0;border:1px solid #6e9ed0;background:#0b3d76;color:#fff;padding:8px;text-align:center;font-size:15.5px;font-weight:900}
  .receipt{page-break-before:always;text-align:center;font-weight:900}
  .receipt h2{background:#0b3d76;color:#fff;border:1.5px solid #062a51;padding:7px;font-size:15px;font-weight:900}
  .receipt img{max-width:95%;max-height:230mm;object-fit:contain;border:1px solid #000}
- .footer{margin-top:8px;border-top:1px solid #0b3d76;padding-top:5px;text-align:center;font-size:9px;font-weight:900;color:#0b3d76}
+ .footer{margin-top:7px;border-top:1px solid #0b3d76;padding-top:4px;text-align:center;font-size:10px;font-weight:900;color:#0b3d76}
  </style></head><body>
  <table class="brandHead"><tr><td class="brandLogo">${logo}</td><td class="brandText"><div class="company">${companyName||'الفروقات'}</div><div class="sub">إدارة فروقات المالك والمكتب</div></td><td class="brandPhone">${companyPhone||''}</td></tr></table>
  <table class="meta"><tr>
