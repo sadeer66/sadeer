@@ -2747,6 +2747,11 @@ button,
     min-width:0 !important;
   }
 }
+
+.sequenceInput{width:48px;max-width:100%;box-sizing:border-box;text-align:center;font-weight:900;font-size:14px;padding:5px 2px;border:1px solid #0b5ea8;border-radius:7px;background:#fff;color:#0b2f59;outline:none}
+.sequenceInput:focus{border:2px solid #0b5ea8;box-shadow:0 0 0 2px rgba(11,94,168,.15)}
+.sequenceInput::-webkit-inner-spin-button,.sequenceInput::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;display:none}
+.sequenceInput{appearance:textfield;-moz-appearance:textfield}
 </style>
 
 <style id="v64SeparateEntryDates">
@@ -2957,11 +2962,31 @@ function toggleRowPercent(id,checked){
  render();
 }
 
+function moveEntryToPosition(id,newPosition){
+ const from=entries.findIndex(x=>String(x.id)===String(id));
+ if(from<0)return;
+ let pos=Math.trunc(Number(newPosition));
+ if(!Number.isFinite(pos))pos=from+1;
+ pos=Math.max(1,Math.min(entries.length,pos));
+ const to=pos-1;
+ if(from===to){render();return}
+ const [item]=entries.splice(from,1);
+ entries.splice(to,0,item);
+ const stored=save();
+ if(!stored){
+   entries.splice(to,1);
+   entries.splice(from,0,item);
+   alert('تعذر حفظ ترتيب الإدخالات على الجهاز.');
+ }
+ render();
+}
 function render(){
  let q=$('search').value.trim().toLowerCase();
- let rows=entries.slice().sort((a,b)=>n(b.receipt)-n(a.receipt)).filter(x=>!q||[x.receipt,x.receiptNo,x.details,x.date,x.kind,x.notes].join(' ').toLowerCase().includes(q));
- $('tbody').innerHTML=rows.map((x,i)=>`<tr class="${x.kind==='owner'?'ownerRow':'officeRow'}">
-   <td><b>${i+1}</b></td>
+ let rows=entries.slice().filter(x=>!q||[x.receipt,x.receiptNo,x.details,x.date,x.kind,x.notes].join(' ').toLowerCase().includes(q));
+ $('tbody').innerHTML=rows.map((x,i)=>{
+   const currentPos=entries.findIndex(e=>String(e.id)===String(x.id))+1;
+   return `<tr class="${x.kind==='owner'?'ownerRow':'officeRow'}">
+   <td><input class="sequenceInput" type="number" min="1" max="${entries.length}" value="${currentPos}" title="غيّر رقم التسلسل لنقل السطر" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}" onchange="moveEntryToPosition(${x.id},this.value)"></td>
    <td><b>${displayedListNo(x)}</b></td>
    <td>${x.date}</td>
    <td><span class="tag ${x.kind}">${x.kind==='owner'?'المالك':'المكتب'}</span></td>
@@ -2970,8 +2995,8 @@ function render(){
    <td><label class="rowPercentToggle"><input type="checkbox" ${x.percent!=null?'checked':''} onchange="toggleRowPercent(${x.id},this.checked)"><span>${x.percent!=null?fmt(x.percent)+'%':'النسبة'}</span></label></td>
    <td><b>${x.percent!=null?fmt(x.commission):'0'}</b></td>
    <td><b>${fmt(x.net)}</b></td>
-   <td class="noPrint"><div style="display:flex;gap:6px;justify-content:center;white-space:nowrap"><button class="btn" style="padding:6px 8px" onclick="editEntry(${x.id})">تعديل</button><button class="btn danger" style="padding:6px 8px" onclick="del(${x.id})">حذف</button></div></td>
- </tr>`).join('');
+   <td class="noPrint"><div style="display:flex;gap:6px;justify-content:center;white-space:nowrap"><button class="btn" style="padding:6px 8px" onclick="editEntry(${x.id})">تعديل</button><button class="btn danger" style="padding:6px 8px" onclick="del(${x.id})">حذف</button></div></td> </tr>`;
+ }).join('');
  $('empty').style.display=rows.length?'none':'block';
  let t=totals();
  $('sumOwner').textContent=fmt(t.owner)+' د.ع';
@@ -2995,7 +3020,8 @@ function openCompany(){
  $('cName').value=company.name||'';$('cPhone').value=company.phone||'';$('cWeb').value=company.web||'';$('cAddress').value=company.address||'';$('cExtra').value=company.extra||'';$('cOfficePercent').value=company.officePercent??0;
  pendingLogo=null;removeLogoFlag=false;showLogo(company.logo||'');$('cLogo').value='';
  pendingStamp=null;removeStampFlag=false;showStamp(company.stamp||'');$('cStamp').value='';
- $('companyModal').classList.add('show')}
+ $('companyModal').classList.add('show')
+}
 function closeCompany(){$('companyModal').classList.remove('show')}
 function previewLogo(ev){let f=ev.target.files[0];if(!f)return;if(!['image/png','image/jpeg','image/webp'].includes(f.type)){alert('اختر PNG أو JPG أو WebP');ev.target.value='';return}if(f.size>2*1024*1024){alert('حجم اللوجو يجب ألا يتجاوز 2 ميغابايت');ev.target.value='';return}let r=new FileReader();r.onload=()=>{pendingLogo=r.result;removeLogoFlag=false;showLogo(pendingLogo)};r.readAsDataURL(f)}
 function removeLogo(){pendingLogo='';removeLogoFlag=true;showLogo('');$('cLogo').value=''}
@@ -3037,7 +3063,7 @@ function prepareLargePrintStatementPage(){
  const host=$('printStatementPage');
  if(!host)return;
  const t=totals();
- const sorted=entries.slice().sort((a,b)=>n(a.receipt)-n(b.receipt));
+ const sorted=entries.slice();
 
  const logo=company.logo?`<img src="${company.logo}" alt="لوجو الشركة">`:'';
  const stamp=company.stamp?`<img class="psStamp" src="${company.stamp}" alt="ختم الشركة">`:'';
@@ -3119,7 +3145,7 @@ async function prepareLargePrintReceiptPages(){
  document.body.classList.remove('hasPrintReceipts');
 
  const items=[];
- for(const e of entries.slice().sort((a,b)=>n(a.receipt)-n(b.receipt))){
+ for(const e of entries.slice()){
    let src=await getReceiptImage(e.id);
    if(!src&&e.receiptImage)src=e.receiptImage;
    if(src)items.push({e,src});
@@ -3393,7 +3419,7 @@ async function makeReportPages(){
  // مفتاح ألوان الصفوف
  drawLegendBox();
  tableHead();
- const sorted=entries.slice().sort((a,b)=>n(a.receipt)-n(b.receipt));
+ const sorted=entries.slice();
 
  for(let rowIndex=0;rowIndex<sorted.length;rowIndex++){
    const e=sorted[rowIndex];
@@ -3585,7 +3611,7 @@ async function buildBackupJsonBlob(){
  saveStatementMeta();
  const out=[];
  for(const x of entries){out.push({...x,receiptImage:await getReceiptImage(x.id)})}
- const payload={app:'الفروقات',version:68,exportedAt:new Date().toISOString(),company,statementMeta,entries:out};
+ const payload={app:'الفروقات',version:70,exportedAt:new Date().toISOString(),company,statementMeta,entries:out};
  return new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
 }
 async function buildBackupPdfBlob(){
@@ -3597,7 +3623,7 @@ function escWord(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt
 function fmtWordAmount(v){try{return money(Number(v)||0)}catch(e){return String(v||0)}}
 async function buildBackupWordBlob(){
  saveStatementMeta();
- const sorted=[...entries].sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.id-b.id));
+ const sorted=[...entries];
  let ownerTotal=0,officeTotal=0;
  const rows=[];
  for(let i=0;i<sorted.length;i++){
