@@ -1,4 +1,4 @@
-name: Build FurniPlan V112
+name: Build FurniPlan V113
 
 on:
   workflow_dispatch:
@@ -35,36 +35,36 @@ jobs:
 
       - name: Create complete backup ZIP
         shell: pwsh
-        run: git archive --format=zip --output FurniPlan-V112-Complete.zip HEAD
+        run: git archive --format=zip --output FurniPlan-V113-Complete.zip HEAD
 
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FurniPlan-V112-Windows-Installer
-          path: dist/FurniPlan-Setup-V112-x64.exe
+          name: FurniPlan-V113-Windows-Installer
+          path: dist/FurniPlan-Setup-V113-x64.exe
           if-no-files-found: error
           retention-days: 30
 
       - name: Upload complete backup artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FurniPlan-V112-Complete-Backup
-          path: FurniPlan-V112-Complete.zip
+          name: FurniPlan-V113-Complete-Backup
+          path: FurniPlan-V113-Complete.zip
           if-no-files-found: error
           retention-days: 30
 
-      - name: Publish V112 release
+      - name: Publish V113 release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: FurniPlan-V112
-          name: FurniPlan V112
+          tag_name: FurniPlan-V113
+          name: FurniPlan V113
           body: |
-            FurniPlan V112 stable.
-            Includes the approved iPhone/iPad responsive layout,
-            offline readiness status on the splash/login screen,
-            Windows installer with desktop/start-menu shortcuts,
-            and a complete source backup ZIP.
+            FurniPlan V113 Windows fix.
+            Disables hardware acceleration to avoid black-window issues,
+            starts with a white background and error fallback,
+            creates desktop/start-menu shortcuts,
+            and uses faster installer compression.
           files: |
-            dist/FurniPlan-Setup-V112-x64.exe
-            FurniPlan-V112-Complete.zip
+            dist/FurniPlan-Setup-V113-x64.exe
+            FurniPlan-V113-Complete.zip
           make_latest: true
