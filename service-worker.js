@@ -1,9 +1,9 @@
-const CACHE='furniplan-v111-offline-20261002';
+const CACHE='furniplan-v112-offline-20261002';
 const CORE=[
   './',
   './index.html',
   './manifest.webmanifest',
-  './v85-final-patch.js?v=111',
+  './v85-final-patch.js?v=112',
   './icons/icon-192.png?v=100',
   './icons/icon-512.png?v=100',
   './apple-touch-icon.png'
