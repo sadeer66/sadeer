@@ -2,6 +2,18 @@ name: Build FurniPlan Windows Installer
 
 on:
   workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - 'index.html'
+      - 'v85-final-patch.js'
+      - 'service-worker.js'
+      - 'package.json'
+      - 'desktop/**'
+      - 'manifest.webmanifest'
+      - 'icons/**'
+      - 'build/furniplan.ico'
+      - '.github/workflows/desktop-build.yml'
 
 permissions:
   contents: write
