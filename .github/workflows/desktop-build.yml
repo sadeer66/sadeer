@@ -1,4 +1,4 @@
-name: Build FurniPlan V113
+name: Build FurniPlan V114
 
 on:
   workflow_dispatch:
@@ -6,6 +6,7 @@ on:
     branches: [master]
     paths:
       - 'package.json'
+      - 'desktop/main.js'
       - '.github/workflows/desktop-build.yml'
 
 permissions:
@@ -27,44 +28,56 @@ jobs:
         shell: pwsh
         run: npm install --no-audit --no-fund
 
+      - name: Verify app files before build
+        shell: pwsh
+        run: |
+          if (!(Test-Path "index.html")) { throw "index.html missing before build" }
+          Write-Host "index.html present"
+          Get-Item index.html | Format-List FullName,Length
+
       - name: Build Windows installer
         shell: pwsh
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: npm run dist:win
 
+      - name: Verify unpacked app contains index
+        shell: pwsh
+        run: |
+          if (!(Test-Path "dist/win-unpacked/resources/app.asar")) { throw "app.asar missing" }
+          npx asar list "dist/win-unpacked/resources/app.asar" | Select-String "index.html"
+          if ($LASTEXITCODE -ne 0) { throw "Failed to inspect app.asar" }
+
       - name: Create complete backup ZIP
         shell: pwsh
-        run: git archive --format=zip --output FurniPlan-V113-Complete.zip HEAD
+        run: git archive --format=zip --output FurniPlan-V114-Complete.zip HEAD
 
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FurniPlan-V113-Windows-Installer
-          path: dist/FurniPlan-Setup-V113-x64.exe
+          name: FurniPlan-V114-Windows-Installer
+          path: dist/FurniPlan-Setup-V114-x64.exe
           if-no-files-found: error
           retention-days: 30
 
       - name: Upload complete backup artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FurniPlan-V113-Complete-Backup
-          path: FurniPlan-V113-Complete.zip
+          name: FurniPlan-V114-Complete-Backup
+          path: FurniPlan-V114-Complete.zip
           if-no-files-found: error
           retention-days: 30
 
-      - name: Publish V113 release
+      - name: Publish V114 release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: FurniPlan-V113
-          name: FurniPlan V113
+          tag_name: FurniPlan-V114
+          name: FurniPlan V114
           body: |
-            FurniPlan V113 Windows fix.
-            Disables hardware acceleration to avoid black-window issues,
-            starts with a white background and error fallback,
-            creates desktop/start-menu shortcuts,
-            and uses faster installer compression.
+            FurniPlan V114 Windows startup fix.
+            Uses an embedded localhost server so the packaged UI and PWA files
+            load reliably from app.asar instead of the file protocol.
           files: |
-            dist/FurniPlan-Setup-V113-x64.exe
-            FurniPlan-V113-Complete.zip
+            dist/FurniPlan-Setup-V114-x64.exe
+            FurniPlan-V114-Complete.zip
           make_latest: true
