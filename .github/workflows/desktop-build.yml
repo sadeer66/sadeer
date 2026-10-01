@@ -2,17 +2,6 @@ name: Build FurniPlan Windows Installer
 
 on:
   workflow_dispatch:
-  push:
-    branches: [master]
-    paths:
-      - 'index.html'
-      - 'v85-final-patch.js'
-      - 'package.json'
-      - 'desktop/**'
-      - 'manifest.webmanifest'
-      - 'icons/**'
-      - 'build/furniplan.ico'
-      - '.github/workflows/desktop-build.yml'
 
 permissions:
   contents: write
@@ -39,23 +28,45 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
         run: npm run dist:win
 
+      - name: Create complete backup ZIP
+        shell: pwsh
+        run: |
+          $items = @(
+            "index.html","catalog.html","manifest.webmanifest","service-worker.js",
+            "v13-ipad-fix.js","v85-final-patch.js","startup_splash.png",
+            "assets","icons","build","desktop",
+            "assistant-auth.js","assistant-auth.json","assistant-link.js","assistant.json",
+            "package.json"
+          )
+          $items += Get-ChildItem -Path . -Name "v45*.*"
+          Compress-Archive -Path $items -DestinationPath "FurniPlan-V102-Complete.zip" -Force
+
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
-          name: FurniPlan-V100-Windows-Installer
+          name: FurniPlan-V102-Windows-Installer
           path: dist/*.exe
           if-no-files-found: error
           retention-days: 30
 
-      - name: Publish V100 release
+      - name: Upload complete backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: FurniPlan-V102-Complete-Backup
+          path: FurniPlan-V102-Complete.zip
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish V102 release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: FurniPlan-V100
-          name: FurniPlan V100
+          tag_name: FurniPlan-V102
+          name: FurniPlan V102
           body: |
-            FurniPlan V100 stable Windows installer.
-            Includes FurniPlan installer icon and desktop/start-menu shortcut icon.
-          files: dist/*.exe
+            FurniPlan V102 Offline.
+            Includes offline/PWA support, offline readiness status, Windows installer,
+            desktop/start-menu shortcut icon, and complete backup ZIP.
+          files: |
+            dist/*.exe
+            FurniPlan-V102-Complete.zip
           make_latest: true
-
-# FurniPlan V100 stable build
