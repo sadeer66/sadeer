@@ -557,3 +557,5 @@
   else init();
 })();
 // ===== End FurniPlan V102 Offline Status Footer =====
+
+// FurniPlan V102 desktop build trigger 2026-10-01
