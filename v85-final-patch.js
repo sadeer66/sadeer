@@ -467,3 +467,93 @@
   else window.addEventListener('load',register,{once:true});
 })();
 // ===== End FurniPlan V101 Offline/PWA Registration =====
+
+
+// ===== FurniPlan V102 Offline Status Footer =====
+(()=>{
+  const READY_KEY='furniplan-offline-ready-v102';
+
+  function ensureStyles(){
+    if(document.getElementById('fpOfflineStatusStyleV102')) return;
+    const s=document.createElement('style');
+    s.id='fpOfflineStatusStyleV102';
+    s.textContent=`
+      .fpOfflineStatusV102{
+        position:fixed;left:50%;bottom:6px;transform:translateX(-50%);
+        z-index:5000;display:flex;align-items:center;gap:7px;
+        padding:5px 9px;border-radius:999px;
+        background:rgba(255,255,255,.9);color:#111827;
+        border:1px solid rgba(15,23,42,.18);
+        box-shadow:0 2px 10px rgba(0,0,0,.12);
+        font:700 11px/1.2 Tahoma,Arial,sans-serif;
+        direction:rtl;pointer-events:none;
+        backdrop-filter:blur(5px);
+      }
+      .fpOfflineDotV102{
+        width:8px;height:8px;border-radius:50%;flex:0 0 auto;
+        background:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.16);
+      }
+      .fpOfflineStatusV102.ready .fpOfflineDotV102{
+        background:#22c55e;box-shadow:0 0 0 2px rgba(34,197,94,.16);
+      }
+      @media(max-width:700px){
+        .fpOfflineStatusV102{font-size:10px;bottom:5px;padding:4px 8px;max-width:calc(100vw - 18px);white-space:nowrap}
+      }
+    `;
+    document.head.appendChild(s);
+  }
+
+  function ensureStatus(){
+    let el=document.getElementById('fpOfflineStatusV102');
+    if(el) return el;
+    ensureStyles();
+    el=document.createElement('div');
+    el.id='fpOfflineStatusV102';
+    el.className='fpOfflineStatusV102';
+    el.innerHTML='<span class="fpOfflineDotV102"></span><span class="fpOfflineTextV102">جاري تجهيز البرنامج ليعمل بدون نت…</span>';
+    document.body.appendChild(el);
+    return el;
+  }
+
+  function setReady(){
+    const el=ensureStatus();
+    el.classList.add('ready');
+    const t=el.querySelector('.fpOfflineTextV102');
+    if(t)t.textContent='البرنامج لا يحتاج الإنترنت ليعمل';
+    try{localStorage.setItem(READY_KEY,'1');}catch(_){}
+  }
+
+  function setPreparing(){
+    const el=ensureStatus();
+    el.classList.remove('ready');
+    const t=el.querySelector('.fpOfflineTextV102');
+    if(t)t.textContent='جاري تجهيز البرنامج ليعمل بدون نت…';
+  }
+
+  async function verifyOfflineReady(){
+    if(!('serviceWorker' in navigator) || !('caches' in window)){
+      setPreparing(); return;
+    }
+    try{
+      const reg=await navigator.serviceWorker.ready;
+      const keys=await caches.keys();
+      const ok=!!reg && keys.some(k=>k.includes('furniplan-v101-offline-20261001'));
+      if(ok)setReady(); else setPreparing();
+    }catch(_){ setPreparing(); }
+  }
+
+  function init(){
+    ensureStatus();
+    let saved=false;
+    try{saved=localStorage.getItem(READY_KEY)==='1';}catch(_){}
+    if(saved)setReady(); else setPreparing();
+
+    verifyOfflineReady();
+    navigator.serviceWorker?.addEventListener?.('controllerchange',verifyOfflineReady);
+    window.addEventListener('online',verifyOfflineReady);
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
+})();
+// ===== End FurniPlan V102 Offline Status Footer =====
