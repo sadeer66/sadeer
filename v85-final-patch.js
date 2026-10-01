@@ -460,7 +460,7 @@
 // ===== FurniPlan V101 Offline/PWA Registration =====
 (()=>{
   if(!('serviceWorker' in navigator)) return;
-  const register=()=>navigator.serviceWorker.register('./service-worker.js?v=101',{scope:'./'})
+  const register=()=>navigator.serviceWorker.register('./service-worker.js?v=112',{scope:'./'})
     .then(reg=>{ try{reg.update();}catch(_){} })
     .catch(()=>{});
   if(document.readyState==='complete') register();
@@ -469,94 +469,101 @@
 // ===== End FurniPlan V101 Offline/PWA Registration =====
 
 
-// ===== FurniPlan V102 Offline Status Footer =====
+// ===== FurniPlan V112 Splash Offline Status =====
 (()=>{
-  const READY_KEY='furniplan-offline-ready-v102';
+  const CACHE_NAME='furniplan-v112-offline-20261002';
+  const READY_KEY='furniplan-offline-ready-v112';
 
   function ensureStyles(){
-    if(document.getElementById('fpOfflineStatusStyleV102')) return;
+    if(document.getElementById('fpSplashOfflineStyleV112')) return;
     const s=document.createElement('style');
-    s.id='fpOfflineStatusStyleV102';
+    s.id='fpSplashOfflineStyleV112';
     s.textContent=`
-      .fpOfflineStatusV102{
-        position:fixed;left:50%;bottom:6px;transform:translateX(-50%);
-        z-index:5000;display:flex;align-items:center;gap:7px;
-        padding:5px 9px;border-radius:999px;
-        background:rgba(255,255,255,.9);color:#111827;
-        border:1px solid rgba(15,23,42,.18);
-        box-shadow:0 2px 10px rgba(0,0,0,.12);
-        font:700 11px/1.2 Tahoma,Arial,sans-serif;
-        direction:rtl;pointer-events:none;
-        backdrop-filter:blur(5px);
+      .fpSplashOfflineV112{
+        margin-top:12px;
+        display:inline-flex;align-items:center;justify-content:center;gap:8px;
+        padding:6px 11px;border-radius:999px;
+        background:rgba(255,255,255,.58);
+        border:1px solid rgba(100,78,45,.18);
+        color:#2d2923;
+        font:700 12px/1.2 Tahoma,Arial,sans-serif;
+        direction:rtl;
+        box-shadow:0 2px 8px rgba(0,0,0,.06);
+        white-space:nowrap;
       }
-      .fpOfflineDotV102{
-        width:8px;height:8px;border-radius:50%;flex:0 0 auto;
-        background:#f59e0b;box-shadow:0 0 0 2px rgba(245,158,11,.16);
+      .fpSplashOfflineDotV112{
+        width:9px;height:9px;border-radius:50%;flex:0 0 auto;
+        background:#f59e0b;
+        box-shadow:0 0 0 2px rgba(245,158,11,.16);
       }
-      .fpOfflineStatusV102.ready .fpOfflineDotV102{
-        background:#22c55e;box-shadow:0 0 0 2px rgba(34,197,94,.16);
+      .fpSplashOfflineV112.ready .fpSplashOfflineDotV112{
+        background:#22c55e;
+        box-shadow:0 0 0 2px rgba(34,197,94,.16);
       }
-      @media(max-width:700px){
-        .fpOfflineStatusV102{font-size:10px;bottom:5px;padding:4px 8px;max-width:calc(100vw - 18px);white-space:nowrap}
+      @media(max-width:600px){
+        .fpSplashOfflineV112{font-size:10.5px;padding:5px 9px;margin-top:9px;max-width:92vw}
       }
     `;
     document.head.appendChild(s);
   }
 
   function ensureStatus(){
-    let el=document.getElementById('fpOfflineStatusV102');
+    const splash=document.getElementById('fpSplash');
+    if(!splash) return null;
+    let el=document.getElementById('fpSplashOfflineV112');
     if(el) return el;
     ensureStyles();
     el=document.createElement('div');
-    el.id='fpOfflineStatusV102';
-    el.className='fpOfflineStatusV102';
-    el.innerHTML='<span class="fpOfflineDotV102"></span><span class="fpOfflineTextV102">جاري تجهيز البرنامج ليعمل بدون نت…</span>';
-    document.body.appendChild(el);
+    el.id='fpSplashOfflineV112';
+    el.className='fpSplashOfflineV112';
+    el.innerHTML='<span class="fpSplashOfflineDotV112"></span><span class="fpSplashOfflineTextV112">جاري تجهيز البرنامج ليعمل بدون نت…</span>';
+    const host=splash.querySelector('.fpSplashContent')||splash;
+    const loading=host.querySelector('.fpLoadingText');
+    if(loading) loading.insertAdjacentElement('afterend',el);
+    else host.appendChild(el);
     return el;
   }
 
   function setReady(){
-    const el=ensureStatus();
+    const el=ensureStatus(); if(!el) return;
     el.classList.add('ready');
-    const t=el.querySelector('.fpOfflineTextV102');
+    const t=el.querySelector('.fpSplashOfflineTextV112');
     if(t)t.textContent='البرنامج لا يحتاج الإنترنت ليعمل';
-    try{localStorage.setItem(READY_KEY,'1');}catch(_){}
+    try{localStorage.setItem(READY_KEY,'1')}catch(_){}
   }
 
   function setPreparing(){
-    const el=ensureStatus();
+    const el=ensureStatus(); if(!el) return;
     el.classList.remove('ready');
-    const t=el.querySelector('.fpOfflineTextV102');
+    const t=el.querySelector('.fpSplashOfflineTextV112');
     if(t)t.textContent='جاري تجهيز البرنامج ليعمل بدون نت…';
   }
 
-  async function verifyOfflineReady(){
-    if(!('serviceWorker' in navigator) || !('caches' in window)){
-      setPreparing(); return;
-    }
+  async function verify(){
+    const el=ensureStatus(); if(!el) return;
     try{
-      const reg=await navigator.serviceWorker.ready;
+      if(!('serviceWorker' in navigator)||!('caches' in window)){setPreparing();return;}
+      await navigator.serviceWorker.ready;
       const keys=await caches.keys();
-      const ok=!!reg && keys.some(k=>k.includes('furniplan-v101-offline-20261001'));
+      const ok=keys.includes(CACHE_NAME);
       if(ok)setReady(); else setPreparing();
-    }catch(_){ setPreparing(); }
+    }catch(_){setPreparing();}
   }
 
   function init(){
-    ensureStatus();
+    if(!ensureStatus()) return;
     let saved=false;
-    try{saved=localStorage.getItem(READY_KEY)==='1';}catch(_){}
+    try{saved=localStorage.getItem(READY_KEY)==='1'}catch(_){}
     if(saved)setReady(); else setPreparing();
-
-    verifyOfflineReady();
-    navigator.serviceWorker?.addEventListener?.('controllerchange',verifyOfflineReady);
-    window.addEventListener('online',verifyOfflineReady);
+    verify();
+    navigator.serviceWorker?.addEventListener?.('controllerchange',()=>setTimeout(verify,80));
+    window.addEventListener('online',verify);
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
   else init();
 })();
-// ===== End FurniPlan V102 Offline Status Footer =====
+// ===== End FurniPlan V112 Splash Offline Status =====
 
 // FurniPlan V102 desktop build trigger 2026-10-01
 
