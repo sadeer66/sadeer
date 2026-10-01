@@ -559,3 +559,197 @@
 // ===== End FurniPlan V102 Offline Status Footer =====
 
 // FurniPlan V102 desktop build trigger 2026-10-01
+
+
+// ===== FurniPlan V111 Safe Responsive Touch CSS Only =====
+(()=>{
+  if(document.getElementById('fpSafeResponsiveV111')) return;
+  const s=document.createElement('style');
+  s.id='fpSafeResponsiveV111';
+  s.textContent=`
+/* iPhone portrait */
+@media (hover:none) and (pointer:coarse) and (max-width:600px) and (orientation:portrait){
+  :root{
+    --tool-btn-w:44px!important;
+    --tool-btn-h:46px!important;
+    --tool-icon-size:18px!important;
+    --tool-label-size:7px!important;
+    --tool-label-short-size:6.6px!important;
+    --tool-side-width:50px!important;
+    --tool-header-h:78px!important;
+  }
+  header{
+    height:78px!important;min-height:78px!important;max-height:78px!important;
+    padding:3px 4px!important;overflow:hidden!important;
+  }
+  .headerBrand{display:none!important}
+  #modernToolbarArea{width:100%!important;min-width:0!important;gap:3px!important}
+  #modernTopToolbar{
+    height:47px!important;min-height:47px!important;max-height:47px!important;
+    overflow-x:auto!important;overflow-y:hidden!important;touch-action:pan-x!important;
+    flex-wrap:nowrap!important;justify-content:flex-start!important;
+    padding:2px 3px!important;gap:3px!important;scrollbar-width:none!important;
+  }
+  #modernTopToolbar::-webkit-scrollbar{display:none!important}
+  #modernTopToolbar .modernIconBtn{
+    width:44px!important;height:43px!important;min-width:44px!important;min-height:43px!important;
+    flex:0 0 44px!important;padding:3px 2px!important;
+  }
+  #modernTopToolbar .modernIconBtn svg{width:18px!important;height:18px!important}
+  #modernTopToolbar .modernIconBtn .iconLabel{font-size:7px!important;line-height:1!important}
+  #modernSliderRow{
+    display:flex!important;height:27px!important;min-height:27px!important;max-height:27px!important;
+    overflow-x:auto!important;overflow-y:hidden!important;touch-action:pan-x!important;
+    gap:3px!important;padding:0 1px!important;scrollbar-width:none!important;
+  }
+  #modernSliderRow::-webkit-scrollbar{display:none!important}
+  .modernSliderBox,.modernSliderBox.uiScaleBox{
+    flex:0 0 118px!important;width:118px!important;min-width:118px!important;
+    height:26px!important;min-height:26px!important;padding:1px 3px!important;
+  }
+  .modernSliderBox:first-child{flex-basis:145px!important;width:145px!important;min-width:145px!important}
+  main{padding:3px!important;min-width:0!important;min-height:0!important;overflow:hidden!important}
+  .mapPanel{height:100%!important;min-height:0!important;gap:3px!important}
+  .mapViewport{
+    flex:1 1 auto!important;min-height:0!important;overflow:auto!important;
+    -webkit-overflow-scrolling:touch!important;touch-action:pan-x pan-y!important;padding:3px!important;
+  }
+  #furnitureIconToolbar{
+    position:absolute!important;z-index:90!important;
+    left:3px!important;right:3px!important;top:auto!important;bottom:3px!important;
+    width:auto!important;height:52px!important;min-height:52px!important;max-height:52px!important;
+    display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;
+    overflow-x:auto!important;overflow-y:hidden!important;touch-action:pan-x!important;
+    padding:4px!important;gap:4px!important;scrollbar-width:none!important;
+  }
+  #furnitureIconToolbar::-webkit-scrollbar{display:none!important}
+  #furnitureIconToolbar .modernIconBtn{
+    width:46px!important;height:46px!important;min-width:46px!important;min-height:46px!important;
+    flex:0 0 46px!important;padding:3px!important;
+  }
+  #furnitureIconToolbar .modernIconBtn svg{width:18px!important;height:18px!important}
+  #furnitureIconToolbar .modernIconBtn .iconLabel{font-size:7.2px!important;line-height:1!important}
+  #furnitureIconToolbar .toolSep{
+    width:1px!important;height:28px!important;min-width:1px!important;min-height:28px!important;margin:0 2px!important;
+  }
+  .bottomInspector{margin-bottom:56px!important;overflow-x:auto!important;flex-wrap:nowrap!important}
+  .fpOfflineStatusV102{bottom:calc(88px + env(safe-area-inset-bottom))!important}
+}
+
+/* iPhone landscape */
+@media (hover:none) and (pointer:coarse) and (max-height:600px) and (orientation:landscape){
+  :root{
+    --tool-btn-w:42px!important;
+    --tool-btn-h:44px!important;
+    --tool-icon-size:16px!important;
+    --tool-label-size:6.7px!important;
+    --tool-label-short-size:6.3px!important;
+    --tool-side-width:48px!important;
+    --tool-header-h:76px!important;
+  }
+  header{
+    height:76px!important;min-height:76px!important;max-height:76px!important;
+    padding:3px 5px!important;overflow:hidden!important;
+  }
+  .headerBrand{display:none!important}
+  #modernTopToolbar{
+    height:45px!important;min-height:45px!important;max-height:45px!important;
+    overflow-x:auto!important;overflow-y:hidden!important;touch-action:pan-x!important;
+    flex-wrap:nowrap!important;justify-content:flex-start!important;padding:2px!important;gap:3px!important;
+  }
+  #modernTopToolbar .modernIconBtn{
+    width:42px!important;height:41px!important;min-width:42px!important;min-height:41px!important;
+    flex:0 0 42px!important;padding:2px!important;
+  }
+  #modernTopToolbar .modernIconBtn svg{width:16px!important;height:16px!important}
+  #modernTopToolbar .modernIconBtn .iconLabel{font-size:6.7px!important;line-height:1!important}
+  #modernSliderRow{
+    display:flex!important;height:27px!important;min-height:27px!important;max-height:27px!important;
+    overflow-x:auto!important;overflow-y:hidden!important;touch-action:pan-x!important;gap:3px!important;
+  }
+  main{padding:3px!important;min-height:0!important;overflow:hidden!important}
+  #furnitureIconToolbar{
+    position:absolute!important;z-index:90!important;
+    left:3px!important;right:auto!important;top:3px!important;bottom:3px!important;
+    width:48px!important;height:auto!important;min-width:48px!important;max-width:48px!important;
+    display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;
+    overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y!important;
+    padding:3px!important;gap:3px!important;scrollbar-width:none!important;
+  }
+  #furnitureIconToolbar::-webkit-scrollbar{display:none!important}
+  #furnitureIconToolbar .modernIconBtn{
+    width:42px!important;height:44px!important;min-width:42px!important;min-height:44px!important;
+    flex:0 0 44px!important;padding:2px!important;
+  }
+  #furnitureIconToolbar .modernIconBtn svg{width:16px!important;height:16px!important}
+  #furnitureIconToolbar .modernIconBtn .iconLabel{font-size:6.7px!important;line-height:1!important}
+  #furnitureIconToolbar .toolSep{
+    width:26px!important;height:1px!important;min-width:26px!important;min-height:1px!important;margin:1px 0!important;
+  }
+  .bottomInspector{margin-bottom:0!important}
+  .fpOfflineStatusV102{bottom:34px!important}
+}
+
+/* iPad portrait */
+@media (hover:none) and (pointer:coarse) and (min-width:601px) and (max-width:1100px) and (orientation:portrait){
+  :root{
+    --tool-btn-w:54px!important;
+    --tool-btn-h:56px!important;
+    --tool-icon-size:22px!important;
+    --tool-label-size:8.3px!important;
+    --tool-label-short-size:7.8px!important;
+    --tool-side-width:60px!important;
+    --tool-header-h:96px!important;
+  }
+  header{
+    height:96px!important;min-height:96px!important;max-height:96px!important;
+    padding:5px 7px!important;overflow:hidden!important;
+  }
+  .headerBrand{display:none!important}
+  #modernToolbarArea{width:100%!important;min-width:0!important;gap:4px!important}
+  #modernTopToolbar{
+    overflow-x:auto!important;overflow-y:hidden!important;touch-action:pan-x!important;
+    flex-wrap:nowrap!important;justify-content:flex-start!important;
+    padding:3px 4px!important;gap:4px!important;scrollbar-width:none!important;
+  }
+  #modernTopToolbar::-webkit-scrollbar{display:none!important}
+  #modernTopToolbar .modernIconBtn{
+    width:54px!important;height:56px!important;min-width:54px!important;min-height:56px!important;
+    flex:0 0 54px!important;padding:3px!important;
+  }
+  #modernTopToolbar .modernIconBtn svg{width:22px!important;height:22px!important}
+  #modernTopToolbar .modernIconBtn .iconLabel{font-size:8.3px!important;line-height:1!important}
+  #modernSliderRow{
+    display:flex!important;overflow-x:auto!important;overflow-y:hidden!important;
+    touch-action:pan-x!important;gap:4px!important;scrollbar-width:none!important;
+  }
+  #modernSliderRow::-webkit-scrollbar{display:none!important}
+  .modernSliderBox,.modernSliderBox.uiScaleBox{
+    flex:0 0 135px!important;width:135px!important;min-width:135px!important;height:31px!important;
+  }
+  .modernSliderBox:first-child{flex-basis:175px!important;width:175px!important;min-width:175px!important}
+  main{padding:6px!important;min-width:0!important;min-height:0!important;overflow:hidden!important}
+  .mapPanel{height:100%!important;min-height:0!important}
+  .mapViewport{
+    min-height:0!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;
+    touch-action:pan-x pan-y!important;
+  }
+  #furnitureIconToolbar{
+    left:5px!important;right:auto!important;top:5px!important;bottom:5px!important;
+    width:60px!important;min-width:60px!important;padding:3px!important;gap:3px!important;
+    overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y!important;
+  }
+  #furnitureIconToolbar .modernIconBtn{
+    width:54px!important;height:56px!important;min-width:54px!important;min-height:56px!important;
+    flex:0 0 56px!important;padding:3px!important;
+  }
+  #furnitureIconToolbar .modernIconBtn svg{width:22px!important;height:22px!important}
+  #furnitureIconToolbar .modernIconBtn .iconLabel{font-size:8.3px!important}
+  aside{top:calc(env(safe-area-inset-top) + 96px)!important}
+  .sidebarScrim{inset:calc(env(safe-area-inset-top) + 96px) 0 env(safe-area-inset-bottom) 0!important}
+  .fpOfflineStatusV102{bottom:36px!important}
+}
+  `;
+  document.head.appendChild(s);
+})();
+// ===== End FurniPlan V111 Safe Responsive Touch CSS Only =====
