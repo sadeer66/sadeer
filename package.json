@@ -1,6 +1,6 @@
 {
   "name": "furniplan-desktop",
-  "version": "1.0.113",
+  "version": "1.0.114",
   "description": "FurniPlan - Smart Space Planning",
   "main": "desktop/main.js",
   "author": "سدير ياسين محمد",
@@ -15,35 +15,24 @@
   "build": {
     "appId": "com.sadeer.furniplan",
     "productName": "FurniPlan",
-    "artifactName": "FurniPlan-Setup-V113-${arch}.exe",
+    "artifactName": "FurniPlan-Setup-V114-${arch}.exe",
     "asar": true,
     "directories": {
       "output": "dist",
       "buildResources": "build"
     },
     "files": [
-      "index.html",
-      "catalog*.html",
-      "manifest.webmanifest",
-      "service-worker.js",
-      "v13-ipad-fix.js",
-      "v85-final-patch.js",
-      "startup_splash.png",
-      "v45*.*",
-      "assets/**/*",
-      "icons/**/*",
-      "build/furniplan.ico",
-      "desktop/main.js",
-      "assistant*.json",
-      "assistant*.js"
+      "**/*",
+      "!dist/**/*",
+      "!node_modules/.cache/**/*",
+      "!.git/**/*",
+      "!.github/**/*"
     ],
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": [
-            "x64"
-          ]
+          "arch": ["x64"]
         }
       ],
       "icon": "build/furniplan.ico"
@@ -61,6 +50,6 @@
       "uninstallerIcon": "build/furniplan.ico",
       "installerHeaderIcon": "build/furniplan.ico"
     },
-    "compression": "store"
+    "compression": "normal"
   }
 }
