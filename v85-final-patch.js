@@ -455,3 +455,15 @@
   requestAnimationFrame(()=>{try{updateStageSize();updatePanState()}catch{}});
 })();
 // ===== End FurniPlan V97 Map Pan + Dual Furniture Placement =====
+
+
+// ===== FurniPlan V101 Offline/PWA Registration =====
+(()=>{
+  if(!('serviceWorker' in navigator)) return;
+  const register=()=>navigator.serviceWorker.register('./service-worker.js?v=101',{scope:'./'})
+    .then(reg=>{ try{reg.update();}catch(_){} })
+    .catch(()=>{});
+  if(document.readyState==='complete') register();
+  else window.addEventListener('load',register,{once:true});
+})();
+// ===== End FurniPlan V101 Offline/PWA Registration =====
