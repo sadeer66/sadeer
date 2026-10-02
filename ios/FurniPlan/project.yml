@@ -1,0 +1,31 @@
+name: FurniPlan
+options:
+  bundleIdPrefix: com.sadeer
+  deploymentTarget:
+    iOS: "16.0"
+settings:
+  base:
+    MARKETING_VERSION: 1.0.119
+    CURRENT_PROJECT_VERSION: 119
+targets:
+  FurniPlan:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+    resources:
+      - path: Web
+      - path: Resources
+    info:
+      path: Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sadeer.furniplan
+        PRODUCT_NAME: FurniPlan
+        TARGETED_DEVICE_FAMILY: "1,2"
+        IPHONEOS_DEPLOYMENT_TARGET: "16.0"
+        CODE_SIGN_STYLE: Automatic
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: NO
+    scheme:
+      testTargets: []
