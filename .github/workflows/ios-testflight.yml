@@ -122,6 +122,12 @@ jobs:
           sips -z 167 167 "$SRC" --out "$DEST/Icon-167.png" >/dev/null
           sips -z 180 180 "$SRC" --out "$DEST/Icon-180.png" >/dev/null
           sips -z 1024 1024 "$SRC" --out "$DEST/Icon-1024.png" >/dev/null
+          # Also place explicit legacy icon files in the app resource bundle for App Store validation.
+          sips -z 120 120 "$SRC" --out "ios/FurniPlan/Resources/Icon-120.png" >/dev/null
+          sips -z 180 180 "$SRC" --out "ios/FurniPlan/Resources/Icon-180.png" >/dev/null
+          sips -z 76 76 "$SRC" --out "ios/FurniPlan/Resources/Icon-76.png" >/dev/null
+          sips -z 152 152 "$SRC" --out "ios/FurniPlan/Resources/Icon-152.png" >/dev/null
+          sips -z 167 167 "$SRC" --out "ios/FurniPlan/Resources/Icon-167.png" >/dev/null
 
       - name: Install XcodeGen
         run: brew install xcodegen
