@@ -868,6 +868,44 @@
     'مفردة':'single','داخلي':'interior','خارجي':'exterior','جانبي':'side','زاوية':'corner','حديثة':'modern'
   };
 
+  const reverseExact = Object.create(null);
+  for (const [ar,en] of Object.entries(exact)) if (!(en in reverseExact)) reverseExact[en] = ar;
+  Object.assign(reverseExact, {
+    'Message':'رسالة','Grid':'شبكة','Move':'تحريك','Area':'مساحة','label':'مسمى','Label':'مسمى',
+    'Measure':'قياس','Calibrate':'معايرة','DXF':'DXF','plan':'خارطة','Plan':'خارطة',
+    'Save':'حفظ','Open':'فتح','Arrange':'ترتيب','Zoom In':'تكبير','Zoom Out':'تصغير',
+    'Scale':'المقياس','Status:':'الحالة:','Status':'الحالة','Not calibrated':'غير معاير',
+    'Reset Scale':'إعادة ضبط المقياس','Furniture Library':'مكتبة الأثاث',
+    '+ Add to Library':'+ إضافة للمكتبة','Add to Library +':'+ إضافة للمكتبة',
+    'Restore Defaults':'استعادة الأصلية','Icons':'أيقونات','Measurements':'القياسات',
+    'Item Names':'أسماء القطع','Lock Measurements':'قفل القياسات','Lock Labels':'قفل المسميات',
+    'Lock Furniture':'قفل الأثاث','Hide Furniture':'إخفاء الأثاث','Hide Plan':'إخفاء الخارطة',
+    'Hide Labels':'إخفاء المسميات','Hide Measurements':'إخفاء القياسات',
+    'Hide Measurement Arrows':'إخفاء أسهم القياس','Hide Guide':'إخفاء الدليل',
+    'Upload a plan to begin':'ارفع مخططًا للبدء','Press «Calibrate» then Choose on plan.':'اضغط «معايرة» ثم اختر نقطتين على الخارطة.',
+    '3-Seat Sofa':'كنبة 3 مقاعد','Seat Sofa-3':'كنبة 3 مقاعد',
+    '2-Seat Sofa':'كنبة مقعدين','Seat Sofa-2':'كنبة مقعدين',
+    'L-Shaped Sofa':'كنبة زاوية L','Light Armchair':'كرسي مفرد فاتح',
+    'Bedroom':'غرفة نوم','Dining Room':'غرفة طعام','Living Room':'صالة','Kitchen':'مطبخ',
+    'Bathroom':'حمام','Office':'مكتب','Laundry & Utility':'الغسيل والخدمات',
+    'Entry & Storage':'مدخل وتخزين','Garage & Cars':'الكراج والسيارات',
+    'Gardens & Pools':'الحدائق والمسابح','Other':'أخرى',
+    'room':'غرفة','kitchen':'مطبخ','bathroom':'حمام','office':'مكتب','other':'أخرى',
+    'Smarter planning .. Better living':'تخطيط أذكى .. لحياة أفضل',
+    '© 2026 FurniPlan — All rights reserved — Sadeer Yaseen Mohammed':'© 2026 FurniPlan — جميع الحقوق محفوظة — سدير ياسين محمد',
+    'FurniPlan — All rights reserved — Sadeer Yaseen Mohammed 2026 ©':'FurniPlan — جميع الحقوق محفوظة — سدير ياسين محمد © 2026'
+  });
+
+  function translateEnText(input){
+    const src = String(input ?? '');
+    const lead = (src.match(/^\s*/)||[''])[0];
+    const trail = (src.match(/\s*$/)||[''])[0];
+    const core = src.trim();
+    if (!core) return src;
+    if (reverseExact[core]) return lead + reverseExact[core] + trail;
+    return src;
+  }
+
   function translateArText(input){
     let src = String(input ?? '');
     if (!AR.test(src)) return src;
@@ -903,7 +941,12 @@
   function applyNode(n, lang){
     if (n.nodeType === Node.TEXT_NODE) {
       rememberNode(n);
-      if (n.__fpArabicText !== undefined) { const next = lang === 'en' ? translateArText(n.__fpArabicText) : n.__fpArabicText; if (n.nodeValue !== next) n.nodeValue = next; }
+      {
+        let next = n.nodeValue;
+        if (lang === 'en') next = n.__fpArabicText !== undefined ? translateArText(n.__fpArabicText) : translateArText(n.nodeValue);
+        else next = n.__fpArabicText !== undefined ? n.__fpArabicText : translateEnText(n.nodeValue);
+        if (n.nodeValue !== next) n.nodeValue = next;
+      }
       return;
     }
     if (n.nodeType !== Node.ELEMENT_NODE) return;
@@ -911,9 +954,21 @@
     rememberNode(n);
     for (const a of ['title','placeholder','aria-label','alt']) {
       const k='__fpArabicAttr_'+a;
-      if (n[k] !== undefined) { const next = lang === 'en' ? translateArText(n[k]) : n[k]; if (n.getAttribute(a) !== next) n.setAttribute(a,next); }
+      {
+        const cur = n.getAttribute(a) || '';
+        let next = cur;
+        if (lang === 'en') next = n[k] !== undefined ? translateArText(n[k]) : translateArText(cur);
+        else next = n[k] !== undefined ? n[k] : translateEnText(cur);
+        if (cur !== next) n.setAttribute(a,next);
+      }
     }
-    if (n.__fpArabicInputValue !== undefined) { const next = lang === 'en' ? translateArText(n.__fpArabicInputValue) : n.__fpArabicInputValue; if (n.value !== next) n.value = next; }
+    {
+      const cur = n.value || '';
+      let next = cur;
+      if (lang === 'en') next = n.__fpArabicInputValue !== undefined ? translateArText(n.__fpArabicInputValue) : translateArText(cur);
+      else next = n.__fpArabicInputValue !== undefined ? n.__fpArabicInputValue : translateEnText(cur);
+      if (cur !== next) n.value = next;
+    }
     for (const child of Array.from(n.childNodes)) applyNode(child,lang);
   }
 
