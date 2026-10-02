@@ -2473,7 +2473,7 @@ select{
 
 /* إجبار أرقام حقول number والتاريخ على الـ Bold في Chrome/Safari */
 input[type="number"],
-input[type="date"],
+input[type="date" lang="en-GB"],
 input[type="text"],
 input[type="search"]{
   font-weight:900 !important;
@@ -2758,7 +2758,7 @@ button,
 .entryGrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:16px!important}
 .entryPanel{min-width:0}
 .entryDateAmountRow{display:grid;grid-template-columns:minmax(170px,.75fr) minmax(160px,1fr);gap:10px;align-items:end}
-.entryDateAmountRow input[type="date"]{white-space:nowrap}
+.entryDateAmountRow input[type="date" lang="en-GB"]{white-space:nowrap}
 @media(max-width:750px){.entryGrid{grid-template-columns:1fr!important}.entryDateAmountRow{grid-template-columns:1fr}}
 </style>
 <!-- V65: independent owner/office payment dates -->
@@ -2774,11 +2774,11 @@ button,
     <p id="phDate"></p>
   </div>
 </div>
-<div class="statementMeta"><div class="statementMetaTitle">بيانات قائمة الحساب</div><div class="field"><label>اسم العميل</label><input id="statementClient" placeholder="اسم العميل" oninput="saveStatementMeta()"></div><div class="field"><label>رقم الموقع</label><input id="statementSite" placeholder="رقم الموقع" oninput="saveStatementMeta()"></div><div class="field"><label>نوع العمل</label><input id="statementWork" placeholder="نوع العمل" oninput="saveStatementMeta()"></div><div class="field"><label>التاريخ</label><input id="statementDate" type="date" oninput="saveStatementMeta()"></div></div>
+<div class="statementMeta"><div class="statementMetaTitle">بيانات قائمة الحساب</div><div class="field"><label>اسم العميل</label><input id="statementClient" placeholder="اسم العميل" oninput="saveStatementMeta()"></div><div class="field"><label>رقم الموقع</label><input id="statementSite" placeholder="رقم الموقع" oninput="saveStatementMeta()"></div><div class="field"><label>نوع العمل</label><input id="statementWork" placeholder="نوع العمل" oninput="saveStatementMeta()"></div><div class="field"><label>التاريخ</label><input id="statementDate" type="date" lang="en-GB" oninput="saveStatementMeta()"></div></div>
 <div class="entryGrid">
-<section class="entryPanel"><div class="panelHead">إضافة للمالك</div><div class="panelBody"><div class="field"><label>التفاصيل</label><textarea id="ownerDetails" placeholder="اكتب تفاصيل دفعة المالك"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المالك</label><input id="ownerDate" type="date"></div><div class="field"><label>المبلغ</label><input id="ownerAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="entryReceiptInline"><div class="field"><label>رقم الوصل</label><input id="ownerReceiptNo" type="text" inputmode="numeric" placeholder="رقم وصل المالك"></div><label class="attachBtn" for="ownerReceiptFile">تحميل صورة وصل المالك</label><input id="ownerReceiptFile" type="file" accept="image/png,image/jpeg,image/webp" hidden onchange="attachKindReceipt('owner',event)"><small id="ownerReceiptState" class="tiny">لا توجد صورة وصل مرفقة</small></div><button id="ownerSubmitBtn" class="entrySubmit" onclick="addEntryFrom('owner')">إضافة للمالك +</button></div></section>
-<section class="entryPanel"><div class="panelHead">إضافة للمكتب</div><div class="panelBody"><div class="field"><label>التفاصيل</label><textarea id="officeDetails" placeholder="اكتب تفاصيل دفعة المكتب"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المكتب</label><input id="officeDate" type="date"></div><div class="field"><label>المبلغ</label><input id="officeAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="entryReceiptInline"><div class="field"><label>رقم الوصل</label><input id="officeReceiptNo" type="text" inputmode="numeric" placeholder="رقم وصل المكتب"></div><label class="attachBtn" for="officeReceiptFile">تحميل صورة وصل المكتب</label><input id="officeReceiptFile" type="file" accept="image/png,image/jpeg,image/webp" hidden onchange="attachKindReceipt('office',event)"><small id="officeReceiptState" class="tiny">لا توجد صورة وصل مرفقة</small></div><button id="officeSubmitBtn" class="entrySubmit" onclick="addEntryFrom('office')">إضافة للمكتب +</button></div></section>
-<div class="internalListState" hidden><input id="receipt" type="number" min="1" max="9999"><input id="date" type="date"></div>
+<section class="entryPanel"><div class="panelHead">إضافة للمالك</div><div class="panelBody"><div class="field"><label>التفاصيل</label><textarea id="ownerDetails" placeholder="اكتب تفاصيل دفعة المالك"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المالك</label><input id="ownerDate" type="date" lang="en-GB"></div><div class="field"><label>المبلغ</label><input id="ownerAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="entryReceiptInline"><div class="field"><label>رقم الوصل</label><input id="ownerReceiptNo" type="text" inputmode="numeric" placeholder="رقم وصل المالك"></div><label class="attachBtn" for="ownerReceiptFile">تحميل صورة وصل المالك</label><input id="ownerReceiptFile" type="file" accept="image/png,image/jpeg,image/webp" hidden onchange="attachKindReceipt('owner',event)"><small id="ownerReceiptState" class="tiny">لا توجد صورة وصل مرفقة</small></div><button id="ownerSubmitBtn" class="entrySubmit" onclick="addEntryFrom('owner')">إضافة للمالك +</button></div></section>
+<section class="entryPanel"><div class="panelHead">إضافة للمكتب</div><div class="panelBody"><div class="field"><label>التفاصيل</label><textarea id="officeDetails" placeholder="اكتب تفاصيل دفعة المكتب"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المكتب</label><input id="officeDate" type="date" lang="en-GB"></div><div class="field"><label>المبلغ</label><input id="officeAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="entryReceiptInline"><div class="field"><label>رقم الوصل</label><input id="officeReceiptNo" type="text" inputmode="numeric" placeholder="رقم وصل المكتب"></div><label class="attachBtn" for="officeReceiptFile">تحميل صورة وصل المكتب</label><input id="officeReceiptFile" type="file" accept="image/png,image/jpeg,image/webp" hidden onchange="attachKindReceipt('office',event)"><small id="officeReceiptState" class="tiny">لا توجد صورة وصل مرفقة</small></div><button id="officeSubmitBtn" class="entrySubmit" onclick="addEntryFrom('office')">إضافة للمكتب +</button></div></section>
+<div class="internalListState" hidden><input id="receipt" type="number" min="1" max="9999"><input id="date" type="date" lang="en-GB"></div>
 </div>
 <section class="accountsPanel"><div class="accountsHead">
       <span>قائمة الحسابات</span>
@@ -2835,6 +2835,17 @@ let statementMeta=safeJson(MK,{});if(!statementMeta||typeof statementMeta!=='obj
 let mode='owner',pendingLogo=null,removeLogoFlag=false,pendingStamp=null,removeStampFlag=false,pendingEntryReceipts={owner:'',office:''},editingEntryId={owner:null,office:null};
 const $=id=>document.getElementById(id),n=v=>Number(v||0),fmt=v=>new Intl.NumberFormat('en-US',{maximumFractionDigits:3}).format(n(v));
 function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function formatDate(v){
+ const s=String(v||'').trim();
+ const m=s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+ return m?m[3]+'-'+m[2]+'-'+m[1]:s;
+}
+function formatDateTime(d){
+ d=d instanceof Date?d:new Date(d);
+ const date=String(d.getDate()).padStart(2,'0')+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+d.getFullYear();
+ const time=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+ return date+' '+time;
+}
 function nextReceipt(){return entries.length?Math.max(...entries.map(x=>n(x.receipt)))+1:1}
 function entryHasNumberedReceipt(e){return !!(e&&e.hasReceipt&&String(e.receiptNo||'').trim())}
 function displayedListNo(e){return entryHasNumberedReceipt(e)?Math.trunc(n(e.receipt)):0}
@@ -3007,7 +3018,7 @@ function render(){
    return `<tr class="${x.kind==='owner'?'ownerRow':'officeRow'}">
    <td><input class="sequenceInput" type="number" min="1" max="${entries.length}" value="${currentPos}" title="غيّر رقم التسلسل لنقل السطر" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}" onchange="moveEntryToPosition(${x.id},this.value)"></td>
    <td><b>${displayedListNo(x)}</b></td>
-   <td>${x.date}</td>
+   <td>${formatDate(x.date)}</td>
    <td><span class="tag ${x.kind}">${x.kind==='owner'?'المالك':'المكتب'}</span></td>
    <td>${esc(x.details)}</td>
    <td><b>${fmt(x.amount)}</b></td>
@@ -3091,7 +3102,7 @@ function prepareLargePrintStatementPage(){
    <tr class="${e.kind==='owner'?'psOwner':'psOffice'}">
      <td>${i+1}</td>
      <td><b>${displayedListNo(e)}</b></td>
-     <td>${esc(e.date||'')}</td>
+     <td>${esc(formatDate(e.date||''))}</td>
      <td>${e.kind==='owner'?'المالك':'المكتب'}</td>
      <td><b>${esc(e.details||'')}</b></td>
      <td>${fmt(e.amount)}</td>
@@ -3113,7 +3124,7 @@ function prepareLargePrintStatementPage(){
      <div class="psMetaCell"><div class="psMetaLabel">اسم العميل</div><div class="psMetaValue">${esc(statementMeta.client||'—')}</div></div>
      <div class="psMetaCell"><div class="psMetaLabel">رقم الموقع</div><div class="psMetaValue">${esc(statementMeta.site||'—')}</div></div>
      <div class="psMetaCell"><div class="psMetaLabel">نوع العمل</div><div class="psMetaValue">${esc(statementMeta.work||'—')}</div></div>
-     <div class="psMetaCell"><div class="psMetaLabel">التاريخ</div><div class="psMetaValue">${esc(statementMeta.date||today())}</div></div>
+     <div class="psMetaCell"><div class="psMetaLabel">التاريخ</div><div class="psMetaValue">${esc(formatDate(statementMeta.date||today()))}</div></div>
    </section>
 
    <section class="psAccounts">
@@ -3212,7 +3223,7 @@ async function preparePrint(){
  saveStatementMeta();
  $('phName').textContent=company.name||'الفروقات';
  $('phProgram').textContent='برنامج الفروقات';
- $('phDate').textContent='تاريخ الطباعة: '+new Date().toLocaleString('ar-IQ');
+ $('phDate').textContent='تاريخ الطباعة: '+formatDateTime(new Date());
 
  const hlogo=$('printHeaderLogo');
  if(company.logo){hlogo.src=company.logo;hlogo.hidden=false}else{hlogo.hidden=true;hlogo.removeAttribute('src')}
@@ -3376,7 +3387,7 @@ async function makeReportPages(){
    ['اسم العميل',statementMeta.client||'—'],
    ['رقم الموقع',statementMeta.site||'—'],
    ['نوع العمل',statementMeta.work||'—'],
-   ['التاريخ',statementMeta.date||today()]
+   ['التاريخ',formatDate(statementMeta.date||today())]
  ];
  const cellW=contentW/4;
  for(let i=1;i<4;i++){
@@ -3462,7 +3473,7 @@ async function makeReportPages(){
 
    const vals=[
      fmt(e.net),e.percent!=null?fmt(e.commission):'-',e.percent==null?'-':fmt(e.percent)+'%',fmt(e.amount),e.details||'',
-     e.kind==='owner'?'المالك':'المكتب',e.date||'',String(displayedListNo(e)),String(rowIndex+1)
+     e.kind==='owner'?'المالك':'المكتب',formatDate(e.date||''),String(displayedListNo(e)),String(rowIndex+1)
    ];
    vals.forEach((v,i)=>{
      const w=cols[i][1];
@@ -3653,7 +3664,7 @@ async function buildBackupWordBlob(){
    const x=sorted[i],base=Number(x.amount)||0,pct=x.kind==='office'?(Number(x.percent)||0):0,pctAmt=x.kind==='office'?(Number(x.commission)||0):0,total=x.kind==='office'?(Number(x.net)||base+pctAmt):base;
    if(x.kind==='owner')ownerTotal+=base;else officeTotal+=base+pctAmt;
    const rowClass=x.kind==='owner'?'ownerRow':'officeRow';
-   rows.push(`<tr class="${rowClass}"><td>${i+1}</td><td>${escWord(x.receipt||'-')}</td><td>${escWord(x.date||'-')}</td><td>${x.kind==='owner'?'المالك':'المكتب'}</td><td class="details">${escWord(x.details||'')}</td><td>${fmtWordAmount(base)}</td><td>${x.kind==='office'?(pct?escWord(pct)+'%':'-'):'-'}</td><td>${x.kind==='office'&&pct?fmtWordAmount(pctAmt):'-'}</td><td>${fmtWordAmount(total)}</td></tr>`);
+   rows.push(`<tr class="${rowClass}"><td>${i+1}</td><td>${escWord(x.receipt||'-')}</td><td>${escWord(formatDate(x.date||'-'))}</td><td>${x.kind==='owner'?'المالك':'المكتب'}</td><td class="details">${escWord(x.details||'')}</td><td>${fmtWordAmount(base)}</td><td>${x.kind==='office'?(pct?escWord(pct)+'%':'-'):'-'}</td><td>${x.kind==='office'&&pct?fmtWordAmount(pctAmt):'-'}</td><td>${fmtWordAmount(total)}</td></tr>`);
  }
  const appTotals=totals(); ownerTotal=appTotals.owner; officeTotal=appTotals.office; const diff=appTotals.diff;
  let result='لا توجد إدخالات بعد';
@@ -3701,7 +3712,7 @@ async function buildBackupWordBlob(){
  <td><span class="lbl">اسم العميل</span><span class="val">${escWord(statementMeta.client||'')}</span></td>
  <td><span class="lbl">رقم الموقع</span><span class="val">${escWord(statementMeta.site||'')}</span></td>
  <td><span class="lbl">نوع العمل</span><span class="val">${escWord(statementMeta.work||'')}</span></td>
- <td><span class="lbl">التاريخ</span><span class="val">${escWord(statementMeta.date||'')}</span></td>
+ <td><span class="lbl">التاريخ</span><span class="val">${escWord(formatDate(statementMeta.date||''))}</span></td>
  </tr></table>
  <div class="title">قائمة الحساب</div><table class="accounts"><thead><tr><th>ت</th><th>القائمة</th><th>التاريخ</th><th>الجهة</th><th>التفاصيل</th><th>المبلغ</th><th>النسبة</th><th>مبلغ النسبة</th><th>المبلغ النهائي</th></tr></thead><tbody>${rows.join('')||'<tr><td colspan="9">لا توجد إدخالات</td></tr>'}</tbody></table>
  <table class="summary"><tr><td><b>مجموع المالك</b><br>${fmtWordAmount(ownerTotal)}</td><td><b>مجموع المكتب</b><br>${fmtWordAmount(officeTotal)}</td><td><b>الفرق</b><br>${fmtWordAmount(Math.abs(diff))}</td><td><b>عدد الحركات</b><br>${sorted.length}</td></tr></table><div class="result">${escWord(result)}</div>
