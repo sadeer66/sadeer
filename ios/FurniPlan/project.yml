@@ -16,8 +16,6 @@ targets:
     resources:
       - path: Web
       - path: Resources
-    info:
-      path: Info.plist
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.sadeer.furniplan
@@ -28,5 +26,6 @@ targets:
         DEVELOPMENT_TEAM: RM95TH446W
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Info.plist
     scheme:
       testTargets: []
