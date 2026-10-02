@@ -94,10 +94,10 @@ async function createWindow() {
   const appRoot = app.getAppPath();
   const indexPath = path.join(appRoot, 'index.html');
 
-  writeLog(`V119 starting. appRoot=${appRoot} index=${indexPath} exists=${fs.existsSync(indexPath)} packaged=${app.isPackaged}`);
+  writeLog(`V124 starting. appRoot=${appRoot} index=${indexPath} exists=${fs.existsSync(indexPath)} packaged=${app.isPackaged}`);
 
   if (!fs.existsSync(indexPath)) {
-    dialog.showErrorBox('FurniPlan', `لم يتم العثور على ملف واجهة البرنامج.\n\nالمسار: ${indexPath}\n\nأعد تثبيت FurniPlan V119.`);
+    dialog.showErrorBox('FurniPlan', `لم يتم العثور على ملف واجهة البرنامج.\n\nالمسار: ${indexPath}\n\nأعد تثبيت FurniPlan V124.`);
     writeLog('index.html missing before server startup');
     app.quit();
     return;
@@ -170,7 +170,7 @@ async function createWindow() {
     });
   } catch (err) {
     writeLog(`Startup failed: ${err && err.stack ? err.stack : err}`);
-    dialog.showErrorBox('FurniPlan', 'تعذر تشغيل خادم FurniPlan المحلي. أعد تثبيت النسخة V119.');
+    dialog.showErrorBox('FurniPlan', 'تعذر تشغيل خادم FurniPlan المحلي. أعد تثبيت النسخة V124.');
     app.quit();
   }
 }
