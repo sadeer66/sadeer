@@ -2885,8 +2885,10 @@ function normalizeEntryPercentages(){
 
 function autoGrowDetails(el){
  if(!el)return;
- el.style.height='auto';
- el.style.height=Math.max(110,el.scrollHeight)+'px';
+ // Some legacy CSS rules force height:auto!important; override them explicitly.
+ el.style.setProperty('height','auto','important');
+ void el.offsetHeight;
+ el.style.setProperty('height',Math.max(110,el.scrollHeight)+'px','important');
 }
 function refreshDetailsHeights(){autoGrowDetails($('ownerDetails'));autoGrowDetails($('officeDetails'))}
 function bindAutoGrowDetails(){
