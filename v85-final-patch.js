@@ -1001,8 +1001,23 @@
     if (!placeInToolbar()) {
       const header = document.querySelector('header') || document.body;
       header.appendChild(btn);
-      [100,300,700,1200].forEach(ms => setTimeout(placeInToolbar, ms));
     }
+    [100,300,700,1200].forEach(ms => setTimeout(placeInToolbar, ms));
+    setInterval(() => {
+      try {
+        const toolbar = document.querySelector('.mainToolbar') || document.querySelector('.workToolbar');
+        if (toolbar && btn.parentElement !== toolbar) {
+          toolbar.prepend(btn);
+          toolbar.scrollLeft = 0;
+        }
+        if (toolbar) {
+          btn.style.display = 'inline-flex';
+          btn.style.visibility = 'visible';
+          btn.style.opacity = '1';
+          btn.style.pointerEvents = 'auto';
+        }
+      } catch(_) {}
+    }, 500);
   }
 
   function updateToggle(){
