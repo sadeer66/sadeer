@@ -154,3 +154,5 @@ jobs:
           name: FurniPlan-V119-AppStore-IPA
           path: ios/FurniPlan/build/export/*.ipa
           retention-days: 30
+
+# manual signing trigger
