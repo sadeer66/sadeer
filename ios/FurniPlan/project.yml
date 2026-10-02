@@ -15,7 +15,10 @@ targets:
       - path: Sources
     resources:
       - path: Web
+      - path: Resources/Assets.xcassets
       - path: Resources
+        excludes:
+          - Assets.xcassets
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.sadeer.furniplan
