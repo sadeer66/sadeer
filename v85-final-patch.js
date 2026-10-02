@@ -973,27 +973,20 @@
   window.confirm = msg => nativeConfirm(currentLang === 'en' ? translateArText(msg) : msg);
   window.prompt = (msg,def) => nativePrompt(currentLang === 'en' ? translateArText(msg) : msg,def);
 
-  const NativeDOMParser = window.DOMParser;
-  if (NativeDOMParser) {
-    window.DOMParser = class extends NativeDOMParser {
-      parseFromString(str,type){
-        const doc = super.parseFromString(str,type);
-        if (currentLang === 'en' && doc && doc.body) applyNode(doc.body,'en');
-        return doc;
+  let rescanTimer = 0;
+  function scheduleRescan(){
+    if (currentLang !== 'en') return;
+    clearTimeout(rescanTimer);
+    rescanTimer = setTimeout(() => {
+      try {
+        applying = true;
+        if (document.body) applyNode(document.body,'en');
+      } finally {
+        applying = false;
+        updateToggle();
       }
-    };
+    }, 80);
   }
-
-  const observer = new MutationObserver(records => {
-    if (applying) return;
-    applying = true;
-    for (const m of records) {
-      if (m.type === 'characterData') applyNode(m.target,currentLang);
-      for (const n of Array.from(m.addedNodes || [])) applyNode(n,currentLang);
-    }
-    applying = false;
-    updateToggle();
-  });
 
   function init(){
     ensureToggle();
@@ -1001,7 +994,11 @@
     try { saved = localStorage.getItem(STORAGE_KEY); } catch(_){}
     currentLang = saved === 'ar' ? 'ar' : 'en';
     applyLanguage(currentLang,false);
-    observer.observe(document.body,{subtree:true,childList:true,characterData:true});
+    // No continuous MutationObserver: it caused Electron renderer instability.
+    // Re-scan only after normal user actions, and debounce the work.
+    document.addEventListener('click', scheduleRescan, true);
+    document.addEventListener('change', scheduleRescan, true);
+    document.addEventListener('input', scheduleRescan, true);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',init,{once:true});
