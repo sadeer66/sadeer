@@ -903,7 +903,7 @@
   function applyNode(n, lang){
     if (n.nodeType === Node.TEXT_NODE) {
       rememberNode(n);
-      if (n.__fpArabicText !== undefined) n.nodeValue = lang === 'en' ? translateArText(n.__fpArabicText) : n.__fpArabicText;
+      if (n.__fpArabicText !== undefined) { const next = lang === 'en' ? translateArText(n.__fpArabicText) : n.__fpArabicText; if (n.nodeValue !== next) n.nodeValue = next; }
       return;
     }
     if (n.nodeType !== Node.ELEMENT_NODE) return;
@@ -911,9 +911,9 @@
     rememberNode(n);
     for (const a of ['title','placeholder','aria-label','alt']) {
       const k='__fpArabicAttr_'+a;
-      if (n[k] !== undefined) n.setAttribute(a, lang === 'en' ? translateArText(n[k]) : n[k]);
+      if (n[k] !== undefined) { const next = lang === 'en' ? translateArText(n[k]) : n[k]; if (n.getAttribute(a) !== next) n.setAttribute(a,next); }
     }
-    if (n.__fpArabicInputValue !== undefined) n.value = lang === 'en' ? translateArText(n.__fpArabicInputValue) : n.__fpArabicInputValue;
+    if (n.__fpArabicInputValue !== undefined) { const next = lang === 'en' ? translateArText(n.__fpArabicInputValue) : n.__fpArabicInputValue; if (n.value !== next) n.value = next; }
     for (const child of Array.from(n.childNodes)) applyNode(child,lang);
   }
 
