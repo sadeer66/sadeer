@@ -2776,8 +2776,8 @@ button,
 </div>
 <div class="statementMeta"><div class="statementMetaTitle">بيانات قائمة الحساب</div><div class="field"><label>اسم العميل</label><input id="statementClient" placeholder="اسم العميل" oninput="saveStatementMeta()"></div><div class="field"><label>رقم الموقع</label><input id="statementSite" placeholder="رقم الموقع" oninput="saveStatementMeta()"></div><div class="field"><label>نوع العمل</label><input id="statementWork" placeholder="نوع العمل" oninput="saveStatementMeta()"></div><div class="field"><label>التاريخ</label><input id="statementDate" type="date" lang="en-GB" oninput="saveStatementMeta()"></div></div>
 <div class="entryGrid">
-<section class="entryPanel"><div class="panelHead">إضافة للمالك</div><div class="panelBody"><div class="field"><label>التفاصيل</label><textarea id="ownerDetails" placeholder="اكتب تفاصيل دفعة المالك"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المالك</label><input id="ownerDate" type="date" lang="en-GB"></div><div class="field"><label>المبلغ</label><input id="ownerAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="entryReceiptInline"><div class="field"><label>أرقام الوصولات</label><input id="ownerReceiptNo" type="text" inputmode="text" placeholder="مثال: 1-2-3"></div><label class="attachBtn" for="ownerReceiptFile">تحميل صور وصولات المالك</label><input id="ownerReceiptFile" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden onchange="attachKindReceipt('owner',event)"><small id="ownerReceiptState" class="tiny">لا توجد صور وصولات مرفقة</small></div><button id="ownerSubmitBtn" class="entrySubmit" onclick="addEntryFrom('owner')">إضافة للمالك +</button></div></section>
-<section class="entryPanel"><div class="panelHead">إضافة للمكتب</div><div class="panelBody"><div class="field"><label>التفاصيل</label><textarea id="officeDetails" placeholder="اكتب تفاصيل دفعة المكتب"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المكتب</label><input id="officeDate" type="date" lang="en-GB"></div><div class="field"><label>المبلغ</label><input id="officeAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="entryReceiptInline"><div class="field"><label>أرقام الوصولات</label><input id="officeReceiptNo" type="text" inputmode="text" placeholder="مثال: 1-2-3"></div><label class="attachBtn" for="officeReceiptFile">تحميل صور وصولات المكتب</label><input id="officeReceiptFile" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden onchange="attachKindReceipt('office',event)"><small id="officeReceiptState" class="tiny">لا توجد صور وصولات مرفقة</small></div><button id="officeSubmitBtn" class="entrySubmit" onclick="addEntryFrom('office')">إضافة للمكتب +</button></div></section>
+<section class="entryPanel"><div class="panelHead">إضافة للمالك</div><div class="panelBody"><div class="field"><label>التفاصيل</label><textarea id="ownerDetails" placeholder="اكتب تفاصيل دفعة المالك"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المالك</label><input id="ownerDate" type="date" lang="en-GB"></div><div class="field"><label>المبلغ</label><input id="ownerAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="entryReceiptInline"><div class="field"><label>أرقام الوصولات</label><input id="ownerReceiptNo" type="text" inputmode="text" placeholder="مثال: 1-2-3"></div><label class="attachBtn" for="ownerReceiptFile">+ إضافة صورة وصل للمالك</label><input id="ownerReceiptFile" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden onchange="attachKindReceipt('owner',event)"><small id="ownerReceiptState" class="tiny">لا توجد صور وصولات مرفقة</small></div><button id="ownerSubmitBtn" class="entrySubmit" onclick="addEntryFrom('owner')">إضافة للمالك +</button></div></section>
+<section class="entryPanel"><div class="panelHead">إضافة للمكتب</div><div class="panelBody"><div class="field"><label>التفاصيل</label><textarea id="officeDetails" placeholder="اكتب تفاصيل دفعة المكتب"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المكتب</label><input id="officeDate" type="date" lang="en-GB"></div><div class="field"><label>المبلغ</label><input id="officeAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="entryReceiptInline"><div class="field"><label>أرقام الوصولات</label><input id="officeReceiptNo" type="text" inputmode="text" placeholder="مثال: 1-2-3"></div><label class="attachBtn" for="officeReceiptFile">+ إضافة صورة وصل للمكتب</label><input id="officeReceiptFile" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden onchange="attachKindReceipt('office',event)"><small id="officeReceiptState" class="tiny">لا توجد صور وصولات مرفقة</small></div><button id="officeSubmitBtn" class="entrySubmit" onclick="addEntryFrom('office')">إضافة للمكتب +</button></div></section>
 <div class="internalListState" hidden><input id="receipt" type="number" min="1" max="9999"><input id="date" type="date" lang="en-GB"></div>
 </div>
 <section class="accountsPanel"><div class="accountsHead">
@@ -3094,19 +3094,26 @@ function applyCompany(){
 }
 
 function compressReceiptFile(file){return new Promise((resolve,reject)=>{const fr=new FileReader();fr.onerror=()=>reject(fr.error);fr.onload=()=>{const img=new Image();img.onerror=()=>reject(new Error('تعذر قراءة الصورة'));img.onload=()=>{const max=2200,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale));const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,w,h);resolve(c.toDataURL('image/jpeg',0.82))};img.src=fr.result};fr.readAsDataURL(file)})}
-async async function attachKindReceipt(kind,ev){
+async function attachKindReceipt(kind,ev){
  const files=Array.from(ev.target.files||[]);if(!files.length)return;
+ if(!Array.isArray(pendingEntryReceipts[kind]))pendingEntryReceipts[kind]=[];
  for(const f of files){
    if(!['image/png','image/jpeg','image/webp'].includes(f.type)){alert('اختر صور PNG أو JPG أو WebP فقط');continue}
    if(f.size>12*1024*1024){alert('إحدى صور الوصولات أكبر من 12 ميغابايت وتم تجاوزها');continue}
-   try{pendingEntryReceipts[kind].push(await compressReceiptFile(f))}catch(e){console.warn(e)}
+   try{
+     const img=await compressReceiptFile(f);
+     if(img)pendingEntryReceipts[kind].push(img);
+   }catch(e){console.warn(e);alert('تعذر تجهيز إحدى صور الوصولات')}
  }
- updateKindReceiptState(kind);ev.target.value=''
+ ev.target.value='';
+ updateKindReceiptState(kind);
 }
 function updateKindReceiptState(kind){
  const s=$(kind+'ReceiptState');if(!s)return;
  const count=(pendingEntryReceipts[kind]||[]).length;
- s.textContent=count?('تم إرفاق '+count+' '+(count===1?'صورة وصل':'صور وصولات')):'لا توجد صور وصولات مرفقة'
+ s.textContent=count
+   ? ('تم إرفاق '+count+' '+(count===1?'صورة وصل':'صور وصولات')+' — اضغط + لإضافة صورة أخرى')
+   : 'لا توجد صور وصولات مرفقة — اضغط + لإضافة أول صورة'
 }
 async function renderEntryAttachments(){
  const sec=$('entryAttachments'),gal=$('entryAttachmentsGallery');if(!sec||!gal)return;gal.innerHTML='';let count=0;
