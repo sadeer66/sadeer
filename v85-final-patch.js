@@ -980,7 +980,7 @@
       'header{position:relative!important}',
       '.fpLanguageToggle{position:sticky!important;inset-inline-start:0!important;z-index:50!important;order:-9999!important;flex:0 0 auto!important;min-width:104px;height:38px;padding:0 15px;margin-inline:4px;border-radius:11px;border:1px solid rgba(255,255,255,.62);background:#0b5d93!important;color:#fff!important;font:800 14px/1 Arial,Tahoma,sans-serif;box-shadow:0 5px 15px rgba(0,0,0,.18);cursor:pointer;white-space:nowrap;display:inline-flex!important;align-items:center!important;justify-content:center!important}',
       '.fpLanguageToggle:hover{filter:brightness(1.12)}',
-      '@media(max-width:1100px){.fpLanguageToggle{min-width:88px;height:32px;padding:0 10px;font-size:12px}}'
+      '@media(max-width:1100px){.fpLanguageToggle{min-width:54px!important;width:auto!important;height:41px!important;min-height:41px!important;padding:0 7px!important;font-size:10px!important;border-radius:8px!important}}'
     ].join('');
     document.head.appendChild(style);
     const btn = document.createElement('button');
@@ -989,7 +989,7 @@
     btn.type = 'button';
     btn.addEventListener('click', () => applyLanguage(currentLang === 'en' ? 'ar' : 'en', true));
     const placeInToolbar = () => {
-      const toolbar = document.querySelector('.mainToolbar') || document.querySelector('.workToolbar');
+      const toolbar = document.getElementById('modernTopToolbar') || document.querySelector('.mainToolbar') || document.querySelector('.workToolbar');
       if (!toolbar) return false;
       if (btn.parentElement !== toolbar) toolbar.prepend(btn);
       toolbar.style.overflowX = 'auto';
@@ -1005,7 +1005,7 @@
     [100,300,700,1200].forEach(ms => setTimeout(placeInToolbar, ms));
     setInterval(() => {
       try {
-        const toolbar = document.querySelector('.mainToolbar') || document.querySelector('.workToolbar');
+        const toolbar = document.getElementById('modernTopToolbar') || document.querySelector('.mainToolbar') || document.querySelector('.workToolbar');
         if (toolbar && btn.parentElement !== toolbar) {
           toolbar.prepend(btn);
           toolbar.scrollLeft = 0;
