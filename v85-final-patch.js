@@ -1007,6 +1007,7 @@
   }
 
   function applyLanguage(lang, save){
+    clearTimeout(rescanTimer);
     currentLang = lang === 'ar' ? 'ar' : 'en';
     applying = true;
     document.documentElement.lang = currentLang;
@@ -1033,6 +1034,7 @@
     if (currentLang !== 'en') return;
     clearTimeout(rescanTimer);
     rescanTimer = setTimeout(() => {
+      if (currentLang !== 'en') return;
       try {
         applying = true;
         if (document.body) applyNode(document.body,'en');
