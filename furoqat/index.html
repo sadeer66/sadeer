@@ -3736,7 +3736,7 @@ async function buildBackupJsonBlob(){
  saveStatementMeta();
  const out=[];
  for(const x of entries){out.push({...x,receiptImages:await getReceiptImages(x.id)})}
- const payload={app:'الفروقات',version:78,exportedAt:new Date().toISOString(),company,statementMeta,entries:out};
+ const payload={app:'الفروقات',version:84,exportedAt:new Date().toISOString(),company,statementMeta,entries:out};
  return new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
 }
 async function buildBackupPdfBlob(){
