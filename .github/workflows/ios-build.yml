@@ -1,0 +1,106 @@
+name: Build FurniPlan iOS V119
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'ios/FurniPlan/**'
+      - 'index.html'
+      - 'v85-final-patch.js'
+      - 'assets/**'
+      - 'icons/**'
+      - 'v45p_*'
+      - 'v45t_*'
+      - 'catalog.html'
+      - 'assistant-*.js'
+      - 'assistant*.json'
+
+jobs:
+  build-ios:
+    runs-on: macos-15
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show Xcode
+        run: xcodebuild -version
+
+      - name: Prepare FurniPlan V119 web bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf ios/FurniPlan/Web
+          mkdir -p ios/FurniPlan/Web
+          cp index.html ios/FurniPlan/Web/
+          cp v85-final-patch.js ios/FurniPlan/Web/
+          cp catalog.html ios/FurniPlan/Web/ || true
+          cp assistant-auth.js ios/FurniPlan/Web/ || true
+          cp assistant-auth.json ios/FurniPlan/Web/ || true
+          cp assistant-link.js ios/FurniPlan/Web/ || true
+          cp assistant.json ios/FurniPlan/Web/ || true
+          cp manifest.webmanifest ios/FurniPlan/Web/ || true
+          cp service-worker.js ios/FurniPlan/Web/ || true
+          cp apple-touch-icon.png ios/FurniPlan/Web/ || true
+          cp favicon-32.png ios/FurniPlan/Web/ || true
+          cp v13-ipad-fix.js ios/FurniPlan/Web/ || true
+          cp -R assets ios/FurniPlan/Web/ || true
+          cp -R icons ios/FurniPlan/Web/ || true
+          find . -maxdepth 1 -type f \( -name 'v45p_*' -o -name 'v45t_*' \) -exec cp {} ios/FurniPlan/Web/ \;
+          echo "Web files: $(find ios/FurniPlan/Web -type f | wc -l)"
+
+      - name: Generate iOS app icons
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="icons/icon-512.png"
+          if [ ! -f "$SRC" ]; then SRC="apple-touch-icon.png"; fi
+          DEST="ios/FurniPlan/Resources/Assets.xcassets/AppIcon.appiconset"
+          mkdir -p "$DEST"
+          sips -z 20 20 "$SRC" --out "$DEST/Icon-20.png" >/dev/null
+          sips -z 29 29 "$SRC" --out "$DEST/Icon-29.png" >/dev/null
+          sips -z 40 40 "$SRC" --out "$DEST/Icon-40.png" >/dev/null
+          cp "$DEST/Icon-40.png" "$DEST/Icon-40-ipad.png"
+          cp "$DEST/Icon-40.png" "$DEST/Icon-40-spot.png"
+          sips -z 58 58 "$SRC" --out "$DEST/Icon-58.png" >/dev/null
+          cp "$DEST/Icon-58.png" "$DEST/Icon-58-ipad.png"
+          sips -z 60 60 "$SRC" --out "$DEST/Icon-60.png" >/dev/null
+          sips -z 76 76 "$SRC" --out "$DEST/Icon-76.png" >/dev/null
+          sips -z 80 80 "$SRC" --out "$DEST/Icon-80.png" >/dev/null
+          cp "$DEST/Icon-80.png" "$DEST/Icon-80-ipad.png"
+          sips -z 87 87 "$SRC" --out "$DEST/Icon-87.png" >/dev/null
+          sips -z 120 120 "$SRC" --out "$DEST/Icon-120.png" >/dev/null
+          cp "$DEST/Icon-120.png" "$DEST/Icon-120-home.png"
+          sips -z 152 152 "$SRC" --out "$DEST/Icon-152.png" >/dev/null
+          sips -z 167 167 "$SRC" --out "$DEST/Icon-167.png" >/dev/null
+          sips -z 180 180 "$SRC" --out "$DEST/Icon-180.png" >/dev/null
+          sips -z 1024 1024 "$SRC" --out "$DEST/Icon-1024.png" >/dev/null
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        working-directory: ios/FurniPlan
+        run: xcodegen generate
+
+      - name: Build for iPhone/iPad simulator
+        working-directory: ios/FurniPlan
+        run: |
+          set -o pipefail
+          xcodebuild             -project FurniPlan.xcodeproj             -scheme FurniPlan             -configuration Release             -sdk iphonesimulator             -derivedDataPath DerivedData             CODE_SIGNING_ALLOWED=NO             build | tee build.log
+
+      - name: Package simulator build
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP=$(find ios/FurniPlan/DerivedData/Build/Products/Release-iphonesimulator -maxdepth 1 -name '*.app' -print -quit)
+          test -n "$APP"
+          ditto -c -k --sequesterRsrc --keepParent "$APP" FurniPlan-V119-iOS-Simulator.zip
+
+      - name: Upload simulator artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FurniPlan-V119-iOS-Simulator
+          path: FurniPlan-V119-iOS-Simulator.zip
+          retention-days: 30
