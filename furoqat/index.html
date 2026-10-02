@@ -2776,8 +2776,8 @@ button,
 </div>
 <div class="statementMeta"><div class="statementMetaTitle">بيانات قائمة الحساب</div><div class="field"><label>اسم العميل</label><input id="statementClient" placeholder="اسم العميل" oninput="saveStatementMeta()"></div><div class="field"><label>رقم الموقع</label><input id="statementSite" placeholder="رقم الموقع" oninput="saveStatementMeta()"></div><div class="field"><label>نوع العمل</label><input id="statementWork" placeholder="نوع العمل" oninput="saveStatementMeta()"></div><div class="field"><label>التاريخ</label><input id="statementDate" type="date" lang="en-GB" oninput="saveStatementMeta()"></div></div>
 <div class="entryGrid">
-<section class="entryPanel"><div class="panelHead">إضافة للمالك</div><div class="panelBody"><div class="field"><label>التفاصيل</label><textarea id="ownerDetails" placeholder="اكتب تفاصيل دفعة المالك"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المالك</label><input id="ownerDate" type="date" lang="en-GB"></div><div class="field"><label>المبلغ</label><input id="ownerAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="entryReceiptInline"><div class="field"><label>رقم الوصل</label><input id="ownerReceiptNo" type="text" inputmode="numeric" placeholder="رقم وصل المالك"></div><label class="attachBtn" for="ownerReceiptFile">تحميل صورة وصل المالك</label><input id="ownerReceiptFile" type="file" accept="image/png,image/jpeg,image/webp" hidden onchange="attachKindReceipt('owner',event)"><small id="ownerReceiptState" class="tiny">لا توجد صورة وصل مرفقة</small></div><button id="ownerSubmitBtn" class="entrySubmit" onclick="addEntryFrom('owner')">إضافة للمالك +</button></div></section>
-<section class="entryPanel"><div class="panelHead">إضافة للمكتب</div><div class="panelBody"><div class="field"><label>التفاصيل</label><textarea id="officeDetails" placeholder="اكتب تفاصيل دفعة المكتب"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المكتب</label><input id="officeDate" type="date" lang="en-GB"></div><div class="field"><label>المبلغ</label><input id="officeAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="entryReceiptInline"><div class="field"><label>رقم الوصل</label><input id="officeReceiptNo" type="text" inputmode="numeric" placeholder="رقم وصل المكتب"></div><label class="attachBtn" for="officeReceiptFile">تحميل صورة وصل المكتب</label><input id="officeReceiptFile" type="file" accept="image/png,image/jpeg,image/webp" hidden onchange="attachKindReceipt('office',event)"><small id="officeReceiptState" class="tiny">لا توجد صورة وصل مرفقة</small></div><button id="officeSubmitBtn" class="entrySubmit" onclick="addEntryFrom('office')">إضافة للمكتب +</button></div></section>
+<section class="entryPanel"><div class="panelHead">إضافة للمالك</div><div class="panelBody"><div class="field"><label>التفاصيل</label><textarea id="ownerDetails" placeholder="اكتب تفاصيل دفعة المالك"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المالك</label><input id="ownerDate" type="date" lang="en-GB"></div><div class="field"><label>المبلغ</label><input id="ownerAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="entryReceiptInline"><div class="field"><label>أرقام الوصولات</label><input id="ownerReceiptNo" type="text" inputmode="text" placeholder="مثال: 1-2-3"></div><label class="attachBtn" for="ownerReceiptFile">تحميل صور وصولات المالك</label><input id="ownerReceiptFile" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden onchange="attachKindReceipt('owner',event)"><small id="ownerReceiptState" class="tiny">لا توجد صور وصولات مرفقة</small></div><button id="ownerSubmitBtn" class="entrySubmit" onclick="addEntryFrom('owner')">إضافة للمالك +</button></div></section>
+<section class="entryPanel"><div class="panelHead">إضافة للمكتب</div><div class="panelBody"><div class="field"><label>التفاصيل</label><textarea id="officeDetails" placeholder="اكتب تفاصيل دفعة المكتب"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المكتب</label><input id="officeDate" type="date" lang="en-GB"></div><div class="field"><label>المبلغ</label><input id="officeAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="entryReceiptInline"><div class="field"><label>أرقام الوصولات</label><input id="officeReceiptNo" type="text" inputmode="text" placeholder="مثال: 1-2-3"></div><label class="attachBtn" for="officeReceiptFile">تحميل صور وصولات المكتب</label><input id="officeReceiptFile" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden onchange="attachKindReceipt('office',event)"><small id="officeReceiptState" class="tiny">لا توجد صور وصولات مرفقة</small></div><button id="officeSubmitBtn" class="entrySubmit" onclick="addEntryFrom('office')">إضافة للمكتب +</button></div></section>
 <div class="internalListState" hidden><input id="receipt" type="number" min="1" max="9999"><input id="date" type="date" lang="en-GB"></div>
 </div>
 <section class="accountsPanel"><div class="accountsHead">
@@ -2832,7 +2832,7 @@ let entries=safeJson(K,[]);if(!Array.isArray(entries))entries=[];
 let company=safeJson(CK,{});if(!company||typeof company!=='object'||Array.isArray(company))company={};
 if(!Object.prototype.hasOwnProperty.call(company,'stamp')){company.stamp=DEFAULT_STAMP;try{localStorage.setItem(CK,JSON.stringify(company))}catch(e){}}
 let statementMeta=safeJson(MK,{});if(!statementMeta||typeof statementMeta!=='object'||Array.isArray(statementMeta))statementMeta={};
-let mode='owner',pendingLogo=null,removeLogoFlag=false,pendingStamp=null,removeStampFlag=false,pendingEntryReceipts={owner:'',office:''},editingEntryId={owner:null,office:null};
+let mode='owner',pendingLogo=null,removeLogoFlag=false,pendingStamp=null,removeStampFlag=false,pendingEntryReceipts={owner:[],office:[]},editingEntryId={owner:null,office:null};
 const $=id=>document.getElementById(id),n=v=>Number(v||0),fmt=v=>new Intl.NumberFormat('en-US',{maximumFractionDigits:3}).format(n(v));
 function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function formatDate(v){
@@ -2847,9 +2847,13 @@ function formatDateTime(d){
  return date+' '+time;
 }
 function nextReceipt(){return entries.length?Math.max(...entries.map(x=>n(x.receipt)))+1:1}
-function entryHasNumberedReceipt(e){return !!(e&&e.hasReceipt&&String(e.receiptNo||'').trim())}
-function displayedListNo(e){return entryHasNumberedReceipt(e)?Math.trunc(n(e.receipt)):0}
-async function syncReceiptFlags(){let changed=false;for(const e of entries){const img=await getReceiptImage(e.id);const has=!!img||!!e.receiptImage;if(e.hasReceipt!==has){e.hasReceipt=has;changed=true}}if(changed)save()}
+function receiptNumbers(e){
+ return String((e&&e.receiptNo)||'').split(/[-–—,،;\s]+/).map(v=>v.trim()).filter(Boolean);
+}
+function normalizedReceiptNo(v){return String(v||'').split(/[-–—,،;\s]+/).map(x=>x.trim()).filter(Boolean).join('-')}
+function entryHasNumberedReceipt(e){return !!(e&&e.hasReceipt&&receiptNumbers(e).length)}
+function displayedListNo(e){return entryHasNumberedReceipt(e)?normalizedReceiptNo(e.receiptNo):'0'}
+async function syncReceiptFlags(){let changed=false;for(const e of entries){const imgs=await getReceiptImages(e.id);const has=imgs.length>0||!!e.receiptImage||(Array.isArray(e.receiptImages)&&e.receiptImages.length>0);if(e.hasReceipt!==has){e.hasReceipt=has;changed=true}}if(changed)save()}
 
 let dbPromise=null;
 function openReceiptDB(){
@@ -2863,8 +2867,13 @@ function openReceiptDB(){
  });
  return dbPromise;
 }
-async function putReceiptImage(id,data){if(!data)return;const db=await openReceiptDB();return new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put(data,String(id));tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error||new Error('تعذر حفظ صورة الوصل'))})}
-async function getReceiptImage(id){try{const db=await openReceiptDB();return await new Promise((resolve,reject)=>{const req=db.transaction(DB_STORE,'readonly').objectStore(DB_STORE).get(String(id));req.onsuccess=()=>resolve(req.result||'');req.onerror=()=>reject(req.error)})}catch(e){console.warn(e);return ''}}
+async function putReceiptImages(id,data){
+ const arr=(Array.isArray(data)?data:[data]).filter(Boolean);if(!arr.length)return;
+ const db=await openReceiptDB();return new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put(arr,String(id));tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error||new Error('تعذر حفظ صور الوصولات'))})
+}
+async function putReceiptImage(id,data){return putReceiptImages(id,data)}
+async function getReceiptImages(id){try{const db=await openReceiptDB();return await new Promise((resolve,reject)=>{const req=db.transaction(DB_STORE,'readonly').objectStore(DB_STORE).get(String(id));req.onsuccess=()=>{const v=req.result;resolve(Array.isArray(v)?v.filter(Boolean):(v?[v]:[]))};req.onerror=()=>reject(req.error)})}catch(e){console.warn(e);return []}}
+async function getReceiptImage(id){const a=await getReceiptImages(id);return a[0]||''}
 async function deleteReceiptImage(id){try{const db=await openReceiptDB();await new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).delete(String(id));tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}catch(e){console.warn(e)}}
 async function clearReceiptImages(){try{const db=await openReceiptDB();await new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).clear();tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}catch(e){console.warn(e)}}
 function compactEntries(){return entries.map(x=>{const y={...x};delete y.receiptImage;return y})}
@@ -2872,7 +2881,9 @@ function save(){try{localStorage.setItem(K,JSON.stringify(compactEntries()));ret
 async function migrateLegacyReceiptImages(){
  let changed=false;
  for(const x of entries){
-  if(x&&x.receiptImage){try{await putReceiptImage(x.id,x.receiptImage);delete x.receiptImage;changed=true}catch(e){console.warn('تعذر ترحيل صورة قديمة',e)}}
+  const legacy=(x&&Array.isArray(x.receiptImages)?x.receiptImages.filter(Boolean):[]);
+  if(x&&x.receiptImage)legacy.unshift(x.receiptImage);
+  if(legacy.length){try{await putReceiptImages(x.id,legacy);delete x.receiptImage;delete x.receiptImages;changed=true}catch(e){console.warn('تعذر ترحيل صور قديمة',e)}}
  }
  if(changed)save();
 }
@@ -2921,8 +2932,8 @@ async function addEntryFrom(kind){
   if(receipt<=0){alert('أدخل رقم القائمة');$('receipt').focus();return}
   if(amount<=0){alert('أدخل المبلغ');$(isOffice?'officeAmount':'ownerAmount').focus();return}
   const details=$(isOffice?'officeDetails':'ownerDetails').value.trim();
-  const receiptNo=$(isOffice?'officeReceiptNo':'ownerReceiptNo').value.trim();
-  const img=pendingEntryReceipts[isOffice?'office':'owner'];
+  const receiptNo=normalizedReceiptNo($(isOffice?'officeReceiptNo':'ownerReceiptNo').value);
+  const imgs=pendingEntryReceipts[isOffice?'office':'owner'];
   const entryDate=$(isOffice?'officeDate':'ownerDate').value||today();
   const editId=editingEntryId[kind];
   if(editId!=null){
@@ -2930,15 +2941,15 @@ async function addEntryFrom(kind){
     if(!item){cancelEdit(kind);alert('تعذر العثور على الإدخال المطلوب تعديله.');return}
     item.receipt=receipt;item.receiptNo=receiptNo;item.date=entryDate;item.details=details;item.amount=amount;item.kind=isOffice?'office':'owner';
     if(item.percent!=null){const rate=Math.max(0,n(item.percent));item.commission=amount*rate/100;item.net=amount+item.commission}else{item.commission=0;item.net=amount}
-    if(img){try{await putReceiptImage(item.id,img);item.hasReceipt=true}catch(e){console.error(e);alert('تم تعديل الحركة، لكن تعذر تحديث صورة الوصل.')}}
+    if(imgs.length){try{await putReceiptImages(item.id,imgs);item.hasReceipt=true}catch(e){console.error(e);alert('تم تعديل الحركة، لكن تعذر تحديث صور الوصولات.')}}
     const stored=save();if(!stored){alert('تعذر حفظ التعديل على الجهاز.');return}
     clearEntryForm(kind);editingEntryId[kind]=null;updateSubmitButton(kind);render();return
   }
   const percent=null;
   const commission=0,net=amount;
-  const item={id:Date.now()*1000+Math.floor(Math.random()*1000),receipt,receiptNo,hasReceipt:!!img,date:entryDate,kind:isOffice?'office':'owner',details,amount,percent,commission,net,notes:''};
+  const item={id:Date.now()*1000+Math.floor(Math.random()*1000),receipt,receiptNo,hasReceipt:imgs.length>0,date:entryDate,kind:isOffice?'office':'owner',details,amount,percent,commission,net,notes:''};
   entries.push(item);const stored=save();if(!stored){entries=entries.filter(x=>x.id!==item.id);alert('تعذر حفظ الحركة النصية على الجهاز.');return}
-  if(img){try{await putReceiptImage(item.id,img)}catch(e){console.error(e);alert('تم حفظ الحركة، لكن تعذر حفظ صورة الوصل.')}}
+  if(imgs.length){try{await putReceiptImages(item.id,imgs)}catch(e){console.error(e);alert('تم حفظ الحركة، لكن تعذر حفظ صور الوصولات.')}}
   clearEntryForm(kind);$('receipt').value=receipt;render();
  }catch(err){console.error(err);alert('تعذر حفظ الحركة: '+(err&&err.message?err.message:'خطأ غير معروف'))}
 }
@@ -2949,7 +2960,7 @@ function clearEntryForm(kind){
  $(isOffice?'officeAmount':'ownerAmount').value='';
  $(isOffice?'officeReceiptNo':'ownerReceiptNo').value='';
  $(isOffice?'officeDate':'ownerDate').value=today();
- pendingEntryReceipts[kind]='';updateKindReceiptState(kind);
+ pendingEntryReceipts[kind]=[];updateKindReceiptState(kind);
 }
 function updateSubmitButton(kind){
  const btn=$(kind==='office'?'officeSubmitBtn':'ownerSubmitBtn');if(!btn)return;
@@ -2969,7 +2980,7 @@ async function editEntry(id){
  $(kind==='office'?'officeAmount':'ownerAmount').value=x.amount||'';
  $(kind==='office'?'officeReceiptNo':'ownerReceiptNo').value=x.receiptNo||'';
  $(kind==='office'?'officeDate':'ownerDate').value=x.date||today();
- pendingEntryReceipts[kind]='';updateKindReceiptState(kind);updateSubmitButton(kind);
+ pendingEntryReceipts[kind]=[];updateKindReceiptState(kind);updateSubmitButton(kind);
  const panel=$(kind==='office'?'officeDetails':'ownerDetails');if(panel){panel.focus();panel.scrollIntoView({behavior:'smooth',block:'center'})}
 }
 function resultText(d){if(Math.abs(d)<0.0005)return 'لا يوجد فرق — الحساب متوازن';return d>0?`للمالك باقي مبلغ وقدره ${fmt(d)} د.ع`:`تبقى للمكتب مبلغ وقدره ${fmt(Math.abs(d))} د.ع`}
@@ -3083,10 +3094,30 @@ function applyCompany(){
 }
 
 function compressReceiptFile(file){return new Promise((resolve,reject)=>{const fr=new FileReader();fr.onerror=()=>reject(fr.error);fr.onload=()=>{const img=new Image();img.onerror=()=>reject(new Error('تعذر قراءة الصورة'));img.onload=()=>{const max=2200,scale=Math.min(1,max/Math.max(img.width,img.height)),w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale));const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,w,h);resolve(c.toDataURL('image/jpeg',0.82))};img.src=fr.result};fr.readAsDataURL(file)})}
-async function attachKindReceipt(kind,ev){const f=ev.target.files&&ev.target.files[0];if(!f)return;if(!['image/png','image/jpeg','image/webp'].includes(f.type)){alert('اختر صورة PNG أو JPG أو WebP');ev.target.value='';return}if(f.size>12*1024*1024){alert('حجم صورة الوصل كبير جدًا. اختر صورة أقل من 12 ميغابايت');ev.target.value='';return}try{pendingEntryReceipts[kind]=await compressReceiptFile(f);updateKindReceiptState(kind)}catch(e){alert('تعذر تجهيز صورة الوصل')}ev.target.value=''}
-function updateKindReceiptState(kind){const s=$(kind+'ReceiptState');if(!s)return;s.textContent=pendingEntryReceipts[kind]?'تم إرفاق صورة الوصل':'لا توجد صورة وصل مرفقة'}
-async function renderEntryAttachments(){const sec=$('entryAttachments'),gal=$('entryAttachmentsGallery');if(!sec||!gal)return;gal.innerHTML='';let count=0;for(const x of entries){let src=await getReceiptImage(x.id);if(!src&&x.receiptImage)src=x.receiptImage;if(!src)continue;count++;const card=document.createElement('div');card.className='entryAttachmentCard';const h=document.createElement('h3');const rn=(x.receiptNo||'بدون رقم');const who=x.kind==='owner'?'المالك':'المكتب';h.textContent='رقم القائمة '+x.receipt+' من '+who;const img=document.createElement('img');img.src=src;img.alt='رقم القائمة '+x.receipt+' من '+who;card.append(h,img);gal.append(card)}sec.hidden=!count}
-async function newStatement(){if(entries.length&&!confirm('بدء قائمة فروقات جديدة؟'))return;entries=[];save();await clearReceiptImages();statementMeta={client:'',site:'',work:'',date:today()};pendingEntryReceipts={owner:'',office:''};editingEntryId={owner:null,office:null};updateSubmitButton('owner');updateSubmitButton('office');try{localStorage.setItem(MK,JSON.stringify(statementMeta))}catch(e){};$('statementClient').value='';$('statementSite').value='';$('statementWork').value='';$('statementDate').value=today();$('date').value=today();$('ownerDate').value=today();$('officeDate').value=today();$('receipt').value=1;$('ownerDetails').value='';autoGrowDetails($('ownerDetails'));$('ownerAmount').value='';$('ownerReceiptNo').value='';$('officeDetails').value='';autoGrowDetails($('officeDetails'));$('officeAmount').value='';$('officeReceiptNo').value='';updateKindReceiptState('owner');updateKindReceiptState('office');render()}
+async async function attachKindReceipt(kind,ev){
+ const files=Array.from(ev.target.files||[]);if(!files.length)return;
+ for(const f of files){
+   if(!['image/png','image/jpeg','image/webp'].includes(f.type)){alert('اختر صور PNG أو JPG أو WebP فقط');continue}
+   if(f.size>12*1024*1024){alert('إحدى صور الوصولات أكبر من 12 ميغابايت وتم تجاوزها');continue}
+   try{pendingEntryReceipts[kind].push(await compressReceiptFile(f))}catch(e){console.warn(e)}
+ }
+ updateKindReceiptState(kind);ev.target.value=''
+}
+function updateKindReceiptState(kind){
+ const s=$(kind+'ReceiptState');if(!s)return;
+ const count=(pendingEntryReceipts[kind]||[]).length;
+ s.textContent=count?('تم إرفاق '+count+' '+(count===1?'صورة وصل':'صور وصولات')):'لا توجد صور وصولات مرفقة'
+}
+async function renderEntryAttachments(){
+ const sec=$('entryAttachments'),gal=$('entryAttachmentsGallery');if(!sec||!gal)return;gal.innerHTML='';let count=0;
+ for(const x of entries){
+   let imgs=await getReceiptImages(x.id);if(!imgs.length&&x.receiptImage)imgs=[x.receiptImage];
+   const nums=receiptNumbers(x),who=x.kind==='owner'?'المالك':'المكتب',listNo=displayedListNo(x);
+   imgs.forEach((src,i)=>{count++;const card=document.createElement('div');card.className='entryAttachmentCard';const h=document.createElement('h3');const rn=nums[i]||nums[0]||'بدون رقم';h.textContent='القائمة '+listNo+' — '+who+' — وصل رقم '+rn;const img=document.createElement('img');img.src=src;img.alt=h.textContent;card.append(h,img);gal.append(card)})
+ }
+ sec.hidden=!count
+}
+async function newStatement(){if(entries.length&&!confirm('بدء قائمة فروقات جديدة؟'))return;entries=[];save();await clearReceiptImages();statementMeta={client:'',site:'',work:'',date:today()};pendingEntryReceipts={owner:[],office:[]};editingEntryId={owner:null,office:null};updateSubmitButton('owner');updateSubmitButton('office');try{localStorage.setItem(MK,JSON.stringify(statementMeta))}catch(e){};$('statementClient').value='';$('statementSite').value='';$('statementWork').value='';$('statementDate').value=today();$('date').value=today();$('ownerDate').value=today();$('officeDate').value=today();$('receipt').value=1;$('ownerDetails').value='';autoGrowDetails($('ownerDetails'));$('ownerAmount').value='';$('ownerReceiptNo').value='';$('officeDetails').value='';autoGrowDetails($('officeDetails'));$('officeAmount').value='';$('officeReceiptNo').value='';updateKindReceiptState('owner');updateKindReceiptState('office');render()}
 
 
 function prepareLargePrintStatementPage(){
@@ -3176,9 +3207,9 @@ async function prepareLargePrintReceiptPages(){
 
  const items=[];
  for(const e of entries.slice()){
-   let src=await getReceiptImage(e.id);
-   if(!src&&e.receiptImage)src=e.receiptImage;
-   if(src)items.push({e,src});
+   let imgs=await getReceiptImages(e.id);if(!imgs.length&&e.receiptImage)imgs=[e.receiptImage];
+   const nums=receiptNumbers(e);
+   imgs.forEach((src,i)=>items.push({e,src,receiptNo:nums[i]||nums[0]||''}));
  }
  if(!items.length)return;
 
@@ -3193,7 +3224,7 @@ async function prepareLargePrintReceiptPages(){
 
    const head=document.createElement('div');
    head.className='prHeader';
-   head.textContent='رقم القائمة '+item.e.receipt+' من '+(item.e.kind==='owner'?'المالك':'المكتب');
+   head.textContent='رقم القائمة '+displayedListNo(item.e)+' من '+(item.e.kind==='owner'?'المالك':'المكتب')+(item.receiptNo?' — وصل رقم '+item.receiptNo:'');
 
    const wrap=document.createElement('div');
    wrap.className='prImageWrap';
@@ -3201,7 +3232,7 @@ async function prepareLargePrintReceiptPages(){
    const pic=document.createElement('img');
    pic.className='prImage';
    pic.src=item.src;
-   pic.alt='رقم القائمة '+item.e.receipt+' من '+(item.e.kind==='owner'?'المالك':'المكتب');
+   pic.alt=head.textContent;
 
    wrap.appendChild(pic);
    page.append(head,wrap);
@@ -3578,8 +3609,9 @@ async function makeReportPages(){
  // الوصولات: كل وصل صفحة عمودية مستقلة، بدون هيدر الشركة.
  const receiptPages=[];
  for(const e of sorted){
-   let src=await getReceiptImage(e.id);if(!src&&e.receiptImage)src=e.receiptImage;
-   if(src)receiptPages.push({e,src});
+   let imgs=await getReceiptImages(e.id);if(!imgs.length&&e.receiptImage)imgs=[e.receiptImage];
+   const nums=receiptNumbers(e);
+   imgs.forEach((src,i)=>receiptPages.push({e,src,receiptNo:nums[i]||nums[0]||''}));
  }
 
  if(!receiptPages.length){
@@ -3589,7 +3621,7 @@ async function makeReportPages(){
    pages.push(c);
 
    for(let idx=0;idx<receiptPages.length;idx++){
-     const {e,src}=receiptPages[idx];
+     const {e,src,receiptNo}=receiptPages[idx];
      const img=await loadCanvasImage(src);if(!img)continue;
 
      let [rc,rctx]=pdfCanvas();
@@ -3599,7 +3631,7 @@ async function makeReportPages(){
      hg.addColorStop(0,'#063372');hg.addColorStop(.5,'#0b5ea8');hg.addColorStop(1,'#167fca');
      rctx.fillStyle=hg;rctx.fillRect(margin,52,contentW,48);
      rctx.strokeStyle='#000';rctx.lineWidth=2;rctx.strokeRect(margin,52,contentW,48);
-     pdfText(rctx,'رقم القائمة '+e.receipt+' من '+(e.kind==='owner'?'المالك':'المكتب'),W/2,76,20,true,'#ffffff','center');
+     pdfText(rctx,'رقم القائمة '+displayedListNo(e)+' من '+(e.kind==='owner'?'المالك':'المكتب')+(receiptNo?' — وصل رقم '+receiptNo:''),W/2,76,20,true,'#ffffff','center');
 
      const top=120;
      const maxW=contentW-24;
@@ -3644,8 +3676,8 @@ async function writeBlobToDirectory(dirHandle,filename,blob){
 async function buildBackupJsonBlob(){
  saveStatementMeta();
  const out=[];
- for(const x of entries){out.push({...x,receiptImage:await getReceiptImage(x.id)})}
- const payload={app:'الفروقات',version:70,exportedAt:new Date().toISOString(),company,statementMeta,entries:out};
+ for(const x of entries){out.push({...x,receiptImages:await getReceiptImages(x.id)})}
+ const payload={app:'الفروقات',version:76,exportedAt:new Date().toISOString(),company,statementMeta,entries:out};
  return new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
 }
 async function buildBackupPdfBlob(){
@@ -3670,7 +3702,7 @@ async function buildBackupWordBlob(){
  let result='لا توجد إدخالات بعد';
  if(sorted.length){if(Math.abs(diff)<0.000001)result='الحساب متعادل';else if(diff>0)result='باقي للمالك مبلغ وقدره '+fmtWordAmount(diff);else result='تبقى للمكتب مبلغ وقدره '+fmtWordAmount(Math.abs(diff));}
  let receiptHtml='';
- for(const e of sorted){let src=await getReceiptImage(e.id);if(!src&&e.receiptImage)src=e.receiptImage;if(src)receiptHtml+=`<div class="receipt"><h2>رقم القائمة ${escWord(e.receipt||'-')} من ${e.kind==='owner'?'المالك':'المكتب'}</h2><img src="${src}"></div>`;}
+ for(const e of sorted){let imgs=await getReceiptImages(e.id);if(!imgs.length&&e.receiptImage)imgs=[e.receiptImage];const nums=receiptNumbers(e);imgs.forEach((src,i)=>{const rn=nums[i]||nums[0]||'';receiptHtml+=`<div class="receipt"><h2>رقم القائمة ${escWord(displayedListNo(e))} من ${e.kind==='owner'?'المالك':'المكتب'}${rn?' — وصل رقم '+escWord(rn):''}</h2><img src="${src}"></div>`})}
  const logo=company&&company.logo?`<img class="logo" src="${company.logo}" width="38" height="38">`:'';
  const companyName=escWord((company&&company.name)||'');
  const companyPhone=escWord((company&&company.phone)||'');
@@ -3741,7 +3773,7 @@ async function exportData(){
    alert('تم تجهيز النسخة الاحتياطية: JSON + Word + PDF.\nإذا لم يدعم الجهاز اختيار المجلد، ستجد الملفات في مجلد التنزيلات/الملفات.');
  }catch(e){console.error(e);alert('تعذر حفظ النسخة الاحتياطية: '+(e&&e.message?e.message:'خطأ غير معروف'))}
 }
-function importData(ev){let f=ev.target.files[0];if(!f)return;let r=new FileReader();r.onload=async()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.entries))throw 0;if(confirm('استعادة النسخة الاحتياطية واستبدال البيانات الحالية؟')){await clearReceiptImages();entries=[];for(const src of d.entries){const x={...src};const img=x.receiptImage||'';delete x.receiptImage;entries.push(x);if(img)await putReceiptImage(x.id,img)}company=d.company||{};if(company.officePercent==null)company.officePercent=0;statementMeta=d.statementMeta||{};save();try{localStorage.setItem(CK,JSON.stringify(company))}catch(e){console.warn(e)}try{localStorage.setItem(MK,JSON.stringify(statementMeta))}catch(e){console.warn(e)}$('statementClient').value=statementMeta.client||'';$('statementSite').value=statementMeta.site||'';$('statementWork').value=statementMeta.work||'';$('statementDate').value=statementMeta.date||today();applyCompany();pendingEntryReceipts={owner:'',office:''};updateKindReceiptState('owner');updateKindReceiptState('office');$('ownerDate').value=today();$('officeDate').value=today();$('receipt').value=nextReceipt();render()}}catch(e){alert('ملف النسخة الاحتياطية غير صالح')}};r.readAsText(f);ev.target.value=''}
+function importData(ev){let f=ev.target.files[0];if(!f)return;let r=new FileReader();r.onload=async()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.entries))throw 0;if(confirm('استعادة النسخة الاحتياطية واستبدال البيانات الحالية؟')){await clearReceiptImages();entries=[];for(const src of d.entries){const x={...src};const imgs=Array.isArray(x.receiptImages)?x.receiptImages.filter(Boolean):(x.receiptImage?[x.receiptImage]:[]);delete x.receiptImage;delete x.receiptImages;entries.push(x);if(imgs.length)await putReceiptImages(x.id,imgs)}company=d.company||{};if(company.officePercent==null)company.officePercent=0;statementMeta=d.statementMeta||{};save();try{localStorage.setItem(CK,JSON.stringify(company))}catch(e){console.warn(e)}try{localStorage.setItem(MK,JSON.stringify(statementMeta))}catch(e){console.warn(e)}$('statementClient').value=statementMeta.client||'';$('statementSite').value=statementMeta.site||'';$('statementWork').value=statementMeta.work||'';$('statementDate').value=statementMeta.date||today();applyCompany();pendingEntryReceipts={owner:[],office:[]};updateKindReceiptState('owner');updateKindReceiptState('office');$('ownerDate').value=today();$('officeDate').value=today();$('receipt').value=nextReceipt();render()}}catch(e){alert('ملف النسخة الاحتياطية غير صالح')}};r.readAsText(f);ev.target.value=''}
 init();
 
 function setupOfflineMode(){
