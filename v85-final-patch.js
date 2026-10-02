@@ -978,9 +978,9 @@
     style.id = 'furniplan-v115-language-style';
     style.textContent = [
       'header{position:relative!important}',
-      '.fpLanguageToggle{position:absolute;top:8px;right:10px;z-index:12000;min-width:104px;height:38px;padding:0 15px;border-radius:11px;border:1px solid rgba(255,255,255,.62);background:#0b5d93;color:#fff;font:800 14px/1 Arial,Tahoma,sans-serif;box-shadow:0 5px 15px rgba(0,0,0,.25);cursor:pointer;white-space:nowrap}',
+      '.fpLanguageToggle{position:static!important;z-index:auto!important;flex:0 0 auto!important;min-width:104px;height:38px;padding:0 15px;margin-inline:4px;border-radius:11px;border:1px solid rgba(255,255,255,.62);background:#0b5d93;color:#fff;font:800 14px/1 Arial,Tahoma,sans-serif;box-shadow:0 5px 15px rgba(0,0,0,.18);cursor:pointer;white-space:nowrap}',
       '.fpLanguageToggle:hover{filter:brightness(1.12)}',
-      '@media(max-width:1100px){.fpLanguageToggle{top:5px;right:6px;min-width:88px;height:32px;padding:0 10px;font-size:12px}}'
+      '@media(max-width:1100px){.fpLanguageToggle{min-width:88px;height:32px;padding:0 10px;font-size:12px}}'
     ].join('');
     document.head.appendChild(style);
     const btn = document.createElement('button');
@@ -988,8 +988,15 @@
     btn.className = 'fpLanguageToggle';
     btn.type = 'button';
     btn.addEventListener('click', () => applyLanguage(currentLang === 'en' ? 'ar' : 'en', true));
-    const header = document.querySelector('header') || document.body;
-    header.appendChild(btn);
+    const toolbar = document.querySelector('.mainToolbar') || document.querySelector('.workToolbar');
+    const host = toolbar || document.querySelector('header') || document.body;
+    host.appendChild(btn);
+    if (toolbar) {
+      toolbar.style.overflowX = 'auto';
+      toolbar.style.overflowY = 'hidden';
+      toolbar.style.webkitOverflowScrolling = 'touch';
+      toolbar.style.touchAction = 'pan-x';
+    }
   }
 
   function updateToggle(){
