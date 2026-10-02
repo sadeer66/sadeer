@@ -153,6 +153,23 @@ jobs:
           set -o pipefail
           xcodebuild             -exportArchive             -archivePath "$PWD/build/FurniPlan.xcarchive"             -exportPath "$PWD/build/export"             -exportOptionsPlist ExportOptions.plist             -allowProvisioningUpdates             -authenticationKeyPath "$ASC_KEY_PATH"             -authenticationKeyID "$APP_STORE_CONNECT_KEY_ID"             -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID"             | tee export.log
 
+      - name: Verify exported IPA metadata
+        working-directory: ios/FurniPlan
+        shell: bash
+        run: |
+          set -euo pipefail
+          IPA=$(find "$PWD/build/export" -name '*.ipa' -print -quit)
+          test -n "$IPA"
+          TMP="$RUNNER_TEMP/furniplan-ipa-check"
+          rm -rf "$TMP"
+          mkdir -p "$TMP"
+          unzip -q "$IPA" -d "$TMP"
+          APP=$(find "$TMP/Payload" -maxdepth 1 -name '*.app' -print -quit)
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleIconName' "$APP/Info.plist"
+          /usr/libexec/PlistBuddy -c 'Print :UISupportedInterfaceOrientations' "$APP/Info.plist"
+          find "$APP" -maxdepth 1 -type f -name '*120*.png' -o -name '*152*.png' | sort || true
+          test -f "$APP/Assets.car"
+
       - name: Upload IPA to TestFlight
         working-directory: ios/FurniPlan
         shell: bash
