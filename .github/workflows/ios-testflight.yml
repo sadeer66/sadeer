@@ -104,6 +104,7 @@ jobs:
           if [ ! -f "$SRC" ]; then SRC="apple-touch-icon.png"; fi
           DEST="ios/FurniPlan/Resources/Assets.xcassets/AppIcon.appiconset"
           mkdir -p "$DEST"
+          sips -z 1024 1024 "$SRC" --out "$DEST/AppIcon-1024.png" >/dev/null
           sips -z 20 20 "$SRC" --out "$DEST/Icon-20.png" >/dev/null
           sips -z 29 29 "$SRC" --out "$DEST/Icon-29.png" >/dev/null
           sips -z 40 40 "$SRC" --out "$DEST/Icon-40.png" >/dev/null
@@ -128,6 +129,8 @@ jobs:
           sips -z 76 76 "$SRC" --out "ios/FurniPlan/Resources/Icon-76.png" >/dev/null
           sips -z 152 152 "$SRC" --out "ios/FurniPlan/Resources/Icon-152.png" >/dev/null
           sips -z 167 167 "$SRC" --out "ios/FurniPlan/Resources/Icon-167.png" >/dev/null
+          sips -z 120 120 "$SRC" --out "ios/FurniPlan/Resources/Icon-60@2x.png" >/dev/null
+          sips -z 180 180 "$SRC" --out "ios/FurniPlan/Resources/Icon-60@3x.png" >/dev/null
 
       - name: Install XcodeGen
         run: brew install xcodegen
