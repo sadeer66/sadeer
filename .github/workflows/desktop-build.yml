@@ -1,4 +1,4 @@
-name: Build FurniPlan V117
+name: Build FurniPlan V118
 
 on:
   workflow_dispatch:
@@ -50,34 +50,34 @@ jobs:
 
       - name: Create complete backup ZIP
         shell: pwsh
-        run: git archive --format=zip --output FurniPlan-V117-Complete.zip HEAD
+        run: git archive --format=zip --output FurniPlan-V118-Complete.zip HEAD
 
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FurniPlan-V117-Windows-Installer
-          path: dist/FurniPlan-Setup-V117-x64.exe
+          name: FurniPlan-V118-Windows-Installer
+          path: dist/FurniPlan-Setup-V118-x64.exe
           if-no-files-found: error
           retention-days: 30
 
       - name: Upload complete backup artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FurniPlan-V117-Complete-Backup
-          path: FurniPlan-V117-Complete.zip
+          name: FurniPlan-V118-Complete-Backup
+          path: FurniPlan-V118-Complete.zip
           if-no-files-found: error
           retention-days: 30
 
-      - name: Publish V117 release
+      - name: Publish V118 release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: FurniPlan-V117
-          name: FurniPlan V117
+          tag_name: FurniPlan-V118
+          name: FurniPlan V118
           body: |
-            FurniPlan V117 Windows startup fix.
+            FurniPlan V118 Windows startup fix.
             Uses an embedded localhost server so the packaged UI and PWA files
             load reliably from app.asar instead of the file protocol.
           files: |
-            dist/FurniPlan-Setup-V117-x64.exe
-            FurniPlan-V117-Complete.zip
+            dist/FurniPlan-Setup-V118-x64.exe
+            FurniPlan-V118-Complete.zip
           make_latest: true
