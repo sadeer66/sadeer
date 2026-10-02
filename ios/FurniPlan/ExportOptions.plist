@@ -7,10 +7,17 @@
   <key>teamID</key>
   <string>RM95TH446W</string>
   <key>signingStyle</key>
-  <string>automatic</string>
+  <string>manual</string>
   <key>manageAppVersionAndBuildNumber</key>
   <false/>
   <key>uploadSymbols</key>
   <true/>
+  <key>signingCertificate</key>
+  <string>Apple Distribution</string>
+  <key>provisioningProfiles</key>
+  <dict>
+    <key>com.sadeer.furniplan</key>
+    <string>FurniPlan App Store V119 New</string>
+  </dict>
 </dict>
 </plist>
