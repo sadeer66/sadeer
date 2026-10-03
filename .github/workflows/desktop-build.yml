@@ -75,7 +75,7 @@ jobs:
           name: FurniPlan V137 Test
           body: |
             FurniPlan V137 Test.
-Independent Windows test build with direct Electron injection for area naming and T-label fixes.
+            Independent Windows test build with direct Electron injection for area naming and T-label fixes.
           files: |
             dist/FurniPlan-V137-Test-Setup-x64.exe
             FurniPlan-V137-Test-Complete.zip
