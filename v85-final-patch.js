@@ -1747,205 +1747,142 @@
  // ===== End FurniPlan V133 Smaller Library Category Buttons Only =====
 
 
-// ===== FurniPlan V134 Desktop Area + T Label Fix =====
+
+
+
+
+
+
+// ===== FurniPlan V136 Windows Core Area + T Fix =====
 (function(){
-  function isDesktop(){
-    return !((navigator.maxTouchPoints||0)>0 && (matchMedia('(pointer:coarse)').matches || matchMedia('(hover:none)').matches));
+  function isWindowsDesktopApp(){
+    return location.hostname==='127.0.0.1' || location.hostname==='localhost';
   }
 
-  function hideAreaBadgeSoon(ms=2600){
-    const badge=document.getElementById('areaResultBadge');
-    if(!badge)return;
-    setTimeout(()=>{badge.style.display='none';},ms);
-  }
+  function install(){
+    if(!isWindowsDesktopApp())return;
+    if(window.__fpV136Installed)return;
+    window.__fpV136Installed=true;
 
-  function installDesktopAreaFix(){
-    if(!isDesktop())return;
+    /* Replace the real area finishing behavior used by the desktop toolbar. */
+    finishAreaTool=function(){
+      if(mode!=='areaMeasure')return;
 
-    if(typeof toggleAreaTool==='function' && !toggleAreaTool.__v134DesktopWrapped){
-      const originalToggle=toggleAreaTool;
-      const wrapped=function(){
-        const wasArea=(typeof mode!=='undefined' && mode==='areaMeasure');
-        const beforeCount=(typeof areaPolygons!=='undefined' && Array.isArray(areaPolygons))?areaPolygons.length:0;
-        const beforeDraft=(typeof areaDraft!=='undefined' && Array.isArray(areaDraft))?areaDraft.length:0;
+      if(areaDraft.length<3){
+        showAreaResultText('يلزم تحديد 3 زوايا على الأقل لإنهاء المساحة',true);
+        setStatus('حدد 3 زوايا على الأقل لإنهاء المساحة');
+        updateInteractionCursor();syncAreaToolLabel();draw();
+        return;
+      }
 
-        const out=originalToggle();
+      const st=polygonAreaStats(areaDraft);
+      const defaultName='غرفة '+(areaPolygons.length+1);
+      let name=prompt('اكتب اسم الغرفة أو المساحة:',defaultName);
+      if(name===null)name=defaultName;
+      name=String(name||defaultName).trim()||defaultName;
 
-        if(wasArea && beforeDraft>=3 && typeof areaPolygons!=='undefined' && areaPolygons.length>beforeCount){
-          const created=areaPolygons[areaPolygons.length-1];
-          if(created){
-            const def=created.name||('غرفة '+areaPolygons.length);
-            const value=prompt('اكتب اسم الغرفة أو المساحة:',def);
-            if(value!==null && String(value).trim())created.name=String(value).trim();
-          }
-
-          if(typeof activateWorkingTool==='function')activateWorkingTool('select');
-          if(typeof syncSelectedPanel==='function')syncSelectedPanel();
-          if(typeof draw==='function')draw();
-          if(typeof setStatus==='function')setStatus('تم حفظ المساحة واسمها');
-          hideAreaBadgeSoon(2200);
-        }
-        return out;
+      const before=cloneEditState();
+      const result={
+        id:randId(),
+        name,
+        points:areaDraft.map(p=>({...p})),
+        areaM2:st.areaM2,
+        perimeterM:st.perimeterM
       };
-      wrapped.__v134DesktopWrapped=true;
-      toggleAreaTool=wrapped;
-      window.toggleAreaTool=wrapped;
-    }
-
-    window.addEventListener('keydown',function(e){
-      if(!isDesktop())return;
-      const tag=document.activeElement?.tagName;
-      const editing=['INPUT','TEXTAREA','SELECT'].includes(tag);
-      if(editing || e.ctrlKey || e.metaKey || e.altKey)return;
-
-      if(e.key && e.key.toLowerCase()==='t'){
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        if(typeof startMapLabelPlacement==='function')startMapLabelPlacement();
-        else document.getElementById('addMapLabelBtn')?.click();
-      }
-    },true);
-  }
-
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installDesktopAreaFix,{once:true});
-  else installDesktopAreaFix();
-})();
- // ===== End FurniPlan V134 Desktop Area + T Label Fix =====
-
-
-// ===== FurniPlan V135 Electron Native Area + T Fix =====
-(function(){
-  function isElectron(){
-    return /Electron/i.test(navigator.userAgent||'');
-  }
-
-  function hideAreaBadgeV135(){
-    try{
-      if(typeof areaResultTimer!=='undefined' && areaResultTimer){
-        clearTimeout(areaResultTimer);
-        areaResultTimer=null;
-      }
-      if(typeof areaResultBadge!=='undefined' && areaResultBadge){
-        areaResultBadge.style.display='none';
-      }
-    }catch(_){}
-  }
-
-  function finishDesktopAreaV135(){
-    if(typeof mode==='undefined' || mode!=='areaMeasure')return false;
-    if(typeof areaDraft==='undefined' || !Array.isArray(areaDraft) || areaDraft.length<3){
-      if(typeof setStatus==='function')setStatus('حدد 3 زوايا على الأقل للمساحة');
-      return true;
-    }
-
-    const st=typeof polygonAreaStats==='function'
-      ? polygonAreaStats(areaDraft)
-      : {areaM2:0,perimeterM:0};
-
-    let def='غرفة '+((typeof areaPolygons!=='undefined'&&Array.isArray(areaPolygons)?areaPolygons.length:0)+1);
-    let name=prompt('اكتب اسم الغرفة أو المساحة:',def);
-    if(name===null)name=def;
-    name=String(name||def).trim()||def;
-
-    const before=typeof cloneEditState==='function'?cloneEditState():null;
-    const result={
-      id:typeof randId==='function'?randId():('area_'+Date.now()),
-      name,
-      points:areaDraft.map(p=>({...p})),
-      areaM2:+st.areaM2||0,
-      perimeterM:+st.perimeterM||0
-    };
-
-    if(typeof areaPolygons!=='undefined' && Array.isArray(areaPolygons)){
       areaPolygons.push(result);
-    }
-    try{ lastAreaResult=result; }catch(_){}
-    areaDraft=[];
+      lastAreaResult=result;
+      areaDraft=[];
+      commitHistory(before);
 
-    if(before && typeof commitHistory==='function')commitHistory(before);
-    if(typeof activateWorkingTool==='function')activateWorkingTool('select');
-    else mode='select';
+      const areaText=name+' — '+st.areaM2.toFixed(2)+' م² — المحيط '+st.perimeterM.toFixed(2)+' م';
+      showAreaResultText(areaText,true);
 
-    if(typeof clearFurnitureSelection==='function')clearFurnitureSelection();
-    try{selectedMeasureId=null;selectedMapLabelId=null;}catch(_){}
-    if(typeof syncSelectedPanel==='function')syncSelectedPanel();
-    if(typeof syncAreaToolLabel==='function')syncAreaToolLabel();
-    if(typeof updateInteractionCursor==='function')updateInteractionCursor();
-    if(typeof draw==='function')draw();
+      /* Exit the area tool completely after saving, exactly as requested. */
+      activateWorkingTool('select');
+      pendingFurnitureDef=null;
+      selectedMeasureId=null;
+      selectedMapLabelId=null;
+      clearFurnitureSelection();
+      updateInteractionCursor();
+      syncSelectedPanel();
+      syncAreaToolLabel();
+      draw();
+      setStatus('تم حفظ '+areaText);
+    };
+    window.finishAreaTool=finishAreaTool;
 
-    hideAreaBadgeV135();
-    if(typeof setStatus==='function'){
-      setStatus('تم حفظ '+name+' — المساحة '+(+st.areaM2||0).toFixed(2)+' م²');
-    }
-    return true;
-  }
+    toggleAreaTool=function(){
+      if(mode==='areaMeasure'){
+        finishAreaTool();
+        return;
+      }
+      if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}
+      if(!pxPerCm){alert('عاير الخارطة أولاً حتى يمكن حساب المساحة والمحيط.');return;}
 
-  function startDesktopLabelV135(){
-    if(typeof hasPlan==='function' && !hasPlan()){
-      alert('ارفع الخارطة أولاً.');
-      return;
-    }
-    const value=prompt('اكتب المسمى الذي تريد وضعه على الخارطة:','');
-    if(value===null)return;
-    const clean=String(value).trim();
-    if(!clean)return;
+      activateWorkingTool('areaMeasure');
+      areaDraft=[];
+      lastAreaResult=null;
+      clearFurnitureSelection();
+      selectedMeasureId=null;
+      selectedMapLabelId=null;
+      pendingFurnitureDef=null;
+      updateInteractionCursor();
+      syncSelectedPanel();
+      syncAreaToolLabel();
+      showAreaResultText('حدد زوايا الغرفة — بعد النقطة الثالثة اضغط «إنهاء مساحة»',false);
+      setStatus('حدد زوايا الغرفة ثم اضغط «إنهاء مساحة»');
+      draw();
+    };
+    window.toggleAreaTool=toggleAreaTool;
 
-    pendingMapLabelText=clean;
-    if(typeof activateWorkingTool==='function')activateWorkingTool('labelPlace');
-    else mode='labelPlace';
-    try{
+    function beginLabel(){
+      if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}
+      const value=prompt('اكتب المسمى الذي تريد وضعه على الخارطة:','');
+      if(value===null)return;
+      const clean=String(value).trim();
+      if(!clean)return;
+
+      pendingMapLabelText=clean;
+      activateWorkingTool('labelPlace');
       points=[];
       selectedMeasureId=null;
       selectedMapLabelId=null;
-      labelPlaceTap=null;
-    }catch(_){}
-    if(typeof clearFurnitureSelection==='function')clearFurnitureSelection();
-    if(typeof syncSelectedPanel==='function')syncSelectedPanel();
-    if(typeof updateInteractionCursor==='function')updateInteractionCursor();
-    if(typeof draw==='function')draw();
-    if(typeof setStatus==='function')setStatus('انقر مكان «'+clean+'» على الخارطة');
-  }
+      clearFurnitureSelection();
+      syncSelectedPanel();
+      updateInteractionCursor();
+      setStatus('انقر مكان «'+clean+'» على الخارطة');
+      draw();
+    }
 
-  function installV135(){
-    if(!isElectron())return;
-    if(document.documentElement.dataset.fpV135==='1')return;
-    document.documentElement.dataset.fpV135='1';
-
-    document.addEventListener('click',function(ev){
-      const areaBtn=ev.target?.closest?.('#v65Area');
-      if(areaBtn && typeof mode!=='undefined' && mode==='areaMeasure'){
-        ev.preventDefault();
-        ev.stopPropagation();
-        ev.stopImmediatePropagation();
-        finishDesktopAreaV135();
-      }
-    },true);
-
-    window.addEventListener('keydown',function(ev){
+    /* Desktop T shortcut: capture phase so it runs before the original keyboard handler. */
+    window.addEventListener('keydown',function(e){
       const tag=document.activeElement?.tagName;
       if(['INPUT','TEXTAREA','SELECT'].includes(tag))return;
-      if(ev.ctrlKey||ev.metaKey||ev.altKey)return;
-      if(String(ev.key||'').toLowerCase()==='t'){
-        ev.preventDefault();
-        ev.stopPropagation();
-        ev.stopImmediatePropagation();
-        startDesktopLabelV135();
+      if(e.ctrlKey||e.metaKey||e.altKey)return;
+      if(String(e.key||'').toLowerCase()==='t'){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        beginLabel();
       }
     },true);
 
-    const add=document.getElementById('addMapLabelBtn');
-    if(add){
-      add.addEventListener('click',function(ev){
-        if(!isElectron())return;
-        ev.preventDefault();
-        ev.stopPropagation();
-        ev.stopImmediatePropagation();
-        startDesktopLabelV135();
+    /* Make the visible desktop label button use the same exact function. */
+    const labelBtn=document.getElementById('addMapLabelBtn');
+    if(labelBtn){
+      labelBtn.onclick=null;
+      labelBtn.addEventListener('click',function(e){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        beginLabel();
       },true);
     }
+
+    setTimeout(()=>{
+      if(typeof setStatus==='function')setStatus('Windows V136 جاهز — المساحة والمسميات محدثة');
+    },500);
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installV135,{once:true});
-  else installV135();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
 })();
- // ===== End FurniPlan V135 Electron Native Area + T Fix =====
+ // ===== End FurniPlan V136 Windows Core Area + T Fix =====
