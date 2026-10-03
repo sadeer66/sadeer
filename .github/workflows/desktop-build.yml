@@ -1,4 +1,4 @@
-name: Build FurniPlan V137 Test
+name: Build FurniPlan V138 Test
 
 on:
   workflow_dispatch:
@@ -50,33 +50,33 @@ jobs:
 
       - name: Create complete backup ZIP
         shell: pwsh
-        run: git archive --format=zip --output FurniPlan-V137-Test-Complete.zip HEAD
+        run: git archive --format=zip --output FurniPlan-V138-Test-Complete.zip HEAD
 
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FurniPlan-V137-Test-Windows-Installer
-          path: dist/FurniPlan-V137-Test-Setup-x64.exe
+          name: FurniPlan-V138-Test-Windows-Installer
+          path: dist/FurniPlan-V138-Test-Setup-x64.exe
           if-no-files-found: error
           retention-days: 30
 
       - name: Upload complete backup artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FurniPlan-V137-Test-Complete-Backup
-          path: FurniPlan-V137-Test-Complete.zip
+          name: FurniPlan-V138-Test-Complete-Backup
+          path: FurniPlan-V138-Test-Complete.zip
           if-no-files-found: error
           retention-days: 30
 
       - name: Publish V124 release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: FurniPlan-V137-Test
-          name: FurniPlan V137 Test
+          tag_name: FurniPlan-V138-Test
+          name: FurniPlan V138 Test
           body: |
-            FurniPlan V137 Test.
+            FurniPlan V138 Test.
             Independent Windows test build with direct Electron injection for area naming and T-label fixes.
           files: |
-            dist/FurniPlan-V137-Test-Setup-x64.exe
-            FurniPlan-V137-Test-Complete.zip
+            dist/FurniPlan-V138-Test-Setup-x64.exe
+            FurniPlan-V138-Test-Complete.zip
           make_latest: true
