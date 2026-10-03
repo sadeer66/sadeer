@@ -848,7 +848,15 @@
     'إخفاء أثاث':'Hide Furniture','إظهار أثاث':'Show Furniture','إخفاء دليل':'Hide Guide','إظهار دليل':'Show Guide',
     'معلومات المشروع':'Project Information','التاريخ':'Date','عميل':'Client','عميل:':'Client:',
     'الموقع:':'Location:','التاريخ:':'Date:','المقياس معاير':'Scale calibrated',
-    'اسم الغرفة / المساحة':'Room / Area Name','حذف المساحة':'Delete Area'
+    'اسم الغرفة / المساحة':'Room / Area Name','حذف المساحة':'Delete Area',
+    'دوران 180°':'Rotate 180°','أمام':'Front','خلف':'Back',
+    'رفع القطعة طبقة واحدة للأمام':'Move Item One Layer Forward',
+    'إنزال القطعة طبقة واحدة للخلف':'Move Item One Layer Back',
+    'تم رفع القطعة طبقة واحدة للأمام':'Item moved one layer forward',
+    'تم إنزال القطعة طبقة واحدة للخلف':'Item moved one layer back',
+    'القطعة في أعلى طبقة بالفعل':'Item is already on the top layer',
+    'القطعة في أسفل طبقة بالفعل':'Item is already on the bottom layer',
+    'اختر قطعة أثاث أولاً':'Select a furniture item first'
   };
 
   const phrases = [
