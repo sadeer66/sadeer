@@ -1,4 +1,4 @@
-name: Build FurniPlan V147
+name: Build FurniPlan V148
 
 on:
   workflow_dispatch:
@@ -50,33 +50,33 @@ jobs:
 
       - name: Create complete backup ZIP
         shell: pwsh
-        run: git archive --format=zip --output FurniPlan-V147-Complete.zip HEAD
+        run: git archive --format=zip --output FurniPlan-V148-Complete.zip HEAD
 
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FurniPlan-V147-Windows-Installer
-          path: dist/FurniPlan-V147-Setup-x64.exe
+          name: FurniPlan-V148-Windows-Installer
+          path: dist/FurniPlan-V148-Setup-x64.exe
           if-no-files-found: error
           retention-days: 30
 
       - name: Upload complete backup artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FurniPlan-V147-Complete-Backup
-          path: FurniPlan-V147-Complete.zip
+          name: FurniPlan-V148-Complete-Backup
+          path: FurniPlan-V148-Complete.zip
           if-no-files-found: error
           retention-days: 30
 
       - name: Publish V124 release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: FurniPlan-V147
-          name: FurniPlan V147
+          tag_name: FurniPlan-V148
+          name: FurniPlan V148
           body: |
-            FurniPlan V147.
-            Stable Windows build with V147 bilingual UI/output cleanup and preserved V138/V146 area fixes.
+            FurniPlan V148.
+            Stable Windows build with V148 bilingual UI/output cleanup and preserved V138/V146 area fixes.
           files: |
-            dist/FurniPlan-V147-Setup-x64.exe
-            FurniPlan-V147-Complete.zip
+            dist/FurniPlan-V148-Setup-x64.exe
+            FurniPlan-V148-Complete.zip
           make_latest: true
