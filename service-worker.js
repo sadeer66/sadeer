@@ -1,4 +1,4 @@
-const CACHE='furniplan-v126-stable-rollback-20261003';
+const CACHE='furniplan-v139-touch-area-drag-20261003';
 const CORE=[
   './',
   './index.html',
