@@ -1718,558 +1718,71 @@
  // ===== End FurniPlan V126 iPhone Bottom Library =====
 
 
-// ===== FurniPlan V127 iPhone Landscape Narrow Library =====
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ===== FurniPlan V132 iPhone Landscape Clean Side Library =====
 (function(){
-  function install(){
-    if(document.getElementById('furniplan-v127-iphone-landscape-narrow'))return;
-    const s=document.createElement('style');
-    s.id='furniplan-v127-iphone-landscape-narrow';
-    s.textContent=`
-      /* iPhone landscape only: keep portrait and iPad unchanged */
-      @media (hover:none) and (pointer:coarse) and (orientation:landscape) and (max-height:500px) and (max-width:950px){
-        aside{
-          top:calc(env(safe-area-inset-top) + var(--tool-header-h))!important;
-          right:0!important;
-          left:auto!important;
-          bottom:calc(env(safe-area-inset-bottom) + 26px)!important;
-          width:22vw!important;
-          max-width:190px!important;
-          min-width:150px!important;
-          height:auto!important;
-          max-height:none!important;
-          border-left:1px solid #34435b!important;
-          border-top:none!important;
-          border-radius:14px 0 0 14px!important;
-          transform:translateX(105%)!important;
-          box-shadow:-10px 0 24px rgba(0,0,0,.32)!important;
-        }
-        aside.open{transform:translateX(0)!important}
-        .mobileLibrarySection .libraryBrowser{
-          grid-template-columns:1fr!important;
-        }
-        .mobileLibrarySection #library{
-          grid-template-columns:1fr!important;
-        }
-        .mobileLibrarySection .categoryList{
-          max-height:38px!important;
-        }
-        .mobileLibrarySection .categoryList .catBtn{
-          min-width:48px!important;
-          height:30px!important;
-          min-height:30px!important;
-          padding:4px 5px!important;
-          font-size:7.5px!important;
-        }
-        .mobileLibrarySection #library .fcard{
-          min-height:70px!important;
-          padding:4px!important;
-        }
-        .mobileLibrarySection #library .fcard img{
-          height:34px!important;
-          max-height:34px!important;
-        }
-      }
-    `;
-    document.head.appendChild(s);
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
-  else install();
-})();
- // ===== End FurniPlan V127 iPhone Landscape Narrow Library =====
+  const query='(hover:none) and (pointer:coarse) and (orientation:landscape) and (max-height:650px)';
 
+  function active(){return window.matchMedia(query).matches;}
 
-// ===== FurniPlan V128 iPhone Landscape Bottom Mini Library =====
-(function(){
-  function install(){
-    if(document.getElementById('furniplan-v128-iphone-landscape-mini'))return;
-    const s=document.createElement('style');
-    s.id='furniplan-v128-iphone-landscape-mini';
-    s.textContent=`
-      /* iPhone landscape only — force compact bottom dock */
-      @media (orientation:landscape) and (max-height:600px) and (max-width:1000px){
-        aside{
-          top:auto!important;
-          left:26vw!important;
-          right:26vw!important;
-          bottom:calc(env(safe-area-inset-bottom) + 14px)!important;
-          width:48vw!important;
-          max-width:48vw!important;
-          min-width:0!important;
-          height:24dvh!important;
-          max-height:24dvh!important;
-          border-left:none!important;
-          border-top:1px solid #34435b!important;
-          border-radius:14px 14px 0 0!important;
-          transform:translateY(110%)!important;
-          box-shadow:0 -9px 22px rgba(0,0,0,.30)!important;
-          overflow:hidden!important;
-          padding:0!important;
-        }
-        aside.open{transform:translateY(0)!important}
-
-        aside>.mobileLibrarySection{
-          display:grid!important;
-          grid-template-rows:auto minmax(0,1fr) auto!important;
-          height:100%!important;
-          max-height:100%!important;
-          padding:5px!important;
-          overflow:hidden!important;
-        }
-
-        .mobileLibrarySection .libraryBrowser{
-          display:grid!important;
-          grid-template-columns:1fr!important;
-          grid-template-rows:auto minmax(0,1fr)!important;
-          gap:4px!important;
-          min-height:0!important;
-          height:100%!important;
-          overflow:hidden!important;
-        }
-
-        .mobileLibrarySection .categoryList{
-          grid-row:1!important;
-          display:flex!important;
-          flex-direction:row!important;
-          flex-wrap:nowrap!important;
-          gap:4px!important;
-          min-height:28px!important;
-          max-height:30px!important;
-          overflow-x:auto!important;
-          overflow-y:hidden!important;
-          -webkit-overflow-scrolling:touch!important;
-          touch-action:pan-x!important;
-          padding:0 1px 2px!important;
-        }
-
-        .mobileLibrarySection .categoryList .catBtn{
-          flex:0 0 auto!important;
-          min-width:44px!important;
-          width:auto!important;
-          height:26px!important;
-          min-height:26px!important;
-          padding:3px 5px!important;
-          font-size:7px!important;
-          line-height:1!important;
-          white-space:nowrap!important;
-        }
-
-        .mobileLibrarySection #library{
-          grid-row:2!important;
-          display:grid!important;
-          grid-template-columns:repeat(3,minmax(0,1fr))!important;
-          gap:4px!important;
-          min-height:0!important;
-          height:100%!important;
-          max-height:none!important;
-          overflow-y:auto!important;
-          overflow-x:hidden!important;
-          -webkit-overflow-scrolling:touch!important;
-          touch-action:pan-y!important;
-          overscroll-behavior:contain!important;
-          padding:0 1px 4px!important;
-        }
-
-        .mobileLibrarySection #library .fcard{
-          min-height:54px!important;
-          height:auto!important;
-          padding:3px!important;
-          border-radius:7px!important;
-          touch-action:pan-y!important;
-        }
-        .mobileLibrarySection #library .fcard img{
-          height:25px!important;
-          max-height:25px!important;
-        }
-        .mobileLibrarySection #library .fcard b,
-        .mobileLibrarySection #library .fmeta b{
-          font-size:6.8px!important;
-          line-height:1!important;
-        }
-        .mobileLibrarySection #library .fcard span,
-        .mobileLibrarySection #library .fmeta .dims{
-          font-size:6px!important;
-          line-height:1!important;
-        }
-
-        .mobileLibraryFooter{
-          min-height:27px!important;
-          height:27px!important;
-          padding-top:3px!important;
-          gap:4px!important;
-        }
-        .mobileLibraryFooter .mobileAddLibraryBtn,
-        .mobileLibraryFooter .mobileResetLibraryBtn{
-          min-height:24px!important;
-          height:24px!important;
-          padding:2px 6px!important;
-          font-size:7px!important;
-        }
-
-        .sidebarScrim,.sidebarScrim.show{
-          display:none!important;
-          pointer-events:none!important;
-          background:transparent!important;
-        }
-      }
-    `;
-    document.head.appendChild(s);
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
-  else install();
-})();
- // ===== End FurniPlan V128 iPhone Landscape Bottom Mini Library =====
-
-
-// ===== FurniPlan V129 iPhone Landscape Half-Width Side Library =====
-(function(){
-  function install(){
-    if(document.getElementById('furniplan-v129-iphone-landscape-side'))return;
-    const s=document.createElement('style');
-    s.id='furniplan-v129-iphone-landscape-side';
-    s.textContent=`
-      /* iPhone landscape only: vertical side library at about half the former width */
-      @media (orientation:landscape) and (max-height:600px) and (max-width:1000px){
-        aside{
-          top:calc(env(safe-area-inset-top) + var(--tool-header-h))!important;
-          right:0!important;
-          left:auto!important;
-          bottom:calc(env(safe-area-inset-bottom) + 28px)!important;
-          width:18vw!important;
-          max-width:160px!important;
-          min-width:125px!important;
-          height:auto!important;
-          max-height:none!important;
-          border-left:1px solid #34435b!important;
-          border-top:none!important;
-          border-radius:14px 0 0 14px!important;
-          transform:translateX(105%)!important;
-          box-shadow:-10px 0 24px rgba(0,0,0,.30)!important;
-          overflow:hidden!important;
-          padding:0!important;
-        }
-        aside.open{transform:translateX(0)!important}
-
-        aside>.mobileLibrarySection{
-          display:grid!important;
-          grid-template-rows:minmax(0,1fr) auto!important;
-          height:100%!important;
-          max-height:100%!important;
-          padding:5px!important;
-          overflow:hidden!important;
-        }
-
-        .mobileLibrarySection .libraryBrowser{
-          display:grid!important;
-          grid-template-columns:1fr!important;
-          grid-template-rows:auto minmax(0,1fr)!important;
-          gap:4px!important;
-          min-height:0!important;
-          height:100%!important;
-          overflow:hidden!important;
-        }
-
-        .mobileLibrarySection .categoryList{
-          grid-row:1!important;
-          display:flex!important;
-          flex-direction:row!important;
-          flex-wrap:nowrap!important;
-          gap:3px!important;
-          min-height:28px!important;
-          max-height:30px!important;
-          overflow-x:auto!important;
-          overflow-y:hidden!important;
-          -webkit-overflow-scrolling:touch!important;
-          touch-action:pan-x!important;
-          padding:0 0 3px!important;
-          background:#0b1220!important;
-          position:static!important;
-        }
-
-        .mobileLibrarySection .categoryList .catBtn{
-          flex:0 0 auto!important;
-          min-width:42px!important;
-          height:26px!important;
-          min-height:26px!important;
-          padding:3px 4px!important;
-          font-size:7px!important;
-          line-height:1!important;
-          white-space:nowrap!important;
-        }
-
-        .mobileLibrarySection #library{
-          grid-row:2!important;
-          display:grid!important;
-          grid-template-columns:1fr!important;
-          gap:4px!important;
-          min-height:0!important;
-          height:100%!important;
-          max-height:none!important;
-          overflow-y:auto!important;
-          overflow-x:hidden!important;
-          -webkit-overflow-scrolling:touch!important;
-          touch-action:pan-y!important;
-          overscroll-behavior:contain!important;
-          padding:0 1px 5px!important;
-        }
-
-        .mobileLibrarySection #library .fcard{
-          min-height:62px!important;
-          padding:4px!important;
-          touch-action:pan-y!important;
-        }
-        .mobileLibrarySection #library .fcard img{
-          height:30px!important;
-          max-height:30px!important;
-        }
-        .mobileLibrarySection #library .fcard b,
-        .mobileLibrarySection #library .fmeta b{
-          font-size:7.5px!important;
-        }
-        .mobileLibrarySection #library .fcard span,
-        .mobileLibrarySection #library .fmeta .dims{
-          font-size:6.5px!important;
-        }
-
-        .mobileLibraryFooter{
-          min-height:30px!important;
-          height:30px!important;
-          padding-top:3px!important;
-          gap:3px!important;
-        }
-        .mobileLibraryFooter .mobileAddLibraryBtn,
-        .mobileLibraryFooter .mobileResetLibraryBtn{
-          min-height:27px!important;
-          height:27px!important;
-          padding:3px 5px!important;
-          font-size:7px!important;
-        }
-      }
-    `;
-    document.head.appendChild(s);
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
-  else install();
-})();
- // ===== End FurniPlan V129 iPhone Landscape Half-Width Side Library =====
-
-
-// ===== FurniPlan V130 iPhone Landscape Stable Side Library =====
-(function(){
-  function install(){
-    if(document.getElementById('furniplan-v130-iphone-landscape-stable-side'))return;
-    const s=document.createElement('style');
-    s.id='furniplan-v130-iphone-landscape-stable-side';
-    s.textContent=`
-      /* Final override: iPhone landscape only */
-      @media (orientation:landscape) and (max-width:950px) and (max-height:650px){
-        aside{
-          position:fixed!important;
-          top:calc(env(safe-area-inset-top) + var(--tool-header-h))!important;
-          right:0!important;
-          left:auto!important;
-          bottom:calc(env(safe-area-inset-bottom) + 28px)!important;
-          width:155px!important;
-          max-width:155px!important;
-          min-width:155px!important;
-          height:auto!important;
-          max-height:none!important;
-          margin:0!important;
-          padding:0!important;
-          border-left:1px solid #34435b!important;
-          border-top:none!important;
-          border-radius:14px 0 0 14px!important;
-          transform:translateX(105%)!important;
-          transition:transform .22s ease!important;
-          box-shadow:-10px 0 24px rgba(0,0,0,.30)!important;
-          overflow:hidden!important;
-        }
-        aside.open{
-          transform:translateX(0)!important;
-        }
-
-        aside>.mobileLibrarySection{
-          display:grid!important;
-          grid-template-rows:minmax(0,1fr) auto!important;
-          width:100%!important;
-          height:100%!important;
-          max-height:100%!important;
-          min-height:0!important;
-          margin:0!important;
-          padding:5px!important;
-          overflow:hidden!important;
-          box-sizing:border-box!important;
-        }
-
-        .mobileLibrarySection .libraryBrowser{
-          display:grid!important;
-          grid-template-columns:1fr!important;
-          grid-template-rows:auto minmax(0,1fr)!important;
-          gap:4px!important;
-          width:100%!important;
-          height:100%!important;
-          min-height:0!important;
-          overflow:hidden!important;
-        }
-
-        .mobileLibrarySection .categoryList{
-          grid-row:1!important;
-          display:flex!important;
-          flex-direction:row!important;
-          flex-wrap:nowrap!important;
-          gap:3px!important;
-          width:100%!important;
-          min-height:30px!important;
-          height:30px!important;
-          max-height:30px!important;
-          padding:0 0 3px!important;
-          margin:0!important;
-          overflow-x:auto!important;
-          overflow-y:hidden!important;
-          -webkit-overflow-scrolling:touch!important;
-          touch-action:pan-x!important;
-          overscroll-behavior-x:contain!important;
-          position:static!important;
-          background:#0b1220!important;
-          z-index:5!important;
-        }
-
-        .mobileLibrarySection .categoryList .catBtn{
-          flex:0 0 auto!important;
-          min-width:44px!important;
-          width:auto!important;
-          min-height:27px!important;
-          height:27px!important;
-          padding:3px 4px!important;
-          font-size:7px!important;
-          line-height:1!important;
-          white-space:nowrap!important;
-        }
-
-        .mobileLibrarySection #library{
-          grid-row:2!important;
-          display:grid!important;
-          grid-template-columns:1fr!important;
-          gap:4px!important;
-          width:100%!important;
-          height:100%!important;
-          min-height:0!important;
-          max-height:none!important;
-          margin:0!important;
-          padding:0 1px 5px!important;
-          overflow-y:auto!important;
-          overflow-x:hidden!important;
-          -webkit-overflow-scrolling:touch!important;
-          touch-action:pan-y!important;
-          overscroll-behavior-y:contain!important;
-          align-content:start!important;
-        }
-
-        .mobileLibrarySection #library .fcard{
-          min-height:62px!important;
-          height:auto!important;
-          padding:4px!important;
-          margin:0!important;
-          touch-action:pan-y!important;
-        }
-
-        .mobileLibrarySection #library .fcard img{
-          height:30px!important;
-          max-height:30px!important;
-        }
-
-        .mobileLibraryFooter{
-          display:flex!important;
-          flex:0 0 30px!important;
-          min-height:30px!important;
-          height:30px!important;
-          gap:3px!important;
-          padding-top:3px!important;
-          margin:0!important;
-          background:#0b1220!important;
-          z-index:6!important;
-        }
-
-        .mobileLibraryFooter .mobileAddLibraryBtn,
-        .mobileLibraryFooter .mobileResetLibraryBtn{
-          min-height:27px!important;
-          height:27px!important;
-          padding:3px 5px!important;
-          font-size:7px!important;
-        }
-
-        .sidebarScrim,.sidebarScrim.show{
-          display:none!important;
-          pointer-events:none!important;
-          background:transparent!important;
-        }
-      }
-    `;
-    document.head.appendChild(s);
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
-  else install();
-})();
- // ===== End FurniPlan V130 iPhone Landscape Stable Side Library =====
-
-
-// ===== FurniPlan V131 Touch Landscape Library Hard Fix =====
-(function(){
-  const mq='(hover:none) and (pointer:coarse) and (orientation:landscape) and (max-height:650px)';
-
-  function ensureFooter(section,addBtn,resetBtn){
-    let footer=section.querySelector('.mobileLibraryFooter');
-    if(!footer){
-      footer=document.createElement('div');
-      footer.className='mobileLibraryFooter';
-      const add=document.createElement('button');
-      add.type='button';add.className='libraryToolBtn primary mobileAddLibraryBtn';
-      add.textContent='+ إضافة للمكتبة';
-      add.onclick=()=>addBtn?.click();
-      footer.appendChild(add);
-      if(resetBtn){
-        const reset=document.createElement('button');
-        reset.type='button';reset.className='libraryToolBtn mobileResetLibraryBtn';
-        reset.textContent='استعادة';
-        reset.onclick=()=>resetBtn.click();
-        footer.appendChild(reset);
-      }
-      section.appendChild(footer);
-    }
-  }
-
-  function applyHardFix(){
-    const active=window.matchMedia(mq).matches;
+  function setup(){
     const aside=document.querySelector('aside');
     const lib=document.getElementById('library');
-    if(!aside||!lib)return;
+    const cats=document.getElementById('categoryList');
+    if(!aside||!lib||!cats)return;
 
-    const libSection=lib.closest('.section');
-    if(!libSection)return;
+    const section=lib.closest('.section');
+    if(!section)return;
 
-    if(active){
-      libSection.classList.add('mobileLibrarySection','v131LibraryOnly');
-      const addBtn=document.getElementById('addLibraryItemBtn');
-      const resetBtn=document.getElementById('resetLibraryBtn');
-      ensureFooter(libSection,addBtn,resetBtn);
-
-      [...aside.children].forEach(el=>{
-        if(el.classList?.contains('section')){
-          el.style.setProperty('display',el===libSection?'grid':'none','important');
-        }
+    if(active()){
+      section.classList.add('v132LibrarySection');
+      [...aside.querySelectorAll(':scope > .section')].forEach(sec=>{
+        sec.style.setProperty('display',sec===section?'grid':'none','important');
       });
+
+      let footer=section.querySelector('.v132Footer');
+      if(!footer){
+        footer=document.createElement('div');
+        footer.className='v132Footer';
+
+        const add=document.createElement('button');
+        add.type='button';
+        add.textContent='+ إضافة';
+        add.onclick=()=>document.getElementById('addLibraryItemBtn')?.click();
+        footer.appendChild(add);
+
+        const reset=document.createElement('button');
+        reset.type='button';
+        reset.textContent='استعادة';
+        reset.onclick=()=>document.getElementById('resetLibraryBtn')?.click();
+        footer.appendChild(reset);
+
+        section.appendChild(footer);
+      }
     }else{
-      [...aside.children].forEach(el=>{
-        if(el.classList?.contains('section')){
-          el.style.removeProperty('display');
-        }
-      });
+      section.classList.remove('v132LibrarySection');
+      [...aside.querySelectorAll(':scope > .section')].forEach(sec=>sec.style.removeProperty('display'));
     }
   }
 
-  function installStyle(){
-    if(document.getElementById('furniplan-v131-touch-landscape-hardfix'))return;
+  function style(){
+    if(document.getElementById('v132-library-style'))return;
     const s=document.createElement('style');
-    s.id='furniplan-v131-touch-landscape-hardfix';
+    s.id='v132-library-style';
     s.textContent=`
       @media (hover:none) and (pointer:coarse) and (orientation:landscape) and (max-height:650px){
         html body aside{
@@ -2285,40 +1798,38 @@
           max-height:none!important;
           margin:0!important;
           padding:0!important;
+          overflow:hidden!important;
           border-left:1px solid #34435b!important;
           border-top:none!important;
           border-radius:14px 0 0 14px!important;
+          box-shadow:-10px 0 24px rgba(0,0,0,.30)!important;
           transform:translateX(105%)!important;
           transition:transform .2s ease!important;
-          box-shadow:-10px 0 24px rgba(0,0,0,.30)!important;
-          overflow:hidden!important;
           z-index:2500!important;
         }
         html body aside.open{transform:translateX(0)!important}
 
-        html body aside>.section:not(.v131LibraryOnly){
-          display:none!important;
-        }
-        html body aside>.v131LibraryOnly{
+        html body aside>.v132LibrarySection{
           display:grid!important;
           grid-template-rows:minmax(0,1fr) auto!important;
           width:100%!important;
           height:100%!important;
-          max-height:100%!important;
           min-height:0!important;
+          max-height:100%!important;
           padding:5px!important;
           margin:0!important;
           overflow:hidden!important;
           box-sizing:border-box!important;
         }
-        html body aside>.v131LibraryOnly>.sectionTitleRow{
+
+        html body aside>.v132LibrarySection>.sectionTitleRow{
           display:none!important;
         }
 
-        html body aside .v131LibraryOnly .libraryBrowser{
+        html body aside .v132LibrarySection .libraryBrowser{
           display:grid!important;
           grid-template-columns:1fr!important;
-          grid-template-rows:auto minmax(0,1fr)!important;
+          grid-template-rows:32px minmax(0,1fr)!important;
           gap:4px!important;
           width:100%!important;
           height:100%!important;
@@ -2326,17 +1837,17 @@
           overflow:hidden!important;
         }
 
-        html body aside .v131LibraryOnly .categoryList{
+        html body aside .v132LibrarySection .categoryList{
           grid-row:1!important;
           display:flex!important;
           flex-direction:row!important;
           flex-wrap:nowrap!important;
           gap:3px!important;
           width:100%!important;
-          min-height:30px!important;
-          height:30px!important;
-          max-height:30px!important;
-          padding:0 0 3px!important;
+          height:32px!important;
+          min-height:32px!important;
+          max-height:32px!important;
+          padding:1px 0 3px!important;
           margin:0!important;
           position:static!important;
           overflow-x:auto!important;
@@ -2344,11 +1855,11 @@
           -webkit-overflow-scrolling:touch!important;
           touch-action:pan-x!important;
           background:#0b1220!important;
-          z-index:5!important;
         }
-        html body aside .v131LibraryOnly .categoryList .catBtn{
+
+        html body aside .v132LibrarySection .categoryList .catBtn{
           flex:0 0 auto!important;
-          min-width:43px!important;
+          min-width:44px!important;
           width:auto!important;
           min-height:27px!important;
           height:27px!important;
@@ -2358,12 +1869,9 @@
           white-space:nowrap!important;
         }
 
-        html body aside .v131LibraryOnly #library{
+        html body aside .v132LibrarySection #library{
           grid-row:2!important;
-          display:grid!important;
-          grid-template-columns:1fr!important;
-          align-content:start!important;
-          gap:4px!important;
+          display:block!important;
           width:100%!important;
           height:100%!important;
           min-height:0!important;
@@ -2375,38 +1883,42 @@
           -webkit-overflow-scrolling:touch!important;
           touch-action:pan-y!important;
           overscroll-behavior-y:contain!important;
+          scrollbar-width:thin!important;
         }
 
-        html body aside .v131LibraryOnly #library .fcard,
-        html body aside .v131LibraryOnly #library .archCard{
+        html body aside .v132LibrarySection #library .fcard,
+        html body aside .v132LibrarySection #library .archCard{
+          width:100%!important;
           min-height:62px!important;
           height:auto!important;
+          margin:0 0 4px!important;
           padding:4px!important;
-          margin:0!important;
           touch-action:pan-y!important;
-          user-select:none!important;
+          box-sizing:border-box!important;
         }
-        html body aside .v131LibraryOnly #library .fcard img,
-        html body aside .v131LibraryOnly #library .archCard img{
+
+        html body aside .v132LibrarySection #library .fcard img,
+        html body aside .v132LibrarySection #library .archCard img{
           height:30px!important;
           max-height:30px!important;
         }
 
-        html body aside .v131LibraryOnly .mobileLibraryFooter{
+        html body aside .v132Footer{
           display:flex!important;
-          flex:0 0 30px!important;
-          min-height:30px!important;
-          height:30px!important;
           gap:3px!important;
-          padding-top:3px!important;
-          margin:0!important;
+          width:100%!important;
+          height:31px!important;
+          min-height:31px!important;
+          padding-top:4px!important;
           background:#0b1220!important;
-          z-index:6!important;
         }
-        html body aside .v131LibraryOnly .mobileLibraryFooter button{
-          min-height:27px!important;
+
+        html body aside .v132Footer button{
+          flex:1 1 0!important;
+          min-width:0!important;
           height:27px!important;
-          padding:3px 5px!important;
+          min-height:27px!important;
+          padding:3px!important;
           font-size:7px!important;
         }
 
@@ -2422,20 +1934,14 @@
   }
 
   function install(){
-    installStyle();
-    applyHardFix();
-    const aside=document.querySelector('aside');
-    if(aside&&!aside.__v131Observer){
-      const obs=new MutationObserver(applyHardFix);
-      obs.observe(aside,{attributes:true,attributeFilter:['class']});
-      aside.__v131Observer=obs;
-    }
+    style();
+    setup();
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
   else install();
 
-  window.addEventListener('resize',()=>setTimeout(applyHardFix,80));
-  window.addEventListener('orientationchange',()=>setTimeout(applyHardFix,160));
+  window.addEventListener('resize',()=>setTimeout(setup,80));
+  window.addEventListener('orientationchange',()=>setTimeout(setup,160));
 })();
- // ===== End FurniPlan V131 Touch Landscape Library Hard Fix =====
+ // ===== End FurniPlan V132 iPhone Landscape Clean Side Library =====
