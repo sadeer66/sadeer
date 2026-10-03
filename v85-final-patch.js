@@ -852,8 +852,8 @@
     'دوران 180°':'Rotate 180°','أمام':'Front','خلف':'Back',
     'رفع القطعة طبقة واحدة للأمام':'Move Item One Layer Forward',
     'إنزال القطعة طبقة واحدة للخلف':'Move Item One Layer Back',
-    'تم رفع القطعة طبقة واحدة للأمام':'Item moved one layer forward',
-    'تم إنزال القطعة طبقة واحدة للخلف':'Item moved one layer back',
+    'تم رفع القطعة إلى الأمام':'Item brought to front',
+    'تم إنزال القطعة إلى الخلف':'Item sent to back',
     'القطعة في أعلى طبقة بالفعل':'Item is already on the top layer',
     'القطعة في أسفل طبقة بالفعل':'Item is already on the bottom layer',
     'اختر قطعة أثاث أولاً':'Select a furniture item first'
