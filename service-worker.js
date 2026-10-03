@@ -1,4 +1,4 @@
-const CACHE='furniplan-v116-offline-20261003';
+const CACHE='furniplan-v124-iphonefix-20261003b';
 const CORE=[
   './',
   './index.html',
