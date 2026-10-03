@@ -1745,3 +1745,69 @@
   else install();
 })();
  // ===== End FurniPlan V133 Smaller Library Category Buttons Only =====
+
+
+// ===== FurniPlan V134 Desktop Area + T Label Fix =====
+(function(){
+  function isDesktop(){
+    return !((navigator.maxTouchPoints||0)>0 && (matchMedia('(pointer:coarse)').matches || matchMedia('(hover:none)').matches));
+  }
+
+  function hideAreaBadgeSoon(ms=2600){
+    const badge=document.getElementById('areaResultBadge');
+    if(!badge)return;
+    setTimeout(()=>{badge.style.display='none';},ms);
+  }
+
+  function installDesktopAreaFix(){
+    if(!isDesktop())return;
+
+    if(typeof toggleAreaTool==='function' && !toggleAreaTool.__v134DesktopWrapped){
+      const originalToggle=toggleAreaTool;
+      const wrapped=function(){
+        const wasArea=(typeof mode!=='undefined' && mode==='areaMeasure');
+        const beforeCount=(typeof areaPolygons!=='undefined' && Array.isArray(areaPolygons))?areaPolygons.length:0;
+        const beforeDraft=(typeof areaDraft!=='undefined' && Array.isArray(areaDraft))?areaDraft.length:0;
+
+        const out=originalToggle();
+
+        if(wasArea && beforeDraft>=3 && typeof areaPolygons!=='undefined' && areaPolygons.length>beforeCount){
+          const created=areaPolygons[areaPolygons.length-1];
+          if(created){
+            const def=created.name||('غرفة '+areaPolygons.length);
+            const value=prompt('اكتب اسم الغرفة أو المساحة:',def);
+            if(value!==null && String(value).trim())created.name=String(value).trim();
+          }
+
+          if(typeof activateWorkingTool==='function')activateWorkingTool('select');
+          if(typeof syncSelectedPanel==='function')syncSelectedPanel();
+          if(typeof draw==='function')draw();
+          if(typeof setStatus==='function')setStatus('تم حفظ المساحة واسمها');
+          hideAreaBadgeSoon(2200);
+        }
+        return out;
+      };
+      wrapped.__v134DesktopWrapped=true;
+      toggleAreaTool=wrapped;
+      window.toggleAreaTool=wrapped;
+    }
+
+    window.addEventListener('keydown',function(e){
+      if(!isDesktop())return;
+      const tag=document.activeElement?.tagName;
+      const editing=['INPUT','TEXTAREA','SELECT'].includes(tag);
+      if(editing || e.ctrlKey || e.metaKey || e.altKey)return;
+
+      if(e.key && e.key.toLowerCase()==='t'){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        if(typeof startMapLabelPlacement==='function')startMapLabelPlacement();
+        else document.getElementById('addMapLabelBtn')?.click();
+      }
+    },true);
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installDesktopAreaFix,{once:true});
+  else installDesktopAreaFix();
+})();
+ // ===== End FurniPlan V134 Desktop Area + T Label Fix =====
