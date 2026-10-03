@@ -4260,27 +4260,20 @@ draw();
     const ids=new Set((typeof selectedItems==='function'?selectedItems():[]).filter(it=>!it.locked).map(it=>it.id));
     if(!ids.size){setStatus?.('اختر قطعة أثاث أولاً');return;}
     const before=typeof cloneEditState==='function'?cloneEditState():null;
-    let changed=false;
+    const selected=items.filter(it=>ids.has(it.id));
+    const rest=items.filter(it=>!ids.has(it.id));
     if(direction==='front'){
-      for(let i=items.length-2;i>=0;i--){
-        if(ids.has(items[i].id)&&!ids.has(items[i+1].id)){
-          const t=items[i];items[i]=items[i+1];items[i+1]=t;changed=true;
-        }
-      }
+      const already=selected.length&&items.slice(-selected.length).every((it,i)=>it.id===selected[i].id);
+      if(already){setStatus?.('القطعة في أعلى طبقة بالفعل');return;}
+      items=[...rest,...selected];
     }else{
-      for(let i=1;i<items.length;i++){
-        if(ids.has(items[i].id)&&!ids.has(items[i-1].id)){
-          const t=items[i];items[i]=items[i-1];items[i-1]=t;changed=true;
-        }
-      }
-    }
-    if(!changed){
-      setStatus?.(direction==='front'?'القطعة في أعلى طبقة بالفعل':'القطعة في أسفل طبقة بالفعل');
-      return;
+      const already=selected.length&&items.slice(0,selected.length).every((it,i)=>it.id===selected[i].id);
+      if(already){setStatus?.('القطعة في أسفل طبقة بالفعل');return;}
+      items=[...selected,...rest];
     }
     syncSelectedPanel?.();draw?.();
     if(before&&typeof commitHistory==='function')commitHistory(before);
-    setStatus?.(direction==='front'?'تم رفع القطعة طبقة واحدة للأمام':'تم إنزال القطعة طبقة واحدة للخلف');
+    setStatus?.(direction==='front'?'تم رفع القطعة إلى الأمام':'تم إنزال القطعة إلى الخلف');
     syncStates?.();
   }
 
@@ -4389,7 +4382,7 @@ draw();
 </script>
 
 
-<script src="v85-final-patch.js?v=148"></script>
+<script src="v85-final-patch.js?v=149"></script>
 
 <script id="furniplan-toolbar-wheel-v94">
 (()=>{
