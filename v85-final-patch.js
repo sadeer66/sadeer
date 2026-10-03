@@ -1421,3 +1421,223 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
 // ===== End FurniPlan V124 Portrait Sheet + Area Badge Fix =====
+
+
+// ===== FurniPlan V125 Universal Mobile Library Dock =====
+(function(){
+  function installMobileLibraryDock(){
+    const lib=document.getElementById('library');
+    const cats=document.getElementById('categoryList');
+    const addBtn=document.getElementById('addLibraryItemBtn');
+    if(!lib||!cats||!addBtn)return;
+
+    const section=lib.closest('.section');
+    const browser=lib.closest('.libraryBrowser');
+    if(!section||!browser)return;
+    section.classList.add('mobileLibrarySection');
+
+    let footer=section.querySelector('.mobileLibraryFooter');
+    if(!footer){
+      footer=document.createElement('div');
+      footer.className='mobileLibraryFooter';
+      const addProxy=document.createElement('button');
+      addProxy.type='button';
+      addProxy.className='libraryToolBtn primary mobileAddLibraryBtn';
+      addProxy.textContent='+ إضافة للمكتبة';
+      addProxy.addEventListener('click',()=>addBtn.click());
+      footer.appendChild(addProxy);
+
+      const reset=document.getElementById('resetLibraryBtn');
+      if(reset){
+        const resetProxy=document.createElement('button');
+        resetProxy.type='button';
+        resetProxy.className='libraryToolBtn mobileResetLibraryBtn';
+        resetProxy.textContent='استعادة';
+        resetProxy.addEventListener('click',()=>reset.click());
+        footer.appendChild(resetProxy);
+      }
+      section.appendChild(footer);
+    }
+
+    if(document.getElementById('furniplan-v125-mobile-library-dock-style'))return;
+    const s=document.createElement('style');
+    s.id='furniplan-v125-mobile-library-dock-style';
+    s.textContent=`
+      @media (max-width:900px){
+        aside{
+          padding:0!important;
+          overflow:hidden!important;
+        }
+        aside>.section:not(.mobileLibrarySection){
+          display:none!important;
+        }
+        aside>.mobileLibrarySection{
+          position:relative!important;
+          display:grid!important;
+          grid-template-rows:auto minmax(0,1fr) auto!important;
+          width:100%!important;
+          height:100%!important;
+          max-height:100%!important;
+          margin:0!important;
+          padding:7px!important;
+          border-radius:inherit!important;
+          overflow:hidden!important;
+          box-sizing:border-box!important;
+        }
+        .mobileLibrarySection>.sectionTitleRow{
+          display:none!important;
+        }
+        .mobileLibrarySection .libraryBrowser{
+          display:grid!important;
+          grid-template-rows:auto minmax(0,1fr)!important;
+          grid-template-columns:1fr!important;
+          gap:6px!important;
+          min-height:0!important;
+          height:100%!important;
+          overflow:hidden!important;
+        }
+        .mobileLibrarySection .categoryList{
+          grid-row:1!important;
+          display:flex!important;
+          flex-direction:row!important;
+          flex-wrap:nowrap!important;
+          gap:5px!important;
+          position:static!important;
+          top:auto!important;
+          min-height:38px!important;
+          max-height:42px!important;
+          overflow-x:auto!important;
+          overflow-y:hidden!important;
+          -webkit-overflow-scrolling:touch!important;
+          touch-action:pan-x!important;
+          scrollbar-width:thin!important;
+          padding:1px 1px 4px!important;
+          background:#0b1220!important;
+          z-index:3!important;
+        }
+        .mobileLibrarySection .categoryList .catBtn{
+          flex:0 0 auto!important;
+          min-width:58px!important;
+          min-height:34px!important;
+          height:34px!important;
+          padding:4px 7px!important;
+          font-size:8.5px!important;
+          line-height:1.05!important;
+          white-space:nowrap!important;
+        }
+        .mobileLibrarySection #library{
+          grid-row:2!important;
+          display:grid!important;
+          grid-template-columns:repeat(2,minmax(0,1fr))!important;
+          gap:6px!important;
+          min-height:0!important;
+          height:100%!important;
+          max-height:none!important;
+          overflow-y:auto!important;
+          overflow-x:hidden!important;
+          -webkit-overflow-scrolling:touch!important;
+          touch-action:pan-y!important;
+          overscroll-behavior:contain!important;
+          padding:0 2px 8px!important;
+          scrollbar-width:thin!important;
+        }
+        .mobileLibrarySection #library .fcard{
+          min-height:78px!important;
+          padding:5px!important;
+          touch-action:pan-y!important;
+        }
+        .mobileLibrarySection #library .fcard img{
+          max-height:38px!important;
+          height:38px!important;
+        }
+        .mobileLibrarySection #library .fcard b,
+        .mobileLibrarySection #library .fmeta b{
+          font-size:8.5px!important;
+          line-height:1.1!important;
+        }
+        .mobileLibrarySection #library .fcard span,
+        .mobileLibrarySection #library .fmeta .dims{
+          font-size:7.5px!important;
+        }
+        .mobileLibraryFooter{
+          display:flex!important;
+          flex:0 0 auto!important;
+          gap:6px!important;
+          align-items:center!important;
+          justify-content:stretch!important;
+          min-height:38px!important;
+          padding-top:5px!important;
+          background:#0b1220!important;
+          z-index:4!important;
+        }
+        .mobileLibraryFooter .mobileAddLibraryBtn{
+          flex:1 1 auto!important;
+          min-height:34px!important;
+          height:34px!important;
+          padding:5px 8px!important;
+          font-size:9px!important;
+        }
+        .mobileLibraryFooter .mobileResetLibraryBtn{
+          flex:0 0 auto!important;
+          min-height:34px!important;
+          height:34px!important;
+          padding:5px 8px!important;
+          font-size:8px!important;
+        }
+        .sidebarScrim,.sidebarScrim.show{
+          display:none!important;
+          pointer-events:none!important;
+          background:transparent!important;
+        }
+      }
+
+      @media (max-width:900px) and (orientation:portrait){
+        aside{
+          top:auto!important;
+          left:8px!important;
+          right:8px!important;
+          bottom:calc(env(safe-area-inset-bottom) + 34px)!important;
+          width:auto!important;
+          max-width:none!important;
+          height:30dvh!important;
+          max-height:30dvh!important;
+          border-left:none!important;
+          border-top:1px solid #34435b!important;
+          border-radius:16px 16px 0 0!important;
+          transform:translateY(110%)!important;
+          box-shadow:0 -12px 30px rgba(0,0,0,.36)!important;
+        }
+        aside.open{transform:translateY(0)!important}
+      }
+
+      @media (max-width:900px) and (orientation:landscape){
+        aside{
+          top:calc(env(safe-area-inset-top) + var(--tool-header-h))!important;
+          right:0!important;
+          left:auto!important;
+          bottom:calc(env(safe-area-inset-bottom) + 30px)!important;
+          width:30vw!important;
+          max-width:30vw!important;
+          height:auto!important;
+          max-height:none!important;
+          border-left:1px solid #34435b!important;
+          border-top:none!important;
+          border-radius:14px 0 0 14px!important;
+          transform:translateX(105%)!important;
+          box-shadow:-12px 0 30px rgba(0,0,0,.36)!important;
+        }
+        aside.open{transform:translateX(0)!important}
+        .mobileLibrarySection #library{
+          grid-template-columns:1fr!important;
+        }
+      }
+    `;
+    document.head.appendChild(s);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',installMobileLibraryDock,{once:true});
+  }else installMobileLibraryDock();
+  window.addEventListener('orientationchange',()=>setTimeout(installMobileLibraryDock,120));
+})();
+ // ===== End FurniPlan V125 Universal Mobile Library Dock =====
