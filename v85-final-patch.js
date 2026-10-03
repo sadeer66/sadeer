@@ -2051,3 +2051,162 @@
   else install();
 })();
  // ===== End FurniPlan V129 iPhone Landscape Half-Width Side Library =====
+
+
+// ===== FurniPlan V130 iPhone Landscape Stable Side Library =====
+(function(){
+  function install(){
+    if(document.getElementById('furniplan-v130-iphone-landscape-stable-side'))return;
+    const s=document.createElement('style');
+    s.id='furniplan-v130-iphone-landscape-stable-side';
+    s.textContent=`
+      /* Final override: iPhone landscape only */
+      @media (orientation:landscape) and (max-width:950px) and (max-height:650px){
+        aside{
+          position:fixed!important;
+          top:calc(env(safe-area-inset-top) + var(--tool-header-h))!important;
+          right:0!important;
+          left:auto!important;
+          bottom:calc(env(safe-area-inset-bottom) + 28px)!important;
+          width:155px!important;
+          max-width:155px!important;
+          min-width:155px!important;
+          height:auto!important;
+          max-height:none!important;
+          margin:0!important;
+          padding:0!important;
+          border-left:1px solid #34435b!important;
+          border-top:none!important;
+          border-radius:14px 0 0 14px!important;
+          transform:translateX(105%)!important;
+          transition:transform .22s ease!important;
+          box-shadow:-10px 0 24px rgba(0,0,0,.30)!important;
+          overflow:hidden!important;
+        }
+        aside.open{
+          transform:translateX(0)!important;
+        }
+
+        aside>.mobileLibrarySection{
+          display:grid!important;
+          grid-template-rows:minmax(0,1fr) auto!important;
+          width:100%!important;
+          height:100%!important;
+          max-height:100%!important;
+          min-height:0!important;
+          margin:0!important;
+          padding:5px!important;
+          overflow:hidden!important;
+          box-sizing:border-box!important;
+        }
+
+        .mobileLibrarySection .libraryBrowser{
+          display:grid!important;
+          grid-template-columns:1fr!important;
+          grid-template-rows:auto minmax(0,1fr)!important;
+          gap:4px!important;
+          width:100%!important;
+          height:100%!important;
+          min-height:0!important;
+          overflow:hidden!important;
+        }
+
+        .mobileLibrarySection .categoryList{
+          grid-row:1!important;
+          display:flex!important;
+          flex-direction:row!important;
+          flex-wrap:nowrap!important;
+          gap:3px!important;
+          width:100%!important;
+          min-height:30px!important;
+          height:30px!important;
+          max-height:30px!important;
+          padding:0 0 3px!important;
+          margin:0!important;
+          overflow-x:auto!important;
+          overflow-y:hidden!important;
+          -webkit-overflow-scrolling:touch!important;
+          touch-action:pan-x!important;
+          overscroll-behavior-x:contain!important;
+          position:static!important;
+          background:#0b1220!important;
+          z-index:5!important;
+        }
+
+        .mobileLibrarySection .categoryList .catBtn{
+          flex:0 0 auto!important;
+          min-width:44px!important;
+          width:auto!important;
+          min-height:27px!important;
+          height:27px!important;
+          padding:3px 4px!important;
+          font-size:7px!important;
+          line-height:1!important;
+          white-space:nowrap!important;
+        }
+
+        .mobileLibrarySection #library{
+          grid-row:2!important;
+          display:grid!important;
+          grid-template-columns:1fr!important;
+          gap:4px!important;
+          width:100%!important;
+          height:100%!important;
+          min-height:0!important;
+          max-height:none!important;
+          margin:0!important;
+          padding:0 1px 5px!important;
+          overflow-y:auto!important;
+          overflow-x:hidden!important;
+          -webkit-overflow-scrolling:touch!important;
+          touch-action:pan-y!important;
+          overscroll-behavior-y:contain!important;
+          align-content:start!important;
+        }
+
+        .mobileLibrarySection #library .fcard{
+          min-height:62px!important;
+          height:auto!important;
+          padding:4px!important;
+          margin:0!important;
+          touch-action:pan-y!important;
+        }
+
+        .mobileLibrarySection #library .fcard img{
+          height:30px!important;
+          max-height:30px!important;
+        }
+
+        .mobileLibraryFooter{
+          display:flex!important;
+          flex:0 0 30px!important;
+          min-height:30px!important;
+          height:30px!important;
+          gap:3px!important;
+          padding-top:3px!important;
+          margin:0!important;
+          background:#0b1220!important;
+          z-index:6!important;
+        }
+
+        .mobileLibraryFooter .mobileAddLibraryBtn,
+        .mobileLibraryFooter .mobileResetLibraryBtn{
+          min-height:27px!important;
+          height:27px!important;
+          padding:3px 5px!important;
+          font-size:7px!important;
+        }
+
+        .sidebarScrim,.sidebarScrim.show{
+          display:none!important;
+          pointer-events:none!important;
+          background:transparent!important;
+        }
+      }
+    `;
+    document.head.appendChild(s);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
+})();
+ // ===== End FurniPlan V130 iPhone Landscape Stable Side Library =====
