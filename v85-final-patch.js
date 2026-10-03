@@ -1641,3 +1641,78 @@
   window.addEventListener('orientationchange',()=>setTimeout(installMobileLibraryDock,120));
 })();
  // ===== End FurniPlan V125 Universal Mobile Library Dock =====
+
+
+// ===== FurniPlan V126 iPhone Bottom Library =====
+(function(){
+  function install(){
+    if(document.getElementById('furniplan-v126-iphone-bottom-library'))return;
+    const s=document.createElement('style');
+    s.id='furniplan-v126-iphone-bottom-library';
+    s.textContent=`
+      /* iPhone only — keep iPad V125 layout unchanged */
+      @media (max-width:700px) and (orientation:portrait){
+        aside{
+          top:auto!important;
+          left:6vw!important;
+          right:6vw!important;
+          bottom:calc(env(safe-area-inset-bottom) + 34px)!important;
+          width:88vw!important;
+          max-width:88vw!important;
+          height:22dvh!important;
+          max-height:22dvh!important;
+          border-left:none!important;
+          border-top:1px solid #34435b!important;
+          border-radius:16px 16px 0 0!important;
+          transform:translateY(110%)!important;
+          box-shadow:0 -10px 26px rgba(0,0,0,.34)!important;
+        }
+        aside.open{transform:translateY(0)!important}
+        .mobileLibrarySection #library{
+          grid-template-columns:repeat(2,minmax(0,1fr))!important;
+        }
+      }
+
+      @media (max-width:700px) and (orientation:landscape){
+        aside{
+          top:auto!important;
+          left:23vw!important;
+          right:23vw!important;
+          bottom:calc(env(safe-area-inset-bottom) + 18px)!important;
+          width:54vw!important;
+          max-width:54vw!important;
+          height:28dvh!important;
+          max-height:28dvh!important;
+          border-left:none!important;
+          border-top:1px solid #34435b!important;
+          border-radius:16px 16px 0 0!important;
+          transform:translateY(110%)!important;
+          box-shadow:0 -10px 26px rgba(0,0,0,.34)!important;
+        }
+        aside.open{transform:translateY(0)!important}
+        .mobileLibrarySection #library{
+          grid-template-columns:repeat(3,minmax(0,1fr))!important;
+        }
+        .mobileLibrarySection .categoryList .catBtn{
+          min-width:54px!important;
+          height:30px!important;
+          min-height:30px!important;
+          font-size:8px!important;
+        }
+        .mobileLibraryFooter{
+          min-height:34px!important;
+          padding-top:3px!important;
+        }
+        .mobileLibraryFooter .mobileAddLibraryBtn,
+        .mobileLibraryFooter .mobileResetLibraryBtn{
+          height:30px!important;
+          min-height:30px!important;
+        }
+      }
+    `;
+    document.head.appendChild(s);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
+})();
+ // ===== End FurniPlan V126 iPhone Bottom Library =====
