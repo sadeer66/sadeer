@@ -3433,8 +3433,10 @@ function drawAreaPolygons(){
   if(!pxPerCm)return;ctx.save();ctx.lineJoin='round';const touch=isTouchDevice();
   for(const a of areaPolygons){
     if(!a.points||a.points.length<3)continue;
-    ctx.beginPath();ctx.moveTo(a.points[0].x,a.points[0].y);for(let i=1;i<a.points.length;i++)ctx.lineTo(a.points[i].x,a.points[i].y);ctx.closePath();
-    ctx.fillStyle='rgba(14,165,233,.07)';ctx.fill();ctx.strokeStyle='#0284c7';ctx.lineWidth=Math.max(1.2,2/zoom);ctx.stroke();
+    if(!touch){
+      ctx.beginPath();ctx.moveTo(a.points[0].x,a.points[0].y);for(let i=1;i<a.points.length;i++)ctx.lineTo(a.points[i].x,a.points[i].y);ctx.closePath();
+      ctx.fillStyle='rgba(14,165,233,.07)';ctx.fill();ctx.strokeStyle='#0284c7';ctx.lineWidth=Math.max(1.2,2/zoom);ctx.stroke();
+    }
     const baseCx=a.points.reduce((sum,p)=>sum+p.x,0)/a.points.length,baseCy=a.points.reduce((sum,p)=>sum+p.y,0)/a.points.length;
     const cx=baseCx+(a.cardOffsetX||0),cy=baseCy+(a.cardOffsetY||0);
     const txt=a.name+'  '+a.areaM2.toFixed(2)+' م² • '+a.perimeterM.toFixed(2)+' م',fs=Math.max(10,13/zoom);
