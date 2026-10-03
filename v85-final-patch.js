@@ -1358,3 +1358,71 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installV124Fix,{once:true});else installV124Fix();
 })();
 // ===== End FurniPlan V124 iPhone Portrait Library + Labels Fix =====
+
+
+// ===== FurniPlan V124 Portrait Sheet + Area Badge Fix =====
+(function(){
+  function installStyle(){
+    if(document.getElementById('furniplan-v124-portrait-sheet-style'))return;
+    const s=document.createElement('style');
+    s.id='furniplan-v124-portrait-sheet-style';
+    s.textContent=`
+      @media (max-width:700px) and (orientation:portrait){
+        aside{
+          top:auto!important;left:8px!important;right:8px!important;
+          bottom:calc(env(safe-area-inset-bottom) + 34px)!important;
+          width:auto!important;height:min(52dvh,460px)!important;max-height:min(52dvh,460px)!important;
+          border-left:none!important;border-top:1px solid #34435b!important;
+          border-radius:18px 18px 0 0!important;
+          box-shadow:0 -18px 44px rgba(0,0,0,.42)!important;
+          transform:translateY(108%)!important;transition:transform .22s ease!important;
+          overflow:hidden!important;
+        }
+        aside.open{transform:translateY(0)!important}
+        .sidebarScrim,.sidebarScrim.show{display:none!important;pointer-events:none!important;background:transparent!important}
+        .sideSection{overflow:auto!important;-webkit-overflow-scrolling:touch!important}
+        .libraryBrowser{grid-template-columns:74px minmax(0,1fr)!important;gap:6px!important}
+        .categoryList{gap:6px!important;padding-left:1px!important}
+        .catBtn{padding:10px 6px!important;font-size:11px!important;min-height:44px!important}
+        .fcard{min-height:132px!important;padding:9px!important}
+        .fcard img{max-height:72px!important}
+        .fmeta b{font-size:11px!important}
+        .fmeta .dims{font-size:10px!important}
+      }`;
+    document.head.appendChild(s);
+  }
+  function hideAreaBadgeNow(){
+    try{
+      if(typeof areaResultTimer!=='undefined'&&areaResultTimer){clearTimeout(areaResultTimer);areaResultTimer=null;}
+      if(typeof areaResultBadge!=='undefined'&&areaResultBadge)areaResultBadge.style.display='none';
+    }catch(_){}
+  }
+  window.hideAreaBadgeNow=hideAreaBadgeNow;
+  function patchAreaBadge(){
+    if(typeof showAreaResultText!=='function'||showAreaResultText.__v124patched)return;
+    const old=showAreaResultText;
+    const wrapped=function(text){
+      old(text,true);
+      try{
+        if(areaResultTimer){clearTimeout(areaResultTimer);areaResultTimer=null;}
+        let ms=3200; const t=String(text||'');
+        if(/حذف|يلزم تحديد/.test(t))ms=2200;
+        else if(/حدد زوايا|تم تحديد/.test(t))ms=2600;
+        else if(/المساحة الحالية|المحيط|المساحة\s/.test(t))ms=3400;
+        areaResultTimer=setTimeout(()=>{if(areaResultBadge)areaResultBadge.style.display='none';areaResultTimer=null;},ms);
+      }catch(_){}
+    };
+    wrapped.__v124patched=true;
+    showAreaResultText=wrapped; window.showAreaResultText=wrapped;
+  }
+  function patchToolSwitch(){
+    if(typeof activateWorkingTool!=='function'||activateWorkingTool.__v124badgepatched)return;
+    const old=activateWorkingTool;
+    const wrapped=function(nextMode){const r=old(nextMode);if(nextMode!=='areaMeasure')hideAreaBadgeNow();return r;};
+    wrapped.__v124badgepatched=true;
+    activateWorkingTool=wrapped; window.activateWorkingTool=wrapped;
+  }
+  function install(){installStyle();patchAreaBadge();patchToolSwitch();}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+})();
+// ===== End FurniPlan V124 Portrait Sheet + Area Badge Fix =====
