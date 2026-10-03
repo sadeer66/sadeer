@@ -119,7 +119,7 @@ async function createWindow() {
       show: false,
       autoHideMenuBar: true,
       backgroundColor: '#ffffff',
-      title: 'FurniPlan V137',
+      title: 'FurniPlan V138',
       icon: path.join(appRoot, 'build', 'furniplan.ico'),
       webPreferences: {
         contextIsolation: true,
@@ -147,137 +147,163 @@ async function createWindow() {
       try {
         await win.webContents.executeJavaScript(`
           (() => {
-            if (window.__fpDesktopV137) return;
-            window.__fpDesktopV137 = true;
+            if (window.__fpDesktopV138) return;
+            window.__fpDesktopV138 = true;
 
-            window.finishAreaTool = function(){
-              if(mode!=='areaMeasure') return;
-
-              if(areaDraft.length < 3){
-                showAreaResultText('يلزم تحديد 3 زوايا على الأقل لإنهاء المساحة', true);
-                setStatus('حدد 3 زوايا على الأقل لإنهاء المساحة');
-                updateInteractionCursor();
-                syncAreaToolLabel();
-                draw();
-                return;
-              }
-
-              const st = polygonAreaStats(areaDraft);
-              const defaultName = 'غرفة ' + (areaPolygons.length + 1);
-              let name = prompt('اكتب اسم الغرفة أو المساحة:', defaultName);
-              if(name === null) name = defaultName;
-              name = String(name || defaultName).trim() || defaultName;
-
-              const before = cloneEditState();
-              const result = {
-                id: randId(),
-                name,
-                points: areaDraft.map(p => ({...p})),
-                areaM2: st.areaM2,
-                perimeterM: st.perimeterM
-              };
-
-              areaPolygons.push(result);
-              lastAreaResult = result;
-              areaDraft = [];
-              commitHistory(before);
-
-              const areaText = name + ' — ' + st.areaM2.toFixed(2) + ' م² — المحيط ' + st.perimeterM.toFixed(2) + ' م';
-              showAreaResultText(areaText, true);
-
-              activateWorkingTool('select');
-              pendingFurnitureDef = null;
-              selectedMeasureId = null;
-              selectedMapLabelId = null;
-              clearFurnitureSelection();
-              updateInteractionCursor();
-              syncSelectedPanel();
-              syncAreaToolLabel();
-              draw();
-              setStatus('تم حفظ ' + areaText);
-            };
-
-            window.toggleAreaTool = function(){
-              if(mode==='areaMeasure'){
-                window.finishAreaTool();
-                return;
-              }
-              if(!hasPlan()){
-                alert('ارفع الخارطة أولاً.');
-                return;
-              }
-              if(!pxPerCm){
-                alert('عاير الخارطة أولاً حتى يمكن حساب المساحة والمحيط.');
-                return;
-              }
-
-              activateWorkingTool('areaMeasure');
-              areaDraft = [];
-              lastAreaResult = null;
-              clearFurnitureSelection();
-              selectedMeasureId = null;
-              selectedMapLabelId = null;
-              pendingFurnitureDef = null;
-              updateInteractionCursor();
-              syncSelectedPanel();
-              syncAreaToolLabel();
-              showAreaResultText('حدد زوايا الغرفة — بعد النقطة الثالثة اضغط «إنهاء مساحة»', false);
-              setStatus('حدد زوايا الغرفة ثم اضغط «إنهاء مساحة»');
-              draw();
-            };
-
-            const beginDesktopLabelV137 = () => {
-              if(!hasPlan()){
-                alert('ارفع الخارطة أولاً.');
-                return;
-              }
-              const value = prompt('اكتب المسمى الذي تريد وضعه على الخارطة:', '');
-              if(value === null) return;
-              const clean = String(value).trim();
-              if(!clean) return;
-
-              pendingMapLabelText = clean;
-              activateWorkingTool('labelPlace');
-              points = [];
-              selectedMeasureId = null;
-              selectedMapLabelId = null;
-              clearFurnitureSelection();
-              syncSelectedPanel();
-              updateInteractionCursor();
-              setStatus('انقر مكان «' + clean + '» على الخارطة');
-              draw();
-            };
-
-            window.addEventListener('keydown', e => {
-              const tag = document.activeElement?.tagName;
-              if(['INPUT','TEXTAREA','SELECT'].includes(tag)) return;
-              if(e.ctrlKey || e.metaKey || e.altKey) return;
-              if(String(e.key || '').toLowerCase() === 't'){
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                beginDesktopLabelV137();
-              }
-            }, true);
-
-            const labelBtn = document.getElementById('addMapLabelBtn');
-            if(labelBtn){
-              labelBtn.onclick = null;
-              labelBtn.addEventListener('click', e => {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                beginDesktopLabelV137();
-              }, true);
+            function ensureTextModal(){
+              let overlay=document.getElementById('fpDesktopTextModal');
+              if(overlay)return overlay;
+              overlay=document.createElement('div');
+              overlay.id='fpDesktopTextModal';
+              overlay.style.cssText='display:none;position:fixed;inset:0;z-index:999999;background:rgba(2,6,23,.72);align-items:center;justify-content:center;font-family:Tahoma,Arial,sans-serif;direction:rtl';
+              overlay.innerHTML='<div style="width:min(440px,90vw);background:#0f172a;border:1px solid #38bdf8;border-radius:16px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.55)">'+
+                '<div id="fpDesktopTextTitle" style="color:#fff;font-weight:800;font-size:18px;margin-bottom:12px"></div>'+
+                '<input id="fpDesktopTextInput" type="text" style="width:100%;box-sizing:border-box;background:#fff;color:#111827;border:2px solid #38bdf8;border-radius:10px;padding:11px 12px;font:700 17px Tahoma;outline:none">'+
+                '<div style="display:flex;gap:10px;margin-top:14px">'+
+                  '<button id="fpDesktopTextOk" style="flex:1;border:0;border-radius:10px;padding:10px;background:#0284c7;color:#fff;font:800 15px Tahoma;cursor:pointer">اعتماد</button>'+
+                  '<button id="fpDesktopTextCancel" style="flex:0 0 110px;border:1px solid #64748b;border-radius:10px;padding:10px;background:#1e293b;color:#fff;font:700 14px Tahoma;cursor:pointer">إلغاء</button>'+
+                '</div></div>';
+              document.body.appendChild(overlay);
+              return overlay;
             }
 
-            document.title = 'FurniPlan V137';
-            setStatus('FurniPlan V137 — إصلاح المساحة والمسميات مفعّل');
+            function askText(title,initial=''){
+              return new Promise(resolve=>{
+                const overlay=ensureTextModal();
+                const titleEl=document.getElementById('fpDesktopTextTitle');
+                const input=document.getElementById('fpDesktopTextInput');
+                const ok=document.getElementById('fpDesktopTextOk');
+                const cancel=document.getElementById('fpDesktopTextCancel');
+                titleEl.textContent=title;
+                input.value=initial||'';
+                overlay.style.display='flex';
+                setTimeout(()=>{input.focus();input.select();},20);
+
+                let done=false;
+                const finish=value=>{
+                  if(done)return;done=true;
+                  overlay.style.display='none';
+                  ok.onclick=null;cancel.onclick=null;input.onkeydown=null;
+                  resolve(value);
+                };
+                ok.onclick=()=>finish(String(input.value||'').trim());
+                cancel.onclick=()=>finish(null);
+                input.onkeydown=e=>{
+                  if(e.key==='Enter'){e.preventDefault();finish(String(input.value||'').trim());}
+                  else if(e.key==='Escape'){e.preventDefault();finish(null);}
+                };
+              });
+            }
+
+            function hideAreaBadge(){
+              try{
+                if(typeof areaResultTimer!=='undefined'&&areaResultTimer){clearTimeout(areaResultTimer);areaResultTimer=null;}
+                if(typeof areaResultBadge!=='undefined'&&areaResultBadge)areaResultBadge.style.display='none';
+              }catch(_){}
+            }
+
+            async function finishAreaDesktop(){
+              if(typeof mode==='undefined'||mode!=='areaMeasure')return;
+              if(!Array.isArray(areaDraft)||areaDraft.length<3){
+                if(typeof showAreaResultText==='function')showAreaResultText('يلزم تحديد 3 زوايا على الأقل لإنهاء المساحة',true);
+                if(typeof setStatus==='function')setStatus('حدد 3 زوايا على الأقل لإنهاء المساحة');
+                return;
+              }
+
+              const st=polygonAreaStats(areaDraft);
+              const def='غرفة '+(areaPolygons.length+1);
+              const entered=await askText('اكتب اسم الغرفة أو المساحة',def);
+              const name=(entered===null?def:(String(entered).trim()||def));
+
+              const before=cloneEditState();
+              const result={id:randId(),name,points:areaDraft.map(p=>({...p})),areaM2:st.areaM2,perimeterM:st.perimeterM};
+              areaPolygons.push(result);
+              lastAreaResult=result;
+              areaDraft=[];
+              commitHistory(before);
+
+              hideAreaBadge();
+              activateWorkingTool('select');
+              pendingFurnitureDef=null;
+              selectedMeasureId=null;
+              selectedMapLabelId=null;
+              clearFurnitureSelection();
+              updateInteractionCursor();
+              syncSelectedPanel();
+              syncAreaToolLabel();
+              draw();
+              setStatus('تم حفظ '+name+' — '+st.areaM2.toFixed(2)+' م²');
+            }
+
+            async function beginLabelDesktop(){
+              if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}
+              const entered=await askText('اكتب المسمى الذي تريد وضعه على الخارطة','');
+              if(entered===null)return;
+              const clean=String(entered).trim();
+              if(!clean)return;
+              pendingMapLabelText=clean;
+              activateWorkingTool('labelPlace');
+              points=[];
+              selectedMeasureId=null;
+              selectedMapLabelId=null;
+              clearFurnitureSelection();
+              syncSelectedPanel();
+              updateInteractionCursor();
+              setStatus('انقر مكان «'+clean+'» على الخارطة');
+              draw();
+            }
+
+            // Capture the visible toolbar buttons directly.
+            document.addEventListener('click',e=>{
+              const area=e.target && e.target.closest ? e.target.closest('#v65Area') : null;
+              if(area){
+                e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+                if(mode==='areaMeasure') finishAreaDesktop();
+                else {
+                  if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}
+                  if(!pxPerCm){alert('عاير الخارطة أولاً حتى يمكن حساب المساحة والمحيط.');return;}
+                  activateWorkingTool('areaMeasure');
+                  areaDraft=[];lastAreaResult=null;
+                  clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;pendingFurnitureDef=null;
+                  updateInteractionCursor();syncSelectedPanel();syncAreaToolLabel();
+                  showAreaResultText('حدد زوايا الغرفة — بعد النقطة الثالثة اضغط «إنهاء مساحة»',false);
+                  setStatus('حدد زوايا الغرفة ثم اضغط «إنهاء مساحة»');
+                  draw();
+                }
+                return;
+              }
+              const label=e.target && e.target.closest ? e.target.closest('#v44Label') : null;
+              if(label){
+                e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+                beginLabelDesktop();
+              }
+            },true);
+
+            // T shortcut.
+            window.addEventListener('keydown',e=>{
+              const tag=document.activeElement?.tagName;
+              if(['INPUT','TEXTAREA','SELECT'].includes(tag))return;
+              if(e.ctrlKey||e.metaKey||e.altKey)return;
+              if(String(e.key||'').toLowerCase()==='t'){
+                e.preventDefault();e.stopImmediatePropagation();
+                beginLabelDesktop();
+              }
+            },true);
+
+            document.title='FurniPlan V138';
+            const mark=document.createElement('div');
+            mark.textContent='Windows V138 — desktop modal fix';
+            mark.style.cssText='position:fixed;left:28px;top:96px;z-index:99999;color:#7dd3fc;font:700 11px Tahoma;pointer-events:none';
+            document.body.appendChild(mark);
+            if(typeof setStatus==='function')setStatus('Windows V138 جاهز — إصلاح المساحة والمسميات مفعّل');
           })();
         `);
-        writeLog('Desktop V137 patch injected successfully.');
+        writeLog('Desktop V138 patch injected successfully.');
       } catch (err) {
-        writeLog(`Desktop V137 patch injection failed: ${err && err.stack ? err.stack : err}`);
+        writeLog(`Desktop V138 patch injection failed: ${err && err.stack ? err.stack : err}`);
       }
     });
+
     win.webContents.on('render-process-gone', (_event, details) => {
       writeLog(`Renderer process gone: ${JSON.stringify(details)}`);
       dialog.showErrorBox('FurniPlan', 'تعذر تشغيل واجهة البرنامج. أغلق البرنامج وافتحه مرة أخرى.');
@@ -293,7 +319,7 @@ async function createWindow() {
 
     win.on('page-title-updated', (event) => {
       event.preventDefault();
-      win.setTitle('FurniPlan V137');
+      win.setTitle('FurniPlan V138');
     });
 
     win.webContents.setWindowOpenHandler(({ url }) => {
