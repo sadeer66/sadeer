@@ -1,4 +1,4 @@
-const CACHE='furniplan-v124-iphone-halfscroll-20261003';
+const CACHE='furniplan-v124-iphone-scrollfix-20261003';
 const CORE=[
   './',
   './index.html',
