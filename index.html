@@ -1250,7 +1250,7 @@ const mapLabelTextInput=document.getElementById('mapLabelTextInput');
 const deleteMapLabelBtn=document.getElementById('deleteMapLabelBtn');
 
 
-let bgImage=null,bgData=null,dxfModel=null,dxfSnapSegments=[],dxfSnapKeyPoints=[],dxfActiveSnap=null,items=[],selectedId=null,selectedIds=[],selectedMeasureId=null,selectedMapLabelId=null,pxPerCm=null,mode='select',points=[],drag=null,panDrag=null,measureDrag=null,mapLabelDrag=null,zoom=1,measureDisplayScale=1,mapLabelDisplayScale=1,measurements=[],mapLabels=[],areaPolygons=[],areaDraft=[],areaTouchTap=null,lastAreaResult=null,areaResultTimer=null,pendingCalDistancePx=null,pendingFurnitureDef=null,pendingMapLabelText='',libraryDragActive=false;
+let bgImage=null,bgData=null,dxfModel=null,dxfSnapSegments=[],dxfSnapKeyPoints=[],dxfActiveSnap=null,items=[],selectedId=null,selectedIds=[],selectedMeasureId=null,selectedMapLabelId=null,pxPerCm=null,mode='select',points=[],drag=null,panDrag=null,measureDrag=null,mapLabelDrag=null,zoom=1,measureDisplayScale=1,mapLabelDisplayScale=1,measurements=[],mapLabels=[],areaPolygons=[],areaDraft=[],areaTouchTap=null,areaCardDrag=null,lastAreaResult=null,areaResultTimer=null,pendingCalDistancePx=null,pendingFurnitureDef=null,pendingMapLabelText='',libraryDragActive=false;
 function hasPlan(){return !!(bgImage||dxfModel);}
 let undoStack=[],redoStack=[],snapGuides=[],inspectorEditBefore=null;
 let touchLibraryDrag=null,touchDragGhost=null;
@@ -2752,6 +2752,14 @@ function hitTestAreaDelete(p){
   for(let i=areaPolygons.length-1;i>=0;i--){const a=areaPolygons[i];if(pointInBox(p,a._deleteBox))return a;}
   return null;
 }
+function hitTestAreaCard(p){
+  for(let i=areaPolygons.length-1;i>=0;i--){
+    const a=areaPolygons[i];
+    if(pointInBox(p,a._deleteBox))continue;
+    if(pointInBox(p,a._cardBox))return a;
+  }
+  return null;
+}
 function hitTestMapLabel(p){
   if(!visibleMapLabels()||mapLabelsGloballyLocked())return null;
   for(let i=mapLabels.length-1;i>=0;i--){
@@ -2823,10 +2831,16 @@ canvas.addEventListener('pointerdown',ev=>{
     ev.preventDefault();return;
   }
   if(mode!=='select') return;
-  const p=toCanvasPos(ev),areaDeleteHit=hitTestAreaDelete(p),labelHit=hitTestMapLabel(p),hit=hitTest(p);
+  const p=toCanvasPos(ev),areaDeleteHit=hitTestAreaDelete(p),areaCardHit=hitTestAreaCard(p),labelHit=hitTestMapLabel(p),hit=hitTest(p);
   const multiMode=ev.ctrlKey||ev.metaKey||ev.shiftKey||!!document.getElementById('multiSelectToggle')?.checked;
   if(areaDeleteHit){
     const before=cloneEditState();areaPolygons=areaPolygons.filter(a=>a.id!==areaDeleteHit.id);if(lastAreaResult?.id===areaDeleteHit.id)lastAreaResult=null;draw();commitHistory(before);showAreaResultText('تم حذف المساحة',true);setStatus('تم حذف المساحة المحددة');ev.preventDefault();return;
+  }
+  if(areaCardHit){
+    areaCardDrag={id:areaCardHit.id,start:{...p},startX:areaCardHit.cardOffsetX||0,startY:areaCardHit.cardOffsetY||0,before:cloneEditState(),moved:false};
+    try{canvas.setPointerCapture(ev.pointerId)}catch{}
+    setStatus('اسحب بطاقة المساحة إلى المكان المطلوب');
+    ev.preventDefault();return;
   }
   if(labelHit){
     selectedMapLabelId=labelHit.id;selectedMeasureId=null;clearFurnitureSelection();
@@ -2915,6 +2929,14 @@ canvas.addEventListener('pointermove',ev=>{
     ev.preventDefault();
     draw();return;
   }
+  if(areaCardDrag){
+    const p=toCanvasPos(ev),a=areaPolygons.find(x=>x.id===areaCardDrag.id);if(!a)return;
+    const dx=p.x-areaCardDrag.start.x,dy=p.y-areaCardDrag.start.y;
+    a.cardOffsetX=areaCardDrag.startX+dx;
+    a.cardOffsetY=areaCardDrag.startY+dy;
+    areaCardDrag.moved=Math.hypot(dx,dy)>.01;
+    ev.preventDefault();draw();return;
+  }
   if(mapLabelDrag){
     const p=toCanvasPos(ev),l=mapLabels.find(x=>x.id===mapLabelDrag.id);if(!l)return;
     const dx=p.x-mapLabelDrag.start.x,dy=p.y-mapLabelDrag.start.y;
@@ -2932,7 +2954,7 @@ function endPointer(ev){
       suppressCanvasClickUntil=Date.now()+700;
       if(activeCanvasTouches.size<2)pinchState=null;
       aimingTouchId=null;
-      drag=null;panDrag=null;measureDrag=null;mapLabelDrag=null;snapGuides=[];mainScroll.classList.remove('panning');if(mode!=='measure'||points.length!==1)hideLiveMeasureBadge();draw();return;
+      drag=null;panDrag=null;measureDrag=null;mapLabelDrag=null;areaCardDrag=null;snapGuides=[];mainScroll.classList.remove('panning');if(mode!=='measure'||points.length!==1)hideLiveMeasureBadge();draw();return;
     }
     if(areaTouchTap&&areaTouchTap.pointerId===ev.pointerId&&mode==='areaMeasure'){
       const tap=areaTouchTap;areaTouchTap=null;suppressCanvasClickUntil=Date.now()+700;
@@ -2969,8 +2991,8 @@ function endPointer(ev){
     }
     if(aimingTouchId===ev.pointerId)aimingTouchId=null;
   }
-  if(drag&&drag.moved)commitHistory(drag.before);if(measureDrag&&measureDrag.moved)commitHistory(measureDrag.before);if(mapLabelDrag&&mapLabelDrag.moved)commitHistory(mapLabelDrag.before);
-  drag=null;panDrag=null;measureDrag=null;mapLabelDrag=null;snapGuides=[];mainScroll.classList.remove('panning');if(mode!=='measure'||points.length!==1)hideLiveMeasureBadge();draw();
+  if(drag&&drag.moved)commitHistory(drag.before);if(measureDrag&&measureDrag.moved)commitHistory(measureDrag.before);if(mapLabelDrag&&mapLabelDrag.moved)commitHistory(mapLabelDrag.before);if(areaCardDrag&&areaCardDrag.moved)commitHistory(areaCardDrag.before);
+  drag=null;panDrag=null;measureDrag=null;mapLabelDrag=null;areaCardDrag=null;snapGuides=[];mainScroll.classList.remove('panning');if(mode!=='measure'||points.length!==1)hideLiveMeasureBadge();draw();
 }
 canvas.addEventListener('pointerup',endPointer);canvas.addEventListener('pointercancel',endPointer);
 function drawGrid(){
@@ -3406,7 +3428,8 @@ function drawAreaPolygons(){
     if(!a.points||a.points.length<3)continue;
     ctx.beginPath();ctx.moveTo(a.points[0].x,a.points[0].y);for(let i=1;i<a.points.length;i++)ctx.lineTo(a.points[i].x,a.points[i].y);ctx.closePath();
     ctx.fillStyle='rgba(14,165,233,.07)';ctx.fill();ctx.strokeStyle='#0284c7';ctx.lineWidth=Math.max(1.2,2/zoom);ctx.stroke();
-    const cx=a.points.reduce((sum,p)=>sum+p.x,0)/a.points.length,cy=a.points.reduce((sum,p)=>sum+p.y,0)/a.points.length;
+    const baseCx=a.points.reduce((sum,p)=>sum+p.x,0)/a.points.length,baseCy=a.points.reduce((sum,p)=>sum+p.y,0)/a.points.length;
+    const cx=baseCx+(a.cardOffsetX||0),cy=baseCy+(a.cardOffsetY||0);
     const txt=a.name+'  '+a.areaM2.toFixed(2)+' م² • '+a.perimeterM.toFixed(2)+' م',fs=Math.max(10,13/zoom);
     ctx.font='700 '+fs+'px Tahoma';const tw=ctx.measureText(txt).width;
     const padX=Math.max(6,6/zoom),bh=fs*1.65,bx=cx-tw/2-padX,by=cy-bh/2,bw=tw+padX*2;
@@ -3421,6 +3444,7 @@ function drawAreaPolygons(){
       ctx.fillStyle='#050505';ctx.font='700 '+Math.max(12,Math.round(fs*.9))+'px Arial';ctx.fillText('×',xc,yc+.2);
       const hitPad=touch?Math.max(9,10/zoom):5;
       a._deleteBox={x:xc-xs/2-hitPad,y:yc-xs/2-hitPad,w:xs+hitPad*2,h:xs+hitPad*2};
+      a._cardBox={x:bx-hitPad,y:by-hitPad,w:bw+hitPad*2,h:bh+hitPad*2};
     }
   }
   if(mode==='areaMeasure'&&areaDraft.length){
@@ -3797,7 +3821,7 @@ document.getElementById('loadInput').onchange=e=>{
       items.forEach(ensureSpriteForDef);
       measurements=(p.measurements||[]).map(m=>({id:m.id||randId(),pinned:m.pinned!==false,offsetX:0,offsetY:0,...m}));selectedMeasureId=null;
       mapLabels=(p.mapLabels||[]).map(l=>({id:l.id||randId(),text:l.text||'مسمى',x:+l.x||0,y:+l.y||0}));selectedMapLabelId=null;
-      areaPolygons=(p.areaPolygons||p.areas||[]).map(a=>({id:a.id||randId(),name:a.name||'مساحة',points:Array.isArray(a.points)?a.points:[],areaM2:+a.areaM2||0,perimeterM:+a.perimeterM||0}));areaDraft=[];
+      areaPolygons=(p.areaPolygons||p.areas||[]).map(a=>({id:a.id||randId(),name:a.name||'مساحة',points:Array.isArray(a.points)?a.points:[],areaM2:+a.areaM2||0,perimeterM:+a.perimeterM||0,cardOffsetX:+a.cardOffsetX||0,cardOffsetY:+a.cardOffsetY||0}));areaDraft=[];
       selectedId=null;selectedIds=[];undoStack=[];redoStack=[];updateHistoryButtons();
       updateScaleUI();
       if(p.view){
