@@ -1,4 +1,4 @@
-const CACHE='furniplan-v124-iphonefix-20261003b';
+const CACHE='furniplan-v124-portraitsheet-areabadgefix-20261003';
 const CORE=[
   './',
   './index.html',
