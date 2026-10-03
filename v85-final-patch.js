@@ -1716,3 +1716,63 @@
   else install();
 })();
  // ===== End FurniPlan V126 iPhone Bottom Library =====
+
+
+// ===== FurniPlan V127 iPhone Landscape Narrow Library =====
+(function(){
+  function install(){
+    if(document.getElementById('furniplan-v127-iphone-landscape-narrow'))return;
+    const s=document.createElement('style');
+    s.id='furniplan-v127-iphone-landscape-narrow';
+    s.textContent=`
+      /* iPhone landscape only: keep portrait and iPad unchanged */
+      @media (hover:none) and (pointer:coarse) and (orientation:landscape) and (max-height:500px) and (max-width:950px){
+        aside{
+          top:calc(env(safe-area-inset-top) + var(--tool-header-h))!important;
+          right:0!important;
+          left:auto!important;
+          bottom:calc(env(safe-area-inset-bottom) + 26px)!important;
+          width:22vw!important;
+          max-width:190px!important;
+          min-width:150px!important;
+          height:auto!important;
+          max-height:none!important;
+          border-left:1px solid #34435b!important;
+          border-top:none!important;
+          border-radius:14px 0 0 14px!important;
+          transform:translateX(105%)!important;
+          box-shadow:-10px 0 24px rgba(0,0,0,.32)!important;
+        }
+        aside.open{transform:translateX(0)!important}
+        .mobileLibrarySection .libraryBrowser{
+          grid-template-columns:1fr!important;
+        }
+        .mobileLibrarySection #library{
+          grid-template-columns:1fr!important;
+        }
+        .mobileLibrarySection .categoryList{
+          max-height:38px!important;
+        }
+        .mobileLibrarySection .categoryList .catBtn{
+          min-width:48px!important;
+          height:30px!important;
+          min-height:30px!important;
+          padding:4px 5px!important;
+          font-size:7.5px!important;
+        }
+        .mobileLibrarySection #library .fcard{
+          min-height:70px!important;
+          padding:4px!important;
+        }
+        .mobileLibrarySection #library .fcard img{
+          height:34px!important;
+          max-height:34px!important;
+        }
+      }
+    `;
+    document.head.appendChild(s);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
+})();
+ // ===== End FurniPlan V127 iPhone Landscape Narrow Library =====
