@@ -119,7 +119,7 @@ async function createWindow() {
       show: false,
       autoHideMenuBar: true,
       backgroundColor: '#ffffff',
-      title: 'FurniPlan',
+      title: 'FurniPlan V137',
       icon: path.join(appRoot, 'build', 'furniplan.ico'),
       webPreferences: {
         contextIsolation: true,
@@ -142,7 +142,142 @@ async function createWindow() {
       win.show();
     });
 
-    win.webContents.on('did-finish-load', () => writeLog('Page loaded successfully.'));
+    win.webContents.on('did-finish-load', async () => {
+      writeLog('Page loaded successfully.');
+      try {
+        await win.webContents.executeJavaScript(`
+          (() => {
+            if (window.__fpDesktopV137) return;
+            window.__fpDesktopV137 = true;
+
+            window.finishAreaTool = function(){
+              if(mode!=='areaMeasure') return;
+
+              if(areaDraft.length < 3){
+                showAreaResultText('يلزم تحديد 3 زوايا على الأقل لإنهاء المساحة', true);
+                setStatus('حدد 3 زوايا على الأقل لإنهاء المساحة');
+                updateInteractionCursor();
+                syncAreaToolLabel();
+                draw();
+                return;
+              }
+
+              const st = polygonAreaStats(areaDraft);
+              const defaultName = 'غرفة ' + (areaPolygons.length + 1);
+              let name = prompt('اكتب اسم الغرفة أو المساحة:', defaultName);
+              if(name === null) name = defaultName;
+              name = String(name || defaultName).trim() || defaultName;
+
+              const before = cloneEditState();
+              const result = {
+                id: randId(),
+                name,
+                points: areaDraft.map(p => ({...p})),
+                areaM2: st.areaM2,
+                perimeterM: st.perimeterM
+              };
+
+              areaPolygons.push(result);
+              lastAreaResult = result;
+              areaDraft = [];
+              commitHistory(before);
+
+              const areaText = name + ' — ' + st.areaM2.toFixed(2) + ' م² — المحيط ' + st.perimeterM.toFixed(2) + ' م';
+              showAreaResultText(areaText, true);
+
+              activateWorkingTool('select');
+              pendingFurnitureDef = null;
+              selectedMeasureId = null;
+              selectedMapLabelId = null;
+              clearFurnitureSelection();
+              updateInteractionCursor();
+              syncSelectedPanel();
+              syncAreaToolLabel();
+              draw();
+              setStatus('تم حفظ ' + areaText);
+            };
+
+            window.toggleAreaTool = function(){
+              if(mode==='areaMeasure'){
+                window.finishAreaTool();
+                return;
+              }
+              if(!hasPlan()){
+                alert('ارفع الخارطة أولاً.');
+                return;
+              }
+              if(!pxPerCm){
+                alert('عاير الخارطة أولاً حتى يمكن حساب المساحة والمحيط.');
+                return;
+              }
+
+              activateWorkingTool('areaMeasure');
+              areaDraft = [];
+              lastAreaResult = null;
+              clearFurnitureSelection();
+              selectedMeasureId = null;
+              selectedMapLabelId = null;
+              pendingFurnitureDef = null;
+              updateInteractionCursor();
+              syncSelectedPanel();
+              syncAreaToolLabel();
+              showAreaResultText('حدد زوايا الغرفة — بعد النقطة الثالثة اضغط «إنهاء مساحة»', false);
+              setStatus('حدد زوايا الغرفة ثم اضغط «إنهاء مساحة»');
+              draw();
+            };
+
+            const beginDesktopLabelV137 = () => {
+              if(!hasPlan()){
+                alert('ارفع الخارطة أولاً.');
+                return;
+              }
+              const value = prompt('اكتب المسمى الذي تريد وضعه على الخارطة:', '');
+              if(value === null) return;
+              const clean = String(value).trim();
+              if(!clean) return;
+
+              pendingMapLabelText = clean;
+              activateWorkingTool('labelPlace');
+              points = [];
+              selectedMeasureId = null;
+              selectedMapLabelId = null;
+              clearFurnitureSelection();
+              syncSelectedPanel();
+              updateInteractionCursor();
+              setStatus('انقر مكان «' + clean + '» على الخارطة');
+              draw();
+            };
+
+            window.addEventListener('keydown', e => {
+              const tag = document.activeElement?.tagName;
+              if(['INPUT','TEXTAREA','SELECT'].includes(tag)) return;
+              if(e.ctrlKey || e.metaKey || e.altKey) return;
+              if(String(e.key || '').toLowerCase() === 't'){
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                beginDesktopLabelV137();
+              }
+            }, true);
+
+            const labelBtn = document.getElementById('addMapLabelBtn');
+            if(labelBtn){
+              labelBtn.onclick = null;
+              labelBtn.addEventListener('click', e => {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                beginDesktopLabelV137();
+              }, true);
+            }
+
+            document.title = 'FurniPlan V137';
+            setStatus('FurniPlan V137 — إصلاح المساحة والمسميات مفعّل');
+          })();
+        `);
+        writeLog('Desktop V137 patch injected successfully.');
+      } catch (err) {
+        writeLog(`Desktop V137 patch injection failed: ${err && err.stack ? err.stack : err}`);
+      }
+    });
     win.webContents.on('render-process-gone', (_event, details) => {
       writeLog(`Renderer process gone: ${JSON.stringify(details)}`);
       dialog.showErrorBox('FurniPlan', 'تعذر تشغيل واجهة البرنامج. أغلق البرنامج وافتحه مرة أخرى.');
@@ -158,7 +293,7 @@ async function createWindow() {
 
     win.on('page-title-updated', (event) => {
       event.preventDefault();
-      win.setTitle('FurniPlan');
+      win.setTitle('FurniPlan V137');
     });
 
     win.webContents.setWindowOpenHandler(({ url }) => {
