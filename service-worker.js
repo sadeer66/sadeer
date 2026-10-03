@@ -1,4 +1,4 @@
-const CACHE='furniplan-v124-portraitsheet-areabadgefix-20261003';
+const CACHE='furniplan-v124-portrait-compact-20261003';
 const CORE=[
   './',
   './index.html',
