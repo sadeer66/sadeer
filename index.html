@@ -3433,7 +3433,8 @@ function drawAreaPolygons(){
   if(!pxPerCm)return;ctx.save();ctx.lineJoin='round';const touch=isTouchDevice();
   for(const a of areaPolygons){
     if(!a.points||a.points.length<3)continue;
-    if(!touch){
+    const desktopApp=(location.hostname==='127.0.0.1'||location.hostname==='localhost');
+    if(!touch&&!desktopApp){
       ctx.beginPath();ctx.moveTo(a.points[0].x,a.points[0].y);for(let i=1;i<a.points.length;i++)ctx.lineTo(a.points[i].x,a.points[i].y);ctx.closePath();
       ctx.fillStyle='rgba(14,165,233,.07)';ctx.fill();ctx.strokeStyle='#0284c7';ctx.lineWidth=Math.max(1.2,2/zoom);ctx.stroke();
     }
@@ -4354,7 +4355,7 @@ draw();
 </script>
 
 
-<script src="v85-final-patch.js?v=145"></script>
+<script src="v85-final-patch.js?v=146"></script>
 
 <script id="furniplan-toolbar-wheel-v94">
 (()=>{
