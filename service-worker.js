@@ -1,4 +1,4 @@
-const CACHE='furniplan-v131-touch-landscape-hardfix-20261003';
+const CACHE='furniplan-v132-clean-landscape-20261003';
 const CORE=[
   './',
   './index.html',
