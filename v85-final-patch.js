@@ -1918,3 +1918,136 @@
   else install();
 })();
  // ===== End FurniPlan V128 iPhone Landscape Bottom Mini Library =====
+
+
+// ===== FurniPlan V129 iPhone Landscape Half-Width Side Library =====
+(function(){
+  function install(){
+    if(document.getElementById('furniplan-v129-iphone-landscape-side'))return;
+    const s=document.createElement('style');
+    s.id='furniplan-v129-iphone-landscape-side';
+    s.textContent=`
+      /* iPhone landscape only: vertical side library at about half the former width */
+      @media (orientation:landscape) and (max-height:600px) and (max-width:1000px){
+        aside{
+          top:calc(env(safe-area-inset-top) + var(--tool-header-h))!important;
+          right:0!important;
+          left:auto!important;
+          bottom:calc(env(safe-area-inset-bottom) + 28px)!important;
+          width:18vw!important;
+          max-width:160px!important;
+          min-width:125px!important;
+          height:auto!important;
+          max-height:none!important;
+          border-left:1px solid #34435b!important;
+          border-top:none!important;
+          border-radius:14px 0 0 14px!important;
+          transform:translateX(105%)!important;
+          box-shadow:-10px 0 24px rgba(0,0,0,.30)!important;
+          overflow:hidden!important;
+          padding:0!important;
+        }
+        aside.open{transform:translateX(0)!important}
+
+        aside>.mobileLibrarySection{
+          display:grid!important;
+          grid-template-rows:minmax(0,1fr) auto!important;
+          height:100%!important;
+          max-height:100%!important;
+          padding:5px!important;
+          overflow:hidden!important;
+        }
+
+        .mobileLibrarySection .libraryBrowser{
+          display:grid!important;
+          grid-template-columns:1fr!important;
+          grid-template-rows:auto minmax(0,1fr)!important;
+          gap:4px!important;
+          min-height:0!important;
+          height:100%!important;
+          overflow:hidden!important;
+        }
+
+        .mobileLibrarySection .categoryList{
+          grid-row:1!important;
+          display:flex!important;
+          flex-direction:row!important;
+          flex-wrap:nowrap!important;
+          gap:3px!important;
+          min-height:28px!important;
+          max-height:30px!important;
+          overflow-x:auto!important;
+          overflow-y:hidden!important;
+          -webkit-overflow-scrolling:touch!important;
+          touch-action:pan-x!important;
+          padding:0 0 3px!important;
+          background:#0b1220!important;
+          position:static!important;
+        }
+
+        .mobileLibrarySection .categoryList .catBtn{
+          flex:0 0 auto!important;
+          min-width:42px!important;
+          height:26px!important;
+          min-height:26px!important;
+          padding:3px 4px!important;
+          font-size:7px!important;
+          line-height:1!important;
+          white-space:nowrap!important;
+        }
+
+        .mobileLibrarySection #library{
+          grid-row:2!important;
+          display:grid!important;
+          grid-template-columns:1fr!important;
+          gap:4px!important;
+          min-height:0!important;
+          height:100%!important;
+          max-height:none!important;
+          overflow-y:auto!important;
+          overflow-x:hidden!important;
+          -webkit-overflow-scrolling:touch!important;
+          touch-action:pan-y!important;
+          overscroll-behavior:contain!important;
+          padding:0 1px 5px!important;
+        }
+
+        .mobileLibrarySection #library .fcard{
+          min-height:62px!important;
+          padding:4px!important;
+          touch-action:pan-y!important;
+        }
+        .mobileLibrarySection #library .fcard img{
+          height:30px!important;
+          max-height:30px!important;
+        }
+        .mobileLibrarySection #library .fcard b,
+        .mobileLibrarySection #library .fmeta b{
+          font-size:7.5px!important;
+        }
+        .mobileLibrarySection #library .fcard span,
+        .mobileLibrarySection #library .fmeta .dims{
+          font-size:6.5px!important;
+        }
+
+        .mobileLibraryFooter{
+          min-height:30px!important;
+          height:30px!important;
+          padding-top:3px!important;
+          gap:3px!important;
+        }
+        .mobileLibraryFooter .mobileAddLibraryBtn,
+        .mobileLibraryFooter .mobileResetLibraryBtn{
+          min-height:27px!important;
+          height:27px!important;
+          padding:3px 5px!important;
+          font-size:7px!important;
+        }
+      }
+    `;
+    document.head.appendChild(s);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
+})();
+ // ===== End FurniPlan V129 iPhone Landscape Half-Width Side Library =====
