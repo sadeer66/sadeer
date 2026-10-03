@@ -1339,6 +1339,31 @@
         .fmeta b{font-size:9px!important}
         .fmeta .dims{font-size:8px!important}
       }
+      @media (min-width:701px) and (max-width:900px) and (orientation:portrait){
+        aside{
+          top:auto!important;
+          left:9vw!important;right:9vw!important;
+          bottom:calc(env(safe-area-inset-bottom) + 34px)!important;
+          width:auto!important;max-width:none!important;
+          height:min(34dvh,330px)!important;max-height:min(34dvh,330px)!important;
+          border-left:none!important;border-top:1px solid #34435b!important;
+          border-radius:18px 18px 0 0!important;
+          box-shadow:0 -14px 34px rgba(0,0,0,.38)!important;
+          transform:translateY(110%)!important;
+          transition:transform .22s ease!important;
+          overflow-y:auto!important;overflow-x:hidden!important;
+          -webkit-overflow-scrolling:touch!important;
+          touch-action:pan-y!important;
+          overscroll-behavior:contain!important;
+        }
+        aside.open{transform:translateY(0)!important}
+        .sidebarScrim,.sidebarScrim.show{display:none!important;pointer-events:none!important;background:transparent!important}
+        aside .section{margin-bottom:8px!important;padding:9px!important}
+        .libraryBrowser{grid-template-columns:82px minmax(0,1fr)!important;gap:7px!important;align-items:start!important}
+        .categoryList{position:static!important;max-height:none!important;overflow:visible!important;touch-action:pan-y!important;gap:6px!important}
+        #library{max-height:none!important;overflow:visible!important;touch-action:pan-y!important}
+        .fcard{touch-action:pan-y!important}
+      }
       @media (max-width:900px) and (orientation:landscape){
         aside{
           top:calc(env(safe-area-inset-top) + var(--tool-header-h))!important;
