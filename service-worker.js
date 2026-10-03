@@ -1,4 +1,4 @@
-const CACHE='furniplan-v124-iphone-ipad-portrait-fix-20261003';
+const CACHE='furniplan-v125-mobile-library-dock-20261003';
 const CORE=[
   './',
   './index.html',
