@@ -1260,8 +1260,8 @@
       cv.dataset.fpV116Area='1';
       cv.addEventListener('pointerdown',ev=>{
         try{
-          /* On iPhone/iPad let the core canvas handler own touch dragging of area cards. */
-          if(ev.pointerType==='touch')return;
+          /* Let the core canvas handler own area-card dragging on touch devices and in the Electron desktop app. */
+          if(ev.pointerType==='touch' || location.hostname==='127.0.0.1' || location.hostname==='localhost')return;
           if(mode!=='select')return;
           const p=toCanvasPos(ev),a=areaLabelHit(p);
           if(a){
