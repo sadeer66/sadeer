@@ -1,4 +1,4 @@
-const CACHE='furniplan-v126-iphone-bottom-library-20261003';
+const CACHE='furniplan-v127-iphone-landscape-narrow-20261003';
 const CORE=[
   './',
   './index.html',
