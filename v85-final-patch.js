@@ -1096,3 +1096,191 @@
   };
 })();
 // ===== End FurniPlan V115 Bilingual UI =====
+
+
+// ===== FurniPlan V116 Phone Library + Room Labels + Measure Delete =====
+(function(){
+  let fpSelectedAreaId=null, fpAreaEditBefore=null;
+
+  function lang(){
+    try{return window.FurniPlanLanguage&&FurniPlanLanguage.get?FurniPlanLanguage.get():'en';}catch(_){return 'en';}
+  }
+  function t(en,ar){return lang()==='ar'?ar:en;}
+
+  function makeToolButton(id,labelEn,labelAr,svg){
+    let b=document.getElementById(id);
+    if(b)return b;
+    b=document.createElement('button');
+    b.id=id;b.type='button';b.className='modernIconBtn fpV116MobileTool';
+    b.innerHTML=svg+'<span class="iconLabel"></span>';
+    b.dataset.labelEn=labelEn;b.dataset.labelAr=labelAr;
+    b.title=labelEn;
+    return b;
+  }
+  function updateMobileLabels(){
+    document.querySelectorAll('.fpV116MobileTool').forEach(b=>{
+      const ar=lang()==='ar',sp=b.querySelector('.iconLabel');
+      if(sp)sp.textContent=ar?b.dataset.labelAr:b.dataset.labelEn;
+      b.title=ar?b.dataset.labelAr:b.dataset.labelEn;
+      b.setAttribute('aria-label',b.title);
+    });
+    const p=document.getElementById('fpAreaInspectorV116');
+    if(p){
+      const cap=p.querySelector('.fpAreaCaption'),del=p.querySelector('.fpAreaDelete');
+      if(cap)cap.textContent=t('Room / area name','اسم الغرفة / المساحة');
+      if(del)del.textContent=t('Delete area','حذف المساحة');
+    }
+  }
+
+  function installStyle(){
+    if(document.getElementById('fpV116Style'))return;
+    const st=document.createElement('style');st.id='fpV116Style';
+    st.textContent=[
+      '.fpV116MobileTool{display:none!important}',
+      '#fpAreaInspectorV116{display:none}',
+      '#fpAreaInspectorV116 .fpAreaName{width:190px!important;min-width:150px!important}',
+      '@media(max-width:900px){.fpV116MobileTool{display:inline-flex!important}#fpAreaInspectorV116 .fpAreaName{width:150px!important}}',
+      '@media(max-width:540px){aside.open{width:min(390px,94vw)!important}.libraryBrowser{grid-template-columns:82px minmax(0,1fr)!important}.fpV116MobileTool{flex:0 0 var(--tool-btn-w)!important}}'
+    ].join('');
+    document.head.appendChild(st);
+  }
+
+  function installMobileTools(){
+    const bar=document.getElementById('modernTopToolbar');if(!bar)return;
+    const librarySvg='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM8 5v14M12 5v14M16 5v14"/></svg>';
+    const clearSvg='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M7 8l-3 4 3 4M17 8l3 4-3 4"/><path d="M9 19h6"/></svg>';
+    const lib=makeToolButton('fpPhoneLibraryBtn','Library','المكتبة',librarySvg);
+    const clr=makeToolButton('fpClearMeasureBtn','Delete measure','مسح قياس',clearSvg);
+    const langBtn=document.getElementById('fpLanguageToggle');
+    if(!lib.parentElement){
+      if(langBtn&&langBtn.parentElement===bar)langBtn.insertAdjacentElement('afterend',lib);else bar.prepend(lib);
+    }
+    if(!clr.parentElement)lib.insertAdjacentElement('afterend',clr);
+    lib.onclick=()=>{
+      const hidden=document.getElementById('sidebarToggle');
+      if(hidden){hidden.click();return;}
+      const aside=document.querySelector('aside'),scrim=document.getElementById('sidebarScrim');
+      aside?.classList.add('open');scrim?.classList.add('show');
+    };
+    clr.onclick=()=>{
+      if(typeof selectedMeasureId!=='undefined'&&selectedMeasureId){
+        document.getElementById('deleteMeasureBtn')?.click();
+        return;
+      }
+      if(typeof measurements==='undefined'||!measurements.length){
+        try{setStatus(t('There are no measurements to delete','لا توجد قياسات للحذف'));}catch(_){}
+        return;
+      }
+      if(confirm(t('Delete all measurements from the plan?','حذف جميع القياسات من الخارطة؟'))){
+        document.getElementById('clearMeasuresBtn')?.click();
+      }
+    };
+    updateMobileLabels();
+  }
+
+  function ensureAreaInspector(){
+    let panel=document.getElementById('fpAreaInspectorV116');if(panel)return panel;
+    const empty=document.getElementById('selectedEmpty');if(!empty||!empty.parentElement)return null;
+    panel=document.createElement('div');panel.id='fpAreaInspectorV116';panel.className='bottomInspector mapLabelInspector';
+    panel.innerHTML='<div class="selectedTitle"><span class="fpAreaCaption"></span><strong id="fpAreaValueV116">—</strong></div><label class="inlineField"><span class="fpAreaCaption"></span> <input id="fpAreaNameV116" class="fpAreaName" type="text" maxlength="80"></label><button type="button" class="bottomBtn danger fpAreaDelete"></button>';
+    empty.parentElement.insertBefore(panel,empty);
+    const input=panel.querySelector('#fpAreaNameV116'),del=panel.querySelector('.fpAreaDelete');
+    input.addEventListener('focus',()=>{try{if(currentArea()&&!fpAreaEditBefore)fpAreaEditBefore=cloneEditState();}catch(_){}});
+    input.addEventListener('input',()=>{
+      const a=currentArea();if(!a)return;a.name=(input.value||'').trimStart();refreshAreaInspector();try{draw();}catch(_){}
+    });
+    input.addEventListener('change',()=>{
+      const a=currentArea();if(a){a.name=(input.value||'').trim()||t('Room','غرفة');input.value=a.name;}
+      try{if(fpAreaEditBefore)commitHistory(fpAreaEditBefore);}catch(_){}
+      fpAreaEditBefore=null;refreshAreaInspector();try{draw();}catch(_){}
+    });
+    del.addEventListener('click',()=>{
+      const a=currentArea();if(!a)return;
+      let before=null;try{before=cloneEditState();}catch(_){}
+      areaPolygons=areaPolygons.filter(x=>x.id!==a.id);
+      try{if(lastAreaResult&&lastAreaResult.id===a.id)lastAreaResult=null;}catch(_){}
+      fpSelectedAreaId=null;refreshAreaInspector();
+      try{draw();if(before)commitHistory(before);setStatus(t('Area deleted','تم حذف المساحة'));}catch(_){}
+    });
+    updateMobileLabels();
+    return panel;
+  }
+  function currentArea(){
+    try{return areaPolygons.find(a=>a.id===fpSelectedAreaId)||null;}catch(_){return null;}
+  }
+  function refreshAreaInspector(){
+    const panel=ensureAreaInspector();if(!panel)return;
+    const a=currentArea();
+    if(!a){panel.style.display='none';return;}
+    ['selectedPanel','measurePanel','mapLabelPanel','selectedEmpty'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+    panel.style.display='flex';
+    const value=panel.querySelector('#fpAreaValueV116'),input=panel.querySelector('#fpAreaNameV116');
+    if(value)value.textContent=(a.areaM2||0).toFixed(2)+' m²';
+    if(input&&document.activeElement!==input)input.value=a.name||'';
+  }
+  function areaLabelHit(p){
+    try{
+      for(let i=areaPolygons.length-1;i>=0;i--){
+        const a=areaPolygons[i];if(!a.points||a.points.length<3)continue;
+        const cx=a.points.reduce((s,q)=>s+q.x,0)/a.points.length,cy=a.points.reduce((s,q)=>s+q.y,0)/a.points.length;
+        const txt=(a.name||'')+'  '+Number(a.areaM2||0).toFixed(2)+' م² • '+Number(a.perimeterM||0).toFixed(2)+' م';
+        const fs=Math.max(10,13/zoom);ctx.save();ctx.font='700 '+fs+'px Tahoma';const tw=ctx.measureText(txt).width;ctx.restore();
+        const padX=Math.max(6,6/zoom),bh=fs*1.65,bw=tw+padX*2,hit=Math.max(8,10/zoom);
+        if(p.x>=cx-bw/2-hit&&p.x<=cx+bw/2+hit&&p.y>=cy-bh/2-hit&&p.y<=cy+bh/2+hit)return a;
+      }
+    }catch(_){}
+    return null;
+  }
+
+  function installAreaEditing(){
+    ensureAreaInspector();
+    if(typeof syncSelectedPanel==='function'&&!syncSelectedPanel.__fpV116){
+      const coreSync=syncSelectedPanel;
+      const wrapped=function(){coreSync();refreshAreaInspector();};
+      wrapped.__fpV116=true;syncSelectedPanel=wrapped;
+    }
+    if(typeof finishAreaTool==='function'&&!finishAreaTool.__fpV116){
+      const coreFinish=finishAreaTool;
+      const wrapped=function(){
+        const beforeCount=typeof areaPolygons!=='undefined'?areaPolygons.length:0;
+        coreFinish();
+        if(typeof areaPolygons!=='undefined'&&areaPolygons.length>beforeCount){
+          const a=areaPolygons[areaPolygons.length-1];
+          const def=lang()==='ar'?'غرفة '+areaPolygons.length:'Room '+areaPolygons.length;
+          const n=prompt(t('Enter the room or area name:','اكتب اسم الغرفة أو المساحة:'),def);
+          if(n!==null&&String(n).trim())a.name=String(n).trim();else if(!a.name)a.name=def;
+          fpSelectedAreaId=null;
+          try{draw();}catch(_){}
+        }
+      };
+      wrapped.__fpV116=true;finishAreaTool=wrapped;
+    }
+    const cv=document.getElementById('canvas');
+    if(cv&&!cv.dataset.fpV116Area){
+      cv.dataset.fpV116Area='1';
+      cv.addEventListener('pointerdown',ev=>{
+        try{
+          if(mode!=='select')return;
+          const p=toCanvasPos(ev),a=areaLabelHit(p);
+          if(a){
+            ev.preventDefault();ev.stopImmediatePropagation();
+            fpSelectedAreaId=a.id;
+            clearFurnitureSelection();selectedMeasureId=null;selectedMapLabelId=null;
+            syncSelectedPanel();draw();
+            setStatus(t('Area selected — edit its name below','تم تحديد المساحة — عدّل اسمها من الشريط السفلي'));
+            return;
+          }
+          if(fpSelectedAreaId){fpSelectedAreaId=null;refreshAreaInspector();}
+        }catch(_){}
+      },true);
+    }
+  }
+
+  function install(){
+    installStyle();installMobileTools();installAreaEditing();
+    window.addEventListener('furniplan-language-changed',()=>{updateMobileLabels();refreshAreaInspector();});
+    window.addEventListener('resize',installMobileTools);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+})();
+// ===== End FurniPlan V116 =====
