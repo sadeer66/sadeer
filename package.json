@@ -1,6 +1,6 @@
 {
-  "name": "furniplan-v138-test",
-  "version": "1.0.138",
+  "name": "furniplan-v146-test",
+  "version": "1.0.146",
   "description": "FurniPlan - Smart Space Planning",
   "main": "desktop/main.js",
   "author": "سدير ياسين محمد",
@@ -13,9 +13,9 @@
     "electron-builder": "26.15.3"
   },
   "build": {
-    "appId": "com.sadeer.furniplan.v138test",
-    "productName": "FurniPlan V138 Test",
-    "artifactName": "FurniPlan-V138-Test-Setup-${arch}.exe",
+    "appId": "com.sadeer.furniplan.v146test",
+    "productName": "FurniPlan V146 Test",
+    "artifactName": "FurniPlan-V146-Test-Setup-${arch}.exe",
     "asar": true,
     "directories": {
       "output": "dist",
@@ -45,7 +45,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "FurniPlan V138 Test",
+      "shortcutName": "FurniPlan V146 Test",
       "runAfterFinish": true,
       "deleteAppDataOnUninstall": false,
       "installerIcon": "build/furniplan.ico",
