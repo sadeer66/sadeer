@@ -2808,11 +2808,18 @@ canvas.addEventListener('pointerdown',ev=>{
     }
   }
   if(mode==='areaMeasure'&&areaDraft.length===0){
-    const p=toCanvasPos(ev),aHit=hitTestAreaDelete(p);
+    const p=toCanvasPos(ev),aHit=hitTestAreaDelete(p),aCardHit=hitTestAreaCard(p);
     if(aHit){
       aimingTouchId=null;targetCursor.style.display='none';suppressCanvasClickUntil=Date.now()+700;
       const before=cloneEditState();areaPolygons=areaPolygons.filter(a=>a.id!==aHit.id);if(lastAreaResult?.id===aHit.id)lastAreaResult=null;
       draw();commitHistory(before);showAreaResultText('تم حذف المساحة',true);setStatus('تم حذف المساحة — أداة المساحة ما زالت فعّالة');ev.preventDefault();return;
+    }
+    if(aCardHit){
+      aimingTouchId=null;targetCursor.style.display='none';suppressCanvasClickUntil=Date.now()+700;
+      areaCardDrag={id:aCardHit.id,start:{...p},startX:aCardHit.cardOffsetX||0,startY:aCardHit.cardOffsetY||0,before:cloneEditState(),moved:false};
+      try{canvas.setPointerCapture(ev.pointerId)}catch{}
+      setStatus('اسحب بطاقة المساحة إلى المكان المطلوب');
+      ev.preventDefault();return;
     }
   }
   if(mode==='calibrate'||mode==='measure'||mode==='areaMeasure'){
