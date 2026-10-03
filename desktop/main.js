@@ -119,7 +119,7 @@ async function createWindow() {
       show: false,
       autoHideMenuBar: true,
       backgroundColor: '#ffffff',
-      title: 'FurniPlan V147',
+      title: 'FurniPlan V148',
       icon: path.join(appRoot, 'build', 'furniplan.ico'),
       webPreferences: {
         contextIsolation: true,
@@ -147,8 +147,8 @@ async function createWindow() {
       try {
         await win.webContents.executeJavaScript(`
           (() => {
-            if (window.__fpDesktopV147) return;
-            window.__fpDesktopV147 = true;
+            if (window.__fpDesktopV148) return;
+            window.__fpDesktopV148 = true;
 
             function ensureTextModal(){
               let overlay=document.getElementById('fpDesktopTextModal');
@@ -290,7 +290,7 @@ async function createWindow() {
               }
             },true);
 
-            document.title='FurniPlan V147';
+            document.title='FurniPlan V148';
             const mark=document.createElement('div');
             mark.textContent='Windows V138 — desktop modal fix';
             mark.style.cssText='position:fixed;left:28px;top:96px;z-index:99999;color:#7dd3fc;font:700 11px Tahoma;pointer-events:none';
@@ -298,9 +298,9 @@ async function createWindow() {
             if(typeof setStatus==='function')setStatus('Windows V138 جاهز — إصلاح المساحة والمسميات مفعّل');
           })();
         `);
-        writeLog('Desktop V147 patch injected successfully.');
+        writeLog('Desktop V148 patch injected successfully.');
       } catch (err) {
-        writeLog(`Desktop V147 patch injection failed: ${err && err.stack ? err.stack : err}`);
+        writeLog(`Desktop V148 patch injection failed: ${err && err.stack ? err.stack : err}`);
       }
     });
 
@@ -319,7 +319,7 @@ async function createWindow() {
 
     win.on('page-title-updated', (event) => {
       event.preventDefault();
-      win.setTitle('FurniPlan V147');
+      win.setTitle('FurniPlan V148');
     });
 
     win.webContents.setWindowOpenHandler(({ url }) => {
