@@ -1260,6 +1260,8 @@
       cv.dataset.fpV116Area='1';
       cv.addEventListener('pointerdown',ev=>{
         try{
+          /* On iPhone/iPad let the core canvas handler own touch dragging of area cards. */
+          if(ev.pointerType==='touch')return;
           if(mode!=='select')return;
           const p=toCanvasPos(ev),a=areaLabelHit(p);
           if(a){
