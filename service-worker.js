@@ -1,9 +1,9 @@
-const CACHE='furniplan-v141-area-card-touchdrag-20261003';
+const CACHE='furniplan-v147-language-output-20261004';
 const CORE=[
   './',
   './index.html',
   './manifest.webmanifest',
-  './v85-final-patch.js?v=141',
+  './v85-final-patch.js?v=147',
   './icons/icon-192.png?v=100',
   './icons/icon-512.png?v=100',
   './apple-touch-icon.png'
