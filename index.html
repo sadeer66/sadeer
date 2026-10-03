@@ -4254,6 +4254,36 @@ draw();
   applyToolUiScale();
 
   const sep=()=>{const s=document.createElement('div');s.className='toolSep';return s;};
+
+  function moveSelectedLayer(direction){
+    if(typeof furnitureGloballyLocked==='function'&&furnitureGloballyLocked()){setStatus?.('الأثاث مقفل من الشريط العلوي');return;}
+    const ids=new Set((typeof selectedItems==='function'?selectedItems():[]).filter(it=>!it.locked).map(it=>it.id));
+    if(!ids.size){setStatus?.('اختر قطعة أثاث أولاً');return;}
+    const before=typeof cloneEditState==='function'?cloneEditState():null;
+    let changed=false;
+    if(direction==='front'){
+      for(let i=items.length-2;i>=0;i--){
+        if(ids.has(items[i].id)&&!ids.has(items[i+1].id)){
+          const t=items[i];items[i]=items[i+1];items[i+1]=t;changed=true;
+        }
+      }
+    }else{
+      for(let i=1;i<items.length;i++){
+        if(ids.has(items[i].id)&&!ids.has(items[i-1].id)){
+          const t=items[i];items[i]=items[i-1];items[i-1]=t;changed=true;
+        }
+      }
+    }
+    if(!changed){
+      setStatus?.(direction==='front'?'القطعة في أعلى طبقة بالفعل':'القطعة في أسفل طبقة بالفعل');
+      return;
+    }
+    syncSelectedPanel?.();draw?.();
+    if(before&&typeof commitHistory==='function')commitHistory(before);
+    setStatus?.(direction==='front'?'تم رفع القطعة طبقة واحدة للأمام':'تم إنزال القطعة طبقة واحدة للخلف');
+    syncStates?.();
+  }
+
   const leftDefs=[
     ['lMove','move','تحريك الأثاث',()=>{try{window.activateWorkingTool?.('select');pendingFurnitureDef=null;updateInteractionCursor?.();setStatus?.('وضع التحريك — تم إنهاء الأداة السابقة');}catch(e){}},'', 'تحريك'],
     ['lMulti','select','تحديد متعدد',()=>toggle('multiSelectToggle'),'', 'متعدد'],
@@ -4263,9 +4293,12 @@ draw();
     ['lArrange','grid','محاذاة وتوزيع القطع المحددة',()=>showArrangeMenu(),'', 'ترتيب'],
     ['lPlus','plus','تكبير القطعة 5%',()=>{if(typeof applyToSelection==='function')applyToSelection(it=>{it.w=Math.max(1,it.w*1.05);it.h=Math.max(1,it.h*1.05);},'تم تكبير القطعة');},'', 'تكبير'],
     ['lMinus','minus','تصغير القطعة 5%',()=>{if(typeof applyToSelection==='function')applyToSelection(it=>{it.w=Math.max(1,it.w*.95);it.h=Math.max(1,it.h*.95);},'تم تصغير القطعة');},'', 'تصغير'],
+    ['lRot180','rotate','دوران 180°',()=>click('rotate180'),'', '180°'],
     ['lRot90','rotate','دوران 90°',()=>click('rotate90'),'', '90°'],
     ['lRot45','rotate45','دوران 45°',()=>click('rotate45'),'', '45°'],
     ['lReset','reset','إعادة الدوران',()=>click('rotate360'),'', 'صفر'],
+    ['lFront','layers','رفع القطعة طبقة واحدة للأمام',()=>moveSelectedLayer('front'),'', 'أمام'],
+    ['lBack','layers','إنزال القطعة طبقة واحدة للخلف',()=>moveSelectedLayer('back'),'', 'خلف'],
     ['lColor','palette','تلوين القطعة',()=>{},'colorState', 'لون'],
     ['lEye','eye','إخفاء / إظهار القطعة',()=>toggleSelectedVisibility(),'', 'إخفاء'],
     ['lDims','dims','قياسات القطعة',()=>toggle('dimsToggle'),'', 'قياس'],
@@ -4279,7 +4312,7 @@ draw();
     ['lSummary','layers','دليل الأثاث',()=>toggle('furnitureSummaryToggle'),'', 'دليل'],
     ['lDelete','trash','حذف المحدد',()=>click('deleteBtn'),'dangerIcon', 'حذف']
   ];
-  leftDefs.forEach((d,i)=>{if([6,12,18,22].includes(i))left.appendChild(sep());left.appendChild(button(...d));});
+  leftDefs.forEach((d,i)=>{if([6,14,20,24].includes(i))left.appendChild(sep());left.appendChild(button(...d));});
 
   const colorButton=document.getElementById('lColor');
   const picker=document.createElement('input');
@@ -4322,7 +4355,7 @@ draw();
     setToolLabel('v54LockLabels',stateLabel('mapLabelLockToggle','فتح مسميات','قفل مسميات'));
     setToolLabel('v54LockMeasures',stateLabel('measureLockToggle','فتح قياسات','قفل قياسات'));
     const has=typeof getSelectedIds==='function'&&getSelectedIds().length>0;
-    ['lPlus','lMinus','lRot90','lRot45','lReset','lColor','lEye','lLock','lCopy','lDeselect','lDelete'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=!has;});
+    ['lPlus','lMinus','lRot180','lRot90','lRot45','lReset','lFront','lBack','lColor','lEye','lLock','lCopy','lDeselect','lDelete'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=!has;});
     const it=typeof current==='function'?current():null;const c=document.getElementById('lColor');if(c)c.style.setProperty('--tool-color',it?.color||'#bfa781');
     const u=document.getElementById('v44Undo'),r=document.getElementById('v44Redo'),uo=document.getElementById('undoBtn'),ro=document.getElementById('redoBtn');if(u&&uo)u.disabled=uo.disabled;if(r&&ro)r.disabled=ro.disabled;
   }
@@ -4356,7 +4389,7 @@ draw();
 </script>
 
 
-<script src="v85-final-patch.js?v=147"></script>
+<script src="v85-final-patch.js?v=148"></script>
 
 <script id="furniplan-toolbar-wheel-v94">
 (()=>{
