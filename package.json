@@ -15,7 +15,7 @@
   "build": {
     "appId": "com.sadeer.furniplan",
     "productName": "FurniPlan",
-    "artifactName": "FurniPlan-Setup-V133-${arch}.exe",
+    "artifactName": "FurniPlan-Setup-V124-${arch}.exe",
     "asar": true,
     "directories": {
       "output": "dist",
