@@ -1888,149 +1888,235 @@
  // ===== End FurniPlan V136 Windows Core Area + T Fix =====
 
 
-// ===== FurniPlan V139 Touch Area No Badge + Drag =====
+
+
+
+// ===== FurniPlan V140 Touch Area Card Drag + No Black Badge =====
 (function(){
-  function isTouchUI(){
-    return (navigator.maxTouchPoints||0)>0 && (matchMedia('(pointer:coarse)').matches || matchMedia('(hover:none)').matches);
-  }
-
-  function pointInPoly(pt,poly){
-    let inside=false;
-    for(let i=0,j=poly.length-1;i<poly.length;j=i++){
-      const xi=poly[i].x, yi=poly[i].y, xj=poly[j].x, yj=poly[j].y;
-      const hit=((yi>pt.y)!==(yj>pt.y)) && (pt.x < (xj-xi)*(pt.y-yi)/((yj-yi)||1e-9)+xi);
-      if(hit)inside=!inside;
-    }
-    return inside;
-  }
-
-  function inBox(p,b){
-    return !!b && p.x>=b.x && p.x<=b.x+b.w && p.y>=b.y && p.y<=b.y+b.h;
+  function isTouch(){
+    return (navigator.maxTouchPoints||0)>0;
   }
 
   function install(){
-    if(!isTouchUI())return;
-    if(window.__fpV139TouchArea)return;
-    window.__fpV139TouchArea=true;
+    if(!isTouch())return;
+    if(window.__fpV140AreaCard)return;
+    window.__fpV140AreaCard=true;
 
-    /* Permanently disable the black area-result rectangle on iPhone/iPad. */
-    const badge=document.getElementById('areaResultBadge');
-    if(badge){
-      badge.style.setProperty('display','none','important');
-      badge.style.setProperty('visibility','hidden','important');
-      badge.style.setProperty('opacity','0','important');
-    }
+    /* Permanently suppress the temporary black result badge on touch devices. */
+    const st=document.createElement('style');
+    st.id='fp-v140-hide-area-result-badge';
+    st.textContent='#areaResultBadge{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}';
+    document.head.appendChild(st);
 
-    if(typeof showAreaResultText==='function' && !showAreaResultText.__v139){
-      const old=showAreaResultText;
-      const wrapped=function(text,autoHide){
+    try{
+      if(typeof areaResultTimer!=='undefined'&&areaResultTimer){
+        clearTimeout(areaResultTimer);areaResultTimer=null;
+      }
+      if(typeof areaResultBadge!=='undefined'&&areaResultBadge){
+        areaResultBadge.style.setProperty('display','none','important');
+      }
+    }catch(_){}
+
+    /* Result messages go to the status bar only; never to the black badge. */
+    if(typeof showAreaResultText==='function'){
+      const quiet=function(text){
         try{
-          if(typeof setStatus==='function' && text)setStatus(text);
-          if(typeof areaResultTimer!=='undefined'&&areaResultTimer){clearTimeout(areaResultTimer);areaResultTimer=null;}
+          if(typeof areaResultTimer!=='undefined'&&areaResultTimer){
+            clearTimeout(areaResultTimer);areaResultTimer=null;
+          }
           if(typeof areaResultBadge!=='undefined'&&areaResultBadge){
             areaResultBadge.style.setProperty('display','none','important');
           }
+          if(text&&typeof setStatus==='function')setStatus(text);
         }catch(_){}
       };
-      wrapped.__v139=true;
-      showAreaResultText=wrapped;
-      window.showAreaResultText=wrapped;
+      quiet.__v140=true;
+      showAreaResultText=quiet;
+      window.showAreaResultText=quiet;
     }
 
-    const cv=document.getElementById('canvas')||document.querySelector('canvas');
+    /* Redraw area cards with an independent movable offset. */
+    window.drawAreaPolygons=function(){
+      if(!pxPerCm)return;
+      ctx.save();
+      ctx.lineJoin='round';
+      const touch=true;
+
+      for(const a of areaPolygons){
+        if(!a.points||a.points.length<3)continue;
+
+        ctx.beginPath();
+        ctx.moveTo(a.points[0].x,a.points[0].y);
+        for(let i=1;i<a.points.length;i++)ctx.lineTo(a.points[i].x,a.points[i].y);
+        ctx.closePath();
+        ctx.fillStyle='rgba(14,165,233,.07)';
+        ctx.fill();
+        ctx.strokeStyle='#0284c7';
+        ctx.lineWidth=Math.max(1.2,2/zoom);
+        ctx.stroke();
+
+        const baseCx=a.points.reduce((sum,p)=>sum+p.x,0)/a.points.length;
+        const baseCy=a.points.reduce((sum,p)=>sum+p.y,0)/a.points.length;
+        const cx=baseCx+(+a._cardDx||0);
+        const cy=baseCy+(+a._cardDy||0);
+
+        const txt=a.name+'  '+a.areaM2.toFixed(2)+' م² • '+a.perimeterM.toFixed(2)+' م';
+        const fs=Math.max(10,13/zoom);
+        ctx.font='700 '+fs+'px Tahoma';
+        const tw=ctx.measureText(txt).width;
+        const padX=Math.max(6,6/zoom);
+        const bh=fs*1.65;
+        const bx=cx-tw/2-padX;
+        const by=cy-bh/2;
+        const bw=tw+padX*2;
+
+        ctx.fillStyle='rgba(255,255,255,.96)';
+        roundRectPath(bx,by,bw,bh,Math.max(4,5/zoom));
+        ctx.fill();
+        ctx.strokeStyle='#0284c7';
+        ctx.lineWidth=Math.max(.8,1/zoom);
+        ctx.stroke();
+
+        ctx.fillStyle='#0f172a';
+        ctx.textAlign='center';
+        ctx.textBaseline='middle';
+        ctx.font='700 '+fs+'px Tahoma';
+        ctx.fillText(txt,cx,cy);
+
+        const xs=Math.max(17,19/zoom);
+        const gap=Math.max(5,6/zoom);
+        const xc=bx+bw+gap+xs/2;
+        const yc=cy;
+        ctx.fillStyle='rgba(255,255,255,.99)';
+        ctx.strokeStyle='#111827';
+        ctx.lineWidth=Math.max(1,1.1/zoom);
+        ctx.beginPath();
+        ctx.arc(xc,yc,xs/2,0,Math.PI*2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle='#050505';
+        ctx.font='700 '+Math.max(12,Math.round(fs*.9))+'px Arial';
+        ctx.fillText('×',xc,yc+.2);
+
+        const hitPad=touch?Math.max(9,10/zoom):5;
+        a._deleteBox={x:xc-xs/2-hitPad,y:yc-xs/2-hitPad,w:xs+hitPad*2,h:xs+hitPad*2};
+        a._cardBox={x:bx-hitPad,y:by-hitPad,w:bw+hitPad*2,h:bh+hitPad*2};
+        a._cardBase={x:baseCx,y:baseCy};
+        a._cardSize={w:bw,h:bh,deleteExtra:gap+xs+hitPad};
+      }
+
+      if(mode==='areaMeasure'&&areaDraft.length){
+        ctx.beginPath();
+        ctx.moveTo(areaDraft[0].x,areaDraft[0].y);
+        for(let i=1;i<areaDraft.length;i++)ctx.lineTo(areaDraft[i].x,areaDraft[i].y);
+        ctx.strokeStyle='#0ea5e9';
+        ctx.lineWidth=Math.max(1.2,2/zoom);
+        ctx.setLineDash([6/zoom,4/zoom]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        for(const p of areaDraft){
+          ctx.beginPath();
+          ctx.arc(p.x,p.y,5/zoom,0,Math.PI*2);
+          ctx.fillStyle='#0ea5e9';
+          ctx.fill();
+        }
+      }
+      ctx.restore();
+    };
+
+    const cv=(typeof canvas!=='undefined'&&canvas)?canvas:document.querySelector('canvas');
     if(!cv)return;
 
-    let areaMove=null;
-
-    function findAreaAt(p){
-      if(typeof areaPolygons==='undefined'||!Array.isArray(areaPolygons))return null;
-      for(let i=areaPolygons.length-1;i>=0;i--){
-        const a=areaPolygons[i];
-        if(!a||!Array.isArray(a.points)||a.points.length<3)continue;
-        if(inBox(p,a._deleteBox))continue;
-        if(pointInPoly(p,a.points))return a;
-      }
-      return null;
-    }
+    const inBox=(p,b)=>!!b&&p.x>=b.x&&p.x<=b.x+b.w&&p.y>=b.y&&p.y<=b.y+b.h;
+    let dragCard=null;
 
     cv.addEventListener('pointerdown',ev=>{
-      if(ev.pointerType!=='touch' || ev.isPrimary===false)return;
-      if(typeof mode==='undefined')return;
-      if(mode!=='select' && !(mode==='areaMeasure' && Array.isArray(areaDraft) && areaDraft.length===0))return;
-
+      if(ev.pointerType!=='touch'||ev.isPrimary===false)return;
+      if(typeof mode!=='undefined'&&mode!=='select')return;
       const p=toCanvasPos(ev);
-      const a=findAreaAt(p);
-      if(!a)return;
 
-      areaMove={
-        id:a.id,
-        pointerId:ev.pointerId,
-        start:{x:p.x,y:p.y},
-        original:a.points.map(q=>({x:q.x,y:q.y})),
-        before:typeof cloneEditState==='function'?cloneEditState():null,
-        moved:false
-      };
+      for(let i=areaPolygons.length-1;i>=0;i--){
+        const a=areaPolygons[i];
+        if(inBox(p,a._deleteBox))return;
+        if(!inBox(p,a._cardBox))continue;
 
-      try{cv.setPointerCapture(ev.pointerId)}catch(_){}
-      if(typeof setStatus==='function')setStatus('اسحب لتحريك المساحة داخل الخارطة');
-      ev.preventDefault();
-      ev.stopPropagation();
-      ev.stopImmediatePropagation();
-    },true);
-
-    cv.addEventListener('pointermove',ev=>{
-      if(!areaMove || ev.pointerId!==areaMove.pointerId)return;
-      const a=areaPolygons.find(x=>x.id===areaMove.id);
-      if(!a){areaMove=null;return;}
-
-      const p=toCanvasPos(ev);
-      let dx=p.x-areaMove.start.x, dy=p.y-areaMove.start.y;
-
-      let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
-      for(const q of areaMove.original){
-        if(q.x<minX)minX=q.x;if(q.x>maxX)maxX=q.x;
-        if(q.y<minY)minY=q.y;if(q.y>maxY)maxY=q.y;
-      }
-      if(typeof canvas!=='undefined'){
-        dx=Math.max(-minX,Math.min((canvas.width-maxX),dx));
-        dy=Math.max(-minY,Math.min((canvas.height-maxY),dy));
-      }
-
-      if(Math.abs(dx)>1||Math.abs(dy)>1)areaMove.moved=true;
-      a.points=areaMove.original.map(q=>({x:q.x+dx,y:q.y+dy}));
-
-      if(typeof draw==='function')draw();
-      ev.preventDefault();
-      ev.stopPropagation();
-      ev.stopImmediatePropagation();
-    },true);
-
-    function finishMove(ev){
-      if(!areaMove || (ev && ev.pointerId!==areaMove.pointerId))return;
-      const moved=areaMove.moved, before=areaMove.before;
-      areaMove=null;
-      if(moved && before && typeof commitHistory==='function')commitHistory(before);
-      if(moved && typeof setStatus==='function')setStatus('تم تحريك المساحة');
-      if(typeof draw==='function')draw();
-      if(ev){
+        dragCard={
+          id:a.id,
+          pointerId:ev.pointerId,
+          startX:p.x,
+          startY:p.y,
+          startDx:+a._cardDx||0,
+          startDy:+a._cardDy||0,
+          before:typeof cloneEditState==='function'?cloneEditState():null,
+          moved:false
+        };
+        try{cv.setPointerCapture(ev.pointerId)}catch(_){}
+        if(typeof setStatus==='function')setStatus('اسحب بطاقة المساحة إلى المكان المطلوب');
         ev.preventDefault();
         ev.stopPropagation();
         ev.stopImmediatePropagation();
+        break;
       }
+    },true);
+
+    cv.addEventListener('pointermove',ev=>{
+      if(!dragCard||ev.pointerId!==dragCard.pointerId)return;
+      const a=areaPolygons.find(x=>x.id===dragCard.id);
+      if(!a){dragCard=null;return;}
+
+      const p=toCanvasPos(ev);
+      let dx=dragCard.startDx+(p.x-dragCard.startX);
+      let dy=dragCard.startDy+(p.y-dragCard.startY);
+
+      const base=a._cardBase||{
+        x:a.points.reduce((s,q)=>s+q.x,0)/a.points.length,
+        y:a.points.reduce((s,q)=>s+q.y,0)/a.points.length
+      };
+      const size=a._cardSize||{w:100,h:30,deleteExtra:30};
+
+      const halfW=size.w/2;
+      const halfH=size.h/2;
+      const minCx=halfW+6;
+      const maxCx=Math.max(minCx,canvas.width-halfW-size.deleteExtra-6);
+      const minCy=halfH+6;
+      const maxCy=Math.max(minCy,canvas.height-halfH-6);
+
+      let newCx=base.x+dx;
+      let newCy=base.y+dy;
+      newCx=Math.max(minCx,Math.min(maxCx,newCx));
+      newCy=Math.max(minCy,Math.min(maxCy,newCy));
+
+      a._cardDx=newCx-base.x;
+      a._cardDy=newCy-base.y;
+
+      if(Math.abs(p.x-dragCard.startX)>2||Math.abs(p.y-dragCard.startY)>2)dragCard.moved=true;
+      if(typeof draw==='function')draw();
+
+      ev.preventDefault();
+      ev.stopPropagation();
+      ev.stopImmediatePropagation();
+    },true);
+
+    function finish(ev){
+      if(!dragCard||ev.pointerId!==dragCard.pointerId)return;
+      const before=dragCard.before;
+      const moved=dragCard.moved;
+      dragCard=null;
+      if(moved&&before&&typeof commitHistory==='function')commitHistory(before);
+      if(moved&&typeof setStatus==='function')setStatus('تم تحريك بطاقة المساحة');
+      if(typeof draw==='function')draw();
+      ev.preventDefault();
+      ev.stopPropagation();
+      ev.stopImmediatePropagation();
     }
+    cv.addEventListener('pointerup',finish,true);
+    cv.addEventListener('pointercancel',finish,true);
 
-    cv.addEventListener('pointerup',finishMove,true);
-    cv.addEventListener('pointercancel',finishMove,true);
-
-    /* Keep the badge suppressed if older code tries to display it later. */
-    const obs=new MutationObserver(()=>{
-      const b=document.getElementById('areaResultBadge');
-      if(b && b.style.display!=='none')b.style.setProperty('display','none','important');
-    });
-    if(document.body)obs.observe(document.body,{subtree:true,attributes:true,attributeFilter:['style']});
+    /* Force one redraw so hit boxes are created immediately. */
+    if(typeof draw==='function')draw();
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
   else install();
 })();
- // ===== End FurniPlan V139 Touch Area No Badge + Drag =====
+ // ===== End FurniPlan V140 Touch Area Card Drag + No Black Badge =====
