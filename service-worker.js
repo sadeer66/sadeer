@@ -1,4 +1,4 @@
-const CACHE='furniplan-v129-iphone-landscape-side-20261003';
+const CACHE='furniplan-v130-iphone-landscape-sidefix-20261003';
 const CORE=[
   './',
   './index.html',
