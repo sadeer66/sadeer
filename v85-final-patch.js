@@ -1716,3 +1716,32 @@
   else install();
 })();
  // ===== End FurniPlan V126 iPhone Bottom Library =====
+
+
+// ===== FurniPlan V133 Smaller Library Category Buttons Only =====
+(function(){
+  function install(){
+    if(document.getElementById('furniplan-v133-small-category-buttons'))return;
+    const s=document.createElement('style');
+    s.id='furniplan-v133-small-category-buttons';
+    s.textContent=`
+      /* Only shrink furniture-library category/title buttons. Do not alter library panel or content. */
+      @media (hover:none), (pointer:coarse){
+        .categoryList .catBtn{
+          width:62px!important;
+          min-width:62px!important;
+          max-width:62px!important;
+          min-height:27px!important;
+          height:27px!important;
+          padding:3px 4px!important;
+          font-size:7px!important;
+          line-height:1!important;
+        }
+      }
+    `;
+    document.head.appendChild(s);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
+})();
+ // ===== End FurniPlan V133 Smaller Library Category Buttons Only =====
