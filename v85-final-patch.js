@@ -1314,96 +1314,48 @@
     style.id='furniplan-v124-iphone-portrait-fix';
     style.textContent=`
       @media (max-width:700px) and (orientation:portrait){
-        #v124Library{display:inline-flex!important;visibility:visible!important;opacity:1!important}
-        aside{width:min(94vw,390px)!important;right:0!important;left:auto!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important}
-        aside.open{transform:translateX(0)!important}
-        .libraryBrowser{grid-template-columns:82px minmax(0,1fr)!important;gap:7px!important}
-        .categoryList{min-width:0!important}
-        #library{min-width:0!important}
-      }
-    `;
-    if(!document.getElementById(style.id))document.head.appendChild(style);
-
-    const add=document.getElementById('addMapLabelBtn');
-    if(add)add.onclick=startMapLabelPlacementV124;
-
-    const modernLabel=document.getElementById('v44Label');
-    if(modernLabel){
-      const replacement=modernLabel.cloneNode(true);
-      replacement.id='v44Label';
-      replacement.addEventListener('click',ev=>{ev.preventDefault();ev.stopImmediatePropagation();startMapLabelPlacementV124();},true);
-      modernLabel.replaceWith(replacement);
-    }
-
-    if(!document.getElementById('v124Library')){
-      const host=document.querySelector('#modernTopToolbar .topToolGroup')||document.getElementById('modernTopToolbar')||document.querySelector('.mainToolbar');
-      if(host){
-        const b=document.createElement('button');
-        b.type='button'; b.id='v124Library'; b.className='topToolBtn';
-        b.setAttribute('aria-label','فتح مكتبة الأثاث'); b.title='فتح مكتبة الأثاث';
-        b.innerHTML='<span class="actionIcon">▦</span><span>المكتبة</span>';
-        b.addEventListener('click',()=>{
-          try{
-            if(typeof setSidebarOpen==='function')setSidebarOpen(true);
-            else{
-              const side=document.querySelector('aside');
-              if(side)side.classList.add('open');
-            }
-          }catch(_){}
-        });
-        host.prepend(b);
-      }
-    }
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installV124Fix,{once:true});else installV124Fix();
-})();
-// ===== End FurniPlan V124 iPhone Portrait Library + Labels Fix =====
-
-
-// ===== FurniPlan V124 Portrait Sheet + Area Badge Fix =====
-(function(){
-  function installStyle(){
-    if(document.getElementById('furniplan-v124-portrait-sheet-style'))return;
-    const s=document.createElement('style');
-    s.id='furniplan-v124-portrait-sheet-style';
-    s.textContent=`
-      @media (max-width:700px) and (orientation:portrait){
         aside{
           top:auto!important;left:auto!important;right:10px!important;
           bottom:calc(env(safe-area-inset-bottom) + 34px)!important;
-          width:min(50vw,205px)!important;max-width:min(50vw,205px)!important;
-          height:min(15dvh,122px)!important;max-height:min(15dvh,122px)!important;
+          width:min(72vw,310px)!important;max-width:min(72vw,310px)!important;
+          height:min(30dvh,245px)!important;max-height:min(30dvh,245px)!important;
           border-left:none!important;border-top:1px solid #34435b!important;
           border-radius:16px 16px 0 0!important;
           box-shadow:0 -12px 30px rgba(0,0,0,.36)!important;
           transform:translateY(110%)!important;transition:transform .22s ease!important;
-          overflow:hidden!important;
+          overflow-y:auto!important;overflow-x:hidden!important;
+          -webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;
+          overscroll-behavior:contain!important;
         }
         aside.open{transform:translateY(0)!important}
         .sidebarScrim,.sidebarScrim.show{display:none!important;pointer-events:none!important;background:transparent!important}
-        aside .sideSection{
-          height:100%!important;max-height:100%!important;min-height:0!important;
+        aside .section{margin-bottom:8px!important;padding:8px!important}
+        .libraryBrowser{grid-template-columns:64px minmax(0,1fr)!important;gap:5px!important;align-items:start!important}
+        .categoryList{position:static!important;gap:5px!important;padding-left:0!important;max-height:none!important;overflow:visible!important;touch-action:pan-y!important}
+        #library{max-height:none!important;overflow:visible!important;touch-action:pan-y!important}
+        .fcard{min-height:82px!important;padding:5px!important;touch-action:pan-y!important}
+        .fcard img{max-height:40px!important}
+        .catBtn{padding:6px 4px!important;font-size:9px!important;min-height:32px!important;touch-action:manipulation!important}
+        .fmeta b{font-size:9px!important}
+        .fmeta .dims{font-size:8px!important}
+      }
+      @media (max-width:900px) and (orientation:landscape){
+        aside{
+          top:calc(env(safe-area-inset-top) + var(--tool-header-h))!important;
+          right:8px!important;left:auto!important;
+          bottom:calc(env(safe-area-inset-bottom) + 8px)!important;
+          width:min(30vw,300px)!important;max-width:min(30vw,300px)!important;
+          height:auto!important;max-height:none!important;
           overflow-y:auto!important;overflow-x:hidden!important;
           -webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;
-          overscroll-behavior:contain!important;padding:6px!important;
+          overscroll-behavior:contain!important;
         }
-        .libraryBrowser{
-          grid-template-columns:46px minmax(0,1fr)!important;gap:4px!important;
-          align-items:start!important;min-height:max-content!important;
-        }
-        .categoryList{
-          gap:4px!important;padding-left:0!important;
-          max-height:none!important;overflow:visible!important;
-        }
-        #library{
-          max-height:none!important;overflow:visible!important;min-height:max-content!important;
-        }
-        .catBtn{padding:5px 3px!important;font-size:8px!important;min-height:28px!important}
-        .fcard{min-height:66px!important;padding:4px!important}
-        .fcard img{max-height:30px!important}
-        .fmeta b{font-size:8px!important}
-        .fmeta .dims{font-size:7px!important}
-      }`;
+        .sidebarScrim,.sidebarScrim.show{display:none!important;pointer-events:none!important;background:transparent!important}
+        .categoryList{position:static!important;max-height:none!important;overflow:visible!important;touch-action:pan-y!important}
+        #library{max-height:none!important;overflow:visible!important;touch-action:pan-y!important}
+        .fcard{touch-action:pan-y!important}
+        .libraryBrowser{grid-template-columns:68px minmax(0,1fr)!important;gap:6px!important}
+      }     }`;
     document.head.appendChild(s);
   }
   function hideAreaBadgeNow(){
