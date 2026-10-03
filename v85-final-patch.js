@@ -2120,3 +2120,124 @@
   else install();
 })();
  // ===== End FurniPlan V140 Touch Area Card Drag + No Black Badge =====
+
+
+// ===== FurniPlan V141 Touch Area Card Drag Hit Fix =====
+(function(){
+  function install(){
+    if(!(navigator.maxTouchPoints>0))return;
+    if(window.__fpV141AreaCardDrag)return;
+    window.__fpV141AreaCardDrag=true;
+
+    const cv=(typeof canvas!=='undefined'&&canvas)?canvas:document.querySelector('canvas');
+    if(!cv)return;
+
+    const inBox=(p,b)=>!!b&&p.x>=b.x&&p.x<=b.x+b.w&&p.y>=b.y&&p.y<=b.y+b.h;
+
+    let drag=null;
+
+    function findCard(p){
+      if(typeof areaPolygons==='undefined'||!Array.isArray(areaPolygons))return null;
+      for(let i=areaPolygons.length-1;i>=0;i--){
+        const a=areaPolygons[i];
+        if(!a)continue;
+
+        if(a._deleteBox&&inBox(p,a._deleteBox))continue;
+
+        if(a._cardBox&&inBox(p,a._cardBox))return a;
+
+        // Fallback hitbox rebuilt from card center if draw code has not stored one yet.
+        if(a._cardBase&&a._cardSize){
+          const cx=a._cardBase.x+(+a._cardDx||0);
+          const cy=a._cardBase.y+(+a._cardDy||0);
+          const bw=a._cardSize.w||120;
+          const bh=a._cardSize.h||34;
+          const b={x:cx-bw/2-16,y:cy-bh/2-16,w:bw+32,h:bh+32};
+          if(inBox(p,b))return a;
+        }
+      }
+      return null;
+    }
+
+    function canvasPoint(ev){
+      try{return toCanvasPos(ev);}catch(_){
+        const r=cv.getBoundingClientRect();
+        return {
+          x:(ev.clientX-r.left)*(cv.width/Math.max(1,r.width)),
+          y:(ev.clientY-r.top)*(cv.height/Math.max(1,r.height))
+        };
+      }
+    }
+
+    cv.addEventListener('touchstart',ev=>{
+      if(!ev.touches||ev.touches.length!==1)return;
+      if(typeof mode!=='undefined'&&mode!=='select')return;
+
+      const t=ev.touches[0];
+      const fake={clientX:t.clientX,clientY:t.clientY};
+      const p=canvasPoint(fake);
+      const a=findCard(p);
+      if(!a)return;
+
+      drag={
+        id:a.id,
+        startX:p.x,
+        startY:p.y,
+        startDx:+a._cardDx||0,
+        startDy:+a._cardDy||0,
+        moved:false,
+        before:typeof cloneEditState==='function'?cloneEditState():null
+      };
+
+      ev.preventDefault();
+      ev.stopPropagation();
+    },{capture:true,passive:false});
+
+    cv.addEventListener('touchmove',ev=>{
+      if(!drag||!ev.touches||ev.touches.length!==1)return;
+
+      const a=areaPolygons.find(x=>x.id===drag.id);
+      if(!a){drag=null;return;}
+
+      const t=ev.touches[0];
+      const fake={clientX:t.clientX,clientY:t.clientY};
+      const p=canvasPoint(fake);
+
+      const dx=p.x-drag.startX;
+      const dy=p.y-drag.startY;
+
+      a._cardDx=drag.startDx+dx;
+      a._cardDy=drag.startDy+dy;
+
+      if(Math.abs(dx)>2||Math.abs(dy)>2)drag.moved=true;
+
+      if(typeof draw==='function')draw();
+
+      ev.preventDefault();
+      ev.stopPropagation();
+    },{capture:true,passive:false});
+
+    function endDrag(ev){
+      if(!drag)return;
+      const moved=drag.moved;
+      const before=drag.before;
+      drag=null;
+
+      if(moved&&before&&typeof commitHistory==='function')commitHistory(before);
+      if(moved&&typeof setStatus==='function')setStatus('تم تحريك بطاقة المساحة');
+      if(typeof draw==='function')draw();
+
+      if(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+    }
+
+    cv.addEventListener('touchend',endDrag,{capture:true,passive:false});
+    cv.addEventListener('touchcancel',endDrag,{capture:true,passive:false});
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
+})();
+ // ===== End FurniPlan V141 Touch Area Card Drag Hit Fix =====
