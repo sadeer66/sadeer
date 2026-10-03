@@ -1284,3 +1284,77 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
 // ===== End FurniPlan V116 =====
+
+
+// ===== FurniPlan V124 iPhone Portrait Library + Labels Fix =====
+(function(){
+  function startMapLabelPlacementV124(){
+    try{
+      if(typeof hasPlan==='function' && !hasPlan()){alert('ارفع الخارطة أولاً.');return;}
+      const value=prompt('اكتب المسمى الذي تريد وضعه على الخارطة:','');
+      if(value===null)return;
+      const clean=String(value).trim();
+      if(!clean){if(typeof setStatus==='function')setStatus('اكتب نص المسمى أولاً');return;}
+      pendingMapLabelText=clean;
+      activateWorkingTool('labelPlace');
+      points=[];
+      selectedMeasureId=null;
+      selectedMapLabelId=null;
+      if(typeof clearFurnitureSelection==='function')clearFurnitureSelection();
+      if(typeof syncSelectedPanel==='function')syncSelectedPanel();
+      if(typeof updateInteractionCursor==='function')updateInteractionCursor();
+      if(typeof setStatus==='function')setStatus((typeof isTouchDevice==='function'&&isTouchDevice())?`اضغط ضغطة واحدة على مكان «${clean}» لإضافته`:`انقر مكان «${clean}» لإضافته`);
+      if(typeof draw==='function')draw();
+    }catch(e){console.error('V124 label fix',e);}
+  }
+  window.startMapLabelPlacementV124=startMapLabelPlacementV124;
+
+  function installV124Fix(){
+    const style=document.createElement('style');
+    style.id='furniplan-v124-iphone-portrait-fix';
+    style.textContent=`
+      @media (max-width:700px) and (orientation:portrait){
+        #v124Library{display:inline-flex!important;visibility:visible!important;opacity:1!important}
+        aside{width:min(94vw,390px)!important;right:0!important;left:auto!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important}
+        aside.open{transform:translateX(0)!important}
+        .libraryBrowser{grid-template-columns:82px minmax(0,1fr)!important;gap:7px!important}
+        .categoryList{min-width:0!important}
+        #library{min-width:0!important}
+      }
+    `;
+    if(!document.getElementById(style.id))document.head.appendChild(style);
+
+    const add=document.getElementById('addMapLabelBtn');
+    if(add)add.onclick=startMapLabelPlacementV124;
+
+    const modernLabel=document.getElementById('v44Label');
+    if(modernLabel){
+      const replacement=modernLabel.cloneNode(true);
+      replacement.id='v44Label';
+      replacement.addEventListener('click',ev=>{ev.preventDefault();ev.stopImmediatePropagation();startMapLabelPlacementV124();},true);
+      modernLabel.replaceWith(replacement);
+    }
+
+    if(!document.getElementById('v124Library')){
+      const host=document.querySelector('#modernTopToolbar .topToolGroup')||document.getElementById('modernTopToolbar')||document.querySelector('.mainToolbar');
+      if(host){
+        const b=document.createElement('button');
+        b.type='button'; b.id='v124Library'; b.className='topToolBtn';
+        b.setAttribute('aria-label','فتح مكتبة الأثاث'); b.title='فتح مكتبة الأثاث';
+        b.innerHTML='<span class="actionIcon">▦</span><span>المكتبة</span>';
+        b.addEventListener('click',()=>{
+          try{
+            if(typeof setSidebarOpen==='function')setSidebarOpen(true);
+            else{
+              const side=document.querySelector('aside');
+              if(side)side.classList.add('open');
+            }
+          }catch(_){}
+        });
+        host.prepend(b);
+      }
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installV124Fix,{once:true});else installV124Fix();
+})();
+// ===== End FurniPlan V124 iPhone Portrait Library + Labels Fix =====
