@@ -1,4 +1,4 @@
-const CACHE='furniplan-v158-accessories-small-20261004';
+const CACHE='furniplan-v159-library-ipad-layout-20261004';
 const CORE=[
   './',
   './index.html',
