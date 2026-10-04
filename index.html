@@ -605,6 +605,166 @@ header{min-height:var(--tool-header-h)!important}
 
 </style>
 
+<style id="furniplan-v159-library-ipad-landscape">
+/* V159 — Full Library: clearer selected-item preview + compact iPad landscape layout */
+.fullLibPreviewPanel{
+  background:#dbeef8!important;
+  border-color:#7ca8c4!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.40);
+}
+.fullLibTools button{
+  min-height:34px;
+  padding:6px 7px;
+  font-size:11px;
+}
+.fullLibControlGroup{padding:7px;margin-bottom:7px}
+.fullLibChoose{min-height:46px;font-size:15px}
+
+@media (min-width:641px) and (max-width:1180px) and (orientation:landscape){
+  .fullLibraryShell{
+    grid-template-columns:205px minmax(0,1fr) 175px!important;
+    gap:7px!important;
+    padding:7px!important;
+  }
+  .fullLibCenter{
+    grid-template-rows:minmax(0,1.75fr) minmax(118px,.85fr)!important;
+    gap:7px!important;
+    min-height:0!important;
+  }
+  .fullLibGridPanel{
+    min-height:0!important;
+    overflow:auto!important;
+    padding:8px!important;
+  }
+  .fullLibGridPanel .fullLibHeader{margin-bottom:5px!important}
+  .fullLibGridPanel .fullLibHeader h2{font-size:13px!important}
+  .fullLibSearch{
+    height:36px!important;
+    padding:6px 9px!important;
+    margin-bottom:6px!important;
+    font-size:12px!important;
+  }
+  .fullLibGrid{
+    grid-template-columns:repeat(auto-fill,minmax(105px,1fr))!important;
+    gap:6px!important;
+  }
+  .fullLibCard{
+    min-height:106px!important;
+    padding:5px!important;
+    border-radius:11px!important;
+    gap:2px!important;
+  }
+  .fullLibCard img{height:66px!important}
+  .fullLibCard b{font-size:10px!important;line-height:1.12!important}
+  .fullLibCard span{font-size:8.5px!important}
+
+  .fullLibPreviewPanel{
+    min-height:0!important;
+    height:auto!important;
+    overflow:hidden!important;
+  }
+  #fullLibPreviewCanvas{
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+  }
+  .fullLibPreviewTitle{
+    top:6px!important;
+    right:8px!important;
+    font-size:10px!important;
+    padding:4px 7px!important;
+    max-width:calc(100% - 16px)!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+
+  .fullLibCats{
+    padding:8px!important;
+    border-radius:12px!important;
+    overflow-y:auto!important;
+  }
+  .fullLibCats .fullLibHeader{margin-bottom:6px!important}
+  .fullLibCats .fullLibHeader h2{font-size:14px!important}
+  .fullLibCatList{gap:5px!important}
+  .fullLibCatBtn{
+    padding:7px 6px!important;
+    font-size:10px!important;
+    border-radius:9px!important;
+  }
+
+  .fullLibControls{
+    padding:7px!important;
+    border-radius:12px!important;
+    overflow:hidden!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-auto-flow:row!important;
+    grid-auto-rows:min-content!important;
+    gap:5px!important;
+    align-content:start!important;
+  }
+  .fullLibControls>.fullLibHeader{
+    grid-column:1/-1!important;
+    margin:0!important;
+    min-height:30px!important;
+  }
+  .fullLibControls>.fullLibHeader h2{font-size:13px!important}
+  .fullLibClose{
+    width:30px!important;
+    height:30px!important;
+    min-width:30px!important;
+    min-height:30px!important;
+    font-size:18px!important;
+    border-radius:9px!important;
+    padding:0!important;
+  }
+  .fullLibControlGroup{
+    margin:0!important;
+    padding:5px!important;
+    border-radius:9px!important;
+    min-width:0!important;
+  }
+  .fullLibControlGroup:has(#fullLibName){grid-column:1/-1!important}
+  .fullLibControlGroup label{
+    font-size:9px!important;
+    margin-bottom:2px!important;
+    line-height:1.15!important;
+  }
+  .fullLibControlGroup input[type=text],
+  .fullLibControlGroup input[type=number]{
+    min-height:30px!important;
+    padding:5px!important;
+    font-size:11px!important;
+  }
+  .fullLibControlGroup input[type=color]{
+    height:30px!important;
+    padding:2px!important;
+  }
+  .fullLibTwo,.fullLibTools{gap:4px!important}
+  .fullLibTools button{
+    min-height:29px!important;
+    padding:4px 2px!important;
+    font-size:9.5px!important;
+    border-radius:7px!important;
+    white-space:nowrap!important;
+  }
+  .fullLibChoose{
+    grid-column:1/-1!important;
+    min-height:38px!important;
+    font-size:13px!important;
+    margin:0!important;
+  }
+  .fullLibHint{
+    grid-column:1/-1!important;
+    margin:0!important;
+    font-size:8px!important;
+    line-height:1.25!important;
+    text-align:center!important;
+  }
+}
+</style>
+
 <style id="v61DxfSnapStyle">
 /* V61 DXF Vector Snap */
 .targetCursor .dxfSnapTag{display:none;position:absolute;right:calc(100% + 9px);top:50%;transform:translateY(-50%);white-space:nowrap;background:rgba(15,23,42,.95);color:#fff;border:1px solid #38bdf8;border-radius:8px;padding:4px 7px;font:700 11px/1.1 Tahoma,Arial,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.25);direction:rtl}
