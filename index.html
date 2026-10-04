@@ -7,8 +7,8 @@
 <meta http-equiv="Expires" content="0" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<title>FurniPlan V174</title>
-<meta name="furniplan-version" content="174">
+<title>FurniPlan V175</title>
+<meta name="furniplan-version" content="175">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -5601,14 +5601,7 @@ document.getElementById('doPrintBtn').onclick=async()=>{
   const page=window.open('','_blank');
   if(!page){alert('تعذر فتح نافذة الطباعة. تحقق من إعداد حظر النوافذ المنبثقة في Safari ثم حاول مرة أخرى.');return;}
   page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...
-<script src="v174-assets/assets_1.js?v=174"></script>
-<script src="v174-assets/assets_2.js?v=174"></script>
-<script src="v174-assets/assets_3.js?v=174"></script>
-<script src="v174-assets/assets_4.js?v=174"></script>
-<script src="v174-assets/assets_5.js?v=174"></script>
-<script src="v174-assets/assets_6.js?v=174"></script>
-<script src="v174-assets/assets_7.js?v=174"></script>
-<script src="library_v174.js?v=174"></script>
+
 </body></html>`);
   page.document.close();
   try{
@@ -6347,5 +6340,15 @@ draw();
 }
 </style>
 
+
+<!-- V175 — load the expanded furniture library in the MAIN document -->
+<script src="v174-assets/assets_1.js?v=175"></script>
+<script src="v174-assets/assets_2.js?v=175"></script>
+<script src="v174-assets/assets_3.js?v=175"></script>
+<script src="v174-assets/assets_4.js?v=175"></script>
+<script src="v174-assets/assets_5.js?v=175"></script>
+<script src="v174-assets/assets_6.js?v=175"></script>
+<script src="v174-assets/assets_7.js?v=175"></script>
+<script src="library_v174.js?v=175"></script>
 </body>
 </html>
