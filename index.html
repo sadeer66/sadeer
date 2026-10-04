@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>FurniPlan</title>
-<meta name="furniplan-version" content="172">
+<meta name="furniplan-version" content="173">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -1996,6 +1996,19 @@ input[type="range"]::-moz-range-thumb{
 }
 </style>
 
+
+<script id="fp-v173-language-bootstrap">
+(function(){
+  var lang='en';
+  try{lang=localStorage.getItem('furniplan_language_v115')==='ar'?'ar':'en';}catch(_){}
+  document.documentElement.lang=lang;
+  document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+  document.documentElement.setAttribute('data-fp-boot-lang',lang);
+})();
+</script>
+<style id="fp-v173-splash-language-guard">
+html:not(.fpSplashLangReady) #fpSplash{visibility:hidden!important}
+</style>
 </head>
 <body>
 
@@ -2053,6 +2066,26 @@ input[type="range"]::-moz-range-thumb{
     <div class="fpCopyright">© 2026 FurniPlan — جميع الحقوق محفوظة — سدير ياسين محمد</div>
   </div>
 </div>
+<script id="fp-v173-splash-language-apply">
+(function(){
+  try{
+    var lang=document.documentElement.getAttribute('data-fp-boot-lang')||'en';
+    if(lang==='en'){
+      var splash=document.getElementById('fpSplash');
+      if(splash){
+        var sub=splash.querySelector('.fpArabic');
+        if(sub)sub.textContent='Smarter planning .. Better living';
+        var labels=['Plans','Furniture','Designs','Save','Print','Easy sharing'];
+        splash.querySelectorAll('.fpFeature span').forEach(function(el,i){if(labels[i])el.textContent=labels[i];});
+        var cr=splash.querySelector('.fpCopyright');
+        if(cr)cr.textContent='© 2026 FurniPlan — All rights reserved — Sadeer Yaseen Mohammed';
+      }
+    }
+  }catch(_){}
+  document.documentElement.classList.add('fpSplashLangReady');
+})();
+</script>
+
 
 <div class="app">
 <button id="mobileFullLibraryBtn" type="button" aria-label="فتح المكتبة الكاملة">▦ مكتبة</button>
@@ -6034,7 +6067,7 @@ draw();
 </script>
 
 
-<script src="v85-final-patch.js?v=161"></script>
+<script src="v85-final-patch.js?v=173"></script>
 
 <script id="furniplan-toolbar-wheel-v94">
 (()=>{
