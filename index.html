@@ -2712,8 +2712,8 @@ function syncFullLibLayerButtons(){
 function drawFullLibPreview(){
   const st=fullLibState(),c=fullLibPreviewCanvas;if(!c||!st)return;
   const ctxp=c.getContext('2d'),token=++fullLibPreviewToken,W=c.width,H=c.height;
-  ctxp.clearRect(0,0,W,H);ctxp.fillStyle='#f8fafc';ctxp.fillRect(0,0,W,H);
-  ctxp.strokeStyle='#e2e8f0';ctxp.lineWidth=1;
+  ctxp.clearRect(0,0,W,H);ctxp.fillStyle='#dbeef8';ctxp.fillRect(0,0,W,H);
+  ctxp.strokeStyle='#bdd6e6';ctxp.lineWidth=1;
   for(let x=0;x<W;x+=60){ctxp.beginPath();ctxp.moveTo(x,0);ctxp.lineTo(x,H);ctxp.stroke();}
   for(let y=0;y<H;y+=60){ctxp.beginPath();ctxp.moveTo(0,y);ctxp.lineTo(W,y);ctxp.stroke();}
   const maxW=W*.66,maxH=H*.68,ratio=Math.max(1,st.w/st.h),scale=Math.min(maxW/Math.max(1,st.w),maxH/Math.max(1,st.h));
@@ -4354,7 +4354,89 @@ document.getElementById('doPrintBtn').onclick=async()=>{
     const title=projectMeta.name.replace(/[<>]/g,'');
     const src=sheet.toDataURL('image/png');
     page.document.open();
-    page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>${title}</title><style>@page{size:${paper} ${orient};margin:0}html,body{margin:0;padding:0;background:#fff;width:100%;height:100%}body{display:flex;align-items:center;justify-content:center}img{display:block;width:100%;height:100%;object-fit:contain;page-break-inside:avoid}</style></head><body><img src="${src}"><script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>`);
+    page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>${title}</title><style>@page{size:${paper} ${orient};margin:0}html,body{margin:0;padding:0;background:#fff;width:100%;height:100%}body{display:flex;align-items:center;justify-content:center}img{display:block;width:100%;height:100%;object-fit:contain;page-break-inside:avoid}</style>
+<style id="furniplan-v159-library-layout">
+/* FurniPlan V159 — compact full-library layout for landscape touch devices */
+.fullLibPreviewPanel{
+  background:#dbeef8!important;
+  border-color:#7ea6c0!important;
+}
+@media (orientation:landscape) and (hover:none) and (pointer:coarse) and (max-width:1400px){
+  .fullLibraryShell{
+    grid-template-columns:clamp(185px,22vw,235px) minmax(0,1fr) clamp(145px,17vw,190px)!important;
+    gap:6px!important;padding:6px!important;
+  }
+  .fullLibCenter{
+    grid-template-rows:minmax(0,2fr) minmax(108px,1fr)!important;
+    gap:6px!important;
+  }
+  .fullLibPreviewPanel{min-height:108px!important;border-radius:12px!important}
+  .fullLibPreviewTitle{top:6px!important;right:8px!important;font-size:9px!important;padding:4px 7px!important}
+  .fullLibGridPanel{padding:7px!important;border-radius:12px!important}
+  .fullLibGridPanel .fullLibHeader{margin-bottom:5px!important}
+  .fullLibGridPanel .fullLibHeader h2{font-size:12px!important}
+  .fullLibSearch{height:32px!important;padding:6px 9px!important;margin-bottom:6px!important;font-size:11px!important}
+  .fullLibGrid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr))!important;gap:6px!important}
+  .fullLibCard{min-height:112px!important;padding:5px!important;border-radius:10px!important;gap:2px!important}
+  .fullLibCard img{height:72px!important}
+  .fullLibCard b{font-size:10px!important;line-height:1.15!important}
+  .fullLibCard span{font-size:8.5px!important}
+
+  .fullLibControls{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-auto-rows:max-content!important;
+    align-content:start!important;
+    gap:5px!important;
+    padding:6px!important;
+    overflow:hidden!important;
+    border-radius:12px!important;
+  }
+  .fullLibControls>.fullLibHeader{grid-column:1/-1;margin:0!important;min-height:30px!important}
+  .fullLibControls>.fullLibHeader h2{font-size:12px!important}
+  .fullLibClose{width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;font-size:18px!important;padding:0!important}
+  .fullLibControlGroup{margin:0!important;padding:5px!important;border-radius:8px!important;min-width:0!important}
+  .fullLibControlGroup label{font-size:9px!important;line-height:1.15!important;margin-bottom:2px!important}
+  .fullLibControlGroup input[type=text],
+  .fullLibControlGroup input[type=number]{min-height:28px!important;height:28px!important;padding:4px 5px!important;font-size:10px!important}
+  .fullLibControlGroup input[type=color]{height:28px!important;padding:2px!important}
+  .fullLibTwo{gap:4px!important}
+  .fullLibTools{gap:4px!important}
+  .fullLibTools button{min-height:27px!important;height:27px!important;padding:3px 2px!important;font-size:9px!important;border-radius:7px!important}
+  .fullLibControlGroup:has(#fullLibName),
+  .fullLibControlGroup:has(#fullLibW),
+  .fullLibControlGroup:has(#fullLibRot){grid-column:1/-1!important}
+  .fullLibControlGroup:has(#fullLibRot) .fullLibTools{grid-template-columns:repeat(4,minmax(0,1fr))!important;margin-top:4px!important}
+  .fullLibControlGroup:has(#fullLibGrow){grid-column:1!important}
+  .fullLibControlGroup:has(#fullLibColor){grid-column:2!important}
+  .fullLibControlGroup:has(#fullLibLayerFront){grid-column:1!important}
+  .fullLibChoose{
+    grid-column:2!important;
+    min-height:34px!important;height:34px!important;
+    padding:4px 5px!important;font-size:10px!important;
+    align-self:end!important;margin:0!important;
+  }
+  .fullLibHint{grid-column:1/-1!important;margin:0!important;font-size:8px!important;line-height:1.2!important;text-align:center!important}
+  .fullLibCats{padding:7px!important;border-radius:12px!important}
+  .fullLibCats .fullLibHeader{margin-bottom:6px!important}
+  .fullLibCats .fullLibHeader h2{font-size:13px!important}
+  .fullLibCatList{gap:5px!important}
+  .fullLibCatBtn{padding:7px 6px!important;font-size:10px!important;min-height:34px!important}
+}
+@media (orientation:landscape) and (hover:none) and (pointer:coarse) and (max-height:520px){
+  .fullLibCenter{grid-template-rows:minmax(0,2fr) minmax(96px,1fr)!important}
+  .fullLibPreviewPanel{min-height:96px!important}
+  .fullLibControls{gap:4px!important;padding:5px!important}
+  .fullLibControls>.fullLibHeader{min-height:27px!important}
+  .fullLibControlGroup{padding:4px!important}
+  .fullLibControlGroup input[type=text],
+  .fullLibControlGroup input[type=number]{min-height:26px!important;height:26px!important}
+  .fullLibTools button{min-height:25px!important;height:25px!important;font-size:8.5px!important}
+  .fullLibChoose{min-height:31px!important;height:31px!important;font-size:9px!important}
+  .fullLibHint{font-size:7.5px!important;line-height:1.1!important}
+}
+</style>
+</head><body><img src="${src}"><script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>`);
     page.document.close();printModal.style.display='none';setStatus('تم تجهيز صفحة الطباعة بشكل متوازن داخل الورقة');
   }catch(err){page.close();alert('تعذر تجهيز صفحة الطباعة.');console.error(err);}
 };
