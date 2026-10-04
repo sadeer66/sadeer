@@ -1,4 +1,4 @@
-const CACHE='furniplan-v150-people-20261004';
+const CACHE='furniplan-v152-people20-rugs20-20261004';
 const CORE=[
   './',
   './index.html',
