@@ -1,4 +1,4 @@
-const CACHE='furniplan-v161-final-library-20261004';
+const CACHE='furniplan-v162-library-colors-20261004';
 const CORE=[
   './',
   './index.html',
