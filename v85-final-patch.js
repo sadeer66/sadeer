@@ -1175,7 +1175,8 @@
       '.fpV116MobileTool{display:none!important}',
       '#fpAreaInspectorV116{display:none}',
       '#fpAreaInspectorV116 .fpAreaName{width:190px!important;min-width:150px!important}',
-      '@media(max-width:900px){.fpV116MobileTool{display:inline-flex!important}#fpAreaInspectorV116 .fpAreaName{width:150px!important}}',
+      '@media(max-width:900px){#fpPhoneLibraryBtn{display:inline-flex!important}#fpAreaInspectorV116 .fpAreaName{width:150px!important}}',
+      '@media(max-width:1180px){#fpClearMeasureBtn{display:inline-flex!important}}',
       '@media(max-width:540px){aside.open{width:min(390px,94vw)!important}.libraryBrowser{grid-template-columns:82px minmax(0,1fr)!important}.fpV116MobileTool{flex:0 0 var(--tool-btn-w)!important}}'
     ].join('');
     document.head.appendChild(st);
@@ -1191,7 +1192,13 @@
     if(!lib.parentElement){
       if(langBtn&&langBtn.parentElement===bar)langBtn.insertAdjacentElement('afterend',lib);else bar.prepend(lib);
     }
-    if(!clr.parentElement)lib.insertAdjacentElement('afterend',clr);
+    const areaBtn=document.getElementById('v65Area');
+    if(!clr.parentElement){
+      if(areaBtn&&areaBtn.parentElement)areaBtn.insertAdjacentElement('afterend',clr);
+      else lib.insertAdjacentElement('afterend',clr);
+    }else if(areaBtn&&areaBtn.parentElement&&clr.previousElementSibling!==areaBtn){
+      areaBtn.insertAdjacentElement('afterend',clr);
+    }
     lib.onclick=()=>{
       const hidden=document.getElementById('sidebarToggle');
       if(hidden){hidden.click();return;}
