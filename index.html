@@ -1739,6 +1739,263 @@ input[type="range"]::-moz-range-thumb{
 }
 </style>
 
+
+<style id="furniplan-v168safe-compact-rails">
+/* Desktop keeps the normal full controls. */
+.fpPanelToggle,.fpCompactIcon{display:none}
+.fpCompactBody{display:block}
+
+@media (max-width:1180px){
+  .fullLibraryShell{
+    direction:ltr!important;
+    grid-template-columns:minmax(0,1fr) 72px!important;
+    grid-template-areas:"center controls"!important;
+    padding-left:136px!important;
+    gap:6px!important;
+    overflow:hidden!important;
+  }
+
+  /* Catalog fixed at the absolute upper-left in portrait and landscape. */
+  .fullLibCats{
+    position:absolute!important;
+    left:6px!important;
+    top:calc(env(safe-area-inset-top) + 6px)!important;
+    bottom:calc(env(safe-area-inset-bottom) + 6px)!important;
+    width:124px!important;
+    min-width:124px!important;
+    max-width:124px!important;
+    height:auto!important;
+    margin:0!important;
+    padding:6px!important;
+    z-index:130!important;
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    direction:rtl!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+  }
+  .fullLibCats>.fullLibHeader{
+    display:flex!important;
+    align-items:flex-start!important;
+    justify-content:flex-start!important;
+    margin:0 0 5px!important;
+  }
+  .fullLibCats>.fullLibHeader h2{
+    display:block!important;
+    margin:0!important;
+    font-size:11px!important;
+  }
+  .fullLibCatList{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    justify-content:flex-start!important;
+    gap:4px!important;
+    width:100%!important;
+    margin:0!important;
+  }
+  .fullLibCatBtn{
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    min-height:30px!important;
+    padding:5px!important;
+    font-size:9.5px!important;
+    line-height:1.1!important;
+    white-space:normal!important;
+  }
+
+  /* Right-side icon rail. */
+  .fullLibControls{
+    grid-area:controls!important;
+    direction:rtl!important;
+    width:66px!important;
+    min-width:66px!important;
+    max-width:66px!important;
+    height:100%!important;
+    padding:6px 5px!important;
+    border-radius:12px!important;
+    overflow:visible!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    gap:6px!important;
+    position:relative!important;
+    z-index:210!important;
+  }
+  .fullLibControls>.fullLibHeader{
+    width:100%!important;
+    margin:0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+  .fullLibControls>.fullLibHeader h2{display:none!important}
+  .fullLibClose{
+    position:static!important;
+    width:50px!important;
+    height:50px!important;
+    min-width:50px!important;
+    min-height:50px!important;
+    border-radius:12px!important;
+    padding:0!important;
+    font-size:24px!important;
+  }
+
+  .fpCompactGroup{
+    position:relative!important;
+    width:50px!important;
+    min-width:50px!important;
+    height:50px!important;
+    min-height:50px!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    background:transparent!important;
+    overflow:visible!important;
+  }
+  .fpPanelToggle{
+    position:absolute!important;
+    width:1px!important;
+    height:1px!important;
+    opacity:0!important;
+    pointer-events:none!important;
+  }
+  .fpCompactIcon{
+    display:flex!important;
+    width:50px!important;
+    height:50px!important;
+    min-width:50px!important;
+    min-height:50px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    padding:0!important;
+    margin:0!important;
+    border-radius:12px!important;
+    background:#10203d!important;
+    border:1px solid #37506e!important;
+    color:#f8fafc!important;
+    font-size:25px!important;
+    font-weight:900!important;
+    line-height:1!important;
+    box-shadow:0 4px 12px rgba(2,6,23,.28)!important;
+    cursor:pointer!important;
+    user-select:none!important;
+  }
+  .fpPanelToggle:checked + .fpCompactIcon{
+    background:#075985!important;
+    border-color:#38bdf8!important;
+    box-shadow:0 0 0 2px rgba(56,189,248,.18),0 5px 15px rgba(2,6,23,.34)!important;
+  }
+  .fpCompactBody{
+    display:none!important;
+    position:fixed!important;
+    right:78px!important;
+    top:calc(env(safe-area-inset-top) + 10px)!important;
+    width:210px!important;
+    max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px)!important;
+    overflow:auto!important;
+    z-index:5400!important;
+    margin:0!important;
+    padding:10px!important;
+    border-radius:12px!important;
+    background:#08111f!important;
+    border:1px solid #3b536f!important;
+    box-shadow:0 12px 34px rgba(2,6,23,.62)!important;
+  }
+  .fpPanelToggle:checked ~ .fpCompactBody{display:block!important}
+  .fpCompactBody label{font-size:11px!important}
+  .fpCompactBody input[type=text],
+  .fpCompactBody input[type=number]{
+    min-height:38px!important;
+    font-size:12px!important;
+    padding:7px!important;
+  }
+  .fpCompactBody .fullLibTools button{
+    min-height:36px!important;
+    padding:6px 4px!important;
+    font-size:10px!important;
+  }
+
+  .fullLibHint{display:none!important}
+  .fullLibChoose{
+    order:999!important;
+    position:static!important;
+    width:50px!important;
+    min-width:50px!important;
+    height:50px!important;
+    min-height:50px!important;
+    margin:auto 0 0!important;
+    padding:0!important;
+    border-radius:12px!important;
+    font-size:0!important;
+    line-height:1!important;
+    color:#2c2600!important;
+    background:linear-gradient(180deg,#fff680 0%,#facc15 54%,#eab308 100%)!important;
+    border:2px solid #fff4a0!important;
+    animation:fpChooseGlow164safe 1.6s ease-in-out infinite!important;
+  }
+  .fullLibChoose::before{
+    content:"✓"!important;
+    font-size:27px!important;
+    font-weight:900!important;
+  }
+
+  .fullLibCenter{
+    grid-area:center!important;
+    direction:rtl!important;
+    min-width:0!important;
+    min-height:0!important;
+  }
+}
+
+@media (max-width:640px){
+  .fullLibraryShell{
+    grid-template-columns:minmax(0,1fr) 62px!important;
+    padding-left:100px!important;
+    gap:4px!important;
+  }
+  .fullLibCats{
+    left:4px!important;
+    top:calc(env(safe-area-inset-top) + 4px)!important;
+    bottom:calc(env(safe-area-inset-bottom) + 4px)!important;
+    width:92px!important;
+    min-width:92px!important;
+    max-width:92px!important;
+    padding:4px!important;
+  }
+  .fullLibCats>.fullLibHeader{display:none!important}
+  .fullLibCatBtn{
+    min-height:28px!important;
+    padding:4px!important;
+    font-size:8.5px!important;
+  }
+  .fullLibControls{
+    width:58px!important;
+    min-width:58px!important;
+    max-width:58px!important;
+    padding:4px 3px!important;
+    gap:4px!important;
+  }
+  .fullLibClose,.fpCompactGroup,.fpCompactIcon,.fullLibChoose{
+    width:46px!important;
+    min-width:46px!important;
+    height:46px!important;
+    min-height:46px!important;
+    border-radius:11px!important;
+  }
+  .fpCompactIcon{font-size:22px!important}
+  .fullLibChoose::before{font-size:24px!important}
+  .fpCompactBody{
+    right:66px!important;
+    width:min(188px,calc(100vw - 174px))!important;
+    top:calc(env(safe-area-inset-top) + 6px)!important;
+    max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 12px)!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -1986,34 +2243,60 @@ input[type="range"]::-moz-range-thumb{
   <div class="fullLibraryShell">
     <section class="fullLibControls">
       <div class="fullLibHeader"><h2>تجهيز القطعة</h2><button id="fullLibCloseBtn" class="fullLibClose" type="button">×</button></div>
-      <button id="fullLibChooseBtn" type="button" class="fullLibChoose">✓ اختر القطعة</button>
-      <div class="fullLibControlGroup"><label>اسم القطعة</label><input id="fullLibName" type="text"></div>
-      <div class="fullLibControlGroup">
-        <div class="fullLibTwo">
+
+      <div class="fullLibControlGroup fpCompactGroup">
+        <input class="fpPanelToggle" type="radio" name="fpLibPanel" id="fpPanelName">
+        <label class="fpCompactIcon" for="fpPanelName" title="اسم القطعة" aria-label="اسم القطعة">✎</label>
+        <div class="fpCompactBody"><label>اسم القطعة</label><input id="fullLibName" type="text"></div>
+      </div>
+
+      <div class="fullLibControlGroup fpCompactGroup">
+        <input class="fpPanelToggle" type="radio" name="fpLibPanel" id="fpPanelSize">
+        <label class="fpCompactIcon" for="fpPanelSize" title="القياسات" aria-label="القياسات">↔</label>
+        <div class="fpCompactBody"><div class="fullLibTwo">
           <label>العرض سم<input id="fullLibW" type="number" min="1"></label>
           <label>العمق سم<input id="fullLibH" type="number" min="1"></label>
+        </div></div>
+      </div>
+
+      <div class="fullLibControlGroup fpCompactGroup">
+        <input class="fpPanelToggle" type="radio" name="fpLibPanel" id="fpPanelRotate">
+        <label class="fpCompactIcon" for="fpPanelRotate" title="الدوران" aria-label="الدوران">↻</label>
+        <div class="fpCompactBody">
+          <label>الدوران °</label><input id="fullLibRot" type="number" step="1" value="0">
+          <div class="fullLibTools" style="margin-top:7px">
+            <button type="button" data-fullrot="45">45°</button><button type="button" data-fullrot="90">90°</button>
+            <button type="button" data-fullrot="180">180°</button><button type="button" id="fullLibResetRot">0°</button>
+          </div>
         </div>
       </div>
-      <div class="fullLibControlGroup">
-        <label>الدوران °</label><input id="fullLibRot" type="number" step="1" value="0">
-        <div class="fullLibTools" style="margin-top:7px">
-          <button type="button" data-fullrot="45">45°</button><button type="button" data-fullrot="90">90°</button>
-          <button type="button" data-fullrot="180">180°</button><button type="button" id="fullLibResetRot">0°</button>
+
+      <div class="fullLibControlGroup fpCompactGroup">
+        <input class="fpPanelToggle" type="radio" name="fpLibPanel" id="fpPanelScale">
+        <label class="fpCompactIcon" for="fpPanelScale" title="تكبير وتصغير" aria-label="تكبير وتصغير">⊕</label>
+        <div class="fpCompactBody"><div class="fullLibTools"><button id="fullLibGrow" type="button">＋ تكبير 5%</button><button id="fullLibShrink" type="button">− تصغير 5%</button></div></div>
+      </div>
+
+      <div class="fullLibControlGroup fpCompactGroup">
+        <input class="fpPanelToggle" type="radio" name="fpLibPanel" id="fpPanelColor">
+        <label class="fpCompactIcon" for="fpPanelColor" title="اللون" aria-label="اللون">◉</label>
+        <div class="fpCompactBody">
+          <label>لون القطعة</label><input id="fullLibColor" type="color" value="#bfa781">
+          <label style="margin-top:7px"><input id="fullLibTint" type="checkbox"> استبدال اللون الأساسي للصورة</label>
         </div>
       </div>
-      <div class="fullLibControlGroup">
-        <div class="fullLibTools"><button id="fullLibGrow" type="button">＋ تكبير 5%</button><button id="fullLibShrink" type="button">− تصغير 5%</button></div>
+
+      <div class="fullLibControlGroup fpCompactGroup">
+        <input class="fpPanelToggle" type="radio" name="fpLibPanel" id="fpPanelLayer">
+        <label class="fpCompactIcon" for="fpPanelLayer" title="الطبقة" aria-label="الطبقة">⇅</label>
+        <div class="fpCompactBody">
+          <label>طبقة الإدخال</label>
+          <div class="fullLibTools"><button id="fullLibLayerFront" type="button" class="fullLibLayerBtn active">أمام</button><button id="fullLibLayerBack" type="button">خلف</button></div>
+        </div>
       </div>
-      <div class="fullLibControlGroup">
-        <label>لون القطعة</label><input id="fullLibColor" type="color" value="#bfa781">
-        <label style="margin-top:7px"><input id="fullLibTint" type="checkbox"> استبدال اللون الأساسي للصورة</label>
-      </div>
-      <div class="fullLibControlGroup">
-        <label>طبقة الإدخال</label>
-        <div class="fullLibTools"><button id="fullLibLayerFront" type="button" class="fullLibLayerBtn active">أمام</button><button id="fullLibLayerBack" type="button" class="fullLibLayerBtn">خلف</button></div>
-      </div>
-      
+
       <div class="fullLibHint">بعد الضغط على «اختر» تختفي المكتبة. اضغط المكان المطلوب على الخارطة لتنزل القطعة بكل هذه التعديلات.</div>
+      <button id="fullLibChooseBtn" type="button" class="fullLibChoose">✓ اختر القطعة</button>
     </section>
 
     <section class="fullLibCenter">
