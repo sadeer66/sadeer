@@ -1739,6 +1739,231 @@ input[type="range"]::-moz-range-thumb{
 }
 </style>
 
+
+<style id="furniplan-v168-mobile-library-rails">
+@media (max-width:1180px){
+  .fullLibraryShell{
+    direction:ltr!important;
+    grid-template-columns:minmax(0,1fr) 76px!important;
+    grid-template-areas:"center controls"!important;
+    padding-left:136px!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+  }
+  .fullLibCats{
+    position:absolute!important;
+    left:6px!important;
+    top:calc(env(safe-area-inset-top) + 6px)!important;
+    bottom:calc(env(safe-area-inset-bottom) + 6px)!important;
+    width:124px!important;
+    min-width:124px!important;
+    max-width:124px!important;
+    height:auto!important;
+    z-index:120!important;
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    direction:rtl!important;
+    padding:6px!important;
+    margin:0!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    align-self:start!important;
+  }
+  .fullLibCats>.fullLibHeader{
+    display:flex!important;
+    align-items:flex-start!important;
+    justify-content:flex-start!important;
+    margin:0 0 5px!important;
+    min-height:0!important;
+  }
+  .fullLibCats>.fullLibHeader h2{
+    margin:0!important;
+    font-size:11px!important;
+    line-height:1.1!important;
+  }
+  .fullLibCatList{
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:flex-start!important;
+    align-items:stretch!important;
+    gap:4px!important;
+    width:100%!important;
+    margin:0!important;
+  }
+  .fullLibCatBtn{
+    width:100%!important;
+    min-width:0!important;
+    min-height:30px!important;
+    height:auto!important;
+    padding:5px 5px!important;
+    font-size:9.5px!important;
+    line-height:1.1!important;
+    white-space:normal!important;
+  }
+
+  .fullLibControls{
+    grid-area:controls!important;
+    direction:rtl!important;
+    width:70px!important;
+    min-width:70px!important;
+    max-width:70px!important;
+    height:100%!important;
+    padding:6px 5px!important;
+    border-radius:12px!important;
+    overflow:visible!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    gap:6px!important;
+    position:relative!important;
+    z-index:180!important;
+  }
+  .fullLibControls>.fullLibHeader{
+    width:100%!important;
+    margin:0!important;
+    display:flex!important;
+    justify-content:center!important;
+    align-items:center!important;
+  }
+  .fullLibControls>.fullLibHeader h2{display:none!important}
+  .fullLibClose{
+    position:static!important;
+    width:50px!important;
+    height:50px!important;
+    min-width:50px!important;
+    min-height:50px!important;
+    border-radius:12px!important;
+    font-size:24px!important;
+    padding:0!important;
+  }
+  .fpLibIconRail{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    gap:6px!important;
+    width:100%!important;
+    min-height:0!important;
+    overflow-y:auto!important;
+    overflow-x:visible!important;
+    padding:1px 0 4px!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  .fpLibIconBtn{
+    width:50px!important;
+    height:50px!important;
+    min-width:50px!important;
+    min-height:50px!important;
+    padding:0!important;
+    border-radius:12px!important;
+    background:#10203d!important;
+    border:1px solid #37506e!important;
+    color:#f8fafc!important;
+    font-size:24px!important;
+    font-weight:900!important;
+    line-height:1!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    box-shadow:0 4px 12px rgba(2,6,23,.28)!important;
+  }
+  .fpLibIconBtn.active{
+    background:#075985!important;
+    border-color:#38bdf8!important;
+    box-shadow:0 0 0 2px rgba(56,189,248,.18),0 5px 15px rgba(2,6,23,.34)!important;
+  }
+  .fpLibIconBtn.fpChooseIcon{
+    margin-top:auto!important;
+    color:#2c2600!important;
+    background:linear-gradient(180deg,#fff680 0%,#facc15 54%,#eab308 100%)!important;
+    border:2px solid #fff4a0!important;
+    animation:fpChooseGlow164safe 1.6s ease-in-out infinite!important;
+  }
+  .fullLibControls>.fullLibControlGroup,
+  .fullLibControls>.fullLibHint,
+  .fullLibControls>.fullLibChoose{
+    display:none!important;
+  }
+  .fullLibControls>.fullLibControlGroup.fp-open{
+    display:block!important;
+    position:fixed!important;
+    right:82px!important;
+    top:calc(env(safe-area-inset-top) + 10px)!important;
+    width:210px!important;
+    max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px)!important;
+    overflow:auto!important;
+    z-index:5300!important;
+    margin:0!important;
+    padding:9px!important;
+    border-radius:12px!important;
+    background:#08111f!important;
+    border:1px solid #3b536f!important;
+    box-shadow:0 12px 34px rgba(2,6,23,.62)!important;
+  }
+  .fullLibControls>.fullLibControlGroup.fp-open label{font-size:11px!important}
+  .fullLibControls>.fullLibControlGroup.fp-open input[type=text],
+  .fullLibControls>.fullLibControlGroup.fp-open input[type=number]{
+    min-height:38px!important;
+    font-size:12px!important;
+    padding:7px!important;
+  }
+  .fullLibControls>.fullLibControlGroup.fp-open .fullLibTools button{
+    min-height:36px!important;
+    font-size:10px!important;
+    padding:6px 4px!important;
+  }
+  .fullLibCenter{
+    grid-area:center!important;
+    direction:rtl!important;
+    min-width:0!important;
+    min-height:0!important;
+  }
+}
+@media (max-width:640px){
+  .fullLibraryShell{
+    grid-template-columns:minmax(0,1fr) 64px!important;
+    padding-left:100px!important;
+    gap:4px!important;
+  }
+  .fullLibCats{
+    left:4px!important;
+    top:calc(env(safe-area-inset-top) + 4px)!important;
+    bottom:calc(env(safe-area-inset-bottom) + 4px)!important;
+    width:92px!important;
+    min-width:92px!important;
+    max-width:92px!important;
+    padding:4px!important;
+  }
+  .fullLibCats>.fullLibHeader{display:none!important}
+  .fullLibCatBtn{
+    min-height:28px!important;
+    padding:4px 4px!important;
+    font-size:8.5px!important;
+  }
+  .fullLibControls{
+    width:58px!important;
+    min-width:58px!important;
+    max-width:58px!important;
+    padding:4px 3px!important;
+    gap:4px!important;
+  }
+  .fullLibClose,.fpLibIconBtn{
+    width:46px!important;
+    height:46px!important;
+    min-width:46px!important;
+    min-height:46px!important;
+    border-radius:11px!important;
+    font-size:21px!important;
+  }
+  .fullLibControls>.fullLibControlGroup.fp-open{
+    right:66px!important;
+    width:min(190px,calc(100vw - 172px))!important;
+    top:calc(env(safe-area-inset-top) + 6px)!important;
+    max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 12px)!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -5284,7 +5509,81 @@ document.getElementById('doPrintBtn').onclick=async()=>{
   // افتح نافذة الطباعة فوراً داخل نقرة المستخدم، قبل أي await، حتى لا يحظرها Safari.
   const page=window.open('','_blank');
   if(!page){alert('تعذر فتح نافذة الطباعة. تحقق من إعداد حظر النوافذ المنبثقة في Safari ثم حاول مرة أخرى.');return;}
-  page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...</body></html>`);
+  page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...
+<script id="furniplan-v168-control-icons">
+(function(){
+  function setup(){
+    var controls=document.querySelector('#fullLibraryModal .fullLibControls');
+    if(!controls||controls.dataset.fpIcons168)return;
+    controls.dataset.fpIcons168='1';
+
+    var groups=Array.prototype.slice.call(controls.querySelectorAll(':scope > .fullLibControlGroup'));
+    var choose=document.getElementById('fullLibChooseBtn');
+    var rail=document.createElement('div');
+    rail.className='fpLibIconRail';
+    rail.setAttribute('aria-label','Furniture controls');
+
+    var defs=[
+      {i:0,icon:'✎',ar:'الاسم',en:'Name'},
+      {i:1,icon:'↔',ar:'القياس',en:'Size'},
+      {i:2,icon:'↻',ar:'الدوران',en:'Rotate'},
+      {i:3,icon:'⊕',ar:'الحجم',en:'Scale'},
+      {i:4,icon:'◉',ar:'اللون',en:'Color'},
+      {i:5,icon:'⇅',ar:'الطبقة',en:'Layer'}
+    ];
+
+    function isEnglish(){
+      try{return document.documentElement.lang==='en'||(window.FurniPlanLanguage&&window.FurniPlanLanguage.get&&window.FurniPlanLanguage.get()==='en');}
+      catch(e){return false;}
+    }
+
+    var active=null;
+    function closeGroups(){
+      groups.forEach(function(g){g.classList.remove('fp-open');});
+      Array.prototype.forEach.call(rail.querySelectorAll('.fpLibIconBtn'),function(b){b.classList.remove('active');});
+      active=null;
+    }
+
+    defs.forEach(function(d){
+      var g=groups[d.i]; if(!g)return;
+      var b=document.createElement('button');
+      b.type='button'; b.className='fpLibIconBtn';
+      b.innerHTML='<span aria-hidden="true">'+d.icon+'</span>';
+      b.title=isEnglish()?d.en:d.ar;
+      b.setAttribute('aria-label',b.title);
+      b.onclick=function(ev){
+        ev.stopPropagation();
+        var was=g.classList.contains('fp-open');
+        closeGroups();
+        if(!was){g.classList.add('fp-open');b.classList.add('active');active=g;}
+      };
+      rail.appendChild(b);
+    });
+
+    var chooseIcon=document.createElement('button');
+    chooseIcon.type='button';
+    chooseIcon.className='fpLibIconBtn fpChooseIcon';
+    chooseIcon.innerHTML='<span aria-hidden="true">✓</span>';
+    chooseIcon.title=isEnglish()?'Choose Item':'اختر القطعة';
+    chooseIcon.setAttribute('aria-label',chooseIcon.title);
+    chooseIcon.onclick=function(ev){ev.stopPropagation();if(choose)choose.click();};
+    rail.appendChild(chooseIcon);
+
+    var hdr=controls.querySelector(':scope > .fullLibHeader');
+    if(hdr)hdr.insertAdjacentElement('afterend',rail); else controls.prepend(rail);
+
+    document.getElementById('fullLibraryModal').addEventListener('pointerdown',function(ev){
+      if(active&&!ev.target.closest('.fpLibIconBtn')&&!ev.target.closest('.fullLibControlGroup.fp-open'))closeGroups();
+    });
+    window.addEventListener('resize',closeGroups,{passive:true});
+    window.addEventListener('orientationchange',closeGroups,{passive:true});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});
+  else setup();
+})();
+</script>
+
+</body></html>`);
   page.document.close();
   try{
     const sheet=await buildBrandedSheet({paper,orient,title:projectMeta.name,mapTitle:projectMeta.mapTitle,client:projectMeta.client,location:projectMeta.location});
