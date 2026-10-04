@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>FurniPlan</title>
-<meta name="furniplan-version" content="100">
+<meta name="furniplan-version" content="101">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -470,6 +470,58 @@ header{min-height:var(--tool-header-h)!important}
 .assistantAdminPanel .assistantAdminHint{font-size:10.5px;color:#94a3b8;line-height:1.6;margin:6px 0 10px}.assistantAdminActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.assistantAdminActions button{flex:1;min-width:150px}
 @media(max-width:700px){#assistantModal .modalCard{width:min(94vw,560px)}.assistantHeroIcon{width:46px;height:46px;min-width:46px}.assistantHeroText b{font-size:15px}.assistantHeroText span{font-size:11px}}
 
+
+/* ===== V101 Fullscreen Furniture Library ===== */
+.fullLibraryOverlay{position:fixed;inset:0;z-index:5000;background:rgba(2,6,23,.98);display:none;color:#f8fafc;direction:rtl}
+.fullLibraryOverlay.open{display:block}
+.fullLibraryShell{position:absolute;inset:0;display:grid;grid-template-columns:240px minmax(0,1fr) 220px;grid-template-areas:"controls center cats";gap:10px;padding:10px;background:linear-gradient(145deg,#07101f,#0b1220 45%,#07101f)}
+.fullLibControls{grid-area:controls;background:#0b1424;border:1px solid #29405c;border-radius:16px;padding:12px;overflow:auto;direction:rtl}
+.fullLibCenter{grid-area:center;display:grid;grid-template-rows:minmax(0,2fr) minmax(220px,1fr);gap:10px;min-width:0;min-height:0}
+.fullLibCats{grid-area:cats;background:#0b1424;border:1px solid #29405c;border-radius:16px;padding:12px;overflow:auto}
+.fullLibHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.fullLibHeader h2{margin:0;font-size:18px}
+.fullLibClose{width:42px;height:42px;border-radius:12px;font-size:22px;padding:0}
+.fullLibSearch{width:100%;background:#07101f;color:#fff;border:1px solid #37506e;border-radius:10px;padding:10px 12px;margin-bottom:10px}
+.fullLibCatList{display:flex;flex-direction:column;gap:7px}
+.fullLibCatBtn{width:100%;justify-content:space-between;text-align:right;padding:10px;border-radius:10px;background:#101a2c;border:1px solid #2d3d56}
+.fullLibCatBtn.active{background:#075985;border-color:#38bdf8}
+.fullLibCatBtn small{color:#94a3b8;font-size:10px}
+.fullLibGridPanel{background:#0b1424;border:1px solid #29405c;border-radius:16px;padding:12px;overflow:auto;min-height:0}
+.fullLibGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.fullLibCard{position:relative;min-height:168px;background:#f8fafc;color:#0f172a;border:3px solid transparent;border-radius:14px;padding:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.fullLibCard:hover{border-color:#7dd3fc}.fullLibCard.selected{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,233,.22)}
+.fullLibCard img{width:100%;height:112px;object-fit:contain;display:block;filter:drop-shadow(0 5px 6px rgba(15,23,42,.18))}
+.fullLibGeneric{width:90px;height:75px;border-radius:10px;border:1px solid #94a3b8}
+.fullLibCard b{font-size:12px;line-height:1.25;text-align:center}.fullLibCard span{font-size:10px;color:#64748b}
+.fullLibPreviewPanel{position:relative;background:#f8fafc;color:#0f172a;border:1px solid #94a3b8;border-radius:16px;overflow:hidden;min-height:220px}
+.fullLibPreviewTitle{position:absolute;z-index:2;top:10px;right:12px;background:rgba(15,23,42,.88);color:#fff;border-radius:999px;padding:6px 10px;font-size:12px}
+#fullLibPreviewCanvas{width:100%;height:100%;display:block}
+.fullLibControlTitle{font-size:14px;margin:0 0 10px;color:#e0f2fe}
+.fullLibControlGroup{border:1px solid #253b56;background:#08111f;border-radius:12px;padding:9px;margin-bottom:9px}
+.fullLibControlGroup label{display:block;margin-bottom:5px;color:#cbd5e1}
+.fullLibControlGroup input[type=text],.fullLibControlGroup input[type=number]{width:100%}
+.fullLibTwo{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.fullLibTools{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.fullLibTools button{min-height:42px}
+.fullLibLayerBtn.active{background:#075985;border-color:#38bdf8}
+.fullLibChoose{width:100%;min-height:52px;font-size:17px;font-weight:800;background:#0284c7!important;border-color:#38bdf8!important}
+.fullLibHint{font-size:10px;line-height:1.5;color:#94a3b8;margin-top:8px}
+#fullLibraryBtn{background:#075985;border-color:#38bdf8;font-weight:800}
+@media(max-width:900px){
+ .fullLibraryShell{grid-template-columns:170px minmax(0,1fr) 145px;gap:6px;padding:6px}
+ .fullLibControls,.fullLibCats,.fullLibGridPanel{padding:7px;border-radius:12px}
+ .fullLibCenter{grid-template-rows:minmax(0,2fr) minmax(180px,1fr);gap:6px}
+ .fullLibGrid{grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:7px}
+ .fullLibCard{min-height:135px;padding:5px}.fullLibCard img{height:84px}.fullLibCatBtn{padding:8px 6px;font-size:10px}
+ .fullLibTools button{font-size:10px;padding:7px 4px;min-height:36px}
+ .fullLibControlGroup{padding:6px;margin-bottom:6px}.fullLibControlTitle{font-size:12px}.fullLibChoose{min-height:44px;font-size:14px}
+}
+@media(max-width:640px) and (orientation:portrait){
+ .fullLibraryShell{grid-template-columns:118px minmax(0,1fr) 98px}
+ .fullLibGrid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}
+ .fullLibCard{min-height:120px}.fullLibCard img{height:72px}
+}
+
 </style>
 
 <style id="v61DxfSnapStyle">
@@ -897,7 +949,7 @@ input[type="range"]::-moz-range-thumb{
       <button id="pdfBtn"><span class="actionIcon">PDF</span>حفظ PDF</button>
     </div>
     <div class="toolbar toolbarRow workToolbar">
-      <button id="sidebarToggle" class="ipadOnly primary">☰ المكتبة</button>
+      <button id="fullLibraryBtn" class="primary">▦ المكتبة الكاملة</button><button id="sidebarToggle" class="ipadOnly primary">☰ المكتبة</button>
       <label class="btn" for="fileInput"><span class="actionIcon">▣</span>رفع الخارطة</label><input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" />
       <label class="btn" for="dxfInput"><span class="actionIcon">DXF</span>AutoCAD DXF</label><input id="dxfInput" type="file" accept=".dxf,application/dxf,text/plain" />
       <button id="calibrateBtn"><span class="actionIcon">⌖</span>معايرة القياس</button>
@@ -1059,6 +1111,59 @@ input[type="range"]::-moz-range-thumb{
     </div>
     <div class="small" id="calPreview" style="margin-top:10px">—</div>
     <div class="modalActions"><button id="cancelCalBtn">إلغاء</button><button id="applyCalBtn" class="primary">اعتماد المقياس</button></div>
+  </div>
+</div>
+
+
+<div class="fullLibraryOverlay" id="fullLibraryModal" aria-hidden="true">
+  <div class="fullLibraryShell">
+    <section class="fullLibControls">
+      <div class="fullLibHeader"><h2>تجهيز القطعة</h2><button id="fullLibCloseBtn" class="fullLibClose" type="button">×</button></div>
+      <div class="fullLibControlGroup"><label>اسم القطعة</label><input id="fullLibName" type="text"></div>
+      <div class="fullLibControlGroup">
+        <div class="fullLibTwo">
+          <label>العرض سم<input id="fullLibW" type="number" min="1"></label>
+          <label>العمق سم<input id="fullLibH" type="number" min="1"></label>
+        </div>
+      </div>
+      <div class="fullLibControlGroup">
+        <label>الدوران °</label><input id="fullLibRot" type="number" step="1" value="0">
+        <div class="fullLibTools" style="margin-top:7px">
+          <button type="button" data-fullrot="45">45°</button><button type="button" data-fullrot="90">90°</button>
+          <button type="button" data-fullrot="180">180°</button><button type="button" id="fullLibResetRot">0°</button>
+        </div>
+      </div>
+      <div class="fullLibControlGroup">
+        <div class="fullLibTools"><button id="fullLibGrow" type="button">＋ تكبير 5%</button><button id="fullLibShrink" type="button">− تصغير 5%</button></div>
+      </div>
+      <div class="fullLibControlGroup">
+        <label>لون القطعة</label><input id="fullLibColor" type="color" value="#bfa781">
+        <label style="margin-top:7px"><input id="fullLibTint" type="checkbox"> استبدال اللون الأساسي للصورة</label>
+      </div>
+      <div class="fullLibControlGroup">
+        <label>طبقة الإدخال</label>
+        <div class="fullLibTools"><button id="fullLibLayerFront" type="button" class="fullLibLayerBtn active">أمام</button><button id="fullLibLayerBack" type="button" class="fullLibLayerBtn">خلف</button></div>
+      </div>
+      <button id="fullLibChooseBtn" type="button" class="fullLibChoose">✓ اختر هذه القطعة</button>
+      <div class="fullLibHint">بعد الضغط على «اختر» تختفي المكتبة. اضغط المكان المطلوب على الخارطة لتنزل القطعة بكل هذه التعديلات.</div>
+    </section>
+
+    <section class="fullLibCenter">
+      <div class="fullLibGridPanel">
+        <div class="fullLibHeader"><h2 id="fullLibGridTitle">قطع المكتبة</h2><span id="fullLibCount" class="badge">0</span></div>
+        <input id="fullLibSearch" class="fullLibSearch" type="search" placeholder="ابحث عن قطعة…">
+        <div id="fullLibGrid" class="fullLibGrid"></div>
+      </div>
+      <div class="fullLibPreviewPanel">
+        <div class="fullLibPreviewTitle" id="fullLibPreviewTitle">اختر قطعة للمعاينة</div>
+        <canvas id="fullLibPreviewCanvas" width="1200" height="360"></canvas>
+      </div>
+    </section>
+
+    <aside class="fullLibCats">
+      <div class="fullLibHeader"><h2>الأقسام</h2></div>
+      <div id="fullLibCatList" class="fullLibCatList"></div>
+    </aside>
   </div>
 </div>
 
@@ -2461,6 +2566,122 @@ function renderLibrary(){
 }
 buildCategoryButtons();renderLibrary();
 
+/* ===== V101 Fullscreen Furniture Library ===== */
+const fullLibraryModal=document.getElementById('fullLibraryModal');
+const fullLibGrid=document.getElementById('fullLibGrid');
+const fullLibCatList=document.getElementById('fullLibCatList');
+const fullLibSearch=document.getElementById('fullLibSearch');
+const fullLibName=document.getElementById('fullLibName');
+const fullLibW=document.getElementById('fullLibW');
+const fullLibH=document.getElementById('fullLibH');
+const fullLibRot=document.getElementById('fullLibRot');
+const fullLibColor=document.getElementById('fullLibColor');
+const fullLibTint=document.getElementById('fullLibTint');
+const fullLibPreviewCanvas=document.getElementById('fullLibPreviewCanvas');
+const fullLibPreviewTitle=document.getElementById('fullLibPreviewTitle');
+const fullLibCount=document.getElementById('fullLibCount');
+const fullLibGridTitle=document.getElementById('fullLibGridTitle');
+let fullLibCategory='الكل',fullLibSelectedId=null,fullLibLayer='front',fullLibPreviewToken=0;
+
+function fullLibCurrentBase(){return furniture.find(x=>x.id===fullLibSelectedId)||null;}
+function fullLibState(){
+  const base=fullLibCurrentBase();if(!base)return null;
+  return {...base,name:fullLibName.value||base.name,w:Math.max(1,+fullLibW.value||base.w),h:Math.max(1,+fullLibH.value||base.h),
+    rot:(+fullLibRot.value||0)%360,color:fullLibColor.value||base.color||'#bfa781',tintEnabled:!!fullLibTint.checked,initialLayer:fullLibLayer};
+}
+function renderFullLibCategories(){
+  fullLibCatList.innerHTML='';
+  const cats=getCategoryOrder();
+  if(fullLibCategory!=='الكل'&&!furniture.some(x=>x.category===fullLibCategory))fullLibCategory='الكل';
+  cats.forEach(cat=>{
+    const count=cat==='الكل'?furniture.length:furniture.filter(x=>x.category===cat).length;
+    if(cat!=='الكل'&&count===0&&!baseCategoryOrder.includes(cat))return;
+    const b=document.createElement('button');b.type='button';b.className='fullLibCatBtn'+(cat===fullLibCategory?' active':'');
+    b.innerHTML='<span>'+cat+'</span><small>'+count+'</small>';
+    b.onclick=()=>{fullLibCategory=cat;renderFullLibCategories();renderFullLibGrid();};
+    fullLibCatList.appendChild(b);
+  });
+}
+function fullLibFiltered(){
+  const q=(fullLibSearch.value||'').trim().toLowerCase();
+  return furniture.filter(x=>(fullLibCategory==='الكل'||x.category===fullLibCategory)&&(!q||(x.name||'').toLowerCase().includes(q)||(x.category||'').toLowerCase().includes(q)));
+}
+function renderFullLibGrid(){
+  const list=fullLibFiltered();fullLibGrid.innerHTML='';fullLibCount.textContent=list.length;
+  fullLibGridTitle.textContent=fullLibCategory==='الكل'?'كل قطع المكتبة':fullLibCategory;
+  list.forEach(obj=>{
+    const c=document.createElement('button');c.type='button';c.className='fullLibCard'+(obj.id===fullLibSelectedId?' selected':'');
+    const visual=obj.src?'<img loading="lazy" decoding="async" src="'+resolveAssetSrc(obj.src)+'" alt="">':'<div class="fullLibGeneric" style="background:'+(obj.color||'#bfa781')+'"></div>';
+    c.innerHTML=visual+'<b>'+String(obj.name||'قطعة').replace(/</g,'&lt;')+'</b><span>'+obj.w+' × '+obj.h+' سم</span>';
+    c.onclick=()=>selectFullLibItem(obj.id);
+    fullLibGrid.appendChild(c);
+  });
+}
+function selectFullLibItem(id){
+  const base=furniture.find(x=>x.id===id);if(!base)return;
+  fullLibSelectedId=id;fullLibName.value=base.name||'قطعة';fullLibW.value=base.w||100;fullLibH.value=base.h||60;fullLibRot.value=0;
+  fullLibColor.value=base.color||'#bfa781';fullLibTint.checked=false;fullLibLayer='front';syncFullLibLayerButtons();
+  renderFullLibGrid();drawFullLibPreview();
+}
+function syncFullLibLayerButtons(){
+  document.getElementById('fullLibLayerFront').classList.toggle('active',fullLibLayer==='front');
+  document.getElementById('fullLibLayerBack').classList.toggle('active',fullLibLayer==='back');
+}
+function drawFullLibPreview(){
+  const st=fullLibState(),c=fullLibPreviewCanvas;if(!c||!st)return;
+  const ctxp=c.getContext('2d'),token=++fullLibPreviewToken,W=c.width,H=c.height;
+  ctxp.clearRect(0,0,W,H);ctxp.fillStyle='#f8fafc';ctxp.fillRect(0,0,W,H);
+  ctxp.strokeStyle='#e2e8f0';ctxp.lineWidth=1;
+  for(let x=0;x<W;x+=60){ctxp.beginPath();ctxp.moveTo(x,0);ctxp.lineTo(x,H);ctxp.stroke();}
+  for(let y=0;y<H;y+=60){ctxp.beginPath();ctxp.moveTo(0,y);ctxp.lineTo(W,y);ctxp.stroke();}
+  const maxW=W*.66,maxH=H*.68,ratio=Math.max(1,st.w/st.h),scale=Math.min(maxW/Math.max(1,st.w),maxH/Math.max(1,st.h));
+  const dw=Math.max(30,st.w*scale),dh=Math.max(30,st.h*scale),cx=W/2,cy=H/2;
+  const paint=(img)=>{
+    if(token!==fullLibPreviewToken)return;
+    ctxp.save();ctxp.translate(cx,cy);ctxp.rotate((st.rot||0)*Math.PI/180);
+    if(img){
+      ctxp.shadowColor='rgba(15,23,42,.22)';ctxp.shadowBlur=16;ctxp.shadowOffsetY=6;ctxp.drawImage(img,-dw/2,-dh/2,dw,dh);
+      if(st.tintEnabled){ctxp.globalCompositeOperation='source-atop';ctxp.globalAlpha=.42;ctxp.fillStyle=st.color;ctxp.fillRect(-dw/2,-dh/2,dw,dh);}
+    }else{
+      ctxp.fillStyle=st.color;ctxp.strokeStyle='#475569';ctxp.lineWidth=4;ctxp.beginPath();ctxp.roundRect(-dw/2,-dh/2,dw,dh,18);ctxp.fill();ctxp.stroke();
+    }
+    ctxp.restore();
+    ctxp.fillStyle='#0f172a';ctxp.font='700 24px Tahoma,Arial';ctxp.textAlign='center';ctxp.fillText(st.w+' × '+st.h+' سم   •   '+(((st.rot%360)+360)%360)+'°',cx,H-28);
+  };
+  if(st.src){const im=new Image();im.onload=()=>paint(im);im.onerror=()=>paint(null);im.src=resolveAssetSrc(st.src);}else paint(null);
+  fullLibPreviewTitle.textContent=st.name+' — معاينة قبل الوضع';
+}
+function openFullLibrary(id=null){
+  fullLibraryModal.classList.add('open');fullLibraryModal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+  renderFullLibCategories();renderFullLibGrid();
+  const target=id&&furniture.some(x=>x.id===id)?id:(fullLibSelectedId&&furniture.some(x=>x.id===fullLibSelectedId)?fullLibSelectedId:(fullLibFiltered()[0]?.id||furniture[0]?.id));
+  if(target)selectFullLibItem(target);
+  setTimeout(()=>fullLibSearch.focus(),60);
+}
+function closeFullLibrary(){
+  fullLibraryModal.classList.remove('open');fullLibraryModal.setAttribute('aria-hidden','true');document.body.style.overflow='';
+}
+document.getElementById('fullLibraryBtn').onclick=()=>openFullLibrary();
+document.getElementById('fullLibCloseBtn').onclick=closeFullLibrary;
+fullLibSearch.oninput=renderFullLibGrid;
+[fullLibName,fullLibW,fullLibH,fullLibRot,fullLibColor,fullLibTint].forEach(el=>el.addEventListener('input',drawFullLibPreview));
+document.querySelectorAll('[data-fullrot]').forEach(b=>b.onclick=()=>{fullLibRot.value=((+fullLibRot.value||0)+(+b.dataset.fullrot||0))%360;drawFullLibPreview();});
+document.getElementById('fullLibResetRot').onclick=()=>{fullLibRot.value=0;drawFullLibPreview();};
+document.getElementById('fullLibGrow').onclick=()=>{fullLibW.value=Math.round((+fullLibW.value||1)*1.05);fullLibH.value=Math.round((+fullLibH.value||1)*1.05);drawFullLibPreview();};
+document.getElementById('fullLibShrink').onclick=()=>{fullLibW.value=Math.max(1,Math.round((+fullLibW.value||1)*.95));fullLibH.value=Math.max(1,Math.round((+fullLibH.value||1)*.95));drawFullLibPreview();};
+document.getElementById('fullLibLayerFront').onclick=()=>{fullLibLayer='front';syncFullLibLayerButtons();};
+document.getElementById('fullLibLayerBack').onclick=()=>{fullLibLayer='back';syncFullLibLayerButtons();};
+document.getElementById('fullLibChooseBtn').onclick=()=>{
+  const st=fullLibState();if(!st)return;
+  if(!pxPerCm){alert('اختر القطعة الآن، لكن يجب معايرة القياس قبل وضعها على الخارطة.');return;}
+  closeFullLibrary();armFurniturePlacement(st);
+  setStatus('تم تجهيز '+st.name+' — اضغط مكانها على الخارطة لتُنزل بنفس القياسات والدوران والتعديلات');
+};
+fullLibraryModal.addEventListener('pointerdown',e=>{if(e.target===fullLibraryModal)closeFullLibrary();});
+window.addEventListener('keydown',e=>{if(e.key==='Escape'&&fullLibraryModal.classList.contains('open')){e.preventDefault();e.stopImmediatePropagation();closeFullLibrary();}},true);
+window.openFullLibrary=openFullLibrary;
+
+
 let editingLibraryId=null;
 let pendingLibraryImageData=null;
 function fillLibraryCategorySelect(selected=''){
@@ -2654,10 +2875,10 @@ function addItem(def,x,y){
   if(!pxPerCm){alert('يجب معايرة القياس أولاً حتى يظهر الأثاث بحجمه الحقيقي.');return null;}
   const it={
     id:randId(),name:def.name,w:def.w,h:def.h,x:clamp(x??canvas.width/2,0,canvas.width),y:clamp(y??canvas.height/2,0,canvas.height),
-    rot:0,color:def.color||'#bfa781',type:def.type||'generic',src:def.src||null,tintEnabled:false,locked:false,archType:def.archType||null,doorSwing:def.doorSwing||1
+    rot:Number.isFinite(+def.rot)?+def.rot:0,color:def.color||'#bfa781',type:def.type||'generic',src:def.src||null,tintEnabled:!!def.tintEnabled,locked:false,archType:def.archType||null,doorSwing:def.doorSwing||1
   };
   const snapped=snapDraggedPosition(it,it.x,it.y);it.x=snapped.x;it.y=snapped.y;
-  items.push(it);setSelection([it.id],it.id);selectedMeasureId=null;syncSelectedPanel();draw();commitHistory(before);return it;
+  if(def.initialLayer==='back')items.unshift(it);else items.push(it);setSelection([it.id],it.id);selectedMeasureId=null;syncSelectedPanel();draw();commitHistory(before);return it;
 }
 
 canvas.addEventListener('dragover',e=>{if(pxPerCm){e.preventDefault();e.dataTransfer.dropEffect='copy';}});
