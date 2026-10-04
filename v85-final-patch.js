@@ -461,7 +461,7 @@
 // ===== FurniPlan V101 Offline/PWA Registration =====
 (()=>{
   if(!('serviceWorker' in navigator)) return;
-  const register=()=>navigator.serviceWorker.register('./service-worker.js?v=112',{scope:'./'})
+  const register=()=>navigator.serviceWorker.register('./service-worker.js?v=161',{scope:'./'})
     .then(reg=>{ try{reg.update();}catch(_){} })
     .catch(()=>{});
   if(document.readyState==='complete') register();
@@ -775,6 +775,21 @@
   let applying = false;
 
   const exact = {
+    // V161 Full Library + recently added furniture labels
+    'أشخاص':'People','إكسسوارات':'Accessories','الكل':'All','كل قطع المكتبة':'All Library Items','قطع المكتبة':'Library Items',
+    'تجهيز القطعة':'Prepare Item','طبقة الإدخال':'Placement Layer','أمام':'Front','خلف':'Back',
+    'اختر القطعة':'Choose Item','✓ اختر القطعة':'✓ Choose Item','تكبير 5%':'Enlarge 5%','تصغير 5%':'Reduce 5%',
+    'استبدال اللون الأساسي للصورة':'Replace the image base color','الأقسام':'Categories','ابحث عن قطعة…':'Search items…',
+    'اختر قطعة للمعاينة':'Select an item to preview','معاينة قبل الوضع':'Preview before placement',
+    'بعد الضغط على «اختر» تختفي المكتبة. اضغط المكان المطلوب على الخارطة لتنزل القطعة بكل هذه التعديلات.':'After choosing, the library closes. Tap the desired place on the plan to insert the item with these settings.',
+    'بوف مربع':'Square Ottoman',
+    'رجل واقف':'Standing Man','امرأة واقفة':'Standing Woman','طفل واقف':'Standing Child','رجل مسن واقف':'Standing Elderly Man',
+    'امرأة تمشي':'Walking Woman','رجل جالس 1':'Seated Man 1','رجل جالس 2':'Seated Man 2','طفل جالس':'Seated Child',
+    'امرأة جالسة 1':'Seated Woman 1','امرأة جالسة 2':'Seated Woman 2',
+    'ديكور طاولة خشبية':'Wood Table Decor','ديكور طاولة رخام':'Marble Table Decor','صحن فواكه':'Fruit Bowl',
+    'نبتة داخلية':'Indoor Plant','باقة ورد':'Flower Bouquet','كتب وزينة ذهبية':'Books & Gold Decor',
+    'صينية قهوة عربية':'Arabic Coffee Tray','علبة مناديل رخامية':'Marble Tissue Box','شمعة وفواحة':'Candle & Diffuser',
+    'كتب ونبتة وزينة':'Books, Plant & Decor',
     'تخطيط أذكى .. لحياة أفضل':'Smarter planning .. Better living',
     'مخططات':'Plans','أثاث':'Furniture','تصميمات':'Designs','احفظ':'Save','اطبع':'Print','مشاركة سهلة':'Easy sharing',
     '© 2026 FurniPlan — جميع الحقوق محفوظة — سدير ياسين محمد':'© 2026 FurniPlan — All rights reserved — Sadeer Yaseen Mohammed',
