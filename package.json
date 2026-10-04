@@ -1,7 +1,7 @@
 {
-  "name": "furniplan-v163",
-  "version": "1.0.163",
-  "description": "FurniPlan V163 - direct launch build with expanded bilingual library",
+  "name": "furniplan-v174",
+  "version": "1.0.174",
+  "description": "FurniPlan V174 - expanded ordered bilingual furniture library",
   "main": "desktop/main.js",
   "author": "سدير ياسين محمد",
   "license": "UNLICENSED",
@@ -13,9 +13,9 @@
     "electron-builder": "26.15.3"
   },
   "build": {
-    "appId": "com.sadeer.furniplan.v163",
-    "productName": "FurniPlan V163",
-    "artifactName": "FurniPlan-V163-Setup-${arch}.exe",
+    "appId": "com.sadeer.furniplan.v174",
+    "productName": "FurniPlan V174",
+    "artifactName": "FurniPlan-V174-Setup-${arch}.exe",
     "asar": true,
     "directories": {
       "output": "dist",
@@ -45,7 +45,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "FurniPlan V163",
+      "shortcutName": "FurniPlan V174",
       "runAfterFinish": true,
       "deleteAppDataOnUninstall": false,
       "installerIcon": "build/furniplan.ico",
