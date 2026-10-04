@@ -1,0 +1,63 @@
+name: Build FurniPlan V174 Library Test
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/build-v174-library.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore exact V173 base
+        run: |
+          git show 67c6e132f293e1329b931cc65b78f756abae425d:index.html > FurniPlan-V174-Library-Expanded-Test.html
+          test -s FurniPlan-V174-Library-Expanded-Test.html
+
+      - name: Inject V174 library resources
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path("FurniPlan-V174-Library-Expanded-Test.html")
+          s=p.read_text(encoding="utf-8")
+          tags='''<script src="v174-assets/assets_1.js?v=174"></script>
+          <script src="v174-assets/assets_2.js?v=174"></script>
+          <script src="v174-assets/assets_3.js?v=174"></script>
+          <script src="v174-assets/assets_4.js?v=174"></script>
+          <script src="v174-assets/assets_5.js?v=174"></script>
+          <script src="v174-assets/assets_6.js?v=174"></script>
+          <script src="v174-assets/assets_7.js?v=174"></script>
+          <script src="library_v174.js?v=174"></script>'''
+          s=s.replace('<title>FurniPlan</title>','<title>FurniPlan V174 Library Test</title>',1)
+          if 'name="furniplan-version"' in s:
+              import re
+              s=re.sub(r'<meta name="furniplan-version" content="[^"]*">','<meta name="furniplan-version" content="174">',s,count=1)
+          assert 'Loading FurniPlan and the expanded bilingual library' not in s
+          assert '</body>' in s.lower()
+          i=s.lower().rfind('</body>')
+          s=s[:i]+tags+'\n'+s[i:]
+          p.write_text(s,encoding="utf-8")
+
+      - name: Validate output
+        run: |
+          test $(wc -c < FurniPlan-V174-Library-Expanded-Test.html) -gt 1800000
+          grep -q "library_v174.js" FurniPlan-V174-Library-Expanded-Test.html
+          grep -q "v174-assets/assets_7.js" FurniPlan-V174-Library-Expanded-Test.html
+          ! grep -q "Loading FurniPlan and the expanded bilingual library" FurniPlan-V174-Library-Expanded-Test.html
+
+      - name: Commit V174 test page
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add FurniPlan-V174-Library-Expanded-Test.html
+          git commit -m "Build FurniPlan V174 library test from stable V173" || exit 0
+          git push
