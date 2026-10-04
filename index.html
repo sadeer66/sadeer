@@ -605,12 +605,17 @@ header{min-height:var(--tool-header-h)!important}
 
 </style>
 
-<style id="furniplan-v159-library-ipad-landscape">
-/* V159 — Full Library: clearer selected-item preview + compact iPad landscape layout */
+<style id="furniplan-v160-library-final">
+/* V160 — final Full Library tuning: dark blue preview + always-visible Choose button */
 .fullLibPreviewPanel{
-  background:#dbeef8!important;
-  border-color:#7ca8c4!important;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.40);
+  background:#344f63!important;
+  border-color:#6f8da4!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.15),0 7px 20px rgba(2,6,23,.18)!important;
+}
+#fullLibPreviewCanvas{background:#344f63!important}
+.fullLibPreviewTitle{
+  background:rgba(8,20,34,.90)!important;
+  border:1px solid rgba(125,211,252,.25)!important;
 }
 .fullLibTools button{
   min-height:34px;
@@ -618,7 +623,25 @@ header{min-height:var(--tool-header-h)!important}
   font-size:11px;
 }
 .fullLibControlGroup{padding:7px;margin-bottom:7px}
-.fullLibChoose{min-height:46px;font-size:15px}
+.fullLibControls{position:relative}
+.fullLibChoose{
+  width:100%!important;
+  min-height:50px!important;
+  margin:0 0 8px!important;
+  padding:8px 10px!important;
+  font-size:16px!important;
+  line-height:1.15!important;
+  font-weight:900!important;
+  color:#fff!important;
+  background:linear-gradient(180deg,#13b7f3,#0284c7)!important;
+  border:2px solid #7dd3fc!important;
+  border-radius:12px!important;
+  box-shadow:0 6px 18px rgba(14,165,233,.32),inset 0 1px 0 rgba(255,255,255,.20)!important;
+  position:sticky!important;
+  top:0!important;
+  z-index:40!important;
+}
+.fullLibChoose:active{transform:translateY(1px)}
 
 @media (min-width:641px) and (max-width:1180px) and (orientation:landscape){
   .fullLibraryShell{
@@ -627,7 +650,7 @@ header{min-height:var(--tool-header-h)!important}
     padding:7px!important;
   }
   .fullLibCenter{
-    grid-template-rows:minmax(0,1.75fr) minmax(118px,.85fr)!important;
+    grid-template-rows:minmax(0,1.72fr) minmax(126px,.88fr)!important;
     gap:7px!important;
     min-height:0!important;
   }
@@ -695,14 +718,17 @@ header{min-height:var(--tool-header-h)!important}
 
   .fullLibControls{
     padding:7px!important;
+    padding-bottom:9px!important;
     border-radius:12px!important;
-    overflow:hidden!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
     display:grid!important;
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
     grid-auto-flow:row!important;
     grid-auto-rows:min-content!important;
     gap:5px!important;
     align-content:start!important;
+    -webkit-overflow-scrolling:touch!important;
   }
   .fullLibControls>.fullLibHeader{
     grid-column:1/-1!important;
@@ -718,6 +744,12 @@ header{min-height:var(--tool-header-h)!important}
     font-size:18px!important;
     border-radius:9px!important;
     padding:0!important;
+  }
+  .fullLibChoose{
+    grid-column:1/-1!important;
+    min-height:44px!important;
+    font-size:14px!important;
+    margin:0 0 2px!important;
   }
   .fullLibControlGroup{
     margin:0!important;
@@ -749,18 +781,21 @@ header{min-height:var(--tool-header-h)!important}
     border-radius:7px!important;
     white-space:nowrap!important;
   }
-  .fullLibChoose{
-    grid-column:1/-1!important;
-    min-height:38px!important;
-    font-size:13px!important;
-    margin:0!important;
-  }
   .fullLibHint{
     grid-column:1/-1!important;
     margin:0!important;
     font-size:8px!important;
     line-height:1.25!important;
     text-align:center!important;
+  }
+}
+
+@media (max-width:1180px) and (orientation:portrait){
+  .fullLibChoose{
+    min-height:50px!important;
+    font-size:16px!important;
+    margin-bottom:6px!important;
+    box-shadow:0 7px 20px rgba(14,165,233,.38)!important;
   }
 }
 </style>
@@ -1361,6 +1396,7 @@ input[type="range"]::-moz-range-thumb{
   <div class="fullLibraryShell">
     <section class="fullLibControls">
       <div class="fullLibHeader"><h2>تجهيز القطعة</h2><button id="fullLibCloseBtn" class="fullLibClose" type="button">×</button></div>
+      <button id="fullLibChooseBtn" type="button" class="fullLibChoose">✓ اختر القطعة</button>
       <div class="fullLibControlGroup"><label>اسم القطعة</label><input id="fullLibName" type="text"></div>
       <div class="fullLibControlGroup">
         <div class="fullLibTwo">
@@ -1386,7 +1422,7 @@ input[type="range"]::-moz-range-thumb{
         <label>طبقة الإدخال</label>
         <div class="fullLibTools"><button id="fullLibLayerFront" type="button" class="fullLibLayerBtn active">أمام</button><button id="fullLibLayerBack" type="button" class="fullLibLayerBtn">خلف</button></div>
       </div>
-      <button id="fullLibChooseBtn" type="button" class="fullLibChoose">✓ اختر هذه القطعة</button>
+      
       <div class="fullLibHint">بعد الضغط على «اختر» تختفي المكتبة. اضغط المكان المطلوب على الخارطة لتنزل القطعة بكل هذه التعديلات.</div>
     </section>
 
@@ -2872,7 +2908,7 @@ function syncFullLibLayerButtons(){
 function drawFullLibPreview(){
   const st=fullLibState(),c=fullLibPreviewCanvas;if(!c||!st)return;
   const ctxp=c.getContext('2d'),token=++fullLibPreviewToken,W=c.width,H=c.height;
-  ctxp.clearRect(0,0,W,H);ctxp.fillStyle='#dbeef8';ctxp.fillRect(0,0,W,H);
+  ctxp.clearRect(0,0,W,H);ctxp.fillStyle='#344f63';ctxp.fillRect(0,0,W,H);
   ctxp.strokeStyle='#bdd6e6';ctxp.lineWidth=1;
   for(let x=0;x<W;x+=60){ctxp.beginPath();ctxp.moveTo(x,0);ctxp.lineTo(x,H);ctxp.stroke();}
   for(let y=0;y<H;y+=60){ctxp.beginPath();ctxp.moveTo(0,y);ctxp.lineTo(W,y);ctxp.stroke();}
@@ -2888,7 +2924,7 @@ function drawFullLibPreview(){
       ctxp.fillStyle=st.color;ctxp.strokeStyle='#475569';ctxp.lineWidth=4;ctxp.beginPath();ctxp.roundRect(-dw/2,-dh/2,dw,dh,18);ctxp.fill();ctxp.stroke();
     }
     ctxp.restore();
-    ctxp.fillStyle='#0f172a';ctxp.font='700 24px Tahoma,Arial';ctxp.textAlign='center';ctxp.fillText(st.w+' × '+st.h+' سم   •   '+(((st.rot%360)+360)%360)+'°',cx,H-28);
+    ctxp.fillStyle='#f8fafc';ctxp.shadowColor='rgba(2,6,23,.72)';ctxp.shadowBlur=4;ctxp.shadowOffsetY=1;ctxp.font='700 24px Tahoma,Arial';ctxp.textAlign='center';ctxp.fillText(st.w+' × '+st.h+' سم   •   '+(((st.rot%360)+360)%360)+'°',cx,H-28);ctxp.shadowColor='transparent';ctxp.shadowBlur=0;ctxp.shadowOffsetY=0;
   };
   if(st.src){const im=new Image();im.onload=()=>paint(im);im.onerror=()=>paint(null);im.src=resolveAssetSrc(st.src);}else paint(null);
   fullLibPreviewTitle.textContent=st.name+' — معاينة قبل الوضع';
