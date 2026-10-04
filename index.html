@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>FurniPlan</title>
-<meta name="furniplan-version" content="103">
+<meta name="furniplan-version" content="104">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -533,9 +533,74 @@ header{min-height:var(--tool-header-h)!important}
  .fullLibControlGroup{padding:6px;margin-bottom:6px}.fullLibControlTitle{font-size:12px}.fullLibChoose{min-height:44px;font-size:14px}
 }
 @media(max-width:640px) and (orientation:portrait){
- .fullLibraryShell{grid-template-columns:118px minmax(0,1fr) 98px}
- .fullLibGrid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}
- .fullLibCard{min-height:120px}.fullLibCard img{height:72px}
+ /* iPhone portrait: true mobile layout instead of squeezing the 3-column desktop studio */
+ .fullLibraryOverlay{overflow:hidden;height:100dvh}
+ .fullLibraryShell{
+   inset:0;width:100%;height:100dvh;
+   display:grid;
+   grid-template-columns:minmax(0,1fr);
+   grid-template-rows:auto minmax(0,1fr) auto;
+   grid-template-areas:"cats" "center" "controls";
+   gap:6px;
+   padding:calc(env(safe-area-inset-top) + 6px) 6px calc(env(safe-area-inset-bottom) + 6px);
+ }
+ .fullLibCats{
+   grid-area:cats;min-width:0;min-height:52px;
+   padding:6px 48px 6px 6px;border-radius:12px;
+   overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+ }
+ .fullLibCats>.fullLibHeader{display:none}
+ .fullLibCatList{flex-direction:row;gap:6px;width:max-content;align-items:center}
+ .fullLibCatBtn{
+   width:auto;min-width:78px;height:38px;min-height:38px;flex:0 0 auto;
+   padding:6px 9px;border-radius:10px;font-size:11px;white-space:nowrap;
+ }
+ .fullLibCatBtn small{font-size:9px;margin-inline-start:5px}
+
+ .fullLibCenter{
+   grid-area:center;min-height:0;
+   grid-template-rows:minmax(0,2fr) minmax(128px,1fr);
+   gap:6px;
+ }
+ .fullLibGridPanel{padding:7px;border-radius:12px;overflow:auto;min-height:0;-webkit-overflow-scrolling:touch}
+ .fullLibGridPanel .fullLibHeader{margin-bottom:6px}
+ .fullLibGridPanel .fullLibHeader h2{font-size:13px}
+ .fullLibSearch{height:38px;padding:8px 10px;margin-bottom:7px;font-size:13px}
+ .fullLibGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .fullLibCard{min-height:140px;padding:6px;border-radius:12px;gap:3px}
+ .fullLibCard img{height:92px}
+ .fullLibCard b{font-size:11px;line-height:1.2}
+ .fullLibCard span{font-size:9px}
+ .fullLibPreviewPanel{min-height:128px;border-radius:12px}
+ .fullLibPreviewTitle{
+   top:7px;right:8px;left:8px;max-width:calc(100% - 16px);
+   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+   font-size:10px;padding:4px 8px;
+ }
+ #fullLibPreviewCanvas{min-height:128px}
+
+ .fullLibControls{
+   grid-area:controls;display:grid;
+   grid-template-columns:repeat(2,minmax(0,1fr));
+   gap:5px;padding:6px;border-radius:12px;
+   max-height:32dvh;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+ }
+ .fullLibControls>.fullLibHeader{grid-column:1/-1;margin:0;height:0;min-height:0}
+ .fullLibControls>.fullLibHeader h2{display:none}
+ .fullLibClose{
+   position:fixed;top:calc(env(safe-area-inset-top) + 10px);left:10px;z-index:5100;
+   width:36px;height:36px;min-width:36px;min-height:36px;
+   border-radius:50%;padding:0;font-size:22px;background:#172033!important;border-color:#475569!important;
+ }
+ .fullLibControlGroup{margin:0;padding:6px;border-radius:9px;min-width:0}
+ .fullLibControlGroup label{font-size:10px;margin-bottom:3px}
+ .fullLibControlGroup input[type=text],.fullLibControlGroup input[type=number]{padding:6px;font-size:12px;min-height:34px}
+ .fullLibControlGroup input[type=color]{height:34px}
+ .fullLibTwo{gap:5px}
+ .fullLibTools{gap:5px}
+ .fullLibTools button{font-size:10px;padding:5px 3px;min-height:32px}
+ .fullLibChoose{grid-column:1/-1;min-height:44px;font-size:15px;margin-top:1px}
+ .fullLibHint{grid-column:1/-1;margin:0;font-size:9px;line-height:1.35;text-align:center}
 }
 
 </style>
@@ -2673,7 +2738,7 @@ function openFullLibrary(id=null){
   renderFullLibCategories();renderFullLibGrid();
   const target=id&&furniture.some(x=>x.id===id)?id:(fullLibSelectedId&&furniture.some(x=>x.id===fullLibSelectedId)?fullLibSelectedId:(fullLibFiltered()[0]?.id||furniture[0]?.id));
   if(target)selectFullLibItem(target);
-  setTimeout(()=>fullLibSearch.focus(),60);
+  if(!window.matchMedia('(max-width:640px) and (orientation:portrait)').matches)setTimeout(()=>fullLibSearch.focus(),60);
 }
 function closeFullLibrary(){
   fullLibraryModal.classList.remove('open');fullLibraryModal.setAttribute('aria-hidden','true');document.body.style.overflow='';
