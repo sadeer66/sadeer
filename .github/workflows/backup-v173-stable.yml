@@ -1,0 +1,38 @@
+name: Package FurniPlan V173 Stable Backup
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/backup-v173-stable.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify stable file
+        run: |
+          test -s FurniPlan-V173-Stable.html
+          wc -c FurniPlan-V173-Stable.html
+
+      - name: Create backup zip
+        run: |
+          mkdir FurniPlan-V173-Stable-Backup
+          cp FurniPlan-V173-Stable.html FurniPlan-V173-Stable-Backup/
+          printf "FurniPlan V173 Stable Backup\nSaved before V174 library import.\n" > FurniPlan-V173-Stable-Backup/README.txt
+          zip -r FurniPlan-V173-Stable-Backup.zip FurniPlan-V173-Stable-Backup
+
+      - name: Publish backup release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: FurniPlan-V173-Stable-Backup
+          name: FurniPlan V173 Stable Backup
+          body: Exact stable backup saved before the V174 library import.
+          files: FurniPlan-V173-Stable-Backup.zip
+          make_latest: false
