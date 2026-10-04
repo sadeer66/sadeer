@@ -1,9 +1,9 @@
-const CACHE='furniplan-v160-library-final-20261004';
+const CACHE='furniplan-v161-final-20261004';
 const CORE=[
   './',
   './index.html',
   './manifest.webmanifest',
-  './v85-final-patch.js?v=149',
+  './v85-final-patch.js?v=161',
   './icons/icon-192.png?v=100',
   './icons/icon-512.png?v=100',
   './apple-touch-icon.png',
