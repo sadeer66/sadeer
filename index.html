@@ -1388,6 +1388,234 @@ input[type="range"]::-moz-range-thumb{
 }
 </style>
 
+
+<style id="furniplan-v164-preview-zoom-and-library-layout">
+/* V164 — preview pinch/wheel zoom + glowing yellow choose button at bottom + left categories */
+@keyframes fpChooseGlow164{
+  0%,100%{
+    box-shadow:0 0 7px rgba(255,224,73,.75),0 0 18px rgba(250,204,21,.34),0 7px 18px rgba(2,6,23,.48),inset 0 1px 0 rgba(255,255,255,.48);
+  }
+  50%{
+    box-shadow:0 0 13px rgba(255,238,104,.98),0 0 31px rgba(250,204,21,.62),0 8px 21px rgba(2,6,23,.50),inset 0 1px 0 rgba(255,255,255,.58);
+  }
+}
+.fullLibChoose{
+  color:#2b2600!important;
+  background:linear-gradient(180deg,#fff36a 0%,#facc15 52%,#eab308 100%)!important;
+  border:2px solid #fff7a8!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.45)!important;
+  animation:fpChooseGlow164 1.55s ease-in-out infinite!important;
+}
+.fullLibChoose:hover{
+  background:linear-gradient(180deg,#fff98f 0%,#fdd835 52%,#f4bd08 100%)!important;
+}
+#fullLibPreviewCanvas{
+  touch-action:none!important;
+  -webkit-user-select:none!important;
+  user-select:none!important;
+  cursor:zoom-in!important;
+}
+.fullLibPreviewPanel{overscroll-behavior:contain!important}
+
+/* Keep category library visibly at the far left in portrait on iPad/iPhone.
+   Selecting a category only filters the upper item grid; preview stays below. */
+@media (max-width:1180px) and (orientation:portrait){
+  .fullLibraryShell{
+    direction:ltr!important;
+    grid-template-areas:"cats center controls"!important;
+  }
+  .fullLibCats{grid-area:cats!important;direction:rtl!important}
+  .fullLibCenter{grid-area:center!important;direction:rtl!important}
+  .fullLibControls{grid-area:controls!important;direction:rtl!important}
+  .fullLibCatList{
+    flex-direction:column!important;
+    width:100%!important;
+    align-items:stretch!important;
+  }
+  .fullLibCatBtn{
+    width:100%!important;
+    flex:0 0 auto!important;
+  }
+  .fullLibControls{
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  .fullLibChoose{
+    order:999!important;
+    position:sticky!important;
+    bottom:0!important;
+    top:auto!important;
+    z-index:80!important;
+    margin:7px 0 0!important;
+    flex:0 0 auto!important;
+  }
+  .fullLibHint{order:998!important}
+}
+
+@media (min-width:641px) and (max-width:1180px) and (orientation:portrait){
+  .fullLibraryShell{
+    grid-template-columns:94px minmax(0,1fr) 156px!important;
+  }
+  .fullLibCatBtn{
+    min-width:0!important;
+    min-height:30px!important;
+    padding:5px 4px!important;
+    font-size:9px!important;
+  }
+}
+
+@media (max-width:640px) and (orientation:portrait){
+  .fullLibraryOverlay{
+    height:100dvh!important;
+    width:100vw!important;
+    overflow:hidden!important;
+  }
+  .fullLibraryShell{
+    inset:0!important;
+    width:100%!important;
+    height:100dvh!important;
+    grid-template-columns:72px minmax(0,1fr) 116px!important;
+    grid-template-rows:minmax(0,1fr)!important;
+    grid-template-areas:"cats center controls"!important;
+    gap:4px!important;
+    padding:calc(env(safe-area-inset-top) + 4px) 4px calc(env(safe-area-inset-bottom) + 4px)!important;
+    overflow:hidden!important;
+  }
+  .fullLibCats{
+    min-height:0!important;
+    height:auto!important;
+    padding:5px 4px!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+  }
+  .fullLibCats>.fullLibHeader{display:none!important}
+  .fullLibCatList{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:4px!important;
+    width:100%!important;
+  }
+  .fullLibCatBtn{
+    min-width:0!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:27px!important;
+    padding:4px 3px!important;
+    border-radius:7px!important;
+    font-size:8px!important;
+    line-height:1.05!important;
+    white-space:normal!important;
+  }
+  .fullLibCatBtn small{font-size:6.5px!important}
+
+  .fullLibCenter{
+    min-width:0!important;
+    min-height:0!important;
+    display:grid!important;
+    grid-template-rows:minmax(0,1.72fr) minmax(128px,.88fr)!important;
+    gap:4px!important;
+  }
+  .fullLibGridPanel{
+    min-height:0!important;
+    padding:5px!important;
+    border-radius:10px!important;
+    overflow:auto!important;
+  }
+  .fullLibGridPanel .fullLibHeader{margin-bottom:4px!important}
+  .fullLibGridPanel .fullLibHeader h2{font-size:10px!important}
+  .fullLibSearch{
+    height:31px!important;
+    min-height:31px!important;
+    padding:5px 7px!important;
+    margin-bottom:4px!important;
+    font-size:9px!important;
+  }
+  .fullLibGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:4px!important;
+  }
+  .fullLibCard{
+    min-height:102px!important;
+    padding:4px!important;
+    border-width:2px!important;
+    border-radius:9px!important;
+  }
+  .fullLibCard img{height:64px!important}
+  .fullLibCard b{font-size:8px!important;line-height:1.08!important}
+  .fullLibCard span{font-size:6.8px!important}
+  .fullLibPreviewPanel{
+    min-height:128px!important;
+    border-radius:10px!important;
+  }
+  .fullLibPreviewTitle{
+    top:5px!important;
+    right:5px!important;
+    left:auto!important;
+    max-width:calc(100% - 10px)!important;
+    font-size:7.5px!important;
+    padding:3px 5px!important;
+  }
+
+  .fullLibControls{
+    min-height:0!important;
+    max-height:none!important;
+    height:auto!important;
+    padding:5px!important;
+    border-radius:10px!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    gap:0!important;
+  }
+  .fullLibControls>.fullLibHeader{
+    display:flex!important;
+    height:auto!important;
+    min-height:26px!important;
+    margin:0 0 4px!important;
+  }
+  .fullLibControls>.fullLibHeader h2{display:block!important;font-size:8.5px!important}
+  .fullLibClose{
+    position:static!important;
+    width:25px!important;
+    height:25px!important;
+    min-width:25px!important;
+    min-height:25px!important;
+    font-size:15px!important;
+    border-radius:7px!important;
+  }
+  .fullLibControlGroup{
+    margin:0 0 4px!important;
+    padding:4px!important;
+    border-radius:7px!important;
+  }
+  .fullLibControlGroup label{font-size:7px!important}
+  .fullLibControlGroup input[type=text],
+  .fullLibControlGroup input[type=number]{
+    min-height:27px!important;
+    padding:4px!important;
+    font-size:8px!important;
+  }
+  .fullLibControlGroup input[type=color]{height:27px!important}
+  .fullLibTools{gap:3px!important}
+  .fullLibTools button{
+    min-height:26px!important;
+    padding:3px 1px!important;
+    font-size:6.8px!important;
+    border-radius:6px!important;
+  }
+  .fullLibHint{
+    margin:2px 0!important;
+    font-size:6.4px!important;
+    line-height:1.22!important;
+  }
+  .fullLibChoose{
+    min-height:38px!important;
+    padding:5px 3px!important;
+    font-size:10px!important;
+    border-radius:8px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -3170,6 +3398,7 @@ function renderFullLibGrid(){
 }
 function selectFullLibItem(id){
   const base=furniture.find(x=>x.id===id);if(!base)return;
+  fullLibPreviewZoom=1;
   fullLibSelectedId=id;fullLibName.value=fullLibDisplayName(base);fullLibW.value=base.w||100;fullLibH.value=base.h||60;fullLibRot.value=0;
   fullLibColor.value=base.color||'#bfa781';fullLibTint.checked=false;fullLibLayer='front';syncFullLibLayerButtons();
   renderFullLibGrid();drawFullLibPreview();
@@ -3178,6 +3407,7 @@ function syncFullLibLayerButtons(){
   document.getElementById('fullLibLayerFront').classList.toggle('active',fullLibLayer==='front');
   document.getElementById('fullLibLayerBack').classList.toggle('active',fullLibLayer==='back');
 }
+let fullLibPreviewZoom=1;
 function drawFullLibPreview(){
   const st=fullLibState(),c=fullLibPreviewCanvas;if(!c||!st)return;
   const rect=c.getBoundingClientRect();
@@ -3226,7 +3456,8 @@ function drawFullLibPreview(){
       const fit=Math.min(maxW/Math.max(1,boxH),maxH/Math.max(1,boxW),1);
       boxW*=fit;boxH*=fit;
     }
-    const dw=Math.max(28,boxW),dh=Math.max(28,boxH);
+    const previewZoom=Math.max(.35,Math.min(3,fullLibPreviewZoom||1));
+    const dw=Math.max(28,boxW*previewZoom),dh=Math.max(28,boxH*previewZoom);
     ctxp.save();ctxp.translate(cx,cy);ctxp.rotate(rot*Math.PI/180);
     if(img){
       ctxp.shadowColor='rgba(2,6,23,.38)';ctxp.shadowBlur=12;ctxp.shadowOffsetY=5;
@@ -3251,7 +3482,7 @@ function drawFullLibPreview(){
   if(st.src){
     const im=new Image();im.onload=()=>paint(im);im.onerror=()=>paint(null);im.src=resolveAssetSrc(st.src);
   }else paint(null);
-  fullLibPreviewTitle.textContent=(fullLibUiLang()==='en'?fullLibDisplayName(fullLibCurrentBase()):st.name)+(fullLibUiLang()==='en'?' — Preview before placement':' — معاينة قبل الوضع');
+  fullLibPreviewTitle.textContent=(fullLibUiLang()==='en'?fullLibDisplayName(fullLibCurrentBase()):st.name)+(fullLibUiLang()==='en'?' — Preview before placement':' — معاينة قبل الوضع')+'  •  '+Math.round((fullLibPreviewZoom||1)*100)+'%';
 }
 if(!window.__fpFullLibResize163){
   window.__fpFullLibResize163=true;
@@ -4884,7 +5115,90 @@ document.getElementById('doPrintBtn').onclick=async()=>{
   // افتح نافذة الطباعة فوراً داخل نقرة المستخدم، قبل أي await، حتى لا يحظرها Safari.
   const page=window.open('','_blank');
   if(!page){alert('تعذر فتح نافذة الطباعة. تحقق من إعداد حظر النوافذ المنبثقة في Safari ثم حاول مرة أخرى.');return;}
-  page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...</body></html>`);
+  page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...
+<script id="furniplan-v164-preview-interaction">
+(()=>{
+  const init=()=>{
+    const canvas=document.getElementById('fullLibPreviewCanvas');
+    const controls=document.querySelector('.fullLibControls');
+    const choose=document.getElementById('fullLibChooseBtn');
+    const hint=controls?.querySelector('.fullLibHint');
+    if(!canvas||canvas.dataset.fpZoom164)return;
+    canvas.dataset.fpZoom164='1';
+
+    /* Physically move Choose to the bottom of the controls, after the hint. */
+    if(controls&&choose){
+      if(hint) hint.insertAdjacentElement('afterend',choose);
+      else controls.appendChild(choose);
+    }
+
+    const clamp=z=>Math.max(.35,Math.min(3,z));
+    const redraw=()=>{
+      if(typeof drawFullLibPreview==='function')drawFullLibPreview();
+    };
+    const setZoom=z=>{
+      fullLibPreviewZoom=clamp(z);
+      redraw();
+    };
+
+    /* Mouse/trackpad wheel on computer. */
+    canvas.addEventListener('wheel',ev=>{
+      ev.preventDefault();
+      const factor=ev.deltaY<0?1.10:0.90;
+      setZoom((fullLibPreviewZoom||1)*factor);
+    },{passive:false});
+
+    /* Two-finger pinch on iPad/iPhone. */
+    const pts=new Map();
+    let pinchStartDist=0,pinchStartZoom=1;
+    const dist=()=>{
+      const a=[...pts.values()];
+      if(a.length<2)return 0;
+      return Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);
+    };
+    canvas.addEventListener('pointerdown',ev=>{
+      if(ev.pointerType==='touch'){
+        try{canvas.setPointerCapture(ev.pointerId);}catch(_){}
+        pts.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});
+        if(pts.size===2){
+          pinchStartDist=dist();
+          pinchStartZoom=fullLibPreviewZoom||1;
+        }
+      }
+    });
+    canvas.addEventListener('pointermove',ev=>{
+      if(!pts.has(ev.pointerId))return;
+      ev.preventDefault();
+      pts.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});
+      if(pts.size>=2&&pinchStartDist>0){
+        setZoom(pinchStartZoom*(dist()/pinchStartDist));
+      }
+    },{passive:false});
+    const endPointer=ev=>{
+      if(pts.has(ev.pointerId))pts.delete(ev.pointerId);
+      if(pts.size<2){pinchStartDist=0;pinchStartZoom=fullLibPreviewZoom||1;}
+    };
+    canvas.addEventListener('pointerup',endPointer);
+    canvas.addEventListener('pointercancel',endPointer);
+    canvas.addEventListener('lostpointercapture',endPointer);
+
+    /* Double tap / double click returns preview to 100%. */
+    canvas.addEventListener('dblclick',ev=>{ev.preventDefault();setZoom(1);});
+
+    /* Reinforce: category clicks only filter the upper item grid. */
+    const cats=document.getElementById('fullLibCatList');
+    cats?.addEventListener('click',()=>{
+      requestAnimationFrame(()=>{
+        document.querySelector('.fullLibGridPanel')?.scrollTo({top:0,behavior:'smooth'});
+      });
+    });
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
+})();
+</script>
+
+</body></html>`);
   page.document.close();
   try{
     const sheet=await buildBrandedSheet({paper,orient,title:projectMeta.name,mapTitle:projectMeta.mapTitle,client:projectMeta.client,location:projectMeta.location});
