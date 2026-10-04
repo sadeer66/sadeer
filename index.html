@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>FurniPlan</title>
-<meta name="furniplan-version" content="171">
+<meta name="furniplan-version" content="172">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -6253,6 +6253,56 @@ draw();
   label[for="fpPanelScale"].fpCompactIcon::before{font-size:36px!important}
   label[for="fpPanelColor"].fpCompactIcon::before{font-size:35px!important}
   label[for="fpPanelLayer"].fpCompactIcon::before{font-size:35px!important}
+}
+</style>
+
+
+<style id="furniplan-v172-ipad-rail-icons-balanced">
+/* V172 — balanced right rail icon size for iPhone/iPad */
+@media (max-width:1180px){
+  .fpCompactIcon{
+    position:relative!important;
+    color:transparent!important;
+    font-size:0!important;
+    line-height:1!important;
+    overflow:hidden!important;
+    transform:none!important;
+  }
+  .fpCompactIcon::before{
+    position:absolute!important;
+    inset:0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    color:#f8fafc!important;
+    font-family:Arial,"Arial Unicode MS",sans-serif!important;
+    font-weight:900!important;
+    line-height:1!important;
+    letter-spacing:0!important;
+    text-shadow:0 1px 0 rgba(255,255,255,.08)!important;
+  }
+
+  label[for="fpPanelName"].fpCompactIcon::before{content:"✎"!important;font-size:20px!important}
+  label[for="fpPanelSize"].fpCompactIcon::before{content:"↔"!important;font-size:22px!important}
+  label[for="fpPanelRotate"].fpCompactIcon::before{content:"↻"!important;font-size:23px!important}
+  label[for="fpPanelScale"].fpCompactIcon::before{content:"⊕"!important;font-size:23px!important}
+  label[for="fpPanelColor"].fpCompactIcon::before{content:"◉"!important;font-size:22px!important}
+  label[for="fpPanelLayer"].fpCompactIcon::before{content:"⇅"!important;font-size:22px!important}
+
+  .fullLibClose{font-size:22px!important}
+  .fullLibChoose::before{font-size:22px!important}
+}
+
+@media (max-width:640px){
+  label[for="fpPanelName"].fpCompactIcon::before{font-size:18px!important}
+  label[for="fpPanelSize"].fpCompactIcon::before{font-size:20px!important}
+  label[for="fpPanelRotate"].fpCompactIcon::before{font-size:21px!important}
+  label[for="fpPanelScale"].fpCompactIcon::before{font-size:21px!important}
+  label[for="fpPanelColor"].fpCompactIcon::before{font-size:20px!important}
+  label[for="fpPanelLayer"].fpCompactIcon::before{font-size:20px!important}
+
+  .fullLibClose{font-size:20px!important}
+  .fullLibChoose::before{font-size:20px!important}
 }
 </style>
 
