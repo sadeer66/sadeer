@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>FurniPlan</title>
-<meta name="furniplan-version" content="101">
+<meta name="furniplan-version" content="102">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -4423,6 +4423,7 @@ draw();
 
   const topGroups=[
     [
+      button('v101Library','chair','المكتبة الكاملة',()=>window.openFullLibrary?.(),'','مكتبة'),
       button('v44New','newfile','مشروع جديد',()=>click('newProjectBtn'),'','جديد'),
       label('v44Open','folder','فتح مشروع','loadInput','','فتح'),
       button('v44Save','save','حفظ المشروع',()=>click('saveBtn'),'','حفظ'),
