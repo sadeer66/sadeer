@@ -7,8 +7,8 @@
 <meta http-equiv="Expires" content="0" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<title>FurniPlan V163</title>
-<meta name="furniplan-version" content="163">
+<title>FurniPlan</title>
+<meta name="furniplan-version" content="104">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -4582,15 +4582,7 @@ document.getElementById('doPrintBtn').onclick=async()=>{
   // افتح نافذة الطباعة فوراً داخل نقرة المستخدم، قبل أي await، حتى لا يحظرها Safari.
   const page=window.open('','_blank');
   if(!page){alert('تعذر فتح نافذة الطباعة. تحقق من إعداد حظر النوافذ المنبثقة في Safari ثم حاول مرة أخرى.');return;}
-  page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...<script src="v163-assets/cooling.js?v=163"></script>
-<script src="v163-assets/electrical.js?v=163"></script>
-<script src="v163-assets/lighting.js?v=163"></script>
-<script src="v163-assets/living.js?v=163"></script>
-<script src="v163-assets/people.js?v=163"></script>
-<script src="v163-assets/pets.js?v=163"></script>
-<script src="v163-assets/plants.js?v=163"></script>
-<script src="library_patch_v163.js?v=163"></script>
-</body></html>`);
+  page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...</body></html>`);
   page.document.close();
   try{
     const sheet=await buildBrandedSheet({paper,orient,title:projectMeta.name,mapTitle:projectMeta.mapTitle,client:projectMeta.client,location:projectMeta.location});
