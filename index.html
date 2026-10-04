@@ -1388,6 +1388,85 @@ input[type="range"]::-moz-range-thumb{
 }
 </style>
 
+
+<style id="furniplan-v164safe-library-controls">
+@keyframes fpChooseGlow164safe{
+  0%,100%{box-shadow:0 0 7px rgba(255,229,75,.72),0 0 17px rgba(250,204,21,.34),0 7px 17px rgba(2,6,23,.44),inset 0 1px 0 rgba(255,255,255,.48)}
+  50%{box-shadow:0 0 14px rgba(255,242,120,.98),0 0 30px rgba(250,204,21,.60),0 8px 20px rgba(2,6,23,.48),inset 0 1px 0 rgba(255,255,255,.58)}
+}
+.fullLibChoose{
+  color:#2c2600!important;
+  background:linear-gradient(180deg,#fff680 0%,#facc15 54%,#eab308 100%)!important;
+  border:2px solid #fff4a0!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.44)!important;
+  animation:fpChooseGlow164safe 1.6s ease-in-out infinite!important;
+}
+#fullLibPreviewCanvas{touch-action:none!important;overscroll-behavior:contain!important}
+@media (max-width:1180px) and (orientation:portrait){
+  .fullLibraryOverlay{width:100vw!important;height:100dvh!important;overflow:hidden!important}
+  .fullLibraryShell{
+    direction:ltr!important;
+    grid-template-areas:"cats center controls"!important;
+    height:100dvh!important;
+    width:100%!important;
+    overflow:hidden!important;
+  }
+  .fullLibCats{grid-area:cats!important;direction:rtl!important;display:block!important;overflow-y:auto!important;overflow-x:hidden!important}
+  .fullLibCenter{grid-area:center!important;direction:rtl!important;min-width:0!important;min-height:0!important}
+  .fullLibControls{grid-area:controls!important;direction:rtl!important;display:flex!important;flex-direction:column!important;min-height:0!important;overflow-y:auto!important}
+  .fullLibCatList{display:flex!important;flex-direction:column!important;width:100%!important;gap:4px!important}
+  .fullLibCatBtn{width:100%!important;min-width:0!important;flex:0 0 auto!important}
+  .fullLibChoose{
+    order:999!important;
+    position:sticky!important;
+    bottom:0!important;
+    top:auto!important;
+    z-index:70!important;
+    margin:7px 0 0!important;
+    flex:0 0 auto!important;
+  }
+  .fullLibHint{order:998!important}
+}
+@media (min-width:641px) and (max-width:1180px) and (orientation:portrait){
+  .fullLibraryShell{grid-template-columns:94px minmax(0,1fr) 156px!important;gap:6px!important}
+  .fullLibCatBtn{min-height:29px!important;padding:5px 4px!important;font-size:9px!important}
+}
+@media (max-width:640px) and (orientation:portrait){
+  .fullLibraryShell{
+    grid-template-columns:72px minmax(0,1fr) 116px!important;
+    grid-template-rows:minmax(0,1fr)!important;
+    gap:4px!important;
+    padding:calc(env(safe-area-inset-top) + 4px) 4px calc(env(safe-area-inset-bottom) + 4px)!important;
+  }
+  .fullLibCats{min-height:0!important;padding:5px 4px!important;border-radius:10px!important}
+  .fullLibCats>.fullLibHeader{display:none!important}
+  .fullLibCatBtn{min-height:27px!important;padding:4px 3px!important;font-size:8px!important;line-height:1.05!important;white-space:normal!important}
+  .fullLibCatBtn small{font-size:6.5px!important}
+  .fullLibCenter{grid-template-rows:minmax(0,1.72fr) minmax(128px,.88fr)!important;gap:4px!important}
+  .fullLibGridPanel{min-height:0!important;padding:5px!important;border-radius:10px!important;overflow:auto!important}
+  .fullLibSearch{height:31px!important;min-height:31px!important;padding:5px 7px!important;margin-bottom:4px!important;font-size:9px!important}
+  .fullLibGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:4px!important}
+  .fullLibCard{min-height:102px!important;padding:4px!important;border-width:2px!important;border-radius:9px!important}
+  .fullLibCard img{height:64px!important}
+  .fullLibCard b{font-size:8px!important;line-height:1.08!important}
+  .fullLibCard span{font-size:6.8px!important}
+  .fullLibPreviewPanel{min-height:128px!important;border-radius:10px!important}
+  .fullLibPreviewTitle{top:5px!important;right:5px!important;left:auto!important;max-width:calc(100% - 10px)!important;font-size:7.5px!important;padding:3px 5px!important}
+  .fullLibControls{max-height:none!important;padding:5px!important;border-radius:10px!important}
+  .fullLibControls>.fullLibHeader{display:flex!important;height:auto!important;min-height:26px!important;margin:0 0 4px!important}
+  .fullLibControls>.fullLibHeader h2{display:block!important;font-size:8.5px!important}
+  .fullLibClose{position:static!important;width:25px!important;height:25px!important;min-width:25px!important;min-height:25px!important;font-size:15px!important;border-radius:7px!important}
+  .fullLibControlGroup{margin:0 0 4px!important;padding:4px!important;border-radius:7px!important}
+  .fullLibControlGroup label{font-size:7px!important}
+  .fullLibControlGroup input[type=text],.fullLibControlGroup input[type=number]{min-height:27px!important;padding:4px!important;font-size:8px!important}
+  .fullLibControlGroup input[type=color]{height:27px!important}
+  .fullLibTools{gap:3px!important}
+  .fullLibTools button{min-height:26px!important;padding:3px 1px!important;font-size:6.8px!important;border-radius:6px!important}
+  .fullLibHint{margin:2px 0!important;font-size:6.4px!important;line-height:1.22!important}
+  .fullLibChoose{min-height:38px!important;padding:5px 3px!important;font-size:10px!important;border-radius:8px!important}
+}
+</style>
+
 </head>
 <body>
 
@@ -3170,6 +3249,7 @@ function renderFullLibGrid(){
 }
 function selectFullLibItem(id){
   const base=furniture.find(x=>x.id===id);if(!base)return;
+  window.fullLibPreviewZoom=1;
   fullLibSelectedId=id;fullLibName.value=fullLibDisplayName(base);fullLibW.value=base.w||100;fullLibH.value=base.h||60;fullLibRot.value=0;
   fullLibColor.value=base.color||'#bfa781';fullLibTint.checked=false;fullLibLayer='front';syncFullLibLayerButtons();
   renderFullLibGrid();drawFullLibPreview();
@@ -3226,7 +3306,8 @@ function drawFullLibPreview(){
       const fit=Math.min(maxW/Math.max(1,boxH),maxH/Math.max(1,boxW),1);
       boxW*=fit;boxH*=fit;
     }
-    const dw=Math.max(28,boxW),dh=Math.max(28,boxH);
+    const pz=Math.max(.35,Math.min(3,window.fullLibPreviewZoom||1));
+    const dw=Math.max(28,boxW*pz),dh=Math.max(28,boxH*pz);
     ctxp.save();ctxp.translate(cx,cy);ctxp.rotate(rot*Math.PI/180);
     if(img){
       ctxp.shadowColor='rgba(2,6,23,.38)';ctxp.shadowBlur=12;ctxp.shadowOffsetY=5;
@@ -3295,6 +3376,53 @@ document.getElementById('fullLibChooseBtn').onclick=()=>{
 fullLibraryModal.addEventListener('pointerdown',e=>{if(e.target===fullLibraryModal)closeFullLibrary();});
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&fullLibraryModal.classList.contains('open')){e.preventDefault();e.stopImmediatePropagation();closeFullLibrary();}},true);
 window.openFullLibrary=openFullLibrary;
+window.fullLibPreviewZoom=1;
+(()=>{
+  const canvas=document.getElementById('fullLibPreviewCanvas');
+  if(!canvas||canvas.dataset.fpZoomSafe164)return;
+  canvas.dataset.fpZoomSafe164='1';
+
+  const controls=document.querySelector('.fullLibControls');
+  const choose=document.getElementById('fullLibChooseBtn');
+  if(controls&&choose)controls.appendChild(choose);
+
+  const clamp=z=>Math.max(.35,Math.min(3,z));
+  const apply=z=>{window.fullLibPreviewZoom=clamp(z);drawFullLibPreview();};
+
+  canvas.addEventListener('wheel',ev=>{
+    ev.preventDefault();
+    apply((window.fullLibPreviewZoom||1)*(ev.deltaY<0?1.1:.9));
+  },{passive:false});
+
+  const touches=new Map();
+  let baseDist=0,baseZoom=1;
+  const distance=()=>{
+    const a=[...touches.values()];
+    if(a.length<2)return 0;
+    return Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);
+  };
+  canvas.addEventListener('pointerdown',ev=>{
+    if(ev.pointerType!=='touch')return;
+    touches.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});
+    try{canvas.setPointerCapture(ev.pointerId)}catch(e){}
+    if(touches.size===2){baseDist=distance();baseZoom=window.fullLibPreviewZoom||1;}
+  });
+  canvas.addEventListener('pointermove',ev=>{
+    if(!touches.has(ev.pointerId))return;
+    ev.preventDefault();
+    touches.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});
+    if(touches.size===2&&baseDist>0)apply(baseZoom*(distance()/baseDist));
+  },{passive:false});
+  const stop=ev=>{
+    touches.delete(ev.pointerId);
+    if(touches.size<2){baseDist=0;baseZoom=window.fullLibPreviewZoom||1;}
+  };
+  canvas.addEventListener('pointerup',stop);
+  canvas.addEventListener('pointercancel',stop);
+  canvas.addEventListener('lostpointercapture',stop);
+  canvas.addEventListener('dblclick',()=>apply(1));
+})();
+
 window.addEventListener('furniplan-language-changed',()=>{
   renderFullLibCategories();
   if(fullLibSelectedId&&furniture.some(x=>x.id===fullLibSelectedId))selectFullLibItem(fullLibSelectedId);
