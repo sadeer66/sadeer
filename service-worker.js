@@ -1,4 +1,4 @@
-const CACHE='furniplan-v156-login-recovery-20261004';
+const CACHE='furniplan-v157-emergency-stable-20261004';
 const CORE=[
   './',
   './index.html',
