@@ -1,7 +1,7 @@
 {
   "name": "furniplan-v163",
   "version": "1.0.163",
-  "description": "FurniPlan V163 - Smart Space Planning with expanded bilingual library",
+  "description": "FurniPlan V163 - direct launch build with expanded bilingual library",
   "main": "desktop/main.js",
   "author": "سدير ياسين محمد",
   "license": "UNLICENSED",
