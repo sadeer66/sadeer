@@ -605,17 +605,17 @@ header{min-height:var(--tool-header-h)!important}
 
 </style>
 
-<style id="furniplan-v160-library-final">
-/* V160 — final Full Library tuning: dark blue preview + always-visible Choose button */
+<style id="furniplan-v161-library-final">
+/* V161 — final Full Library tuning: dark gray preview grid + lime Choose button + bilingual item labels */
 .fullLibPreviewPanel{
-  background:#344f63!important;
-  border-color:#6f8da4!important;
+  background:#565c63!important;
+  border-color:#858d95!important;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.15),0 7px 20px rgba(2,6,23,.18)!important;
 }
 #fullLibPreviewCanvas{background:#344f63!important}
 .fullLibPreviewTitle{
-  background:rgba(8,20,34,.90)!important;
-  border:1px solid rgba(125,211,252,.25)!important;
+  background:rgba(36,40,44,.92)!important;
+  border:1px solid rgba(220,225,230,.28)!important;
 }
 .fullLibTools button{
   min-height:34px;
@@ -632,11 +632,11 @@ header{min-height:var(--tool-header-h)!important}
   font-size:16px!important;
   line-height:1.15!important;
   font-weight:900!important;
-  color:#fff!important;
-  background:linear-gradient(180deg,#13b7f3,#0284c7)!important;
-  border:2px solid #7dd3fc!important;
+  color:#2c3514!important;
+  background:linear-gradient(180deg,#eef8a8,#d5ea72)!important;
+  border:2px solid #b9d64c!important;
   border-radius:12px!important;
-  box-shadow:0 6px 18px rgba(14,165,233,.32),inset 0 1px 0 rgba(255,255,255,.20)!important;
+  box-shadow:0 6px 18px rgba(185,214,76,.28),inset 0 1px 0 rgba(255,255,255,.48)!important;
   position:sticky!important;
   top:0!important;
   z-index:40!important;
@@ -795,7 +795,7 @@ header{min-height:var(--tool-header-h)!important}
     min-height:50px!important;
     font-size:16px!important;
     margin-bottom:6px!important;
-    box-shadow:0 7px 20px rgba(14,165,233,.38)!important;
+    box-shadow:0 7px 20px rgba(185,214,76,.30)!important;
   }
 }
 </style>
@@ -2908,8 +2908,8 @@ function syncFullLibLayerButtons(){
 function drawFullLibPreview(){
   const st=fullLibState(),c=fullLibPreviewCanvas;if(!c||!st)return;
   const ctxp=c.getContext('2d'),token=++fullLibPreviewToken,W=c.width,H=c.height;
-  ctxp.clearRect(0,0,W,H);ctxp.fillStyle='#344f63';ctxp.fillRect(0,0,W,H);
-  ctxp.strokeStyle='#bdd6e6';ctxp.lineWidth=1;
+  ctxp.clearRect(0,0,W,H);ctxp.fillStyle='#565c63';ctxp.fillRect(0,0,W,H);
+  ctxp.strokeStyle='#aeb5bc';ctxp.lineWidth=1;
   for(let x=0;x<W;x+=60){ctxp.beginPath();ctxp.moveTo(x,0);ctxp.lineTo(x,H);ctxp.stroke();}
   for(let y=0;y<H;y+=60){ctxp.beginPath();ctxp.moveTo(0,y);ctxp.lineTo(W,y);ctxp.stroke();}
   const maxW=W*.66,maxH=H*.68,ratio=Math.max(1,st.w/st.h),scale=Math.min(maxW/Math.max(1,st.w),maxH/Math.max(1,st.h));
@@ -5009,7 +5009,7 @@ draw();
 </script>
 
 
-<script src="v85-final-patch.js?v=150"></script>
+<script src="v85-final-patch.js?v=161"></script>
 
 <script id="furniplan-toolbar-wheel-v94">
 (()=>{
