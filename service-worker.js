@@ -1,4 +1,4 @@
-const CACHE='furniplan-v157-emergency-stable-20261004';
+const CACHE='furniplan-v158-accessories-small-20261004';
 const CORE=[
   './',
   './index.html',
@@ -6,7 +6,17 @@ const CORE=[
   './v85-final-patch.js?v=149',
   './icons/icon-192.png?v=100',
   './icons/icon-512.png?v=100',
-  './apple-touch-icon.png'
+  './apple-touch-icon.png',
+  './assets/accessories10/accessory_01.webp',
+  './assets/accessories10/accessory_02.webp',
+  './assets/accessories10/accessory_03.webp',
+  './assets/accessories10/accessory_04.webp',
+  './assets/accessories10/accessory_05.webp',
+  './assets/accessories10/accessory_06.webp',
+  './assets/accessories10/accessory_07.webp',
+  './assets/accessories10/accessory_08.webp',
+  './assets/accessories10/accessory_09.webp',
+  './assets/accessories10/accessory_10.webp'
 ];
 
 self.addEventListener('install',event=>{
