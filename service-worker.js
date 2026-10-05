@@ -1,8 +1,8 @@
-const CACHE='furniplan-v184-shops-restaurants-20261005';
+const CACHE='furniplan-v185-ipad-memory-20261005';
 const CORE=[
   './',
   './index.html',
-  './library_v184.js',
+  './library_v185.js',
   './assets/v184/shops_01.webp',
   './assets/v184/shops_02.webp',
   './assets/v184/shops_03.webp',
