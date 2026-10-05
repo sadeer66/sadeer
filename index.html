@@ -7,8 +7,8 @@
 <meta http-equiv="Expires" content="0" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<title>FurniPlan V176</title>
-<meta name="furniplan-version" content="176">
+<title>FurniPlan V177</title>
+<meta name="furniplan-version" content="177">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -3086,6 +3086,34 @@ function repairV176Library(list){
   });
   return list;
 }
+// V177: older saved libraries can share positional IDs with newly added packs.
+function repairLibraryItemCategories(list){
+  const categories={
+    'نبتة ديكور':'نباتات داخلية','نبتة داخلية':'نباتات داخلية',
+    'سبلت داخلي':'تبريد','سبلت خارجي':'تبريد',
+    'ثلاجة باب واحد 85×75':'أجهزة كهربائية','ثلاجة بابين 120×75':'أجهزة كهربائية'
+  };
+  const sources=new Map(defaultFurniture.filter(x=>categories[x.name]).map(x=>[x.src,categories[x.name]]));
+  list.forEach(x=>{
+    const cat=sources.get(x.src);
+    if(cat)x.category=cat;
+  });
+  return list;
+}
+function ensureUniqueLibraryIds(list){
+  repairLibraryItemCategories(list);
+  const reserved=new Set(list.map(x=>x.id).filter(Boolean)),seen=new Set();
+  list.forEach((x,i)=>{
+    if(!x.id||seen.has(x.id)){
+      const stem=x.v176Key||('library_item_'+i);
+      let id=stem,n=1;
+      while(reserved.has(id)||seen.has(id))id=stem+'_'+n++;
+      x.id=id;reserved.add(id);
+    }
+    seen.add(x.id);
+  });
+  return list;
+}
 function loadSavedLibrary(){
   try{
     let parsed=null;
@@ -3095,13 +3123,14 @@ function loadSavedLibrary(){
       const candidate=JSON.parse(raw);
       if(Array.isArray(candidate)&&candidate.length){parsed=candidate;break;}
     }
-    if(!parsed)return cloneDefaultLibrary();
-    const repaired=repairV176Library(repairAccessoriesLibrary(repairPeopleLibrary(repairDiningLibrary(normalizeLibraryItems(parsed)))));
+    if(!parsed)return ensureUniqueLibraryIds(cloneDefaultLibrary());
+    const repaired=ensureUniqueLibraryIds(repairV176Library(repairAccessoriesLibrary(repairPeopleLibrary(repairDiningLibrary(normalizeLibraryItems(parsed))))));
     try{localStorage.setItem(LIBRARY_STORAGE_KEY,JSON.stringify(repaired));}catch(_e){}
     return repaired;
-  }catch(e){return cloneDefaultLibrary();}
+  }catch(e){return ensureUniqueLibraryIds(cloneDefaultLibrary());}
 }
 function saveLibraryState(){
+  ensureUniqueLibraryIds(furniture);
   try{localStorage.setItem(LIBRARY_STORAGE_KEY,JSON.stringify(furniture));}
   catch(e){alert('تعذر حفظ المكتبة في المتصفح. قد تكون صورة مضافة كبيرة جدًا؛ جرب صورة أصغر.');}
 }
@@ -3820,7 +3849,7 @@ const fullLibPreviewCanvas=document.getElementById('fullLibPreviewCanvas');
 const fullLibPreviewTitle=document.getElementById('fullLibPreviewTitle');
 const fullLibCount=document.getElementById('fullLibCount');
 const fullLibGridTitle=document.getElementById('fullLibGridTitle');
-let fullLibCategory='الكل',fullLibSelectedId=null,fullLibLayer='front',fullLibPreviewToken=0;
+let fullLibCategory='الكل',fullLibSelectedId=null,fullLibSelectedItem=null,fullLibLayer='front',fullLibPreviewToken=0;
 
 function fullLibUiLang(){
   try{
@@ -3856,7 +3885,7 @@ function fullLibDisplayCategory(cat){
 function fullLibUnit(){return fullLibUiLang()==='en'?'cm':'سم';}
 
 
-function fullLibCurrentBase(){return furniture.find(x=>x.id===fullLibSelectedId)||null;}
+function fullLibCurrentBase(){return (furniture.includes(fullLibSelectedItem)?fullLibSelectedItem:furniture.find(x=>x.id===fullLibSelectedId))||null;}
 function fullLibState(){
   const base=fullLibCurrentBase();if(!base)return null;
   return {...base,name:fullLibName.value||base.name,w:Math.max(1,+fullLibW.value||base.w),h:Math.max(1,+fullLibH.value||base.h),
@@ -3891,12 +3920,14 @@ function renderFullLibGrid(){
     const c=document.createElement('button');c.type='button';c.className='fullLibCard'+(obj.id===fullLibSelectedId?' selected':'');
     const visual=obj.src?'<img loading="lazy" decoding="async" src="'+resolveAssetSrc(obj.src)+'" alt="">':'<div class="fullLibGeneric" style="background:'+(obj.color||'#bfa781')+'"></div>';
     c.innerHTML=visual+'<b>'+String(fullLibDisplayName(obj)).replace(/</g,'&lt;')+'</b><span>'+obj.w+' × '+obj.h+' '+fullLibUnit()+'</span>';
-    c.onclick=()=>selectFullLibItem(obj.id);
+    c.onclick=()=>selectFullLibItem(obj);
     fullLibGrid.appendChild(c);
   });
 }
-function selectFullLibItem(id){
-  const base=furniture.find(x=>x.id===id);if(!base)return;
+function selectFullLibItem(item){
+  const base=typeof item==='object'?item:furniture.find(x=>x.id===item);if(!base||!furniture.includes(base))return;
+  fullLibSelectedItem=base;
+  const id=base.id;
   window.fullLibPreviewZoom=1;
   fullLibSelectedId=id;fullLibName.value=fullLibDisplayName(base);fullLibW.value=base.w||100;fullLibH.value=base.h||60;fullLibRot.value=0;
   fullLibColor.value=base.color||'#bfa781';fullLibTint.checked=false;fullLibLayer='front';syncFullLibLayerButtons();
