@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 27277)
-Total output lines: 1958
-
 
 // ===== FurniPlan V85 Final Runtime Patch =====
 (function(){
@@ -680,7 +677,346 @@ Total output lines: 1958
   }
   main{padding:3px!important;min-height:0!important;overflow:hidden!important}
   #furnitureIconToolbar{
-    position:absolute!important;z-index:90!im…7277 tokens truncated…54px!important;width:auto!important;height:41px!important;min-height:41px!important;padding:0 7px!important;font-size:10px!important;border-radius:8px!important}}'
+    position:absolute!important;z-index:90!important;
+    left:3px!important;right:auto!important;top:3px!important;bottom:3px!important;
+    width:48px!important;height:auto!important;min-width:48px!important;max-width:48px!important;
+    display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;
+    overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y!important;
+    padding:3px!important;gap:3px!important;scrollbar-width:none!important;
+  }
+  #furnitureIconToolbar::-webkit-scrollbar{display:none!important}
+  #furnitureIconToolbar .modernIconBtn{
+    width:42px!important;height:44px!important;min-width:42px!important;min-height:44px!important;
+    flex:0 0 44px!important;padding:2px!important;
+  }
+  #furnitureIconToolbar .modernIconBtn svg{width:16px!important;height:16px!important}
+  #furnitureIconToolbar .modernIconBtn .iconLabel{font-size:6.7px!important;line-height:1!important}
+  #furnitureIconToolbar .toolSep{
+    width:26px!important;height:1px!important;min-width:26px!important;min-height:1px!important;margin:1px 0!important;
+  }
+  .bottomInspector{margin-bottom:0!important}
+  .fpOfflineStatusV102{bottom:34px!important}
+}
+
+/* iPad portrait */
+@media (hover:none) and (pointer:coarse) and (min-width:601px) and (max-width:1100px) and (orientation:portrait){
+  :root{
+    --tool-btn-w:54px!important;
+    --tool-btn-h:56px!important;
+    --tool-icon-size:22px!important;
+    --tool-label-size:8.3px!important;
+    --tool-label-short-size:7.8px!important;
+    --tool-side-width:60px!important;
+    --tool-header-h:96px!important;
+  }
+  header{
+    height:96px!important;min-height:96px!important;max-height:96px!important;
+    padding:5px 7px!important;overflow:hidden!important;
+  }
+  .headerBrand{display:none!important}
+  #modernToolbarArea{width:100%!important;min-width:0!important;gap:4px!important}
+  #modernTopToolbar{
+    overflow-x:auto!important;overflow-y:hidden!important;touch-action:pan-x!important;
+    flex-wrap:nowrap!important;justify-content:flex-start!important;
+    padding:3px 4px!important;gap:4px!important;scrollbar-width:none!important;
+  }
+  #modernTopToolbar::-webkit-scrollbar{display:none!important}
+  #modernTopToolbar .modernIconBtn{
+    width:54px!important;height:56px!important;min-width:54px!important;min-height:56px!important;
+    flex:0 0 54px!important;padding:3px!important;
+  }
+  #modernTopToolbar .modernIconBtn svg{width:22px!important;height:22px!important}
+  #modernTopToolbar .modernIconBtn .iconLabel{font-size:8.3px!important;line-height:1!important}
+  #modernSliderRow{
+    display:flex!important;overflow-x:auto!important;overflow-y:hidden!important;
+    touch-action:pan-x!important;gap:4px!important;scrollbar-width:none!important;
+  }
+  #modernSliderRow::-webkit-scrollbar{display:none!important}
+  .modernSliderBox,.modernSliderBox.uiScaleBox{
+    flex:0 0 135px!important;width:135px!important;min-width:135px!important;height:31px!important;
+  }
+  .modernSliderBox:first-child{flex-basis:175px!important;width:175px!important;min-width:175px!important}
+  main{padding:6px!important;min-width:0!important;min-height:0!important;overflow:hidden!important}
+  .mapPanel{height:100%!important;min-height:0!important}
+  .mapViewport{
+    min-height:0!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;
+    touch-action:pan-x pan-y!important;
+  }
+  #furnitureIconToolbar{
+    left:5px!important;right:auto!important;top:5px!important;bottom:5px!important;
+    width:60px!important;min-width:60px!important;padding:3px!important;gap:3px!important;
+    overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y!important;
+  }
+  #furnitureIconToolbar .modernIconBtn{
+    width:54px!important;height:56px!important;min-width:54px!important;min-height:56px!important;
+    flex:0 0 56px!important;padding:3px!important;
+  }
+  #furnitureIconToolbar .modernIconBtn svg{width:22px!important;height:22px!important}
+  #furnitureIconToolbar .modernIconBtn .iconLabel{font-size:8.3px!important}
+  aside{top:calc(env(safe-area-inset-top) + 96px)!important}
+  .sidebarScrim{inset:calc(env(safe-area-inset-top) + 96px) 0 env(safe-area-inset-bottom) 0!important}
+  .fpOfflineStatusV102{bottom:36px!important}
+}
+  `;
+  document.head.appendChild(s);
+})();
+// ===== End FurniPlan V111 Safe Responsive Touch CSS Only =====
+
+
+// ===== FurniPlan V115 Bilingual UI (English default) =====
+(function(){
+  'use strict';
+  if (window.__FurniPlanV115LanguageLoaded) return;
+  window.__FurniPlanV115LanguageLoaded = true;
+
+  const STORAGE_KEY = 'furniplan_language_v115';
+  const AR = /[\u0600-\u06FF]/;
+  let currentLang = 'en';
+  let applying = false;
+
+  const exact = {
+    // V161 Full Library + recently added furniture labels
+    'أشخاص':'People','إكسسوارات':'Accessories','الكل':'All','كل قطع المكتبة':'All Library Items','قطع المكتبة':'Library Items',
+    'تجهيز القطعة':'Prepare Item','طبقة الإدخال':'Placement Layer','أمام':'Front','خلف':'Back',
+    'اختر القطعة':'Choose Item','✓ اختر القطعة':'✓ Choose Item','تكبير 5%':'Enlarge 5%','تصغير 5%':'Reduce 5%',
+    'استبدال اللون الأساسي للصورة':'Replace the image base color','الأقسام':'Categories','ابحث عن قطعة…':'Search items…',
+    'اختر قطعة للمعاينة':'Select an item to preview','معاينة قبل الوضع':'Preview before placement',
+    'بعد الضغط على «اختر» تختفي المكتبة. اضغط المكان المطلوب على الخارطة لتنزل القطعة بكل هذه التعديلات.':'After choosing, the library closes. Tap the desired place on the plan to insert the item with these settings.',
+    'بوف مربع':'Square Ottoman',
+    'رجل واقف':'Standing Man','امرأة واقفة':'Standing Woman','طفل واقف':'Standing Child','رجل مسن واقف':'Standing Elderly Man',
+    'امرأة تمشي':'Walking Woman','رجل جالس 1':'Seated Man 1','رجل جالس 2':'Seated Man 2','طفل جالس':'Seated Child',
+    'امرأة جالسة 1':'Seated Woman 1','امرأة جالسة 2':'Seated Woman 2',
+    'ديكور طاولة خشبية':'Wood Table Decor','ديكور طاولة رخام':'Marble Table Decor','صحن فواكه':'Fruit Bowl',
+    'نبتة داخلية':'Indoor Plant','باقة ورد':'Flower Bouquet','كتب وزينة ذهبية':'Books & Gold Decor',
+    'صينية قهوة عربية':'Arabic Coffee Tray','علبة مناديل رخامية':'Marble Tissue Box','شمعة وفواحة':'Candle & Diffuser',
+    'كتب ونبتة وزينة':'Books, Plant & Decor',
+    'تخطيط أذكى .. لحياة أفضل':'Smarter planning .. Better living',
+    'مخططات':'Plans','أثاث':'Furniture','تصميمات':'Designs','احفظ':'Save','اطبع':'Print','مشاركة سهلة':'Easy sharing',
+    '© 2026 FurniPlan — جميع الحقوق محفوظة — سدير ياسين محمد':'© 2026 FurniPlan — All rights reserved — Sadeer Yaseen Mohammed',
+    '© 2026 FurniPlan - جميع الحقوق محفوظة - سدير ياسين محمد':'© 2026 FurniPlan — All rights reserved — Sadeer Yaseen Mohammed',
+    'ارفع مخططًا للبدء':'Upload a plan to begin','ارفع مخططا للبدء':'Upload a plan to begin',
+    'معلوماتك':'Your Info','المساعد':'Assistant','مشروع جديد':'New Project','فتح مشروع':'Open Project','حفظ المشروع':'Save Project',
+    'تصدير PNG':'Export PNG','طباعة A3/A4':'Print A3/A4','حفظ PDF':'Save PDF',
+    '☰ المكتبة':'☰ Library','المكتبة':'Library','رفع الخارطة':'Upload Plan','معايرة القياس':'Calibrate Scale','قياس مسافة':'Measure Distance','إضافة مسمى':'Add Label',
+    'المقياس':'Scale','الحالة:':'Status:','الحالة':'Status','غير معاير':'Not calibrated','إعادة ضبط المقياس':'Reset Scale',
+    'مكتبة الأثاث':'Furniture Library','+ إضافة للمكتبة':'+ Add to Library','استعادة الأصلية':'Restore Defaults',
+    'قطعة سريعة':'Quick Item','الاسم':'Name','قطعة مخصصة':'Custom Item','العرض (سم)':'Width (cm)','العمق (سم)':'Depth (cm)',
+    'لون القطعة':'Item Color','وضع على الخارطة':'Place on Plan','حفظ في المكتبة':'Save to Library',
+    'أبواب وشبابيك':'Doors & Windows','أدوات الأثاث':'Furniture Tools','شبكة 50 سم':'50 cm Grid','القياسات':'Measurements','أسماء القطع':'Item Names',
+    'تظليل':'Shadow','مسافات تلقائية':'Auto Spacing','تحديد متعدد':'Multi-select','قفل الأثاث':'Lock Furniture',
+    'قفل القياسات':'Lock Measurements','قفل المسميات':'Lock Labels','قفل سحب الخارطة':'Lock Plan Panning',
+    'إظهار الخارطة':'Show Plan','إظهار الأثاث':'Show Furniture','إظهار القياسات':'Show Measurements','إظهار المسميات':'Show Labels',
+    'إظهار أسهم القياس':'Show Measurement Arrows','إظهار دليل الأثاث':'Show Furniture Guide',
+    '↶ تراجع':'↶ Undo','↷ إعادة':'↷ Redo','تحديد كل الأثاث':'Select All Furniture','مسح كل القياسات':'Clear All Measurements',
+    'ملاءمة للشاشة':'Fit to Screen','تصغير':'Zoom Out','تكبير':'Zoom In','حجم القياسات':'Measurement Size','حجم المسميات':'Label Size',
+    'الأثاث المستخدم في الخارطة':'Furniture Used in Plan','القياسات بالسنتيمتر':'Dimensions in centimeters',
+    'القطعة:':'Item:','العرض سم':'Width cm','العمق سم':'Depth cm','الدوران °':'Rotation °','استبدال اللون الأساسي':'Replace Base Color',
+    'عكس فتح الباب':'Flip Door Swing','🔓 قفل':'🔓 Lock','🔒 فتح القفل':'🔒 Unlock','نسخ':'Duplicate','إلغاء التحديد':'Deselect','حذف':'Delete',
+    'القياس المحدد:':'Selected Measurement:','تثبيت القياس':'Pin Measurement','حذف القياس':'Delete Measurement',
+    'المسمى المحدد:':'Selected Label:','النص':'Text','حذف المسمى':'Delete Label',
+    'تأكيد مقياس الخارطة':'Confirm Plan Scale','المسافة الحقيقية':'Real Distance','الوحدة':'Unit','متر':'Meter','سنتيمتر':'Centimeter',
+    'إلغاء':'Cancel','اعتماد المقياس':'Apply Scale','إضافة قطعة إلى المكتبة':'Add Item to Library','اسم القطعة':'Item Name','قطعة جديدة':'New Item',
+    'العرض الحقيقي (سم)':'Real Width (cm)','العمق الحقيقي (سم)':'Real Depth (cm)','التصنيف':'Category','تصنيف جديد (اختياري)':'New Category (optional)',
+    'مثال: مكتب':'Example: Office','لون افتراضي للقطع بدون صورة':'Default color for items without an image',
+    'اسم المشروع':'Project Name','اسم العميل':'Client Name','الموقع':'Location','عنوان الخارطة':'Plan Title',
+    'اسم الشركة أو المكتب':'Company / Office Name','عنوان الشركة':'Company Address','الإيميل':'Email','حفظ معلوماتك':'Save Your Info',
+    'إزالة الشعار المخصص':'Remove Custom Logo','إظهار بيانات المشروع والعميل التفصيلية':'Show detailed project and client information',
+    'غرفة نوم':'Bedroom','غرفة طعام':'Dining Room','صالة':'Living Room','مطبخ':'Kitchen','حمام':'Bathroom','مكتب':'Office',
+    'الغسيل والخدمات':'Laundry & Utility','مدخل وتخزين':'Entry & Storage','الكراج والسيارات':'Garage & Cars','الحدائق والمسابح':'Gardens & Pools','أخرى':'Other',
+    'باب':'Door','شباك':'Window','باب سحاب':'Sliding Door','باب تركي':'Turkish Door','باب مزدوج':'Double Door',
+    'شباك ثابت':'Fixed Window','شباك سحاب':'Sliding Window','شباك مزدوج':'Double Window',
+    'سرير مفرد':'Single Bed','سرير مزدوج':'Double Bed','سرير كينغ':'King Bed','كومودينو':'Nightstand',
+    'دولاب ملابس 1 متر':'Wardrobe 1 m','دولاب ملابس 1.5 متر':'Wardrobe 1.5 m','دولاب ملابس 2 متر':'Wardrobe 2 m',
+    'دولاب ملابس 2.6 متر':'Wardrobe 2.6 m','دولاب ملابس 3 متر':'Wardrobe 3 m',
+    'كنبة مقعدين':'2-Seat Sofa','كنبة 3 مقاعد':'3-Seat Sofa','كنبة زاوية L':'L-Shaped Sofa','شيزلونج':'Chaise Lounge',
+    'كرسي مكتب':'Office Chair','مكتب وكرسي كامل':'Desk & Chair Set','كرسي مفرد أخضر':'Green Armchair','كرسي مفرد فاتح':'Light Armchair',
+    'طاولة قهوة دائرية':'Round Coffee Table','طاولة قهوة مستطيلة':'Rectangular Coffee Table',
+    'طاولة طعام مستطيلة حديثة':'Modern Rectangular Dining Table','طاولة طعام دائرية 4 كراسي':'Round Dining Table – 4 Chairs',
+    'طاولة طعام بيضاوية 6 كراسي':'Oval Dining Table – 6 Chairs','طاولة طعام مستطيلة 6 كراسي':'Rectangular Dining Table – 6 Chairs',
+    'وحدة تلفزيون':'TV Unit','كونسول صالة':'Living Room Console','كونسول مدخل':'Entry Console','كونسول جانبي':'Side Console',
+    'بوفيه جانبي':'Sideboard','خزانة أدراج':'Drawer Cabinet','خزانة ملفات':'File Cabinet','خزانة خدمات':'Utility Cabinet',
+    'خزانة جانبية':'Side Cabinet','مقعد تخزين':'Storage Bench','مقعد أحذية':'Shoe Bench',
+    'حوض غسيل':'Wash Basin','حوض مطبخ':'Kitchen Sink','حوض استحمام':'Bathtub','مرحاض أرضي':'Floor Toilet',
+    'مرحاض معلق':'Wall-Hung Toilet','خزانة حمام':'Bathroom Vanity','كابينة دش مربعة':'Square Shower Cabin',
+    'دش مستطيل':'Rectangular Shower','مغسلة مفردة':'Single Vanity','مغسلة مزدوجة':'Double Vanity',
+    'ثلاجة باب واحد 85×75':'Single-Door Fridge 85×75','ثلاجة بابين 120×75':'Double-Door Fridge 120×75',
+    'موقد غاز':'Gas Cooker','خزانة مطبخ سفلية':'Base Kitchen Cabinet','خزانة مطبخ سفلية عريضة':'Wide Base Kitchen Cabinet',
+    'خزانة مطبخ زاوية L':'L-Corner Kitchen Cabinet','خزانة مطبخ زاوية بديلة':'Alternative Corner Cabinet',
+    'غسالة ملابس - علوي':'Top-Load Washer','نشافة ملابس - علوي':'Top-Load Dryer','خزان ماء':'Water Tank','سخان ماء':'Water Heater',
+    'سبلت داخلي':'Indoor AC Unit','سبلت خارجي':'Outdoor AC Unit',
+    'سيارة سيدان':'Sedan','سيارة دفع رباعي':'SUV','مرآب سيارة واحدة':'Single-Car Garage','مسبح مستطيل':'Rectangular Pool',
+    'نافورة دائرية':'Round Fountain','نافورة مستطيلة':'Rectangular Fountain','حديقة دائرية':'Round Garden',
+    'حديقة مستطيلة':'Rectangular Garden','حديقة على شكل L':'L-Shaped Garden','حديقة عضوية':'Organic-Shaped Garden',
+    'نبتة ديكور':'Decorative Plant','سجادة دائرية':'Round Rug','سجادة مستطيلة':'Rectangular Rug','مرآة دائرية':'Round Mirror',
+    'فتح':'Open','حفظ':'Save','إغلاق':'Close','إخفاء':'Hide','إظهار':'Show','قفل':'Lock','ترتيب':'Arrange','تحريك':'Move',
+    'معاينة':'Preview','معلومات':'Information','أيقونات':'Icons','مساحة':'Area','اتجاه':'Direction','العنوان':'Title',
+    'الشعار':'Logo','العميل':'Client','مسميات':'Labels','قياس':'Measure','شبكة':'Grid',
+    'جاري تجهيز صفحة الطباعة...':'Preparing print page...','جاري تجهيز الطباعة':'Preparing print',
+    'تحريك الأثاث':'Move Furniture','متعدد':'Multi','الكل':'All','جروب':'Group','فك جروب':'Ungroup',
+    'دوران 90°':'Rotate 90°','دوران 45°':'Rotate 45°','إعادة الدوران':'Reset Rotation','صفر':'0°',
+    'لون':'Color','سناب':'Snap','تلقائي':'Auto','ظل':'Shadow','دليل':'Guide',
+    'إخفاء / إظهار القطعة':'Hide / Show Item','تكبير القطعة 5%':'Enlarge Item 5%','تصغير القطعة 5%':'Shrink Item 5%',
+    'قفل / فتح المحدد':'Lock / Unlock Selection','نسخ المحدد':'Duplicate Selection','حذف المحدد':'Delete Selection',
+    'إنهاء مساحة':'Finish Area','مسح قياس':'Delete Measure','المكتبة':'Library',
+    'إخفاء خط':'Hide Line','إظهار خط':'Show Line','إخفاء قياسات':'Hide Measurements','إظهار قياسات':'Show Measurements',
+    'إخفاء مسميات':'Hide Labels','إظهار مسميات':'Show Labels','إخفاء خارطة':'Hide Plan','إظهار خارطة':'Show Plan',
+    'إخفاء أثاث':'Hide Furniture','إظهار أثاث':'Show Furniture','إخفاء دليل':'Hide Guide','إظهار دليل':'Show Guide',
+    'معلومات المشروع':'Project Information','التاريخ':'Date','عميل':'Client','عميل:':'Client:',
+    'الموقع:':'Location:','التاريخ:':'Date:','المقياس معاير':'Scale calibrated',
+    'اسم الغرفة / المساحة':'Room / Area Name','حذف المساحة':'Delete Area',
+    'دوران 180°':'Rotate 180°','أمام':'Front','خلف':'Back',
+    'رفع القطعة طبقة واحدة للأمام':'Move Item One Layer Forward',
+    'إنزال القطعة طبقة واحدة للخلف':'Move Item One Layer Back',
+    'تم رفع القطعة إلى الأمام':'Item brought to front',
+    'تم إنزال القطعة إلى الخلف':'Item sent to back',
+    'القطعة في أعلى طبقة بالفعل':'Item is already on the top layer',
+    'القطعة في أسفل طبقة بالفعل':'Item is already on the bottom layer',
+    'اختر قطعة أثاث أولاً':'Select a furniture item first'
+  };
+
+  const phrases = [
+    ['جميع الحقوق محفوظة','All rights reserved'],['سدير ياسين محمد','Sadeer Yaseen Mohammed'],
+    ['تم حذف','Deleted'],['تم إظهار','Shown'],['تم إخفاء','Hidden'],['تم فتح','Opened'],['تم قفل','Locked'],['تم حفظ','Saved'],
+    ['تم تحديد','Selected'],['تم تشغيل','Enabled'],['تم إيقاف','Disabled'],['تم اعتماد','Applied'],['تم إلغاء','Cancelled'],
+    ['تمت إعادة','Reset'],['تعذر','Unable to'],['جاري','Processing'],['اختر','Choose'],['حدد','Select'],['أدخل','Enter'],
+    ['اضغط','Press'],['اسحب','Drag'],['ارفع','Upload'],['معايرة','Calibrate'],['المسافة','distance'],['المساحة','area'],
+    ['المحيط','perimeter'],['الخارطة','plan'],['المخطط','plan'],['القطعة','item'],['الأثاث','furniture'],['القياسات','measurements'],
+    ['المسميات','labels'],['المقياس','scale'],['المكتبة','library'],['الشركة','company'],['المشروع','project'],
+    ['الدوران','rotation'],['السحب','dragging'],['التحريك','movement'],['التحديد','selection'],['الوحدة','unit'],['الرسم','drawing']
+  ];
+
+  const words = {
+    'على':'on','في':'in','من':'from','إلى':'to','الى':'to','أو':'or','ثم':'then','مع':'with','بدون':'without','بعد':'after','قبل':'before',
+    'عند':'when','إذا':'if','ان':'that','أن':'that','لا':'no','لم':'not','يمكن':'can','يجب':'must','فقط':'only','نفس':'same','كل':'all',
+    'هذا':'this','هذه':'this','الآن':'now','مرة':'time','أخرى':'other','واحدة':'one','واحد':'one','أكثر':'more','أقل':'less',
+    'أعلى':'top','أسفل':'bottom','يمين':'right','يسار':'left','أفقي':'horizontal','عمودي':'vertical','وسط':'center',
+    'عرض':'width','عمق':'depth','حجم':'size','اسم':'name','عنوان':'title','لون':'color','صورة':'image','صور':'images','ملف':'file',
+    'رقم':'number','قيمة':'value','إعداد':'setting','إعدادات':'settings','أداة':'tool','أدوات':'tools','بيانات':'data','معلومات':'information',
+    'خريطة':'plan','خارطة':'plan','مخطط':'plan','أثاث':'furniture','قياس':'measurement','مسمى':'label','باب':'door','شباك':'window',
+    'غرفة':'room','مكتب':'office','مطبخ':'kitchen','حمام':'bathroom','سرير':'bed','كرسي':'chair','طاولة':'table','خزانة':'cabinet',
+    'سيارة':'car','حديقة':'garden','مسبح':'pool','نافورة':'fountain','سجادة':'rug','مرآة':'mirror','متر':'meter','سنتيمتر':'centimeter',
+    'ملم':'mm','إنش':'inch','قدم':'foot','ياردة':'yard','حفظ':'save','فتح':'open','حذف':'delete','إخفاء':'hide','إظهار':'show',
+    'إضافة':'add','إزالة':'remove','إعادة':'reset','تراجع':'undo','نسخ':'duplicate','طباعة':'print','تثبيت':'pin','قفل':'lock',
+    'ترتيب':'arrange','تحريك':'move','تكبير':'zoom in','تصغير':'zoom out','تظليل':'shadow','تصدير':'export','اعتماد':'apply',
+    'إلغاء':'cancel','تحديث':'update','استعادة':'restore','اختيار':'select','الافتراضي':'default','افتراضي':'default',
+    'مخصصة':'custom','مخصص':'custom','سريع':'quick','سريعة':'quick','غير':'not','معاير':'calibrated','دائري':'round',
+    'دائرية':'round','مستطيل':'rectangular','مستطيلة':'rectangular','مزدوج':'double','مزدوجة':'double','مفرد':'single',
+    'مفردة':'single','داخلي':'interior','خارجي':'exterior','جانبي':'side','زاوية':'corner','حديثة':'modern'
+  };
+
+  const reverseExact = Object.create(null);
+  for (const [ar,en] of Object.entries(exact)) if (!(en in reverseExact)) reverseExact[en] = ar;
+  Object.assign(reverseExact, {
+    'Message':'رسالة','Grid':'شبكة','Move':'تحريك','Area':'مساحة','label':'مسمى','Label':'مسمى',
+    'Measure':'قياس','Calibrate':'معايرة','DXF':'DXF','plan':'خارطة','Plan':'خارطة',
+    'Save':'حفظ','Open':'فتح','Arrange':'ترتيب','Zoom In':'تكبير','Zoom Out':'تصغير',
+    'Scale':'المقياس','Status:':'الحالة:','Status':'الحالة','Not calibrated':'غير معاير',
+    'Reset Scale':'إعادة ضبط المقياس','Furniture Library':'مكتبة الأثاث',
+    '+ Add to Library':'+ إضافة للمكتبة','Add to Library +':'+ إضافة للمكتبة',
+    'Restore Defaults':'استعادة الأصلية','Icons':'أيقونات','Measurements':'القياسات',
+    'Item Names':'أسماء القطع','Lock Measurements':'قفل القياسات','Lock Labels':'قفل المسميات',
+    'Lock Furniture':'قفل الأثاث','Hide Furniture':'إخفاء الأثاث','Hide Plan':'إخفاء الخارطة',
+    'Hide Labels':'إخفاء المسميات','Hide Measurements':'إخفاء القياسات',
+    'Hide Measurement Arrows':'إخفاء أسهم القياس','Hide Guide':'إخفاء الدليل',
+    'Upload a plan to begin':'ارفع مخططًا للبدء','Press «Calibrate» then Choose on plan.':'اضغط «معايرة» ثم اختر نقطتين على الخارطة.',
+    '3-Seat Sofa':'كنبة 3 مقاعد','Seat Sofa-3':'كنبة 3 مقاعد',
+    '2-Seat Sofa':'كنبة مقعدين','Seat Sofa-2':'كنبة مقعدين',
+    'L-Shaped Sofa':'كنبة زاوية L','Light Armchair':'كرسي مفرد فاتح',
+    'Bedroom':'غرفة نوم','Dining Room':'غرفة طعام','Living Room':'صالة','Kitchen':'مطبخ',
+    'Bathroom':'حمام','Office':'مكتب','Laundry & Utility':'الغسيل والخدمات',
+    'Entry & Storage':'مدخل وتخزين','Garage & Cars':'الكراج والسيارات',
+    'Gardens & Pools':'الحدائق والمسابح','Other':'أخرى',
+    'room':'غرفة','kitchen':'مطبخ','bathroom':'حمام','office':'مكتب','other':'أخرى',
+    'Smarter planning .. Better living':'تخطيط أذكى .. لحياة أفضل',
+    '© 2026 FurniPlan — All rights reserved — Sadeer Yaseen Mohammed':'© 2026 FurniPlan — جميع الحقوق محفوظة — سدير ياسين محمد',
+    'FurniPlan — All rights reserved — Sadeer Yaseen Mohammed 2026 ©':'FurniPlan — جميع الحقوق محفوظة — سدير ياسين محمد © 2026'
+  });
+
+  function translateEnText(input){
+    const src = String(input ?? '');
+    const lead = (src.match(/^\s*/)||[''])[0];
+    const trail = (src.match(/\s*$/)||[''])[0];
+    const core = src.trim();
+    if (!core) return src;
+    if (reverseExact[core]) return lead + reverseExact[core] + trail;
+    return src;
+  }
+
+  function translateArText(input){
+    let src = String(input ?? '');
+    if (!AR.test(src)) return src;
+    const lead = (src.match(/^\s*/)||[''])[0];
+    const trail = (src.match(/\s*$/)||[''])[0];
+    const core = src.trim();
+    if (exact[core]) return lead + exact[core] + trail;
+    let out = core;
+    const sorted = phrases.slice().sort((a,b)=>b[0].length-a[0].length);
+    sorted.forEach(([a,b]) => { out = out.split(a).join(b); });
+    out = out.replace(/[\u0600-\u06FF]+/g, w => words[w] || w);
+    out = out.replace(/\s{2,}/g,' ').replace(/\s+([،,.!?؛:])/g,'$1').trim();
+    out = out.replace(/،/g,',').replace(/؛/g,';');
+    return lead + (out || core) + trail;
+  }
+
+  function rememberNode(n){
+    if (n.nodeType === Node.TEXT_NODE) {
+      if (AR.test(n.nodeValue || '') && n.__fpArabicText === undefined) n.__fpArabicText = n.nodeValue;
+      return;
+    }
+    if (n.nodeType !== Node.ELEMENT_NODE) return;
+    for (const a of ['title','placeholder','aria-label','alt']) {
+      const v = n.getAttribute(a);
+      if (v && AR.test(v) && n['__fpArabicAttr_'+a] === undefined) n['__fpArabicAttr_'+a] = v;
+    }
+    if (n.tagName === 'INPUT' && /^(button|submit|reset)$/i.test(n.type || '')) {
+      const v = n.value;
+      if (v && AR.test(v) && n.__fpArabicInputValue === undefined) n.__fpArabicInputValue = v;
+    }
+  }
+
+  function applyNode(n, lang){
+    if (n.nodeType === Node.TEXT_NODE) {
+      rememberNode(n);
+      {
+        let next = n.nodeValue;
+        if (lang === 'en') next = n.__fpArabicText !== undefined ? translateArText(n.__fpArabicText) : translateArText(n.nodeValue);
+        else next = n.__fpArabicText !== undefined ? n.__fpArabicText : translateEnText(n.nodeValue);
+        if (n.nodeValue !== next) n.nodeValue = next;
+      }
+      return;
+    }
+    if (n.nodeType !== Node.ELEMENT_NODE) return;
+    if (n.id === 'fpLanguageToggle') return;
+    rememberNode(n);
+    for (const a of ['title','placeholder','aria-label','alt']) {
+      const k='__fpArabicAttr_'+a;
+      {
+        const cur = n.getAttribute(a) || '';
+        let next = cur;
+        if (lang === 'en') next = n[k] !== undefined ? translateArText(n[k]) : translateArText(cur);
+        else next = n[k] !== undefined ? n[k] : translateEnText(cur);
+        if (cur !== next) n.setAttribute(a,next);
+      }
+    }
+    {
+      const cur = n.value || '';
+      let next = cur;
+      if (lang === 'en') next = n.__fpArabicInputValue !== undefined ? translateArText(n.__fpArabicInputValue) : translateArText(cur);
+      else next = n.__fpArabicInputValue !== undefined ? n.__fpArabicInputValue : translateEnText(cur);
+      if (cur !== next) n.value = next;
+    }
+    for (const child of Array.from(n.childNodes)) applyNode(child,lang);
+  }
+
+  function ensureToggle(){
+    if (document.getElementById('fpLanguageToggle')) return;
+    const style = document.createElement('style');
+    style.id = 'furniplan-v115-language-style';
+    style.textContent = [
+      'header{position:relative!important}',
+      '.fpLanguageToggle{position:sticky!important;inset-inline-start:0!important;z-index:50!important;order:-9999!important;flex:0 0 auto!important;min-width:104px;height:38px;padding:0 15px;margin-inline:4px;border-radius:11px;border:1px solid rgba(255,255,255,.62);background:#0b5d93!important;color:#fff!important;font:800 14px/1 Arial,Tahoma,sans-serif;box-shadow:0 5px 15px rgba(0,0,0,.18);cursor:pointer;white-space:nowrap;display:inline-flex!important;align-items:center!important;justify-content:center!important}',
+      '.fpLanguageToggle:hover{filter:brightness(1.12)}',
+      '@media(max-width:1100px){.fpLanguageToggle{min-width:54px!important;width:auto!important;height:41px!important;min-height:41px!important;padding:0 7px!important;font-size:10px!important;border-radius:8px!important}}'
     ].join('');
     document.head.appendChild(style);
     const btn = document.createElement('button');
