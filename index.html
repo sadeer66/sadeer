@@ -7,8 +7,8 @@
 <meta http-equiv="Expires" content="0" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<title>FurniPlan V177</title>
-<meta name="furniplan-version" content="177">
+<title>FurniPlan V178</title>
+<meta name="furniplan-version" content="178">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -3817,9 +3817,75 @@ function wireFurnitureCard(d,obj,index){
     }
   };
 }
+// V178: group related pieces in both catalogues without changing stored IDs or data.
+function libraryItemGroup(obj){
+  const n=String(obj.name||obj.nameEn||'').trim();
+  const groups=[
+    /^سرير|^أسرة|^bed/i,
+    /^كنبة|^أريكة|^اريكة|^sofa|^couch/i,
+    /^كرسي|^كراسي|^chair|^armchair/i,
+    /^شيزلونج|^بوف|^عثماني|^ottoman|^pouf|^chaise/i,
+    /^كومدينة|^كومودينو|^nightstand|^bedside/i,
+    /^طاولة طعام|^dining table|^round dining/i,
+    /^طاولات? قهوة|^coffee table|^nested coffee/i,
+    /^طاولة جانبية|^side table/i,
+    /^طاولة|^table/i,
+    /^بنش|^مقعد|^bench/i,
+    /^مكتب|^desk/i,
+    /^تسريحة|^vanity with/i,
+    /^كونسول|^وحدة تلف|^console|^tv console|^media console/i,
+    /^سايد بورد|^بوفيه|^sideboard/i,
+    /^خزانة أدراج|^dresser/i,
+    /^دولاب|^خزانة|^وحدة رفوف|^cabinet|^wardrobe|^shelving/i,
+    /^مرآة|^mirror/i,
+    /^سجاد|^rug|^carpet/i,
+    /^عربة|^cart|^marble serving/i,
+    /^بانيو|^حوض استحمام|^bathtub|^freestanding/i,
+    /^مغسلة|^حوض مطبخ|^حوض غسيل|^washbasin|^sink/i,
+    /^مرحاض|^toilet/i,
+    /^بيديه|^bidet/i,
+    /^شاور|^دش|^كابينة دش|^shower/i,
+    /^ثلاجة|^refrigerator|^fridge/i,
+    /^موقد|^stove/i,
+    /^غسالة|^نشافة|^washing|^dryer/i,
+    /^سبلت|^مكيف|^air conditioner/i,
+    /^مروحة|^fan/i,
+    /^ثريا|^chandelier/i,
+    /^سبوت|^spot/i,
+    /^إنارة|^انارة|^سكة إنارة|^light/i,
+    /^مصباح|^lamp/i,
+    /^نبات|^نبتة|^plant|^indoor plant/i,
+    /^باقة ورد|^flower/i,
+    /^راوتر|^router/i,
+    /^هاتف|^phone/i,
+    /^رجل|^شاب|^man/i,
+    /^امرأة|^امراة|^woman/i,
+    /^طفل|^child/i,
+    /^قطة|^cat/i,
+    /^كلب|^dog/i,
+    /^طائر|^حمامة|^bird/i,
+    /^أرنب|^rabbit/i,
+    /^سلحفاة|^turtle/i,
+    /^سيارة|^car/i,
+    /^حديقة|^garden/i,
+    /^نافورة|^fountain/i,
+    /^مسبح|^pool/i
+  ];
+  const index=groups.findIndex(r=>r.test(n));
+  // Unlisted types still stay together by their first Arabic or English noun.
+  return index<0?'z_'+n.split(/\s+/)[0]:String(index).padStart(3,'0');
+}
+function sortedLibraryItems(list){
+  const cats=getCategoryOrder();
+  const categoryRank=x=>{const i=cats.indexOf(x.category);return i<0?cats.length:i;};
+  return list.map((obj,index)=>({obj,index})).sort((a,b)=>
+    categoryRank(a.obj)-categoryRank(b.obj)||
+    libraryItemGroup(a.obj).localeCompare(libraryItemGroup(b.obj),'en')||a.index-b.index
+  ).map(x=>x.obj);
+}
 function renderLibrary(){
   lib.innerHTML='';
-  furniture.forEach((obj,index)=>{
+  sortedLibraryItems(furniture).forEach((obj,index)=>{
     if(activeCategory!=='الكل'&&obj.category!==activeCategory)return;
     const d=document.createElement('div');d.className='fcard';d.draggable=false;
     const displayName=fullLibDisplayName(obj);
@@ -3914,7 +3980,7 @@ function fullLibFiltered(){
   });
 }
 function renderFullLibGrid(){
-  const list=fullLibFiltered();fullLibGrid.innerHTML='';fullLibCount.textContent=list.length;
+  const list=sortedLibraryItems(fullLibFiltered());fullLibGrid.innerHTML='';fullLibCount.textContent=list.length;
   fullLibGridTitle.textContent=fullLibCategory==='الكل'?(fullLibUiLang()==='en'?'All Library Items':'كل قطع المكتبة'):fullLibDisplayCategory(fullLibCategory);
   list.forEach(obj=>{
     const c=document.createElement('button');c.type='button';c.className='fullLibCard'+(obj.id===fullLibSelectedId?' selected':'');
