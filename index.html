@@ -7,8 +7,8 @@
 <meta http-equiv="Expires" content="0" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<title>FurniPlan V185</title>
-<meta name="furniplan-version" content="178">
+<title>FurniPlan V186</title>
+<meta name="furniplan-version" content="186">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -4045,21 +4045,53 @@ function sortedLibraryItems(list){
     libraryItemGroup(a.obj).localeCompare(libraryItemGroup(b.obj),'en')||a.index-b.index
   ).map(x=>x.obj);
 }
+let fpSideLibraryImageObserver=null;
+function fpLoadLibraryImage(img){
+  if(!img||img.getAttribute('src'))return;
+  const id=img.dataset.fpid||'';
+  const obj=furniture.find(x=>String(x.id)===id);
+  if(!obj||!obj.src)return;
+  try{img.src=resolveAssetSrc(obj.src);}catch(_){}
+}
+function fpReleaseLibraryImage(img){
+  if(!img)return;
+  try{img.removeAttribute('src');}catch(_){}
+}
+function fpInitSideLibraryImages(){
+  if(fpSideLibraryImageObserver){try{fpSideLibraryImageObserver.disconnect();}catch(_){} fpSideLibraryImageObserver=null;}
+  const imgs=[...lib.querySelectorAll('img[data-fpid]')];
+  if(!imgs.length)return;
+  if(!('IntersectionObserver' in window)){imgs.forEach(fpLoadLibraryImage);return;}
+  const root=lib.closest('aside')||null;
+  fpSideLibraryImageObserver=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      const img=entry.target;
+      if(entry.isIntersecting)fpLoadLibraryImage(img);
+      else fpReleaseLibraryImage(img);
+    });
+  },{root,rootMargin:'240px 0px',threshold:.01});
+  imgs.forEach(img=>fpSideLibraryImageObserver.observe(img));
+}
 function renderLibrary(){
+  if(fpSideLibraryImageObserver){try{fpSideLibraryImageObserver.disconnect();}catch(_){} fpSideLibraryImageObserver=null;}
+  lib.querySelectorAll('img').forEach(fpReleaseLibraryImage);
   lib.innerHTML='';
   sortedLibraryItems(furniture).forEach((obj,index)=>{
     if(activeCategory!=='الكل'&&obj.category!==activeCategory)return;
     const d=document.createElement('div');d.className='fcard';d.draggable=false;
     const displayName=fullLibDisplayName(obj);
-    const visual=obj.src?`<img loading="lazy" decoding="async" src="${resolveAssetSrc(obj.src)}" alt="${displayName}">`:`<div class="genericThumb" style="box-shadow:inset 0 0 0 999px ${obj.color||'#bfa781'}33">بدون صورة</div>`;
+    const visual=obj.src?`<img loading="lazy" decoding="async" alt="">`:`<div class="genericThumb" style="box-shadow:inset 0 0 0 999px ${obj.color||'#bfa781'}33">بدون صورة</div>`;
     d.innerHTML=`<button class="editLibBtn" title="تعديل القطعة">✎</button>${obj.isCustom?'<span class="customMark">مضافة</span>':''}${visual}<b>${displayName}</b><span>${obj.w} × ${obj.h} ${fullLibUnit()}</span><button class="touchDragHandle" type="button" aria-label="اسحب إلى الخارطة">⠿</button>`;
+    const cardImg=d.querySelector('img');if(cardImg){cardImg.dataset.fpid=String(obj.id);cardImg.alt=displayName;}
     d.querySelector('.editLibBtn').onclick=e=>{e.stopPropagation();openLibraryEditor(obj.id);};
     const th=d.querySelector('.touchDragHandle');th.addEventListener('pointerdown',e=>startTouchLibraryDrag(e,obj,false));th.addEventListener('pointermove',moveTouchLibraryDrag);th.addEventListener('pointerup',endTouchLibraryDrag);th.addEventListener('pointercancel',endTouchLibraryDrag);
     wireFurnitureCard(d,obj,index);
     v98WireWholeCardDrag(d,obj,false);
     lib.appendChild(d);
   });
+  requestAnimationFrame(fpInitSideLibraryImages);
 }
+
 buildCategoryButtons();renderLibrary();
 
 /* ===== V101 Fullscreen Furniture Library ===== */
@@ -4077,7 +4109,7 @@ const fullLibPreviewCanvas=document.getElementById('fullLibPreviewCanvas');
 const fullLibPreviewTitle=document.getElementById('fullLibPreviewTitle');
 const fullLibCount=document.getElementById('fullLibCount');
 const fullLibGridTitle=document.getElementById('fullLibGridTitle');
-let fullLibCategory='الكل',fullLibSelectedId=null,fullLibSelectedItem=null,fullLibLayer='front',fullLibPreviewToken=0;
+let fullLibCategory='الكل',fullLibSelectedId=null,fullLibSelectedItem=null,fullLibLayer='front',fullLibPreviewToken=0,fullLibImageObserver=null,fullLibPreviewImage=null,fullLibPreviewImageKey='';
 
 function fullLibUiLang(){
   try{
@@ -4141,18 +4173,52 @@ function fullLibFiltered(){
     return hay.includes(q);
   });
 }
+function fpFullLibLoadImage(img){
+  if(!img||img.getAttribute('src'))return;
+  const card=img.closest('.fullLibCard'),id=card?.dataset.fpid||'';
+  const obj=furniture.find(x=>String(x.id)===id);
+  if(!obj||!obj.src)return;
+  try{img.src=resolveAssetSrc(obj.src);}catch(_){}
+}
+function fpInitFullLibImages(){
+  if(fullLibImageObserver){try{fullLibImageObserver.disconnect();}catch(_){} fullLibImageObserver=null;}
+  const imgs=[...fullLibGrid.querySelectorAll('img[data-fp-lazy="1"]')];
+  if(!imgs.length)return;
+  if(!('IntersectionObserver' in window)){imgs.forEach(fpFullLibLoadImage);return;}
+  const root=fullLibGrid.closest('.fullLibGridPanel')||null;
+  fullLibImageObserver=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      const img=entry.target,card=img.closest('.fullLibCard');
+      if(entry.isIntersecting)fpFullLibLoadImage(img);
+      else if(!card?.classList.contains('selected')){try{img.removeAttribute('src');}catch(_){}}
+    });
+  },{root,rootMargin:'280px 0px',threshold:.01});
+  imgs.forEach(img=>fullLibImageObserver.observe(img));
+}
 function renderFullLibGrid(){
-  // V185: do not create image elements for the hidden fullscreen library.
+  // V186 iPad memory fix: only decode cards near the visible viewport.
   if(!fullLibraryModal.classList.contains('open'))return;
+  if(fullLibImageObserver){try{fullLibImageObserver.disconnect();}catch(_){} fullLibImageObserver=null;}
+  fullLibGrid.querySelectorAll('img').forEach(img=>{try{img.removeAttribute('src');}catch(_){}});
   const list=sortedLibraryItems(fullLibFiltered());fullLibGrid.innerHTML='';fullLibCount.textContent=list.length;
   fullLibGridTitle.textContent=fullLibCategory==='الكل'?(fullLibUiLang()==='en'?'All Library Items':'كل قطع المكتبة'):fullLibDisplayCategory(fullLibCategory);
   list.forEach(obj=>{
-    const c=document.createElement('button');c.type='button';c.className='fullLibCard'+(obj.id===fullLibSelectedId?' selected':'');
-    const visual=obj.src?'<img loading="lazy" decoding="async" src="'+resolveAssetSrc(obj.src)+'" alt="">':'<div class="fullLibGeneric" style="background:'+(obj.color||'#bfa781')+'"></div>';
-    c.innerHTML=visual+'<b>'+String(fullLibDisplayName(obj)).replace(/</g,'&lt;')+'</b><span>'+obj.w+' × '+obj.h+' '+fullLibUnit()+'</span>';
-    c.onclick=()=>selectFullLibItem(obj);
-    fullLibGrid.appendChild(c);
+    const card=document.createElement('button');card.type='button';card.className='fullLibCard'+(obj.id===fullLibSelectedId?' selected':'');card.dataset.fpid=String(obj.id);
+    const visual=obj.src?'<img data-fp-lazy="1" loading="lazy" decoding="async" alt="">':'<div class="fullLibGeneric" style="background:'+(obj.color||'#bfa781')+'"></div>';
+    card.innerHTML=visual+'<b>'+String(fullLibDisplayName(obj)).replace(/</g,'&lt;')+'</b><span>'+obj.w+' × '+obj.h+' '+fullLibUnit()+'</span>';
+    card.onclick=()=>selectFullLibItem(obj);
+    fullLibGrid.appendChild(card);
   });
+  requestAnimationFrame(fpInitFullLibImages);
+}
+function fpUpdateFullLibSelection(id){
+  const current=fullLibGrid.querySelector('.fullLibCard.selected');if(current)current.classList.remove('selected');
+  let target=null;
+  for(const card of fullLibGrid.children){if(card.dataset&&card.dataset.fpid===String(id)){target=card;break;}}
+  if(target){
+    target.classList.add('selected');
+    const img=target.querySelector('img[data-fp-lazy="1"]');if(img)fpFullLibLoadImage(img);
+  }
 }
 function selectFullLibItem(item){
   const base=typeof item==='object'?item:furniture.find(x=>x.id===item);if(!base||!furniture.includes(base))return;
@@ -4161,7 +4227,7 @@ function selectFullLibItem(item){
   window.fullLibPreviewZoom=1;
   fullLibSelectedId=id;fullLibName.value=fullLibDisplayName(base);fullLibW.value=base.w||100;fullLibH.value=base.h||60;fullLibRot.value=0;
   fullLibColor.value=base.color||'#bfa781';fullLibTint.checked=false;fullLibLayer='front';syncFullLibLayerButtons();
-  renderFullLibGrid();drawFullLibPreview();
+  fpUpdateFullLibSelection(id);drawFullLibPreview();
 }
 function syncFullLibLayerButtons(){
   document.getElementById('fullLibLayerFront').classList.toggle('active',fullLibLayer==='front');
@@ -4172,7 +4238,7 @@ function drawFullLibPreview(){
   const rect=c.getBoundingClientRect();
   const cssW=Math.max(1,Math.round(rect.width||c.clientWidth||600));
   const cssH=Math.max(1,Math.round(rect.height||c.clientHeight||220));
-  const dpr=Math.min(3,Math.max(1,window.devicePixelRatio||1));
+  const dpr=Math.min((navigator.maxTouchPoints||0)>1?2:3,Math.max(1,window.devicePixelRatio||1));
   const pxW=Math.max(1,Math.round(cssW*dpr)),pxH=Math.max(1,Math.round(cssH*dpr));
   if(c.width!==pxW||c.height!==pxH){c.width=pxW;c.height=pxH;}
   const ctxp=c.getContext('2d'),token=++fullLibPreviewToken,W=cssW,H=cssH;
@@ -4239,7 +4305,27 @@ function drawFullLibPreview(){
     ctxp.shadowColor='transparent';ctxp.shadowBlur=0;ctxp.shadowOffsetY=0;
   };
   if(st.src){
-    const im=new Image();im.onload=()=>paint(im);im.onerror=()=>paint(null);im.src=resolveAssetSrc(st.src);
+    let selectedImg=null;
+    for(const card of fullLibGrid.children){
+      if(card.dataset&&card.dataset.fpid===String(st.id||fullLibSelectedId)){selectedImg=card.querySelector('img[data-fp-lazy="1"]');break;}
+    }
+    if(selectedImg&&selectedImg.complete&&selectedImg.naturalWidth){
+      paint(selectedImg);
+    }else{
+      const key=String(st.src);
+      if(!fullLibPreviewImage||fullLibPreviewImageKey!==key){
+        const im=new Image();im.decoding='async';fullLibPreviewImage=im;fullLibPreviewImageKey=key;
+        im.onload=()=>{if(fullLibPreviewImage===im&&fullLibPreviewImageKey===key)paint(im);};
+        im.onerror=()=>{if(fullLibPreviewImage===im&&fullLibPreviewImageKey===key)paint(null);};
+        im.src=resolveAssetSrc(st.src);
+      }else if(fullLibPreviewImage.complete&&fullLibPreviewImage.naturalWidth){
+        paint(fullLibPreviewImage);
+      }else{
+        const im=fullLibPreviewImage;
+        im.onload=()=>{if(fullLibPreviewImage===im&&fullLibPreviewImageKey===key)paint(im);};
+        im.onerror=()=>{if(fullLibPreviewImage===im&&fullLibPreviewImageKey===key)paint(null);};
+      }
+    }
   }else paint(null);
   fullLibPreviewTitle.textContent=(fullLibUiLang()==='en'?fullLibDisplayName(fullLibCurrentBase()):st.name)+(fullLibUiLang()==='en'?' — Preview before placement':' — معاينة قبل الوضع');
 }
@@ -4264,6 +4350,9 @@ function openFullLibrary(id=null){
 }
 function closeFullLibrary(){
   fullLibraryModal.classList.remove('open');fullLibraryModal.setAttribute('aria-hidden','true');document.body.style.overflow='';
+  if(fullLibImageObserver){try{fullLibImageObserver.disconnect();}catch(_){} fullLibImageObserver=null;}
+  fullLibGrid.querySelectorAll('img').forEach(img=>{try{img.removeAttribute('src');}catch(_){}});
+  fullLibPreviewToken++;fullLibPreviewImage=null;fullLibPreviewImageKey='';
 }
 document.getElementById('fullLibraryBtn').onclick=()=>openFullLibrary();
 document.getElementById('mobileFullLibraryBtn')?.addEventListener('click',()=>openFullLibrary());
