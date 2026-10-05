@@ -1,4 +1,4 @@
-name: Build FurniPlan V174
+name: Build FurniPlan V184
 
 on:
   workflow_dispatch:
@@ -50,33 +50,33 @@ jobs:
 
       - name: Create complete backup ZIP
         shell: pwsh
-        run: git archive --format=zip --output FurniPlan-V174-Complete.zip HEAD
+        run: git archive --format=zip --output FurniPlan-V184-Complete.zip HEAD
 
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FurniPlan-V174-Windows-Installer
-          path: dist/FurniPlan-V174-Setup-x64.exe
+          name: FurniPlan-V184-Windows-Installer
+          path: dist/FurniPlan-V184-Setup-x64.exe
           if-no-files-found: error
           retention-days: 30
 
       - name: Upload complete backup artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FurniPlan-V174-Complete-Backup
-          path: FurniPlan-V174-Complete.zip
+          name: FurniPlan-V184-Complete-Backup
+          path: FurniPlan-V184-Complete.zip
           if-no-files-found: error
           retention-days: 30
 
-      - name: Publish V174 release
+      - name: Publish V184 release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: FurniPlan-V174
-          name: FurniPlan V174
+          tag_name: FurniPlan-V184
+          name: FurniPlan V184
           body: |
-            FurniPlan V174.
-            Windows build aligned with FurniPlan V174 expanded ordered bilingual library.niPlan V174 expanded bilingual library and iPad web release.ngual UI/output cleanup and preserved V138/V146 area fixes.
+            FurniPlan V184.
+            Approved V184: full bilingual furniture library including trees, clinic, stairs, outdoor seating, shops, restaurants and cafes.
           files: |
-            dist/FurniPlan-V174-Setup-x64.exe
-            FurniPlan-V174-Complete.zip
+            dist/FurniPlan-V184-Setup-x64.exe
+            FurniPlan-V184-Complete.zip
           make_latest: true

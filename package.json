@@ -1,7 +1,7 @@
 {
-  "name": "furniplan-v174",
-  "version": "1.0.174",
-  "description": "FurniPlan V174 - expanded ordered bilingual furniture library (final build)",
+  "name": "furniplan-v184",
+  "version": "1.0.184",
+  "description": "FurniPlan V184 approved bilingual furniture library",
   "main": "desktop/main.js",
   "author": "سدير ياسين محمد",
   "license": "UNLICENSED",
@@ -14,8 +14,8 @@
   },
   "build": {
     "appId": "com.sadeer.furniplan.v174",
-    "productName": "FurniPlan V174",
-    "artifactName": "FurniPlan-V174-Setup-${arch}.exe",
+    "productName": "FurniPlan V184",
+    "artifactName": "FurniPlan-V184-Setup-${arch}.exe",
     "asar": true,
     "directories": {
       "output": "dist",
@@ -45,7 +45,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "FurniPlan V174",
+      "shortcutName": "FurniPlan",
       "runAfterFinish": true,
       "deleteAppDataOnUninstall": false,
       "installerIcon": "build/furniplan.ico",

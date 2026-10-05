@@ -94,10 +94,10 @@ async function createWindow() {
   const appRoot = app.getAppPath();
   const indexPath = path.join(appRoot, 'index.html');
 
-  writeLog(`V174 starting. appRoot=${appRoot} index=${indexPath} exists=${fs.existsSync(indexPath)} packaged=${app.isPackaged}`);
+  writeLog(`V184 starting. appRoot=${appRoot} index=${indexPath} exists=${fs.existsSync(indexPath)} packaged=${app.isPackaged}`);
 
   if (!fs.existsSync(indexPath)) {
-    dialog.showErrorBox('FurniPlan', `لم يتم العثور على ملف واجهة البرنامج.\n\nالمسار: ${indexPath}\n\nأعد تثبيت FurniPlan V174.`);
+    dialog.showErrorBox('FurniPlan', `لم يتم العثور على ملف واجهة البرنامج.\n\nالمسار: ${indexPath}\n\nأعد تثبيت FurniPlan V184.`);
     writeLog('index.html missing before server startup');
     app.quit();
     return;
@@ -119,7 +119,7 @@ async function createWindow() {
       show: false,
       autoHideMenuBar: true,
       backgroundColor: '#ffffff',
-      title: 'FurniPlan V174',
+      title: 'FurniPlan V184',
       icon: path.join(appRoot, 'build', 'furniplan.ico'),
       webPreferences: {
         contextIsolation: true,
@@ -147,8 +147,8 @@ async function createWindow() {
       try {
         await win.webContents.executeJavaScript(`
           (() => {
-            if (window.__fpDesktopV174) return;
-            window.__fpDesktopV174 = true;
+            if (window.__fpDesktopV184) return;
+            window.__fpDesktopV184 = true;
 
             function ensureTextModal(){
               let overlay=document.getElementById('fpDesktopTextModal');
@@ -290,17 +290,17 @@ async function createWindow() {
               }
             },true);
 
-            document.title='FurniPlan V174';
+            document.title='FurniPlan V184';
             const mark=document.createElement('div');
-            mark.textContent='Windows V174 — expanded library';
+            mark.textContent='Windows V184 — expanded library';
             mark.style.cssText='position:fixed;left:28px;top:96px;z-index:99999;color:#7dd3fc;font:700 11px Tahoma;pointer-events:none';
             document.body.appendChild(mark);
-            if(typeof setStatus==='function')setStatus('Windows V174 جاهز — إصلاح المساحة والمسميات مفعّل');
+            if(typeof setStatus==='function')setStatus('Windows V184 جاهز — إصلاح المساحة والمسميات مفعّل');
           })();
         `);
-        writeLog('Desktop V174 patch injected successfully.');
+        writeLog('Desktop V184 patch injected successfully.');
       } catch (err) {
-        writeLog(`Desktop V174 patch injection failed: ${err && err.stack ? err.stack : err}`);
+        writeLog(`Desktop V184 patch injection failed: ${err && err.stack ? err.stack : err}`);
       }
     });
 
@@ -319,7 +319,7 @@ async function createWindow() {
 
     win.on('page-title-updated', (event) => {
       event.preventDefault();
-      win.setTitle('FurniPlan V174');
+      win.setTitle('FurniPlan V184');
     });
 
     win.webContents.setWindowOpenHandler(({ url }) => {
@@ -331,7 +331,7 @@ async function createWindow() {
     });
   } catch (err) {
     writeLog(`Startup failed: ${err && err.stack ? err.stack : err}`);
-    dialog.showErrorBox('FurniPlan', 'تعذر تشغيل خادم FurniPlan المحلي. أعد تثبيت النسخة V174.');
+    dialog.showErrorBox('FurniPlan', 'تعذر تشغيل خادم FurniPlan المحلي. أعد تثبيت النسخة V184.');
     app.quit();
   }
 }
