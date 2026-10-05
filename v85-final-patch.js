@@ -461,7 +461,7 @@
 // ===== FurniPlan V101 Offline/PWA Registration =====
 (()=>{
   if(!('serviceWorker' in navigator)) return;
-  const register=()=>navigator.serviceWorker.register('./service-worker.js?v=161',{scope:'./'})
+  const register=()=>navigator.serviceWorker.register('./service-worker.js?v=179',{scope:'./'})
     .then(reg=>{ try{reg.update();}catch(_){} })
     .catch(()=>{});
   if(document.readyState==='complete') register();
