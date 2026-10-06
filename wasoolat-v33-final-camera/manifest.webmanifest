@@ -1,0 +1,13 @@
+{
+  "name":"الوصولات",
+  "short_name":"الوصولات",
+  "id":"./?v=33-final-camera",
+  "start_url":"./index.html?v=33-final-camera&source=home",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#041225",
+  "theme_color":"#061a35",
+  "dir":"rtl",
+  "lang":"ar",
+  "icons":[{"src":"icon.png?v=33","sizes":"256x256","type":"image/png","purpose":"any maskable"}]
+}
