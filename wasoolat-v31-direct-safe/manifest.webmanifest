@@ -1,0 +1,13 @@
+{
+  "name":"الوصولات V31 — النسخة المباشرة",
+  "short_name":"الوصولات V31",
+  "id":"./?v=31-direct-safe",
+  "start_url":"./index.html?v=31-direct-safe&source=home",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#041225",
+  "theme_color":"#061a35",
+  "dir":"rtl",
+  "lang":"ar",
+  "icons":[{"src":"icon.png?v=31","sizes":"256x256","type":"image/png","purpose":"any maskable"}]
+}
