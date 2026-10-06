@@ -639,6 +639,27 @@ button{background:#0b2a54!important;color:#eef5ff!important;border-color:#3473b7
  .attachment-thumb{grid-template-columns:30px 1fr 22px!important;gap:3px!important;padding:3px!important}.attachment-thumb img{width:30px!important;height:30px!important}.attachment-thumb span{font-size:8px!important}.attachment-delete{width:22px!important;min-width:22px!important;height:22px!important;min-height:22px!important;font-size:14px!important}
 }
 }
+<style id="v32-addrow-hotfix">
+@media screen{
+ #addRow.addrow{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  position:relative!important;z-index:80!important;pointer-events:auto!important;
+  min-height:42px!important;margin-top:12px!important;padding:8px 14px!important;
+  border:1px solid #3473b7!important;border-radius:10px!important;
+  background:linear-gradient(180deg,#123f78,#0b2a54)!important;color:#fff!important
+ }
+ .expense-table .attach-cell{
+  width:210px!important;min-width:210px!important;max-width:210px!important
+ }
+ @media(max-width:620px) and (orientation:portrait){
+  .expense-table .attach-cell{width:auto!important;min-width:0!important;max-width:none!important}
+  #addRow.addrow{width:100%!important}
+ }
+ @media(orientation:landscape) and (max-height:560px) and (max-width:1000px){
+  .expense-table .attach-cell{width:200px!important;min-width:200px!important;max-width:200px!important}
+  #addRow.addrow{min-height:34px!important;padding:5px 10px!important;font-size:10px!important}
+ }
+}
 </style>
 </head>
 <body>
@@ -953,7 +974,31 @@ function download(text,name){const blob=new Blob([text],{type:'application/json;
 function backup(){download(JSON.stringify({...db,exportedAt:new Date().toISOString()},null,2),'وصولات_نسخة_احتياطية_'+today()+'_'+Date.now()+'.json')}
 for(const id of ['officePct','setPct'])$(id).maxLength=50;
 for(const [id,key] of [['clientName','client'],['receiptDate','date'],['workType','workType'],['mainListNo','number'],['officePct','pct'],['receiptNotes','notes']])$(id).addEventListener('input',()=>{if(id==='mainListNo'){$(id).value=normalizeInputDigits($(id).value).replace(/\D/g,'').slice(0,4)}if(id==='officePct'){$(id).value=normalizeInputDigits($(id).value).replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1')}current()[key]=$(id).value;changed()});
-$('addRow').onclick=()=>{if(current().rows.length>=1000){notice('الحد الأقصى 1000 مصروف لكل قائمة.');return}current().rows.push({date:current().date||today(),details:'',listno:'',amount:'',attachment:emptyAttachment(),attachments:[]});renderRows();changed();$('rows').lastElementChild.querySelector('.details').focus()};
+$('addRow').type='button';
+$('addRow').onclick=()=>{
+ try{
+  const r=current();
+  if(!r){notice('تعذر تحديد القائمة الحالية.');return}
+  if(r.rows.length>=1000){notice('الحد الأقصى 1000 مصروف لكل قائمة.');return}
+  r.rows.push({date:r.date||today(),details:'',listno:'',amount:'',attachment:emptyAttachment(),attachments:[]});
+  r.updatedAt=new Date().toISOString();
+  renderRows();
+  renderAttachmentGallery();
+  calc();
+  persist();
+  const last=$('rows').lastElementChild;
+  if(last){
+   const field=last.querySelector('.details');
+   try{last.scrollIntoView({behavior:'smooth',block:'center'})}catch(e){}
+   if(field)setTimeout(()=>field.focus(),80);
+  }
+  notice('تمت إضافة مصروف جديد.');
+  clearTimeout(archiveTimer);archiveTimer=setTimeout(renderArchive,250);
+ }catch(e){
+  console.error('addRow',e);
+  notice('تعذر إضافة مصروف جديد: '+(e&&e.message?e.message:'خطأ غير معروف'));
+ }
+};
 $('newReceipt').onclick=()=>{if(db.receipts.length>=2000){notice('وصلت إلى الحد الأقصى 2000 قائمة. صدّر نسخة احتياطية قبل حذف قوائم قديمة.');return}const r=freshReceipt(++db.seq,db.settings.pct);db.receipts.push(r);db.currentId=r.id;$('search').value='';persist();render();$('clientName').focus()};
 $('saveReceipt').onclick=()=>{if(validForOutput())persist()};
 $('search').addEventListener('input',renderArchive);
