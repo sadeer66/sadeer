@@ -1,0 +1,13 @@
+{
+  "name":"الوصولات V29 — كحلي متجاوب",
+  "short_name":"الوصولات V29",
+  "id":"./?v=29-navy-responsive-mastercard",
+  "start_url":"./index.html?v=29-navy-responsive-mastercard&source=home",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#041225",
+  "theme_color":"#061a35",
+  "dir":"rtl",
+  "lang":"ar",
+  "icons":[{"src":"../wasoolat/icon-v20.png?v=26","sizes":"256x256","type":"image/png","purpose":"any maskable"}]
+}
