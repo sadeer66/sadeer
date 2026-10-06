@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#061a35">
+<title>برنامج الوصولات — V29</title>
+<style>
+html,body{margin:0;min-height:100%;background:#041225;color:#eef5ff;font-family:Tahoma,"Segoe UI",Arial,sans-serif}.loading{min-height:100dvh;display:grid;place-items:center;padding:24px;text-align:center}.loading-card{width:min(92vw,420px);border:1px solid #2e6fb5;border-radius:18px;padding:24px;background:linear-gradient(180deg,#08234a,#05152c);box-shadow:0 20px 55px rgba(0,0,0,.28)}.loading strong{display:block;font-size:22px;margin-bottom:8px}.loading span{color:#abc4e1}
+</style>
+</head>
+<body>
+<div class="loading"><div class="loading-card"><strong>الوصولات</strong><span>جارٍ فتح النسخة الجديدة…</span></div></div>
+<script>
+(async()=>{
+ try{
+  const response=await fetch('./core.html?v=29-navy-responsive-mastercard',{cache:'no-store'});
+  if(!response.ok) throw new Error('تعذر تحميل البرنامج');
+  let html=await response.text();
+  html=html.replace(/<meta\s+name=["']theme-color["'][^>]*>/i,'<meta name="theme-color" content="#061a35">');
+  html=html.replace(/<title>[\s\S]*?<\/title>/i,'<title>برنامج الوصولات — V29</title>');
+  html=html.replace(/<link\s+rel=["']manifest["'][^>]*>/i,'<link rel="manifest" href="manifest.webmanifest?v=29-navy-responsive-mastercard">');
+  html=html.replace('</head>','<link rel="stylesheet" href="patch.css?v=29-navy-responsive-mastercard"></head>');
+  html=html.replace('</body>','<script src="patch.js?v=29-navy-responsive-mastercard"><\/script></body>');
+  document.open();document.write(html);document.close();
+ }catch(error){
+  document.body.innerHTML='<div class="loading"><div class="loading-card"><strong>تعذر فتح البرنامج</strong><span>تحقق من الاتصال مرة واحدة ثم أعد المحاولة.</span></div></div>';
+ }
+})();
+</script>
+</body>
+</html>
