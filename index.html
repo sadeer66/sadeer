@@ -4224,7 +4224,7 @@ function selectFullLibItem(item){
   const base=typeof item==='object'?item:furniture.find(x=>x.id===item);if(!base||!furniture.includes(base))return;
   fullLibSelectedItem=base;
   const id=base.id;
-  window.fullLibPreviewZoom=1;
+  window.fullLibPreviewZoom=1;window.fullLibPreviewPanX=0;window.fullLibPreviewPanY=0;
   fullLibSelectedId=id;fullLibName.value=fullLibDisplayName(base);fullLibW.value=base.w||100;fullLibH.value=base.h||60;fullLibRot.value=0;
   fullLibColor.value=base.color||'#bfa781';fullLibTint.checked=false;fullLibLayer='front';syncFullLibLayerButtons();
   fpUpdateFullLibSelection(id);drawFullLibPreview();
@@ -4273,25 +4273,36 @@ function drawFullLibPreview(){
     const rot=((+st.rot||0)%360+360)%360;
     const rotated=rot%180!==0;
     const maxW=W*.72,maxH=H*.68;
+    const base=fullLibCurrentBase()||st;
     let visualRatio=Math.max(.05,st.w/Math.max(1,st.h));
     if(img&&img.naturalWidth&&img.naturalHeight) visualRatio=img.naturalWidth/img.naturalHeight;
-    let boxW=maxW,boxH=boxW/visualRatio;
-    if(boxH>maxH){boxH=maxH;boxW=boxH*visualRatio;}
+    /* Leave visual headroom at the default size, so every change to the
+       real width/height is immediately visible in this preview. */
+    let baseW=Math.min(W*.52,maxH*.56*visualRatio),baseH=baseW/visualRatio;
+    const wScale=Math.max(.08,(+st.w||1)/Math.max(1,+base.w||1));
+    const hScale=Math.max(.08,(+st.h||1)/Math.max(1,+base.h||1));
+    let boxW=baseW*wScale,boxH=baseH*hScale;
+    const fitIn=Math.min(maxW/Math.max(1,boxW),maxH/Math.max(1,boxH),1);
+    boxW*=fitIn;boxH*=fitIn;
     if(rotated){
       const fit=Math.min(maxW/Math.max(1,boxH),maxH/Math.max(1,boxW),1);
       boxW*=fit;boxH*=fit;
     }
     const pz=Math.max(.35,Math.min(3,window.fullLibPreviewZoom||1));
     const dw=Math.max(28,boxW*pz),dh=Math.max(28,boxH*pz);
-    ctxp.save();ctxp.translate(cx,cy);ctxp.rotate(rot*Math.PI/180);
+    const itemCx=cx+(+window.fullLibPreviewPanX||0),itemCy=cy+(+window.fullLibPreviewPanY||0);
+    ctxp.save();ctxp.translate(itemCx,itemCy);ctxp.rotate(rot*Math.PI/180);
     if(img){
       ctxp.shadowColor='rgba(2,6,23,.38)';ctxp.shadowBlur=12;ctxp.shadowOffsetY=5;
-      /* never stretch the PNG: preview uses the image's own aspect ratio */
-      ctxp.drawImage(img,-dw/2,-dh/2,dw,dh);
       if(st.tintEnabled){
-        ctxp.globalCompositeOperation='source-atop';ctxp.globalAlpha=.42;
-        ctxp.fillStyle=st.color;ctxp.fillRect(-dw/2,-dh/2,dw,dh);
-      }
+        /* Tint in a separate transparent canvas. source-atop must not run
+           on the main canvas, whose opaque grid would turn into a square. */
+        const q=Math.min(2,Math.max(1,dpr)),tw=Math.max(1,Math.round(dw*q)),th=Math.max(1,Math.round(dh*q));
+        const tint=document.createElement('canvas');tint.width=tw;tint.height=th;
+        const tc=tint.getContext('2d');tc.drawImage(img,0,0,tw,th);
+        tc.globalCompositeOperation='source-atop';tc.globalAlpha=.58;tc.fillStyle=st.color;tc.fillRect(0,0,tw,th);
+        ctxp.drawImage(tint,-dw/2,-dh/2,dw,dh);
+      }else ctxp.drawImage(img,-dw/2,-dh/2,dw,dh);
     }else{
       ctxp.fillStyle=st.color;ctxp.strokeStyle='#7b8796';ctxp.lineWidth=2;
       ctxp.beginPath();ctxp.roundRect(-dw/2,-dh/2,dw,dh,14);ctxp.fill();ctxp.stroke();
@@ -4359,6 +4370,9 @@ document.getElementById('mobileFullLibraryBtn')?.addEventListener('click',()=>op
 document.getElementById('fullLibCloseBtn').onclick=closeFullLibrary;
 fullLibSearch.oninput=renderFullLibGrid;
 [fullLibName,fullLibW,fullLibH,fullLibRot,fullLibColor,fullLibTint].forEach(el=>el.addEventListener('input',drawFullLibPreview));
+/* Choosing a colour means colouring the selected image; the checkbox remains
+   available if the user wants to turn that tint off afterwards. */
+fullLibColor.addEventListener('input',()=>{fullLibTint.checked=true;drawFullLibPreview();});
 document.querySelectorAll('[data-fullrot]').forEach(b=>b.onclick=()=>{fullLibRot.value=((+fullLibRot.value||0)+(+b.dataset.fullrot||0))%360;drawFullLibPreview();});
 document.getElementById('fullLibResetRot').onclick=()=>{fullLibRot.value=0;drawFullLibPreview();};
 document.getElementById('fullLibGrow').onclick=()=>{fullLibW.value=Math.round((+fullLibW.value||1)*1.05);fullLibH.value=Math.round((+fullLibH.value||1)*1.05);drawFullLibPreview();};
@@ -4375,10 +4389,12 @@ fullLibraryModal.addEventListener('pointerdown',e=>{if(e.target===fullLibraryMod
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&fullLibraryModal.classList.contains('open')){e.preventDefault();e.stopImmediatePropagation();closeFullLibrary();}},true);
 window.openFullLibrary=openFullLibrary;
 window.fullLibPreviewZoom=1;
+window.fullLibPreviewPanX=0;window.fullLibPreviewPanY=0;
 (()=>{
   const canvas=document.getElementById('fullLibPreviewCanvas');
   if(!canvas||canvas.dataset.fpZoomSafe164)return;
   canvas.dataset.fpZoomSafe164='1';
+  canvas.style.touchAction='none';
 
   const controls=document.querySelector('.fullLibControls');
   const choose=document.getElementById('fullLibChooseBtn');
@@ -4386,6 +4402,11 @@ window.fullLibPreviewZoom=1;
 
   const clamp=z=>Math.max(.35,Math.min(3,z));
   const apply=z=>{window.fullLibPreviewZoom=clamp(z);drawFullLibPreview();};
+  const redrawPan=()=>drawFullLibPreview();
+  const canPan=()=>{
+    const base=fullLibCurrentBase();
+    return (window.fullLibPreviewZoom||1)>1||!!(base&&((+fullLibW.value||0)>+base.w||(+fullLibH.value||0)>+base.h));
+  };
 
   canvas.addEventListener('wheel',ev=>{
     ev.preventDefault();
@@ -4393,7 +4414,7 @@ window.fullLibPreviewZoom=1;
   },{passive:false});
 
   const touches=new Map();
-  let baseDist=0,baseZoom=1;
+  let baseDist=0,baseZoom=1,dragStart=null,panStart={x:0,y:0};
   const distance=()=>{
     const a=[...touches.values()];
     if(a.length<2)return 0;
@@ -4403,23 +4424,39 @@ window.fullLibPreviewZoom=1;
     if(ev.pointerType!=='touch')return;
     touches.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});
     try{canvas.setPointerCapture(ev.pointerId)}catch(e){}
-    if(touches.size===2){baseDist=distance();baseZoom=window.fullLibPreviewZoom||1;}
+    if(touches.size===1&&canPan()){dragStart={x:ev.clientX,y:ev.clientY};panStart={x:+window.fullLibPreviewPanX||0,y:+window.fullLibPreviewPanY||0};}
+    if(touches.size===2){dragStart=null;baseDist=distance();baseZoom=window.fullLibPreviewZoom||1;}
   });
   canvas.addEventListener('pointermove',ev=>{
     if(!touches.has(ev.pointerId))return;
     ev.preventDefault();
     touches.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});
     if(touches.size===2&&baseDist>0)apply(baseZoom*(distance()/baseDist));
+    else if(touches.size===1&&dragStart&&canPan()){
+      const maxX=canvas.clientWidth*.38,maxY=canvas.clientHeight*.32;
+      window.fullLibPreviewPanX=Math.max(-maxX,Math.min(maxX,panStart.x+ev.clientX-dragStart.x));
+      window.fullLibPreviewPanY=Math.max(-maxY,Math.min(maxY,panStart.y+ev.clientY-dragStart.y));
+      redrawPan();
+    }
   },{passive:false});
   const stop=ev=>{
     touches.delete(ev.pointerId);
     if(touches.size<2){baseDist=0;baseZoom=window.fullLibPreviewZoom||1;}
+    if(touches.size===0)dragStart=null;
   };
   canvas.addEventListener('pointerup',stop);
   canvas.addEventListener('pointercancel',stop);
   canvas.addEventListener('lostpointercapture',stop);
-  canvas.addEventListener('dblclick',()=>apply(1));
+  canvas.addEventListener('dblclick',()=>{window.fullLibPreviewPanX=0;window.fullLibPreviewPanY=0;apply(1);});
 })();
+
+/* On compact iPad controls, a second tap on the active tool closes it. */
+document.querySelectorAll('.fpCompactGroup').forEach(group=>{
+  const toggle=group.querySelector('.fpPanelToggle');
+  const icon=toggle&&group.querySelector('label[for="'+toggle.id+'"]');
+  if(!toggle||!icon)return;
+  icon.addEventListener('click',event=>{if(toggle.checked){event.preventDefault();toggle.checked=false;}});
+});
 
 window.addEventListener('furniplan-language-changed',()=>{
   renderFullLibCategories();
@@ -6760,5 +6797,6 @@ draw();
 <script src="v174-assets/assets_6.js?v=175"></script>
 <script src="v174-assets/assets_7.js?v=175"></script>
 <script src="library_v185.js?v=185"></script>\n<script src="v186-ipad-memory-fix.js?v=186"></script>
+<script src="v191-library-pager-safe.js?v=191"></script>
 </body>
 </html>
