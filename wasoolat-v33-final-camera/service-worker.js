@@ -1,4 +1,4 @@
-const CACHE_NAME='wasoolat-v33-final-camera-20261006a';
+const CACHE_NAME='wasoolat-v33-final-camera-20261006b';
 const APP_SHELL=['./','./index.html','./index.html?v=33-final-camera','./manifest.webmanifest?v=33-final-camera','./icon.png?v=33'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('wasoolat-v33-final-camera-')&&key!==CACHE_NAME).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
