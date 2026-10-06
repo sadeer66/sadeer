@@ -1,0 +1,20 @@
+{
+  "name": "الوصولات V27 — اختبار الكاميرا",
+  "short_name": "الوصولات V27",
+  "id": "./?v=27-camera-test",
+  "start_url": "./index.html?v=27-camera-test&source=home",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#083d5b",
+  "theme_color": "#083d5b",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "../wasoolat/icon-v20.png?v=26",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
