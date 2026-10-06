@@ -748,7 +748,7 @@ function ensureRowAttachments(row){
   }
  }
  row.attachment=emptyAttachment();
- row.attachments=row.attachments.filter(a=>a&&a.data).map(a=>({
+ const normalized=row.attachments.filter(a=>a&&a.data).map(a=>({
   id:typeof a.id==='string'&&a.id?a.id.slice(0,100):uid(),
   name:typeof a.name==='string'?a.name.slice(0,300):'',
   type:typeof a.type==='string'&&a.type?a.type.slice(0,50):'image/jpeg',
@@ -757,6 +757,7 @@ function ensureRowAttachments(row){
   source:a.source==='camera'?'camera':(a.source==='file'?'file':'legacy'),
   createdAt:typeof a.createdAt==='string'?a.createdAt.slice(0,100):''
  }));
+ row.attachments.splice(0,row.attachments.length,...normalized);
  return row.attachments
 }
 function validate(data){
