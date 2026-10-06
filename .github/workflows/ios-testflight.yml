@@ -115,7 +115,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          SRC="icons/icon-512.png"
+          SRC="icons/icon-1024.png"
           if [ ! -f "$SRC" ]; then SRC="apple-touch-icon.png"; fi
           DEST="ios/FurniPlan/Resources/Assets.xcassets/AppIcon.appiconset"
           mkdir -p "$DEST"
