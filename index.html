@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<!-- FurniPlan V194 iPad stable build -->
+<!-- FurniPlan V195 bilingual map furniture labels -->
 <meta charset="UTF-8" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<title>FurniPlan V194</title>
-<meta name="furniplan-version" content="194">
+<title>FurniPlan V195</title>
+<meta name="furniplan-version" content="195">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -4149,7 +4149,10 @@ function fullLibUnit(){return fullLibUiLang()==='en'?'cm':'سم';}
 function fullLibCurrentBase(){return (furniture.includes(fullLibSelectedItem)?fullLibSelectedItem:furniture.find(x=>x.id===fullLibSelectedId))||null;}
 function fullLibState(){
   const base=fullLibCurrentBase();if(!base)return null;
-  return {...base,name:fullLibName.value||base.name,w:Math.max(1,+fullLibW.value||base.w),h:Math.max(1,+fullLibH.value||base.h),
+  const lang=fullLibUiLang(),typed=(fullLibName.value||fullLibDisplayName(base)||base.name||'قطعة').trim();
+  const nameAr=lang==='ar'?typed:(base.nameAr||base.name||typed);
+  const nameEn=lang==='en'?typed:(base.nameEn||'');
+  return {...base,name:nameAr||base.name||typed,nameAr,nameEn,w:Math.max(1,+fullLibW.value||base.w),h:Math.max(1,+fullLibH.value||base.h),
     rot:(+fullLibRot.value||0)%360,color:fullLibColor.value||base.color||'#bfa781',tintEnabled:!!fullLibTint.checked,initialLayer:fullLibLayer};
 }
 function renderFullLibCategories(){
@@ -4463,6 +4466,8 @@ window.addEventListener('furniplan-language-changed',()=>{
   renderFullLibCategories();
   if(fullLibSelectedId&&furniture.some(x=>x.id===fullLibSelectedId))selectFullLibItem(fullLibSelectedId);
   else renderFullLibGrid();
+  // V195: refresh map furniture names immediately when Arabic/English changes.
+  try{items.forEach(it=>fpEnsureItemBilingualNames(it));syncSelectedPanel();draw();scheduleUsedFurnitureSync(true);}catch(_){ }
 });
 
 
@@ -4636,6 +4641,41 @@ function drawAutoDistances(){
   for(const d of dims){if(d.d<1)continue;ctx.setLineDash([3*u,3*u]);ctx.beginPath();ctx.moveTo(d.from.x,d.from.y);ctx.lineTo(d.to.x,d.to.y);ctx.stroke();ctx.setLineDash([]);const mx=(d.from.x+d.to.x)/2,my=(d.from.y+d.to.y)/2;const label=formatLength(d.d/pxPerCm);const tw=ctx.measureText(label).width;ctx.fillStyle='rgba(255,255,255,.90)';roundRectPath(mx-tw/2-3*u,my-7*u,tw+6*u,14*u,4*u);ctx.fill();ctx.fillStyle='#111827';ctx.fillText(label,mx,my);}
   ctx.restore();
 }
+// V195: keep Arabic + English furniture names after the item is placed on the map.
+function fpItemUiLang(){
+  try{return window.FurniPlanLanguage&&typeof window.FurniPlanLanguage.get==='function'&&window.FurniPlanLanguage.get()==='ar'?'ar':'en';}catch(_){return document.documentElement.lang==='ar'?'ar':'en';}
+}
+function fpFurnitureBaseForItem(it){
+  if(!it)return null;
+  return furniture.find(x=>(it.libraryId&&String(x.id)===String(it.libraryId))||(it.src&&x.src===it.src)||
+    (it.nameAr&&x.name===it.nameAr)||(it.nameEn&&x.nameEn===it.nameEn)||x.name===it.name||x.nameEn===it.name)||null;
+}
+function fpEnsureItemBilingualNames(it,source=null){
+  if(!it)return it;
+  const base=source&&source.id?furniture.find(x=>String(x.id)===String(source.id)):null;
+  const lib=base||fpFurnitureBaseForItem(it);
+  if(!it.libraryId&&lib?.id)it.libraryId=lib.id;
+  const raw=String(it.name||'').trim();
+  const rawIsAr=/[\u0600-\u06FF]/.test(raw);
+  if(!it.nameAr)it.nameAr=lib?.name||(rawIsAr?raw:'');
+  if(!it.nameEn)it.nameEn=lib?.nameEn||(!rawIsAr?raw:'');
+  if(!it.nameEn&&it.nameAr){
+    try{it.nameEn=window.FurniPlanLanguage?.translate?.(it.nameAr)||'';}catch(_){}
+  }
+  if(!it.nameAr&&lib?.name)it.nameAr=lib.name;
+  if(!it.name)it.name=it.nameAr||it.nameEn||'قطعة';
+  return it;
+}
+function fpItemDisplayName(it){
+  if(!it)return fpItemUiLang()==='en'?'Item':'قطعة';
+  fpEnsureItemBilingualNames(it);
+  if(fpItemUiLang()==='en'){
+    if(it.nameEn)return it.nameEn;
+    try{return window.FurniPlanLanguage?.translate?.(it.nameAr||it.name)||it.nameAr||it.name||'Item';}catch(_){return it.nameAr||it.name||'Item';}
+  }
+  return it.nameAr||fpFurnitureBaseForItem(it)?.name||it.name||'قطعة';
+}
+
 function armFurniturePlacement(def){
   ensureSpriteForDef(def);
   document.getElementById('furnitureLayerToggle').checked=true;
@@ -4657,10 +4697,15 @@ function addItem(def,x,y){
   ensureSpriteForDef(def);
   const before=cloneEditState();
   if(!pxPerCm){alert('يجب معايرة القياس أولاً حتى يظهر الأثاث بحجمه الحقيقي.');return null;}
+  const sourceBase=(def.id&&furniture.find(x=>String(x.id)===String(def.id)))||furniture.find(x=>def.src&&x.src===def.src)||null;
+  const rawName=String(def.name||'قطعة').trim(),rawIsAr=/[\u0600-\u06FF]/.test(rawName);
+  const nameAr=def.nameAr||sourceBase?.name||(rawIsAr?rawName:'');
+  const nameEn=def.nameEn||sourceBase?.nameEn||(!rawIsAr?rawName:'');
   const it={
-    id:randId(),name:def.name,w:def.w,h:def.h,x:clamp(x??canvas.width/2,0,canvas.width),y:clamp(y??canvas.height/2,0,canvas.height),
+    id:randId(),name:nameAr||rawName,nameAr,nameEn,libraryId:def.id||sourceBase?.id||null,w:def.w,h:def.h,x:clamp(x??canvas.width/2,0,canvas.width),y:clamp(y??canvas.height/2,0,canvas.height),
     rot:Number.isFinite(+def.rot)?+def.rot:0,color:def.color||'#bfa781',type:def.type||'generic',src:def.src||null,tintEnabled:!!def.tintEnabled,locked:false,archType:def.archType||null,doorSwing:def.doorSwing||1
   };
+  fpEnsureItemBilingualNames(it,def);
   const snapped=snapDraggedPosition(it,it.x,it.y);it.x=snapped.x;it.y=snapped.y;
   if(def.initialLayer==='back')items.unshift(it);else items.push(it);setSelection([it.id],it.id);selectedMeasureId=null;syncSelectedPanel();draw();commitHistory(before);return it;
 }
@@ -5329,8 +5374,8 @@ function drawItem(it){
 
   if(showLabels || showDims){
     const lines=[];
-    if(showLabels)lines.push(it.name);
-    if(showDims)lines.push(`${Math.round(it.w)} × ${Math.round(it.h)} سم`);
+    if(showLabels)lines.push(fpItemDisplayName(it));
+    if(showDims)lines.push(`${Math.round(it.w)} × ${Math.round(it.h)} ${fpItemUiLang()==='en'?'cm':'سم'}`);
     const fontSize=clamp(Math.min(w,h)/9,8,11);
     const lineH=fontSize+3;
     ctx.save();
@@ -5367,8 +5412,10 @@ function usedFurnitureGroups(){
     if(it.archType)continue;
     const w=Math.max(1,Number(it.w)||0),h=Math.max(1,Number(it.h)||0);
     const tintEnabled=!!it.tintEnabled;
-    const key=[it.name||'قطعة',w.toFixed(2),h.toFixed(2),it.src||'',it.color||'',tintEnabled?1:0].join('|');
-    if(!map.has(key))map.set(key,{name:it.name||'قطعة',w,h,src:it.src||null,color:it.color||'#cbd5e1',tintEnabled,count:0});
+    const displayName=fpItemDisplayName(it);
+    const identity=it.libraryId||it.src||it.nameAr||it.nameEn||it.name||'قطعة';
+    const key=[identity,w.toFixed(2),h.toFixed(2),it.src||'',it.color||'',tintEnabled?1:0].join('|');
+    if(!map.has(key))map.set(key,{name:displayName,w,h,src:it.src||null,color:it.color||'#cbd5e1',tintEnabled,count:0});
     map.get(key).count++;
   }
   return [...map.values()];
@@ -5752,8 +5799,8 @@ function syncSelectedPanel(){
   const multi=ids.length>1;
   if(multiInfo){multiInfo.style.display=multi?'inline-flex':'none';multiInfo.textContent=`${ids.length} قطع محددة`;}
   setSingleInspectorVisible(!multi);
-  selectedTitle.textContent=multi?`${ids.length} قطع`:it.name;
-  if(!multi){selName.value=it.name;selW.value=it.w;selH.value=it.h;selRot.value=it.rot;selColor.value=it.color||'#bfa781';selTintEnabled.checked=!!it.tintEnabled;}
+  selectedTitle.textContent=multi?`${ids.length} قطع`:fpItemDisplayName(it);
+  if(!multi){selName.value=fpItemDisplayName(it);selW.value=it.w;selH.value=it.h;selRot.value=it.rot;selColor.value=it.color||'#bfa781';selTintEnabled.checked=!!it.tintEnabled;}
   const allLocked=list.length&&list.every(x=>x.locked);
   if(lockBtn)lockBtn.textContent=allLocked?'🔓 فتح القفل':'🔒 قفل المحدد';
   flipDoorBtn.style.display=(!multi&&it&&(['door','doubleDoor'].includes(it.archType)))?'':'none';
@@ -5770,8 +5817,12 @@ deleteMapLabelBtn.onclick=()=>{if(mapLabelsGloballyLocked()){setStatus('المس
 
 [selName,selW,selH,selRot,selColor].forEach(el=>el.oninput=()=>{
   const ids=getSelectedIds(),it=current();if(ids.length!==1||!canEditItem(it))return;
-  it.name=selName.value;it.w=Math.max(1,+selW.value||1);it.h=Math.max(1,+selH.value||1);it.rot=+selRot.value||0;it.color=selColor.value;
-  selectedTitle.textContent=it.name;
+  if(el===selName){
+    if(fpItemUiLang()==='en')it.nameEn=selName.value;
+    else{it.nameAr=selName.value;it.name=selName.value;}
+  }
+  it.w=Math.max(1,+selW.value||1);it.h=Math.max(1,+selH.value||1);it.rot=+selRot.value||0;it.color=selColor.value;
+  selectedTitle.textContent=fpItemDisplayName(it);
   if(el===selColor && it.src){it.tintEnabled=true;selTintEnabled.checked=true;}
   draw();
 });
@@ -5877,7 +5928,7 @@ document.getElementById('loadInput').onchange=e=>{
       dxfModel=p.dxfModel||null;if(dxfModel)rebuildDxfSnapGeometry();else{dxfSnapSegments=[];dxfSnapKeyPoints=[];dxfActiveSnap=null;}
       pxPerCm=p.pxPerCm||(dxfModel?(dxfModel.scale/dxfModel.unitCm):null);
       items=(p.items||[]).map(it=>({color:'#bfa781',type:'generic',rot:0,tintEnabled:false,locked:false,...it}));
-      items.forEach(ensureSpriteForDef);
+      items.forEach(it=>{fpEnsureItemBilingualNames(it);ensureSpriteForDef(it);});
       measurements=(p.measurements||[]).map(m=>({id:m.id||randId(),pinned:m.pinned!==false,offsetX:0,offsetY:0,...m}));selectedMeasureId=null;
       mapLabels=(p.mapLabels||[]).map(l=>({id:l.id||randId(),text:l.text||'مسمى',x:+l.x||0,y:+l.y||0}));selectedMapLabelId=null;
       areaPolygons=(p.areaPolygons||p.areas||[]).map(a=>({id:a.id||randId(),name:a.name||'مساحة',points:Array.isArray(a.points)?a.points:[],areaM2:+a.areaM2||0,perimeterM:+a.perimeterM||0,cardOffsetX:+a.cardOffsetX||0,cardOffsetY:+a.cardOffsetY||0}));areaDraft=[];
@@ -6516,7 +6567,7 @@ draw();
 </script>
 
 
-<script src="v85-final-patch.js?v=180"></script>
+<script src="v85-final-patch.js?v=195"></script>
 
 <script id="furniplan-toolbar-wheel-v94">
 (()=>{
@@ -6797,7 +6848,7 @@ draw();
 <script src="v174-assets/assets_5.js?v=175"></script>
 <script src="v174-assets/assets_6.js?v=175"></script>
 <script src="v174-assets/assets_7.js?v=175"></script>
-<script src="library_v185.js?v=194"></script>\n<script src="v186-ipad-memory-fix.js?v=194"></script>
-<script src="v191-library-pager-safe.js?v=194"></script>
+<script src="library_v185.js?v=195"></script>\n<script src="v186-ipad-memory-fix.js?v=195"></script>
+<script src="v191-library-pager-safe.js?v=195"></script>
 </body>
 </html>
