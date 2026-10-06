@@ -1,4 +1,4 @@
-const CACHE='furniplan-v185-ipad-memory-20261005';
+const CACHE='furniplan-v198-retired-cache';
 const CORE=[
   './',
   './index.html',
@@ -208,50 +208,18 @@ const CORE=[
   './assets/v176/bathroom_10.webp'
 ];
 
+/* V198: explicitly retire the former offline worker and every cache it created.
+   FurniPlan now loads live so an old PWA cannot resurrect V112 on iPad. */
 self.addEventListener('install',event=>{
-  event.waitUntil(
-    caches.open(CACHE)
-      .then(cache=>cache.addAll(CORE.map(u=>new Request(u,{cache:'reload'}))))
-      .catch(()=>{})
-      .then(()=>self.skipWaiting())
-  );
+  event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener('activate',event=>{
   event.waitUntil(
     caches.keys()
-      .then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))
+      .then(keys=>Promise.all(keys.map(key=>caches.delete(key))))
       .then(()=>self.clients.claim())
-  );
-});
-
-self.addEventListener('fetch',event=>{
-  const req=event.request;
-  if(req.method!=='GET') return;
-  const url=new URL(req.url);
-  if(url.origin!==self.location.origin) return;
-
-  if(req.mode==='navigate'){
-    event.respondWith(
-      fetch(req).then(res=>{
-        const copy=res.clone();
-        caches.open(CACHE).then(c=>c.put('./index.html',copy)).catch(()=>{});
-        return res;
-      }).catch(()=>caches.match(req).then(r=>r||caches.match('./index.html')||caches.match('./')))
-    );
-    return;
-  }
-
-  event.respondWith(
-    caches.match(req).then(cached=>{
-      if(cached) return cached;
-      return fetch(req).then(res=>{
-        if(res && res.ok){
-          const copy=res.clone();
-          caches.open(CACHE).then(c=>c.put(req,copy)).catch(()=>{});
-        }
-        return res;
-      }).catch(()=>cached);
-    })
+      .then(()=>self.registration.unregister())
+      .catch(()=>{})
   );
 });

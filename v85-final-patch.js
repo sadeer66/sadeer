@@ -458,16 +458,17 @@
 // ===== End FurniPlan V97 Map Pan + Dual Furniture Placement =====
 
 
-// ===== FurniPlan V101 Offline/PWA Registration =====
+// ===== FurniPlan V198 PWA cache retirement =====
+// The old offline cache could reopen V112 on iPad and consume the WebKit process.
 (()=>{
-  if(!('serviceWorker' in navigator)) return;
-  const register=()=>navigator.serviceWorker.register('./service-worker.js?v=180',{scope:'./'})
-    .then(reg=>{ try{reg.update();}catch(_){} })
-    .catch(()=>{});
-  if(document.readyState==='complete') register();
-  else window.addEventListener('load',register,{once:true});
+  const retire=()=>{
+    try{navigator.serviceWorker?.getRegistrations?.().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});}catch(_){}
+    try{window.caches?.keys?.().then(keys=>Promise.all(keys.map(key=>caches.delete(key)))).catch(()=>{});}catch(_){}
+  };
+  retire();
+  window.addEventListener('pageshow',retire,{passive:true});
 })();
-// ===== End FurniPlan V101 Offline/PWA Registration =====
+// ===== End FurniPlan V198 PWA cache retirement =====
 
 
 // ===== FurniPlan V112 Splash Offline Status =====

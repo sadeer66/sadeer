@@ -1,15 +1,26 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<!-- FurniPlan V197: handle-only library drag, retaining V196 materials and V195 bilingual map labels -->
+<!-- FurniPlan V198: iPad-safe progressive sidebar library and stale-PWA cache retirement -->
 <meta charset="UTF-8" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<title>FurniPlan V197 – سحب المكتبة من المقبض فقط</title>
-<meta name="furniplan-version" content="197">
+<title>FurniPlan V198 – مكتبة آيباد خفيفة ومستقرة</title>
+<meta name="furniplan-version" content="198">
+<script id="furniplan-v198-retire-stale-pwa">
+/* V198: retire the legacy offline worker before the large library is rendered. */
+(()=>{
+  const retire=()=>{
+    try{navigator.serviceWorker?.getRegistrations?.().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});}catch(_){}
+    try{window.caches?.keys?.().then(keys=>Promise.all(keys.map(key=>caches.delete(key)))).catch(()=>{});}catch(_){}
+  };
+  retire();
+  window.addEventListener('pageshow',retire,{passive:true});
+})();
+</script>
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -54,6 +65,7 @@
   .catBtn:hover{border-color:#64748b;background:#18253a}
   .catBtn.active{background:#075985;border-color:#0ea5e9;color:#fff}
   .lib{display:grid;grid-template-columns:1fr;gap:8px;min-width:0}
+  .fpSideLibraryMore{display:flex;align-items:center;justify-content:center;min-height:24px;border:1px dashed #3c5977;border-radius:9px;color:#9cc8ea;background:#0e1a2c;font-size:10px;font-weight:700;user-select:none}
   .fcard{background:#172033;border:1px solid #2b3a52;border-radius:10px;padding:10px;cursor:grab;text-align:center;user-select:none}
   .fcard:active{cursor:grabbing;transform:scale(.985)}
   .fcard:hover{border-color:#38bdf8}
@@ -924,10 +936,10 @@ header{min-height:var(--tool-header-h)!important}
 @media(prefers-reduced-motion:reduce){#fpSplash{transition-duration:.2s}}
 </style>
 
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=94">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=94">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=94">
-<link rel="manifest" href="manifest.webmanifest?v=94">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=198">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=198">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=198">
+<link rel="manifest" href="manifest.webmanifest?v=198">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="FurniPlan">
@@ -3972,7 +3984,28 @@ function sortedLibraryItems(list){
     libraryItemGroup(a.obj).localeCompare(libraryItemGroup(b.obj),'en')||a.index-b.index
   ).map(x=>x.obj);
 }
+/* V198: the side library is deliberately virtualized in small batches.
+   iPad Safari must never create the whole 400+ item catalogue while the map is open. */
 let fpSideLibraryImageObserver=null;
+let fpSideLibraryMoreObserver=null;
+let fpSideLibraryItems=[];
+let fpSideLibraryShown=0;
+let fpSideLibraryAppending=false;
+let fpSideLibraryFallbackRoot=null;
+let fpSideLibraryFallbackScroll=null;
+function fpSideLibraryScrollRoot(){
+  try{
+    const style=getComputedStyle(lib);
+    if(/auto|scroll/.test(style.overflowY)&&lib.scrollHeight>lib.clientHeight+1)return lib;
+  }catch(_){}
+  return lib.closest('aside')||null;
+}
+function fpStopSideLibraryObservers(){
+  if(fpSideLibraryImageObserver){try{fpSideLibraryImageObserver.disconnect();}catch(_){} fpSideLibraryImageObserver=null;}
+  if(fpSideLibraryMoreObserver){try{fpSideLibraryMoreObserver.disconnect();}catch(_){} fpSideLibraryMoreObserver=null;}
+  if(fpSideLibraryFallbackRoot&&fpSideLibraryFallbackScroll){try{fpSideLibraryFallbackRoot.removeEventListener('scroll',fpSideLibraryFallbackScroll);}catch(_){}}
+  fpSideLibraryFallbackRoot=null;fpSideLibraryFallbackScroll=null;
+}
 function fpLoadLibraryImage(img){
   if(!img||img.getAttribute('src'))return;
   const id=img.dataset.fpid||'';
@@ -3989,34 +4022,77 @@ function fpInitSideLibraryImages(){
   const imgs=[...lib.querySelectorAll('img[data-fpid]')];
   if(!imgs.length)return;
   if(!('IntersectionObserver' in window)){imgs.forEach(fpLoadLibraryImage);return;}
-  const root=lib.closest('aside')||null;
+  const root=fpSideLibraryScrollRoot();
   fpSideLibraryImageObserver=new IntersectionObserver(entries=>{
     entries.forEach(entry=>{
       const img=entry.target;
       if(entry.isIntersecting)fpLoadLibraryImage(img);
       else fpReleaseLibraryImage(img);
     });
-  },{root,rootMargin:'240px 0px',threshold:.01});
+  },{root,rootMargin:'180px 0px',threshold:.01});
   imgs.forEach(img=>fpSideLibraryImageObserver.observe(img));
 }
+function fpSideLibraryBatchSize(){
+  return (navigator.maxTouchPoints||0)>1?10:24;
+}
+function fpBuildSideLibraryCard(obj,index){
+  const d=document.createElement('div');d.className='fcard';d.draggable=false;
+  const displayName=fullLibDisplayName(obj);
+  const visual=obj.src?`<img loading="lazy" decoding="async" alt="">`:`<div class="genericThumb" style="box-shadow:inset 0 0 0 999px ${obj.color||'#bfa781'}33">بدون صورة</div>`;
+  d.innerHTML=`<button class="editLibBtn" title="تعديل القطعة">✎</button>${obj.isCustom?'<span class="customMark">مضافة</span>':''}${visual}<b>${displayName}</b><span>${obj.w} × ${obj.h} ${fullLibUnit()}</span><button class="touchDragHandle" type="button" title="اسحب من هنا إلى الخارطة" aria-label="اسحب من مربع النقاط إلى الخارطة">⠿</button>`;
+  const cardImg=d.querySelector('img');if(cardImg){cardImg.dataset.fpid=String(obj.id);cardImg.alt=displayName;}
+  d.querySelector('.editLibBtn').onclick=e=>{e.stopPropagation();openLibraryEditor(obj.id);};
+  const th=d.querySelector('.touchDragHandle');th.addEventListener('pointerdown',e=>startTouchLibraryDrag(e,obj,false));th.addEventListener('pointermove',moveTouchLibraryDrag);th.addEventListener('pointerup',endTouchLibraryDrag);th.addEventListener('pointercancel',endTouchLibraryDrag);
+  wireFurnitureCard(d,obj,index);
+  v98WireWholeCardDrag(d,obj,false);
+  return d;
+}
+function fpWatchSideLibraryMore(){
+  if(fpSideLibraryShown>=fpSideLibraryItems.length)return;
+  if(fpSideLibraryMoreObserver){try{fpSideLibraryMoreObserver.disconnect();}catch(_){} fpSideLibraryMoreObserver=null;}
+  const marker=lib.querySelector('.fpSideLibraryMore');
+  const root=fpSideLibraryScrollRoot();
+  if(!marker||!root)return;
+  if('IntersectionObserver' in window){
+    fpSideLibraryMoreObserver=new IntersectionObserver(entries=>{
+      if(entries.some(entry=>entry.isIntersecting))fpAppendSideLibraryBatch();
+    },{root,rootMargin:'300px 0px',threshold:.01});
+    fpSideLibraryMoreObserver.observe(marker);
+    return;
+  }
+  fpSideLibraryFallbackRoot=root;
+  fpSideLibraryFallbackScroll=()=>{
+    if(root.scrollTop+root.clientHeight>=root.scrollHeight-280)fpAppendSideLibraryBatch();
+  };
+  root.addEventListener('scroll',fpSideLibraryFallbackScroll,{passive:true});
+}
+function fpAppendSideLibraryBatch(){
+  if(fpSideLibraryAppending||fpSideLibraryShown>=fpSideLibraryItems.length)return;
+  fpSideLibraryAppending=true;
+  const oldMarker=lib.querySelector('.fpSideLibraryMore');if(oldMarker)oldMarker.remove();
+  const fragment=document.createDocumentFragment();
+  const stop=Math.min(fpSideLibraryItems.length,fpSideLibraryShown+fpSideLibraryBatchSize());
+  for(let i=fpSideLibraryShown;i<stop;i++)fragment.appendChild(fpBuildSideLibraryCard(fpSideLibraryItems[i],i));
+  fpSideLibraryShown=stop;
+  lib.appendChild(fragment);
+  if(fpSideLibraryShown<fpSideLibraryItems.length){
+    const marker=document.createElement('div');marker.className='fpSideLibraryMore';marker.textContent='مرّر لإظهار المزيد';marker.setAttribute('aria-hidden','true');lib.appendChild(marker);
+  }
+  requestAnimationFrame(()=>{
+    fpSideLibraryAppending=false;
+    fpInitSideLibraryImages();
+    fpWatchSideLibraryMore();
+  });
+}
 function renderLibrary(){
-  if(fpSideLibraryImageObserver){try{fpSideLibraryImageObserver.disconnect();}catch(_){} fpSideLibraryImageObserver=null;}
+  fpStopSideLibraryObservers();
+  fpSideLibraryAppending=false;
   lib.querySelectorAll('img').forEach(fpReleaseLibraryImage);
   lib.innerHTML='';
-  sortedLibraryItems(furniture).forEach((obj,index)=>{
-    if(activeCategory!=='الكل'&&obj.category!==activeCategory)return;
-    const d=document.createElement('div');d.className='fcard';d.draggable=false;
-    const displayName=fullLibDisplayName(obj);
-    const visual=obj.src?`<img loading="lazy" decoding="async" alt="">`:`<div class="genericThumb" style="box-shadow:inset 0 0 0 999px ${obj.color||'#bfa781'}33">بدون صورة</div>`;
-    d.innerHTML=`<button class="editLibBtn" title="تعديل القطعة">✎</button>${obj.isCustom?'<span class="customMark">مضافة</span>':''}${visual}<b>${displayName}</b><span>${obj.w} × ${obj.h} ${fullLibUnit()}</span><button class="touchDragHandle" type="button" title="اسحب من هنا إلى الخارطة" aria-label="اسحب من مربع النقاط إلى الخارطة">⠿</button>`;
-    const cardImg=d.querySelector('img');if(cardImg){cardImg.dataset.fpid=String(obj.id);cardImg.alt=displayName;}
-    d.querySelector('.editLibBtn').onclick=e=>{e.stopPropagation();openLibraryEditor(obj.id);};
-    const th=d.querySelector('.touchDragHandle');th.addEventListener('pointerdown',e=>startTouchLibraryDrag(e,obj,false));th.addEventListener('pointermove',moveTouchLibraryDrag);th.addEventListener('pointerup',endTouchLibraryDrag);th.addEventListener('pointercancel',endTouchLibraryDrag);
-    wireFurnitureCard(d,obj,index);
-    v98WireWholeCardDrag(d,obj,false);
-    lib.appendChild(d);
-  });
-  requestAnimationFrame(fpInitSideLibraryImages);
+  fpSideLibraryItems=sortedLibraryItems(furniture).filter(obj=>activeCategory==='الكل'||obj.category===activeCategory);
+  fpSideLibraryShown=0;
+  try{lib.scrollTop=0;const panel=lib.closest('aside');if(panel)panel.scrollTop=0;}catch(_){}
+  fpAppendSideLibraryBatch();
 }
 
 buildCategoryButtons();renderLibrary();
@@ -6496,7 +6572,7 @@ draw();
 </script>
 
 
-<script src="v85-final-patch.js?v=197"></script>
+<script src="v85-final-patch.js?v=198"></script>
 
 <script id="furniplan-toolbar-wheel-v94">
 (()=>{
