@@ -4467,7 +4467,7 @@ window.addEventListener('furniplan-language-changed',()=>{
   if(fullLibSelectedId&&furniture.some(x=>x.id===fullLibSelectedId))selectFullLibItem(fullLibSelectedId);
   else renderFullLibGrid();
   // V195: refresh map furniture names immediately when Arabic/English changes.
-  try{items.forEach(it=>fpEnsureItemBilingualNames(it));syncSelectedPanel();draw();scheduleUsedFurnitureSync(true);}catch(_){ }
+  try{items.forEach(it=>fpEnsureItemBilingualNames(it));syncSelectedPanel();draw();scheduleUsedFurnitureSync(true);if(typeof syncStates==='function')syncStates();}catch(_){ }
 });
 
 
@@ -6530,6 +6530,9 @@ draw();
     setToolLabel('v54Labels',stateLabel('mapLabelLayerToggle','إخفاء مسميات','إظهار مسميات'));
     setToolLabel('v54Map',stateLabel('bgLayerToggle','إخفاء خارطة','إظهار خارطة'));
     setToolLabel('v54Furniture',stateLabel('furnitureLayerToggle','إخفاء أثاث','إظهار أثاث'));
+    const fpToolbarEnglish=(typeof fpItemUiLang==='function'&&fpItemUiLang()==='en');
+    setToolLabel('lDims',stateLabel('dimsToggle',fpToolbarEnglish?'Hide size':'إخفاء قياس',fpToolbarEnglish?'Show size':'إظهار قياس'));
+    setToolLabel('lNames',stateLabel('labelsToggle',fpToolbarEnglish?'Hide name':'إخفاء اسم',fpToolbarEnglish?'Show name':'إظهار اسم'));
     setToolLabel('v54LockLabels',stateLabel('mapLabelLockToggle','فتح مسميات','قفل مسميات'));
     setToolLabel('v54LockMeasures',stateLabel('measureLockToggle','فتح قياسات','قفل قياسات'));
     const has=typeof getSelectedIds==='function'&&getSelectedIds().length>0;
