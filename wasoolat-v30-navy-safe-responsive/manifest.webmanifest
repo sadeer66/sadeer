@@ -1,0 +1,12 @@
+{
+ "name":"الوصولات V30 — نسخة كحلي مصححة",
+ "short_name":"الوصولات V30",
+ "id":"./?v=30-safe-responsive",
+ "start_url":"./index.html?v=30-safe-responsive&source=home",
+ "scope":"./",
+ "display":"standalone",
+ "background_color":"#041225",
+ "theme_color":"#061a35",
+ "dir":"rtl","lang":"ar",
+ "icons":[{"src":"../wasoolat/icon-v20.png?v=26","sizes":"256x256","type":"image/png","purpose":"any maskable"}]
+}
