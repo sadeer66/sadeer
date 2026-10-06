@@ -1,4 +1,4 @@
-const CACHE_NAME='wasoolat-v32-final-multi-20261006a';
+const CACHE_NAME='wasoolat-v32-final-multi-20261006b';
 const APP_SHELL=['./','./index.html','./index.html?v=32-final-multi','./manifest.webmanifest?v=32-final-multi','./icon.png?v=32'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('wasoolat-v32-final-multi-')&&key!==CACHE_NAME).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
