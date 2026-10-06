@@ -1,0 +1,19 @@
+{
+  "name": "الفروقات V85 تجريبية",
+  "short_name": "الفروقات تجريبية",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#03152c",
+  "theme_color": "#061a36",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
