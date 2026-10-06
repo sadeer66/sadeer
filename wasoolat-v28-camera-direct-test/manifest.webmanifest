@@ -1,0 +1,20 @@
+{
+  "name": "الوصولات V28 — اختبار الكاميرا المباشر",
+  "short_name": "الوصولات V28",
+  "id": "./?v=28-camera-direct",
+  "start_url": "./index.html?v=28-camera-direct&source=home",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#083d5b",
+  "theme_color": "#083d5b",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "../wasoolat/icon-v20.png?v=26",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
