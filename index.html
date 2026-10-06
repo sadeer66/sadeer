@@ -1,26 +1,14 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<!-- FurniPlan V198: iPad-safe progressive sidebar library and stale-PWA cache retirement -->
 <meta charset="UTF-8" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<title>FurniPlan V198 – مكتبة آيباد خفيفة ومستقرة</title>
-<meta name="furniplan-version" content="198">
-<script id="furniplan-v198-retire-stale-pwa">
-/* V198: retire the legacy offline worker before the large library is rendered. */
-(()=>{
-  const retire=()=>{
-    try{navigator.serviceWorker?.getRegistrations?.().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});}catch(_){}
-    try{window.caches?.keys?.().then(keys=>Promise.all(keys.map(key=>caches.delete(key)))).catch(()=>{});}catch(_){}
-  };
-  retire();
-  window.addEventListener('pageshow',retire,{passive:true});
-})();
-</script>
+<title>FurniPlan V195 – Stable Library</title>
+<meta name="furniplan-version" content="195">
 <style>
   :root{
     --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--accent:#38bdf8;--text:#f8fafc;
@@ -65,7 +53,6 @@
   .catBtn:hover{border-color:#64748b;background:#18253a}
   .catBtn.active{background:#075985;border-color:#0ea5e9;color:#fff}
   .lib{display:grid;grid-template-columns:1fr;gap:8px;min-width:0}
-  .fpSideLibraryMore{display:flex;align-items:center;justify-content:center;min-height:24px;border:1px dashed #3c5977;border-radius:9px;color:#9cc8ea;background:#0e1a2c;font-size:10px;font-weight:700;user-select:none}
   .fcard{background:#172033;border:1px solid #2b3a52;border-radius:10px;padding:10px;cursor:grab;text-align:center;user-select:none}
   .fcard:active{cursor:grabbing;transform:scale(.985)}
   .fcard:hover{border-color:#38bdf8}
@@ -213,7 +200,7 @@
   }
   .ipadOnly{display:none}
   .sidebarScrim{display:none}
-  .touchDragHandle{position:absolute;right:5px;bottom:5px;width:32px;height:32px;border-radius:9px;background:rgba(3,105,161,.92);border:1px solid #38bdf8;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:bold;z-index:4;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+  .touchDragHandle{position:absolute;right:5px;bottom:5px;width:32px;height:32px;border-radius:9px;background:rgba(3,105,161,.92);border:1px solid #38bdf8;color:#fff;display:none;align-items:center;justify-content:center;font-size:17px;font-weight:bold;z-index:4;touch-action:none;user-select:none;-webkit-user-select:none}
   .touchDragGhost{position:fixed;z-index:4000;pointer-events:none;width:112px;min-height:94px;border-radius:12px;background:rgba(8,17,32,.94);border:1px solid #38bdf8;box-shadow:0 14px 38px rgba(0,0,0,.45);padding:8px;text-align:center;transform:translate(-50%,-50%);direction:rtl}
   .touchDragGhost img{width:90px;height:58px;object-fit:contain;display:block;margin:auto}
   .touchDragGhost b{font-size:11px;display:block;margin-top:3px}
@@ -891,8 +878,8 @@ header{min-height:var(--tool-header-h)!important}
   text-align:center;color:#171717;
   text-shadow:0 1px 0 rgba(255,255,255,.35);
 }
-.fpHouseLogo{width:clamp(110px,10vw,175px);height:auto;margin-bottom:.5vh}
-.fpHouseLogo svg{display:block;width:100%;height:auto;filter:drop-shadow(0 5px 8px rgba(0,0,0,.08))}
+.fpSofaLogo{width:clamp(110px,10vw,175px);height:auto;margin-bottom:.5vh}
+.fpSofaLogo svg{display:block;width:100%;height:auto;filter:drop-shadow(0 5px 8px rgba(0,0,0,.08))}
 .fpBrand{font-family:Arial,Helvetica,sans-serif;font-weight:900;line-height:.92;font-size:clamp(54px,6.2vw,104px);letter-spacing:-.06em}
 .fpBrand span{color:#111}.fpBrand b{color:#b97816}
 .fpSub{margin-top:1.2vh;font:700 clamp(15px,1.45vw,28px)/1.1 Arial,Helvetica,sans-serif;letter-spacing:.24em}
@@ -926,7 +913,7 @@ header{min-height:var(--tool-header-h)!important}
 @media(max-width:540px){
   .fpSplashShade{background:rgba(255,248,239,.58)}
   .fpSplashContent{width:96vw}
-  .fpHouseLogo{width:110px}
+  .fpSofaLogo{width:110px}
   .fpBrand{font-size:50px}
   .fpSub{font-size:12px;letter-spacing:.18em}
   .fpArabic{font-size:18px}
@@ -936,10 +923,17 @@ header{min-height:var(--tool-header-h)!important}
 @media(prefers-reduced-motion:reduce){#fpSplash{transition-duration:.2s}}
 </style>
 
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=198">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=198">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=198">
-<link rel="manifest" href="manifest.webmanifest?v=198">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=195-final-icon-1">
+<link rel="apple-touch-icon-precomposed" href="apple-touch-icon.png?v=195-final-icon-1">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180x180.png?v=195-final-icon-1">
+<link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon-167x167.png?v=195-final-icon-1">
+<link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon-152x152.png?v=195-final-icon-1">
+<link rel="apple-touch-icon" sizes="120x120" href="apple-touch-icon-120x120.png?v=195-final-icon-1">
+<link rel="icon" href="favicon.ico?v=195-final-icon-1" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=195-final-icon-1">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=195-final-icon-1">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png?v=195-final-icon-1">
+<link rel="manifest" href="manifest.webmanifest?v=195-final-icon-1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="FurniPlan">
@@ -2033,14 +2027,14 @@ html:not(.fpSplashLangReady) #fpSplash{visibility:hidden!important}
   <div class="fpDecor fpDecorBottom"></div>
   <div class="fpSplashShade"></div>
   <div class="fpSplashContent">
-    <div class="fpHouseLogo" aria-hidden="true">
+    <div class="fpSofaLogo" aria-hidden="true">
       <svg viewBox="0 0 160 150" role="img">
-        <path d="M24 68 L80 18 L136 68 V132 H24 Z" fill="none" stroke="#161616" stroke-width="16" stroke-linejoin="round"/>
-        <rect x="56" y="84" width="34" height="30" rx="7" fill="#242424"/>
-        <rect x="98" y="87" width="15" height="28" rx="6" fill="#161616"/>
-        <circle cx="105" cy="80" r="8" fill="#c78b2b"/>
-        <rect x="75" y="49" width="10" height="28" rx="5" fill="#c78b2b"/>
-        <circle cx="80" cy="77" r="10" fill="#c78b2b"/>
+        <path d="M31 84V62c0-17 13-30 30-30h38c17 0 30 13 30 30v22" fill="#f8fafc" stroke="#161616" stroke-width="10" stroke-linejoin="round"/>
+        <path d="M18 110V91c0-12 9-21 21-21h12v40H18Zm124 0V91c0-12-9-21-21-21h-12v40h33Z" fill="#f8fafc" stroke="#161616" stroke-width="10" stroke-linejoin="round"/>
+        <path d="M31 82h98c7 0 13 6 13 13v24H18V95c0-7 6-13 13-13Z" fill="#f8fafc" stroke="#161616" stroke-width="10" stroke-linejoin="round"/>
+        <path d="M80 84v34" stroke="#c78b2b" stroke-width="7" stroke-linecap="round"/>
+        <path d="M39 119l-5 15m92-15 5 15" stroke="#c78b2b" stroke-width="9" stroke-linecap="round"/>
+        <path d="M31 136h98" stroke="#c78b2b" stroke-width="7" stroke-linecap="round"/>
       </svg>
     </div>
 
@@ -2211,12 +2205,12 @@ html:not(.fpSplashLangReady) #fpSplash{visibility:hidden!important}
     <div class="mapViewport" id="mainScroll" title="عند التكبير: اسحب مكانًا فارغًا بالماوس أو الإصبع لتحريك الخارطة">
       <div class="workspaceBrand" id="workspaceBrand" aria-hidden="true">
         <svg viewBox="0 0 160 150">
-          <path d="M24 68 L80 18 L136 68 V132 H24 Z" fill="none" stroke="#f8fafc" stroke-width="16" stroke-linejoin="round"/>
-          <rect x="56" y="84" width="34" height="30" rx="7" fill="#f8fafc"/>
-          <rect x="98" y="87" width="15" height="28" rx="6" fill="#f8fafc"/>
-          <circle cx="105" cy="80" r="8" fill="#d39a39"/>
-          <rect x="75" y="49" width="10" height="28" rx="5" fill="#d39a39"/>
-          <circle cx="80" cy="77" r="10" fill="#d39a39"/>
+          <path d="M31 84V62c0-17 13-30 30-30h38c17 0 30 13 30 30v22" fill="#f8fafc" stroke="#e2e8f0" stroke-width="10" stroke-linejoin="round"/>
+          <path d="M18 110V91c0-12 9-21 21-21h12v40H18Zm124 0V91c0-12-9-21-21-21h-12v40h33Z" fill="#f8fafc" stroke="#e2e8f0" stroke-width="10" stroke-linejoin="round"/>
+          <path d="M31 82h98c7 0 13 6 13 13v24H18V95c0-7 6-13 13-13Z" fill="#f8fafc" stroke="#e2e8f0" stroke-width="10" stroke-linejoin="round"/>
+          <path d="M80 84v34" stroke="#d39a39" stroke-width="7" stroke-linecap="round"/>
+          <path d="M39 119l-5 15m92-15 5 15" stroke="#d39a39" stroke-width="9" stroke-linecap="round"/>
+          <path d="M31 136h98" stroke="#d39a39" stroke-width="7" stroke-linecap="round"/>
         </svg>
         <div class="wbName"><span class="furni">Furni</span><span class="plan">Plan</span></div>
         <div class="wbSub">SMART SPACE PLANNING</div>
@@ -2594,7 +2588,7 @@ function positionTouchGhost(x,y){if(touchDragGhost){touchDragGhost.style.left=x+
 function pointInsideCanvasClient(x,y){const r=canvas.getBoundingClientRect();return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom;}
 function clientToCanvasPos(x,y){const r=canvas.getBoundingClientRect();return {x:(x-r.left)*(canvas.width/r.width),y:(y-r.top)*(canvas.height/r.height)};}
 function startTouchLibraryDrag(ev,def,isArch=false){
-  if(ev.button!==undefined&&ev.button!==0)return;
+  if(ev.pointerType==='mouse')return;
   ev.preventDefault();ev.stopPropagation();
   if(!pxPerCm){alert('عاير الخارطة أولاً ثم أضف القطع.');return;}
   touchLibraryDrag={pointerId:ev.pointerId,def,isArch};
@@ -2664,16 +2658,90 @@ function archPreviewData(def){
 let v99LibraryPointerDrag=null;
 let v99SuppressLibraryClickUntil=0;
 function v98WireWholeCardDrag(card,def,isArch=false){
-  /* V197: the card itself is reserved for scrolling/tapping.
-     Dragging to the plan starts exclusively from its ⠿ handle. */
-  if(card)card.draggable=false;
+  if(!card||card.dataset.v99Drag==='1')return;
+  card.dataset.v99Drag='1';
+
+  card.addEventListener('pointerdown',ev=>{
+    if(ev.button!==undefined&&ev.button!==0)return;
+    if(ev.target.closest('.editLibBtn,.touchDragHandle'))return;
+    if(!pxPerCm)return;
+    v99LibraryPointerDrag={
+      pointerId:ev.pointerId,def,isArch,card,
+      startX:ev.clientX,startY:ev.clientY,dragging:false
+    };
+  });
+
+  card.addEventListener('pointermove',ev=>{
+    const d=v99LibraryPointerDrag;
+    if(!d||d.pointerId!==ev.pointerId)return;
+    const dist=Math.hypot(ev.clientX-d.startX,ev.clientY-d.startY);
+    if(!d.dragging&&dist>7){
+      d.dragging=true;
+      libraryDragActive=true;
+      panDrag=null;
+      mainScroll.classList.remove('panning');
+      d.card.classList.add('v99Dragging');
+      createTouchDragGhost(d.def,d.isArch);
+      positionTouchGhost(ev.clientX,ev.clientY);
+      try{d.card.setPointerCapture(ev.pointerId)}catch{}
+    }
+    if(!d.dragging)return;
+    ev.preventDefault();
+    positionTouchGhost(ev.clientX,ev.clientY);
+    mainScroll.classList.toggle('touchDropReady',pointInsideCanvasClient(ev.clientX,ev.clientY));
+
+    const vr=mainScroll.getBoundingClientRect(),edge=54,step=24;
+    if(ev.clientX<vr.left+edge)mainScroll.scrollLeft-=step;
+    else if(ev.clientX>vr.right-edge)mainScroll.scrollLeft+=step;
+    if(ev.clientY<vr.top+edge)mainScroll.scrollTop-=step;
+    else if(ev.clientY>vr.bottom-edge)mainScroll.scrollTop+=step;
+  },{passive:false});
+
+  const finish=ev=>{
+    const d=v99LibraryPointerDrag;
+    if(!d||d.pointerId!==ev.pointerId)return;
+    v99LibraryPointerDrag=null;
+    if(!d.dragging)return;
+    v99SuppressLibraryClickUntil=Date.now()+350;
+    ev.preventDefault();ev.stopPropagation();
+
+    if(pointInsideCanvasClient(ev.clientX,ev.clientY)){
+      const p=clampPointToCanvas(clientToCanvasPos(ev.clientX,ev.clientY));
+      addItem(d.def,p.x,p.y);
+      pendingFurnitureDef=null;mode='select';updateInteractionCursor();
+      setStatus(`تم سحب وإفلات ${d.def.name} في المكان المحدد`);
+      if(isIPadLayout())setSidebarOpen(false);
+    }
+    d.card.classList.remove('v99Dragging');
+    panDrag=null;
+    mainScroll.classList.remove('panning');
+    removeTouchDragGhost();
+    setTimeout(()=>libraryDragActive=false,80);
+  };
+  card.addEventListener('pointerup',finish);
+  card.addEventListener('pointercancel',ev=>{
+    const d=v99LibraryPointerDrag;
+    if(!d||d.pointerId!==ev.pointerId)return;
+    v99LibraryPointerDrag=null;
+    d.card.classList.remove('v99Dragging');
+    panDrag=null;
+    mainScroll.classList.remove('panning');
+    removeTouchDragGhost();
+    setTimeout(()=>libraryDragActive=false,80);
+  });
+
+  card.addEventListener('click',ev=>{
+    if(Date.now()<v99SuppressLibraryClickUntil){
+      ev.preventDefault();ev.stopImmediatePropagation();
+    }
+  },true);
 }
 function appendArchitectureGroup(title, defs){
   if(!defs.length)return;
   const head=document.createElement('div');head.className='archGroupTitle';head.textContent=title;archLibrary.appendChild(head);
   defs.forEach(def=>{
     const d=document.createElement('div');d.className='archCard';d.draggable=false;d.style.position='relative';
-    d.innerHTML=`<div class="archThumbWrap"><img class="archThumb" src="${archPreviewData(def)}" alt="${def.name}"></div><b>${def.name}</b><span>اسحب من مربع النقاط فقط</span><button class="touchDragHandle" type="button" title="اسحب من هنا إلى الخارطة" aria-label="اسحب من مربع النقاط إلى الخارطة">⠿</button>`;
+    d.innerHTML=`<div class="archThumbWrap"><img class="archThumb" src="${archPreviewData(def)}" alt="${def.name}"></div><b>${def.name}</b><span>اسحب إلى الخارطة</span><button class="touchDragHandle" type="button" aria-label="اسحب إلى الخارطة">⠿</button>`;
     v98WireWholeCardDrag(d,def,true);
     const h=d.querySelector('.touchDragHandle');h.addEventListener('pointerdown',e=>startTouchLibraryDrag(e,def,true));h.addEventListener('pointermove',moveTouchLibraryDrag);h.addEventListener('pointerup',endTouchLibraryDrag);h.addEventListener('pointercancel',endTouchLibraryDrag);
     d.onclick=e=>{if(e.target.closest('.touchDragHandle'))return;if(!pxPerCm){alert('عاير القياس أولاً.');return;}pendingFurnitureDef=def;activateWorkingTool('place');setStatus(`المس مكان وضع ${def.name} على الخارطة — ستبقى الأداة فعّالة حتى تختار أداة أخرى`);if(isIPadLayout())setSidebarOpen(false);};
@@ -3984,28 +4052,7 @@ function sortedLibraryItems(list){
     libraryItemGroup(a.obj).localeCompare(libraryItemGroup(b.obj),'en')||a.index-b.index
   ).map(x=>x.obj);
 }
-/* V198: the side library is deliberately virtualized in small batches.
-   iPad Safari must never create the whole 400+ item catalogue while the map is open. */
 let fpSideLibraryImageObserver=null;
-let fpSideLibraryMoreObserver=null;
-let fpSideLibraryItems=[];
-let fpSideLibraryShown=0;
-let fpSideLibraryAppending=false;
-let fpSideLibraryFallbackRoot=null;
-let fpSideLibraryFallbackScroll=null;
-function fpSideLibraryScrollRoot(){
-  try{
-    const style=getComputedStyle(lib);
-    if(/auto|scroll/.test(style.overflowY)&&lib.scrollHeight>lib.clientHeight+1)return lib;
-  }catch(_){}
-  return lib.closest('aside')||null;
-}
-function fpStopSideLibraryObservers(){
-  if(fpSideLibraryImageObserver){try{fpSideLibraryImageObserver.disconnect();}catch(_){} fpSideLibraryImageObserver=null;}
-  if(fpSideLibraryMoreObserver){try{fpSideLibraryMoreObserver.disconnect();}catch(_){} fpSideLibraryMoreObserver=null;}
-  if(fpSideLibraryFallbackRoot&&fpSideLibraryFallbackScroll){try{fpSideLibraryFallbackRoot.removeEventListener('scroll',fpSideLibraryFallbackScroll);}catch(_){}}
-  fpSideLibraryFallbackRoot=null;fpSideLibraryFallbackScroll=null;
-}
 function fpLoadLibraryImage(img){
   if(!img||img.getAttribute('src'))return;
   const id=img.dataset.fpid||'';
@@ -4022,77 +4069,34 @@ function fpInitSideLibraryImages(){
   const imgs=[...lib.querySelectorAll('img[data-fpid]')];
   if(!imgs.length)return;
   if(!('IntersectionObserver' in window)){imgs.forEach(fpLoadLibraryImage);return;}
-  const root=fpSideLibraryScrollRoot();
+  const root=lib.closest('aside')||null;
   fpSideLibraryImageObserver=new IntersectionObserver(entries=>{
     entries.forEach(entry=>{
       const img=entry.target;
       if(entry.isIntersecting)fpLoadLibraryImage(img);
       else fpReleaseLibraryImage(img);
     });
-  },{root,rootMargin:'180px 0px',threshold:.01});
+  },{root,rootMargin:'240px 0px',threshold:.01});
   imgs.forEach(img=>fpSideLibraryImageObserver.observe(img));
 }
-function fpSideLibraryBatchSize(){
-  return (navigator.maxTouchPoints||0)>1?10:24;
-}
-function fpBuildSideLibraryCard(obj,index){
-  const d=document.createElement('div');d.className='fcard';d.draggable=false;
-  const displayName=fullLibDisplayName(obj);
-  const visual=obj.src?`<img loading="lazy" decoding="async" alt="">`:`<div class="genericThumb" style="box-shadow:inset 0 0 0 999px ${obj.color||'#bfa781'}33">بدون صورة</div>`;
-  d.innerHTML=`<button class="editLibBtn" title="تعديل القطعة">✎</button>${obj.isCustom?'<span class="customMark">مضافة</span>':''}${visual}<b>${displayName}</b><span>${obj.w} × ${obj.h} ${fullLibUnit()}</span><button class="touchDragHandle" type="button" title="اسحب من هنا إلى الخارطة" aria-label="اسحب من مربع النقاط إلى الخارطة">⠿</button>`;
-  const cardImg=d.querySelector('img');if(cardImg){cardImg.dataset.fpid=String(obj.id);cardImg.alt=displayName;}
-  d.querySelector('.editLibBtn').onclick=e=>{e.stopPropagation();openLibraryEditor(obj.id);};
-  const th=d.querySelector('.touchDragHandle');th.addEventListener('pointerdown',e=>startTouchLibraryDrag(e,obj,false));th.addEventListener('pointermove',moveTouchLibraryDrag);th.addEventListener('pointerup',endTouchLibraryDrag);th.addEventListener('pointercancel',endTouchLibraryDrag);
-  wireFurnitureCard(d,obj,index);
-  v98WireWholeCardDrag(d,obj,false);
-  return d;
-}
-function fpWatchSideLibraryMore(){
-  if(fpSideLibraryShown>=fpSideLibraryItems.length)return;
-  if(fpSideLibraryMoreObserver){try{fpSideLibraryMoreObserver.disconnect();}catch(_){} fpSideLibraryMoreObserver=null;}
-  const marker=lib.querySelector('.fpSideLibraryMore');
-  const root=fpSideLibraryScrollRoot();
-  if(!marker||!root)return;
-  if('IntersectionObserver' in window){
-    fpSideLibraryMoreObserver=new IntersectionObserver(entries=>{
-      if(entries.some(entry=>entry.isIntersecting))fpAppendSideLibraryBatch();
-    },{root,rootMargin:'300px 0px',threshold:.01});
-    fpSideLibraryMoreObserver.observe(marker);
-    return;
-  }
-  fpSideLibraryFallbackRoot=root;
-  fpSideLibraryFallbackScroll=()=>{
-    if(root.scrollTop+root.clientHeight>=root.scrollHeight-280)fpAppendSideLibraryBatch();
-  };
-  root.addEventListener('scroll',fpSideLibraryFallbackScroll,{passive:true});
-}
-function fpAppendSideLibraryBatch(){
-  if(fpSideLibraryAppending||fpSideLibraryShown>=fpSideLibraryItems.length)return;
-  fpSideLibraryAppending=true;
-  const oldMarker=lib.querySelector('.fpSideLibraryMore');if(oldMarker)oldMarker.remove();
-  const fragment=document.createDocumentFragment();
-  const stop=Math.min(fpSideLibraryItems.length,fpSideLibraryShown+fpSideLibraryBatchSize());
-  for(let i=fpSideLibraryShown;i<stop;i++)fragment.appendChild(fpBuildSideLibraryCard(fpSideLibraryItems[i],i));
-  fpSideLibraryShown=stop;
-  lib.appendChild(fragment);
-  if(fpSideLibraryShown<fpSideLibraryItems.length){
-    const marker=document.createElement('div');marker.className='fpSideLibraryMore';marker.textContent='مرّر لإظهار المزيد';marker.setAttribute('aria-hidden','true');lib.appendChild(marker);
-  }
-  requestAnimationFrame(()=>{
-    fpSideLibraryAppending=false;
-    fpInitSideLibraryImages();
-    fpWatchSideLibraryMore();
-  });
-}
 function renderLibrary(){
-  fpStopSideLibraryObservers();
-  fpSideLibraryAppending=false;
+  if(fpSideLibraryImageObserver){try{fpSideLibraryImageObserver.disconnect();}catch(_){} fpSideLibraryImageObserver=null;}
   lib.querySelectorAll('img').forEach(fpReleaseLibraryImage);
   lib.innerHTML='';
-  fpSideLibraryItems=sortedLibraryItems(furniture).filter(obj=>activeCategory==='الكل'||obj.category===activeCategory);
-  fpSideLibraryShown=0;
-  try{lib.scrollTop=0;const panel=lib.closest('aside');if(panel)panel.scrollTop=0;}catch(_){}
-  fpAppendSideLibraryBatch();
+  sortedLibraryItems(furniture).forEach((obj,index)=>{
+    if(activeCategory!=='الكل'&&obj.category!==activeCategory)return;
+    const d=document.createElement('div');d.className='fcard';d.draggable=false;
+    const displayName=fullLibDisplayName(obj);
+    const visual=obj.src?`<img loading="lazy" decoding="async" alt="">`:`<div class="genericThumb" style="box-shadow:inset 0 0 0 999px ${obj.color||'#bfa781'}33">بدون صورة</div>`;
+    d.innerHTML=`<button class="editLibBtn" title="تعديل القطعة">✎</button>${obj.isCustom?'<span class="customMark">مضافة</span>':''}${visual}<b>${displayName}</b><span>${obj.w} × ${obj.h} ${fullLibUnit()}</span><button class="touchDragHandle" type="button" aria-label="اسحب إلى الخارطة">⠿</button>`;
+    const cardImg=d.querySelector('img');if(cardImg){cardImg.dataset.fpid=String(obj.id);cardImg.alt=displayName;}
+    d.querySelector('.editLibBtn').onclick=e=>{e.stopPropagation();openLibraryEditor(obj.id);};
+    const th=d.querySelector('.touchDragHandle');th.addEventListener('pointerdown',e=>startTouchLibraryDrag(e,obj,false));th.addEventListener('pointermove',moveTouchLibraryDrag);th.addEventListener('pointerup',endTouchLibraryDrag);th.addEventListener('pointercancel',endTouchLibraryDrag);
+    wireFurnitureCard(d,obj,index);
+    v98WireWholeCardDrag(d,obj,false);
+    lib.appendChild(d);
+  });
+  requestAnimationFrame(fpInitSideLibraryImages);
 }
 
 buildCategoryButtons();renderLibrary();
@@ -4151,10 +4155,7 @@ function fullLibUnit(){return fullLibUiLang()==='en'?'cm':'سم';}
 function fullLibCurrentBase(){return (furniture.includes(fullLibSelectedItem)?fullLibSelectedItem:furniture.find(x=>x.id===fullLibSelectedId))||null;}
 function fullLibState(){
   const base=fullLibCurrentBase();if(!base)return null;
-  const lang=fullLibUiLang(),typed=(fullLibName.value||fullLibDisplayName(base)||base.name||'قطعة').trim();
-  const nameAr=lang==='ar'?typed:(base.nameAr||base.name||typed);
-  const nameEn=lang==='en'?typed:(base.nameEn||'');
-  return {...base,name:nameAr||base.name||typed,nameAr,nameEn,w:Math.max(1,+fullLibW.value||base.w),h:Math.max(1,+fullLibH.value||base.h),
+  return {...base,name:fullLibName.value||base.name,w:Math.max(1,+fullLibW.value||base.w),h:Math.max(1,+fullLibH.value||base.h),
     rot:(+fullLibRot.value||0)%360,color:fullLibColor.value||base.color||'#bfa781',tintEnabled:!!fullLibTint.checked,initialLayer:fullLibLayer};
 }
 function renderFullLibCategories(){
@@ -4468,8 +4469,6 @@ window.addEventListener('furniplan-language-changed',()=>{
   renderFullLibCategories();
   if(fullLibSelectedId&&furniture.some(x=>x.id===fullLibSelectedId))selectFullLibItem(fullLibSelectedId);
   else renderFullLibGrid();
-  // V195: refresh map furniture names immediately when Arabic/English changes.
-  try{items.forEach(it=>fpEnsureItemBilingualNames(it));syncSelectedPanel();draw();scheduleUsedFurnitureSync(true);if(typeof syncStates==='function')syncStates();}catch(_){ }
 });
 
 
@@ -4643,41 +4642,6 @@ function drawAutoDistances(){
   for(const d of dims){if(d.d<1)continue;ctx.setLineDash([3*u,3*u]);ctx.beginPath();ctx.moveTo(d.from.x,d.from.y);ctx.lineTo(d.to.x,d.to.y);ctx.stroke();ctx.setLineDash([]);const mx=(d.from.x+d.to.x)/2,my=(d.from.y+d.to.y)/2;const label=formatLength(d.d/pxPerCm);const tw=ctx.measureText(label).width;ctx.fillStyle='rgba(255,255,255,.90)';roundRectPath(mx-tw/2-3*u,my-7*u,tw+6*u,14*u,4*u);ctx.fill();ctx.fillStyle='#111827';ctx.fillText(label,mx,my);}
   ctx.restore();
 }
-// V195: keep Arabic + English furniture names after the item is placed on the map.
-function fpItemUiLang(){
-  try{return window.FurniPlanLanguage&&typeof window.FurniPlanLanguage.get==='function'&&window.FurniPlanLanguage.get()==='ar'?'ar':'en';}catch(_){return document.documentElement.lang==='ar'?'ar':'en';}
-}
-function fpFurnitureBaseForItem(it){
-  if(!it)return null;
-  return furniture.find(x=>(it.libraryId&&String(x.id)===String(it.libraryId))||(it.src&&x.src===it.src)||
-    (it.nameAr&&x.name===it.nameAr)||(it.nameEn&&x.nameEn===it.nameEn)||x.name===it.name||x.nameEn===it.name)||null;
-}
-function fpEnsureItemBilingualNames(it,source=null){
-  if(!it)return it;
-  const base=source&&source.id?furniture.find(x=>String(x.id)===String(source.id)):null;
-  const lib=base||fpFurnitureBaseForItem(it);
-  if(!it.libraryId&&lib?.id)it.libraryId=lib.id;
-  const raw=String(it.name||'').trim();
-  const rawIsAr=/[\u0600-\u06FF]/.test(raw);
-  if(!it.nameAr)it.nameAr=lib?.name||(rawIsAr?raw:'');
-  if(!it.nameEn)it.nameEn=lib?.nameEn||(!rawIsAr?raw:'');
-  if(!it.nameEn&&it.nameAr){
-    try{it.nameEn=window.FurniPlanLanguage?.translate?.(it.nameAr)||'';}catch(_){}
-  }
-  if(!it.nameAr&&lib?.name)it.nameAr=lib.name;
-  if(!it.name)it.name=it.nameAr||it.nameEn||'قطعة';
-  return it;
-}
-function fpItemDisplayName(it){
-  if(!it)return fpItemUiLang()==='en'?'Item':'قطعة';
-  fpEnsureItemBilingualNames(it);
-  if(fpItemUiLang()==='en'){
-    if(it.nameEn)return it.nameEn;
-    try{return window.FurniPlanLanguage?.translate?.(it.nameAr||it.name)||it.nameAr||it.name||'Item';}catch(_){return it.nameAr||it.name||'Item';}
-  }
-  return it.nameAr||fpFurnitureBaseForItem(it)?.name||it.name||'قطعة';
-}
-
 function armFurniturePlacement(def){
   ensureSpriteForDef(def);
   document.getElementById('furnitureLayerToggle').checked=true;
@@ -4699,15 +4663,10 @@ function addItem(def,x,y){
   ensureSpriteForDef(def);
   const before=cloneEditState();
   if(!pxPerCm){alert('يجب معايرة القياس أولاً حتى يظهر الأثاث بحجمه الحقيقي.');return null;}
-  const sourceBase=(def.id&&furniture.find(x=>String(x.id)===String(def.id)))||furniture.find(x=>def.src&&x.src===def.src)||null;
-  const rawName=String(def.name||'قطعة').trim(),rawIsAr=/[\u0600-\u06FF]/.test(rawName);
-  const nameAr=def.nameAr||sourceBase?.name||(rawIsAr?rawName:'');
-  const nameEn=def.nameEn||sourceBase?.nameEn||(!rawIsAr?rawName:'');
   const it={
-    id:randId(),name:nameAr||rawName,nameAr,nameEn,libraryId:def.id||sourceBase?.id||null,w:def.w,h:def.h,x:clamp(x??canvas.width/2,0,canvas.width),y:clamp(y??canvas.height/2,0,canvas.height),
+    id:randId(),name:def.name,w:def.w,h:def.h,x:clamp(x??canvas.width/2,0,canvas.width),y:clamp(y??canvas.height/2,0,canvas.height),
     rot:Number.isFinite(+def.rot)?+def.rot:0,color:def.color||'#bfa781',type:def.type||'generic',src:def.src||null,tintEnabled:!!def.tintEnabled,locked:false,archType:def.archType||null,doorSwing:def.doorSwing||1
   };
-  fpEnsureItemBilingualNames(it,def);
   const snapped=snapDraggedPosition(it,it.x,it.y);it.x=snapped.x;it.y=snapped.y;
   if(def.initialLayer==='back')items.unshift(it);else items.push(it);setSelection([it.id],it.id);selectedMeasureId=null;syncSelectedPanel();draw();commitHistory(before);return it;
 }
@@ -5376,8 +5335,8 @@ function drawItem(it){
 
   if(showLabels || showDims){
     const lines=[];
-    if(showLabels)lines.push(fpItemDisplayName(it));
-    if(showDims)lines.push(`${Math.round(it.w)} × ${Math.round(it.h)} ${fpItemUiLang()==='en'?'cm':'سم'}`);
+    if(showLabels)lines.push(it.name);
+    if(showDims)lines.push(`${Math.round(it.w)} × ${Math.round(it.h)} سم`);
     const fontSize=clamp(Math.min(w,h)/9,8,11);
     const lineH=fontSize+3;
     ctx.save();
@@ -5414,10 +5373,8 @@ function usedFurnitureGroups(){
     if(it.archType)continue;
     const w=Math.max(1,Number(it.w)||0),h=Math.max(1,Number(it.h)||0);
     const tintEnabled=!!it.tintEnabled;
-    const displayName=fpItemDisplayName(it);
-    const identity=it.libraryId||it.src||it.nameAr||it.nameEn||it.name||'قطعة';
-    const key=[identity,w.toFixed(2),h.toFixed(2),it.src||'',it.color||'',tintEnabled?1:0].join('|');
-    if(!map.has(key))map.set(key,{name:displayName,w,h,src:it.src||null,color:it.color||'#cbd5e1',tintEnabled,count:0});
+    const key=[it.name||'قطعة',w.toFixed(2),h.toFixed(2),it.src||'',it.color||'',tintEnabled?1:0].join('|');
+    if(!map.has(key))map.set(key,{name:it.name||'قطعة',w,h,src:it.src||null,color:it.color||'#cbd5e1',tintEnabled,count:0});
     map.get(key).count++;
   }
   return [...map.values()];
@@ -5801,8 +5758,8 @@ function syncSelectedPanel(){
   const multi=ids.length>1;
   if(multiInfo){multiInfo.style.display=multi?'inline-flex':'none';multiInfo.textContent=`${ids.length} قطع محددة`;}
   setSingleInspectorVisible(!multi);
-  selectedTitle.textContent=multi?`${ids.length} قطع`:fpItemDisplayName(it);
-  if(!multi){selName.value=fpItemDisplayName(it);selW.value=it.w;selH.value=it.h;selRot.value=it.rot;selColor.value=it.color||'#bfa781';selTintEnabled.checked=!!it.tintEnabled;}
+  selectedTitle.textContent=multi?`${ids.length} قطع`:it.name;
+  if(!multi){selName.value=it.name;selW.value=it.w;selH.value=it.h;selRot.value=it.rot;selColor.value=it.color||'#bfa781';selTintEnabled.checked=!!it.tintEnabled;}
   const allLocked=list.length&&list.every(x=>x.locked);
   if(lockBtn)lockBtn.textContent=allLocked?'🔓 فتح القفل':'🔒 قفل المحدد';
   flipDoorBtn.style.display=(!multi&&it&&(['door','doubleDoor'].includes(it.archType)))?'':'none';
@@ -5819,12 +5776,8 @@ deleteMapLabelBtn.onclick=()=>{if(mapLabelsGloballyLocked()){setStatus('المس
 
 [selName,selW,selH,selRot,selColor].forEach(el=>el.oninput=()=>{
   const ids=getSelectedIds(),it=current();if(ids.length!==1||!canEditItem(it))return;
-  if(el===selName){
-    if(fpItemUiLang()==='en')it.nameEn=selName.value;
-    else{it.nameAr=selName.value;it.name=selName.value;}
-  }
-  it.w=Math.max(1,+selW.value||1);it.h=Math.max(1,+selH.value||1);it.rot=+selRot.value||0;it.color=selColor.value;
-  selectedTitle.textContent=fpItemDisplayName(it);
+  it.name=selName.value;it.w=Math.max(1,+selW.value||1);it.h=Math.max(1,+selH.value||1);it.rot=+selRot.value||0;it.color=selColor.value;
+  selectedTitle.textContent=it.name;
   if(el===selColor && it.src){it.tintEnabled=true;selTintEnabled.checked=true;}
   draw();
 });
@@ -5930,7 +5883,7 @@ document.getElementById('loadInput').onchange=e=>{
       dxfModel=p.dxfModel||null;if(dxfModel)rebuildDxfSnapGeometry();else{dxfSnapSegments=[];dxfSnapKeyPoints=[];dxfActiveSnap=null;}
       pxPerCm=p.pxPerCm||(dxfModel?(dxfModel.scale/dxfModel.unitCm):null);
       items=(p.items||[]).map(it=>({color:'#bfa781',type:'generic',rot:0,tintEnabled:false,locked:false,...it}));
-      items.forEach(it=>{fpEnsureItemBilingualNames(it);ensureSpriteForDef(it);});
+      items.forEach(ensureSpriteForDef);
       measurements=(p.measurements||[]).map(m=>({id:m.id||randId(),pinned:m.pinned!==false,offsetX:0,offsetY:0,...m}));selectedMeasureId=null;
       mapLabels=(p.mapLabels||[]).map(l=>({id:l.id||randId(),text:l.text||'مسمى',x:+l.x||0,y:+l.y||0}));selectedMapLabelId=null;
       areaPolygons=(p.areaPolygons||p.areas||[]).map(a=>({id:a.id||randId(),name:a.name||'مساحة',points:Array.isArray(a.points)?a.points:[],areaM2:+a.areaM2||0,perimeterM:+a.perimeterM||0,cardOffsetX:+a.cardOffsetX||0,cardOffsetY:+a.cardOffsetY||0}));areaDraft=[];
@@ -6532,9 +6485,6 @@ draw();
     setToolLabel('v54Labels',stateLabel('mapLabelLayerToggle','إخفاء مسميات','إظهار مسميات'));
     setToolLabel('v54Map',stateLabel('bgLayerToggle','إخفاء خارطة','إظهار خارطة'));
     setToolLabel('v54Furniture',stateLabel('furnitureLayerToggle','إخفاء أثاث','إظهار أثاث'));
-    const fpToolbarEnglish=(typeof fpItemUiLang==='function'&&fpItemUiLang()==='en');
-    setToolLabel('lDims',stateLabel('dimsToggle',fpToolbarEnglish?'Hide size':'إخفاء قياس',fpToolbarEnglish?'Show size':'إظهار قياس'));
-    setToolLabel('lNames',stateLabel('labelsToggle',fpToolbarEnglish?'Hide name':'إخفاء اسم',fpToolbarEnglish?'Show name':'إظهار اسم'));
     setToolLabel('v54LockLabels',stateLabel('mapLabelLockToggle','فتح مسميات','قفل مسميات'));
     setToolLabel('v54LockMeasures',stateLabel('measureLockToggle','فتح قياسات','قفل قياسات'));
     const has=typeof getSelectedIds==='function'&&getSelectedIds().length>0;
@@ -6572,7 +6522,7 @@ draw();
 </script>
 
 
-<script src="v85-final-patch.js?v=198"></script>
+<script src="v85-final-patch.js?v=180"></script>
 
 <script id="furniplan-toolbar-wheel-v94">
 (()=>{
@@ -6853,9 +6803,8 @@ draw();
 <script src="v174-assets/assets_5.js?v=175"></script>
 <script src="v174-assets/assets_6.js?v=175"></script>
 <script src="v174-assets/assets_7.js?v=175"></script>
-<script src="library_v185.js?v=195"></script>\n<script src="v186-ipad-memory-fix.js?v=195"></script>
-<script src="v191-library-pager-safe.js?v=195"></script>
-<script src="v195-library-layout-swipe.js?v=195-vertical-swipe"></script>
-<script src="v196-restore-library-materials.js?v=196"></script>
+<script src="library_v185.js?v=185"></script>\n<script src="v186-ipad-memory-fix.js?v=186"></script>
+<script src="v191-library-pager-safe.js?v=191"></script>
+<script src="v195-ui-pan-patch.js?v=195"></script>
 </body>
 </html>

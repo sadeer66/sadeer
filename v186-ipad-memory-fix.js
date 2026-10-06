@@ -1,50 +1,119 @@
-/* FurniPlan V188 — progressive iPad library */
-(()=>{try{
-  const B=(navigator.maxTouchPoints||0)>1?18:32;
-  let list=[],shown=0,observer=null,bound=false;
-  const stop=()=>{try{observer&&observer.disconnect();}catch(_){}observer=null;};
-  const load=img=>{if(!img.getAttribute('src')&&img.dataset.fpSrc)img.src=img.dataset.fpSrc;};
-  function watch(){
-    stop();const panel=fullLibGrid.closest('.fullLibGridPanel');
-    const imgs=[...fullLibGrid.querySelectorAll('img[data-fp-src]')];
-    if(!('IntersectionObserver' in window)){imgs.slice(0,B).forEach(load);return;}
-    observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
-      const img=entry.target;
-      if(entry.isIntersecting)load(img);
-      else if(!img.closest('.selected'))img.removeAttribute('src');
-    }),{root:panel,rootMargin:'220px 0px',threshold:.01});
-    imgs.forEach(img=>observer.observe(img));
+/* FurniPlan V186 — iPad/WebKit memory-safe fullscreen library */
+(()=>{
+  try{
+    let fp186Observer=null;
+
+    function fp186StopObserver(){
+      try{if(fp186Observer)fp186Observer.disconnect();}catch(_){}
+      fp186Observer=null;
+    }
+
+    function fp186ObserveImages(){
+      fp186StopObserver();
+      if(!('IntersectionObserver' in window)){
+        fullLibGrid.querySelectorAll('img[data-fp-src]').forEach(img=>{
+          img.src=img.dataset.fpSrc||'';
+          img.removeAttribute('data-fp-src');
+        });
+        return;
+      }
+      fp186Observer=new IntersectionObserver(entries=>{
+        for(const entry of entries){
+          if(!entry.isIntersecting)continue;
+          const img=entry.target;
+          const src=img.dataset.fpSrc;
+          if(src&&!img.src){
+            img.src=src;
+            img.removeAttribute('data-fp-src');
+          }
+          fp186Observer.unobserve(img);
+        }
+      },{root:fullLibGrid.closest('.fullLibGridPanel'),rootMargin:'180px 0px',threshold:0.01});
+      fullLibGrid.querySelectorAll('img[data-fp-src]').forEach(img=>fp186Observer.observe(img));
+    }
+
+    renderFullLibGrid=function(){
+      if(!fullLibraryModal.classList.contains('open'))return;
+      fp186StopObserver();
+      const list=sortedLibraryItems(fullLibFiltered());
+      fullLibGrid.innerHTML='';
+      fullLibCount.textContent=list.length;
+      fullLibGridTitle.textContent=fullLibCategory==='الكل'
+        ?(fullLibUiLang()==='en'?'All Library Items':'كل قطع المكتبة')
+        :fullLibDisplayCategory(fullLibCategory);
+
+      const frag=document.createDocumentFragment();
+      list.forEach(obj=>{
+        const c=document.createElement('button');
+        c.type='button';
+        c.className='fullLibCard'+(obj.id===fullLibSelectedId?' selected':'');
+        c.dataset.fpItemId=String(obj.id);
+
+        if(obj.src){
+          const img=document.createElement('img');
+          img.loading='lazy';
+          img.decoding='async';
+          img.alt='';
+          img.dataset.fpSrc=resolveAssetSrc(obj.src);
+          c.appendChild(img);
+        }else{
+          const g=document.createElement('div');
+          g.className='fullLibGeneric';
+          g.style.background=obj.color||'#bfa781';
+          c.appendChild(g);
+        }
+
+        const b=document.createElement('b');
+        b.textContent=fullLibDisplayName(obj);
+        const s=document.createElement('span');
+        s.textContent=obj.w+' × '+obj.h+' '+fullLibUnit();
+        c.appendChild(b);c.appendChild(s);
+        c.onclick=()=>selectFullLibItem(obj);
+        frag.appendChild(c);
+      });
+      fullLibGrid.appendChild(frag);
+      requestAnimationFrame(fp186ObserveImages);
+    };
+
+    selectFullLibItem=function(item){
+      const base=typeof item==='object'?item:furniture.find(x=>x.id===item);
+      if(!base||!furniture.includes(base))return;
+      fullLibSelectedItem=base;
+      const id=base.id;
+      window.fullLibPreviewZoom=1;
+      fullLibSelectedId=id;
+      fullLibName.value=fullLibDisplayName(base);
+      fullLibW.value=base.w||100;
+      fullLibH.value=base.h||60;
+      fullLibRot.value=0;
+      fullLibColor.value=base.color||'#bfa781';
+      fullLibTint.checked=false;
+      fullLibLayer='front';
+      syncFullLibLayerButtons();
+
+      /* Critical V186 fix: never rebuild the image grid just to change selection. */
+      for(const card of fullLibGrid.children){
+        card.classList.toggle('selected',card.dataset.fpItemId===String(id));
+      }
+      drawFullLibPreview();
+    };
+
+    const fp186OldClose=closeFullLibrary;
+    closeFullLibrary=function(){
+      fp186StopObserver();
+      fp186OldClose();
+      /* Remove decoded catalogue images after closing so iPad can reclaim memory. */
+      requestAnimationFrame(()=>{
+        if(fullLibraryModal.classList.contains('open'))return;
+        fullLibGrid.querySelectorAll('img').forEach(img=>{
+          try{img.removeAttribute('src');img.src='';}catch(_){}
+        });
+        fullLibGrid.innerHTML='';
+      });
+    };
+
+    window.__FURNIPLAN_V186_IPAD_MEMORY_FIX__=true;
+  }catch(err){
+    console.error('FurniPlan V186 iPad memory fix',err);
   }
-  function makeCard(obj){
-    const card=document.createElement('button');card.type='button';
-    card.className='fullLibCard'+(obj.id===fullLibSelectedId?' selected':'');
-    card.dataset.fpid=String(obj.id);card.dataset.fpItemId=String(obj.id);
-    if(obj.src){const img=document.createElement('img');img.loading='lazy';img.decoding='async';img.alt='';img.dataset.fpSrc=resolveAssetSrc(obj.src);card.appendChild(img);}
-    else {const box=document.createElement('div');box.className='fullLibGeneric';box.style.background=obj.color||'#bfa781';card.appendChild(box);}
-    const name=document.createElement('b'),size=document.createElement('span');
-    name.textContent=fullLibDisplayName(obj);size.textContent=obj.w+' × '+obj.h+' '+fullLibUnit();
-    card.append(name,size);card.onclick=()=>selectFullLibItem(obj);return card;
-  }
-  function addBatch(){
-    if(shown>=list.length)return;
-    const frag=document.createDocumentFragment();
-    list.slice(shown,shown+B).forEach(obj=>frag.appendChild(makeCard(obj)));
-    shown=Math.min(list.length,shown+B);fullLibGrid.appendChild(frag);watch();
-  }
-  renderFullLibGrid=function(){
-    if(!fullLibraryModal.classList.contains('open'))return;
-    stop();list=sortedLibraryItems(fullLibFiltered());shown=0;fullLibGrid.replaceChildren();
-    fullLibCount.textContent=list.length;
-    fullLibGridTitle.textContent=fullLibCategory==='الكل'?(fullLibUiLang()==='en'?'All Library Items':'كل قطع المكتبة'):fullLibDisplayCategory(fullLibCategory);
-    const panel=fullLibGrid.closest('.fullLibGridPanel');if(panel)panel.scrollTop=0;
-    addBatch();
-    requestAnimationFrame(()=>{if(panel&&panel.scrollHeight<=panel.clientHeight+1)addBatch();});
-    if(panel&&!bound){bound=true;panel.addEventListener('scroll',()=>{
-      if(panel.scrollTop+panel.clientHeight>=panel.scrollHeight-360)addBatch();
-    },{passive:true});}
-  };
-  fullLibSearch.oninput=renderFullLibGrid;
-  const oldClose=closeFullLibrary;
-  closeFullLibrary=function(){stop();list=[];shown=0;oldClose();};
-  window.__FURNIPLAN_V188_PROGRESSIVE_LIBRARY__=true;
-}catch(error){console.error('FurniPlan V188 library',error);}})();
+})();

@@ -1,4 +1,4 @@
-const CACHE='furniplan-v198-retired-cache';
+const CACHE='furniplan-v195-retired-cache';
 const CORE=[
   './',
   './index.html',

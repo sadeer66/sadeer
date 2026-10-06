@@ -1,4 +1,4 @@
-name: Upload FurniPlan V119 to TestFlight
+name: Upload FurniPlan V195 to TestFlight
 
 on:
   workflow_dispatch:
@@ -79,7 +79,7 @@ jobs:
           echo "IOS_PROFILE_NAME=$PROFILE_NAME" >> "$GITHUB_ENV"
           echo "IOS_PROFILE_UUID=$PROFILE_UUID" >> "$GITHUB_ENV"
 
-      - name: Prepare FurniPlan V119 web bundle
+      - name: Prepare FurniPlan V195 web bundle
         shell: bash
         run: |
           set -euo pipefail
@@ -87,6 +87,10 @@ jobs:
           mkdir -p ios/FurniPlan/Web
           cp index.html ios/FurniPlan/Web/
           cp v85-final-patch.js ios/FurniPlan/Web/
+          cp library_v185.js ios/FurniPlan/Web/
+          cp v186-ipad-memory-fix.js ios/FurniPlan/Web/
+          cp v191-library-pager-safe.js ios/FurniPlan/Web/
+          cp v195-ui-pan-patch.js ios/FurniPlan/Web/
           cp catalog.html ios/FurniPlan/Web/ || true
           cp assistant-auth.js ios/FurniPlan/Web/ || true
           cp assistant-auth.json ios/FurniPlan/Web/ || true
@@ -95,8 +99,14 @@ jobs:
           cp manifest.webmanifest ios/FurniPlan/Web/ || true
           cp service-worker.js ios/FurniPlan/Web/ || true
           cp apple-touch-icon.png ios/FurniPlan/Web/ || true
+          cp apple-touch-icon-120x120.png ios/FurniPlan/Web/ || true
+          cp apple-touch-icon-152x152.png ios/FurniPlan/Web/ || true
+          cp apple-touch-icon-167x167.png ios/FurniPlan/Web/ || true
+          cp apple-touch-icon-180x180.png ios/FurniPlan/Web/ || true
+          cp favicon.ico ios/FurniPlan/Web/ || true
           cp favicon-32.png ios/FurniPlan/Web/ || true
           cp v13-ipad-fix.js ios/FurniPlan/Web/ || true
+          cp -R v174-assets ios/FurniPlan/Web/ || true
           cp -R assets ios/FurniPlan/Web/ || true
           cp -R icons ios/FurniPlan/Web/ || true
           find . -maxdepth 1 -type f \( -name 'v45p_*' -o -name 'v45t_*' \) -exec cp {} ios/FurniPlan/Web/ \;
@@ -156,7 +166,9 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          xcodebuild             -exportArchive             -archivePath "$PWD/build/FurniPlan.xcarchive"             -exportPath "$PWD/build/export"             -exportOptionsPlist ExportOptions.plist             -allowProvisioningUpdates             -authenticationKeyPath "$ASC_KEY_PATH"             -authenticationKeyID "$APP_STORE_CONNECT_KEY_ID"             -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID"             | tee export.log
+          cp ExportOptions.plist ExportOptions.generated.plist
+          /usr/libexec/PlistBuddy -c "Set :provisioningProfiles:com.sadeer.furniplan $IOS_PROFILE_NAME" ExportOptions.generated.plist
+          xcodebuild             -exportArchive             -archivePath "$PWD/build/FurniPlan.xcarchive"             -exportPath "$PWD/build/export"             -exportOptionsPlist ExportOptions.generated.plist             -allowProvisioningUpdates             -authenticationKeyPath "$ASC_KEY_PATH"             -authenticationKeyID "$APP_STORE_CONNECT_KEY_ID"             -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID"             | tee export.log
 
       - name: Verify exported IPA metadata
         working-directory: ios/FurniPlan
@@ -187,7 +199,7 @@ jobs:
       - name: Save IPA artifact
         uses: actions/upload-artifact@v4
         with:
-          name: FurniPlan-V119-AppStore-IPA
+          name: FurniPlan-V195-AppStore-IPA
           path: ios/FurniPlan/build/export/*.ipa
           retention-days: 30
 
