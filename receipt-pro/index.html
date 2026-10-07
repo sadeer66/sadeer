@@ -2872,7 +2872,7 @@ button,
 body:before,.topbar:before,.topbar:after{display:none!important}
 .top{padding:14px 18px 8px!important;background:transparent!important}
 .topbar{min-height:88px!important;padding:13px 18px!important;border:1px solid rgba(105,185,255,.24)!important;border-radius:20px!important;background:linear-gradient(135deg,#061a36,#082a56)!important;box-shadow:0 14px 34px rgba(0,12,34,.26)!important}
-.appLogo{width:58px!important;height:58px!important;border:2px solid rgba(175,225,255,.48)!important;background:#eaf7ff!important;box-shadow:0 7px 18px rgba(0,0,0,.22)!important}
+.appLogo{width:58px!important;height:58px!important;border:2px solid rgba(175,225,255,.48)!important;background:transparent!important;box-shadow:0 7px 18px rgba(0,0,0,.22)!important}.appLogo img{background:transparent!important}
 .brand h1{font-size:28px!important;letter-spacing:.2px}.brand small{margin-top:3px!important;color:#cfe9ff!important;font-size:14px!important}
 .offlineReadyBar{display:none!important}
 .receiptProWelcome{position:fixed;inset:0;z-index:5000;display:grid;place-items:center;overflow:hidden;padding:max(24px,env(safe-area-inset-top)) max(22px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(22px,env(safe-area-inset-left));background:linear-gradient(145deg,#031127 0%,#061d3d 52%,#082b57 100%);color:#f8fcff;transition:opacity .22s ease,visibility .22s ease}
@@ -2880,14 +2880,15 @@ body:before,.topbar:before,.topbar:after{display:none!important}
 .receiptProWelcome.isLeaving{opacity:0;visibility:hidden;pointer-events:none}
 .receiptProWelcomeCard{position:relative;width:min(420px,100%);text-align:center;padding:18px 14px 20px}
 .receiptProWordmark{margin:0 0 23px;color:#a9dcff;font:800 12px/1.1 Tahoma,"Segoe UI",sans-serif;letter-spacing:2.2px;text-transform:uppercase}
-.receiptProBrandMark{width:142px;height:142px;display:grid;place-items:center;margin:0 auto 16px;overflow:hidden;border:1px solid rgba(177,226,255,.38);border-radius:30px;background:rgba(235,249,255,.96);box-shadow:0 16px 38px rgba(0,5,22,.34),inset 0 1px 0 rgba(255,255,255,.88)}
-.receiptProBrandMark img{display:block;width:100%;height:100%;object-fit:contain}
+.receiptProBrandMark{width:142px;height:142px;display:grid;place-items:center;margin:0 auto 16px;overflow:hidden;border:0;border-radius:30px;background:transparent;box-shadow:none}
+.receiptProBrandMark img{display:block;width:100%;height:100%;object-fit:contain;background:transparent}
 .receiptProWelcomeName{margin:0;color:#fff;font-size:clamp(25px,6vw,34px);font-weight:900;line-height:1.25;overflow-wrap:anywhere}
 .receiptProWelcomeSub{margin:7px 0 17px;color:#b8d8f2;font-size:14px;font-weight:700}
 .receiptProDownload{width:min(300px,100%);height:7px;overflow:hidden;margin:0 auto 11px;border:1px solid rgba(153,215,255,.32);border-radius:999px;background:rgba(170,221,255,.14);box-shadow:inset 0 1px 3px rgba(0,0,0,.18)}
 .receiptProDownloadFill{display:block;width:100%;height:100%;border-radius:inherit;transform:scaleX(0);transform-origin:right center;background:linear-gradient(90deg,#60c8ff,#b4e8ff);box-shadow:0 0 12px rgba(119,211,255,.58);animation:receiptProDownload 4s cubic-bezier(.2,.7,.2,1) forwards}
 .receiptProDownloadLabel{min-height:18px;margin:0 0 18px;color:#c5e3f7;font-size:12px;font-weight:700}
 .receiptProOffline{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:18px;color:#b8d8f2;font-size:12px;font-weight:700}.receiptProOffline i{width:7px;height:7px;border-radius:50%;background:#58d68d;box-shadow:0 0 9px rgba(88,214,141,.76)}
+.officeFlatRateRow{display:flex;align-items:center;justify-content:flex-start;margin:10px 0 2px}.flatRateCheck{display:inline-flex!important;align-items:center!important;gap:8px;padding:9px 12px;border:1px solid #8ac8ff;border-radius:12px;background:#eaf6ff;color:#0b3d76;font-weight:900;cursor:pointer}.flatRateCheck input{width:19px!important;height:19px!important;margin:0!important;accent-color:#0b75c9}
 @keyframes receiptProDownload{to{transform:scaleX(1)}}
 @media (max-width:480px){.receiptProWelcomeCard{padding:10px 2px 16px}.receiptProWordmark{margin-bottom:19px}.receiptProBrandMark{width:126px;height:126px;border-radius:27px;margin-bottom:14px}.receiptProWelcomeSub{margin-bottom:15px}}
 @media (orientation:landscape) and (max-height:540px){.receiptProWelcomeCard{padding:2px 8px}.receiptProWordmark{margin-bottom:10px}.receiptProBrandMark{width:84px;height:84px;border-radius:20px;margin-bottom:8px}.receiptProWelcomeName{font-size:24px}.receiptProWelcomeSub{margin:3px 0 10px}.receiptProDownload{margin-bottom:7px}.receiptProDownloadLabel{margin-bottom:10px}.receiptProOffline{margin-top:10px}}
@@ -2900,13 +2901,13 @@ body:before,.topbar:before,.topbar:after{display:none!important}
     <p class="receiptProWordmark">Receipt Pro</p>
     <div class="receiptProBrandMark" id="receiptProWelcomeLogo"><img src="app-icon.png" alt="شعار Receipt Pro"></div>
     <h1 class="receiptProWelcomeName" id="receiptProWelcomeName">Receipt Pro</h1>
-    <p class="receiptProWelcomeSub">إدارة الفروقات والمدفوعات</p>
+    <p class="receiptProWelcomeSub">إصدار وصولات</p>
     <div class="receiptProDownload" id="receiptProDownload" role="progressbar" aria-label="تجهيز البرنامج" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="receiptProDownloadFill" id="receiptProDownloadFill"></span></div>
     <p class="receiptProDownloadLabel" id="receiptProDownloadLabel">جاري تجهيز البرنامج…</p>
     <div class="receiptProOffline"><i aria-hidden="true"></i><span>يعمل بدون إنترنت</span></div>
   </div>
 </div>
-<header class="top"><div class="topbar"><div class="appLogo" id="headerLogo"><img src="app-icon.png" alt="شعار Receipt Pro"></div><div class="brand"><h1>Receipt Pro</h1><small id="companyTitle">إدارة الفروقات والمدفوعات</small></div></div></header>
+<header class="top"><div class="topbar"><div class="appLogo" id="headerLogo"><img src="app-icon.png" alt="شعار Receipt Pro"></div><div class="brand"><h1>Receipt Pro</h1><small id="companyTitle">إصدار وصولات</small></div></div></header>
 <main class="shell">
 <div class="printHead">
   <img id="printHeaderLogo" alt="لوجو الشركة" hidden>
@@ -2918,7 +2919,7 @@ body:before,.topbar:before,.topbar:after{display:none!important}
 </div>
 <div class="statementMeta"><div class="statementMetaTitle">بيانات قائمة الحساب</div><div class="field"><label>اسم العميل</label><input id="statementClient" placeholder="اسم العميل" oninput="saveStatementMeta()"></div><div class="field"><label>رقم الموقع</label><input id="statementSite" placeholder="رقم الموقع" oninput="saveStatementMeta()"></div><div class="field"><label>نوع العمل</label><input id="statementWork" placeholder="نوع العمل" oninput="saveStatementMeta()"></div><div class="field"><label>التاريخ</label><input id="statementDate" type="date" lang="en-GB" oninput="saveStatementMeta()"></div></div>
 <div class="entryGrid">
-<section class="entryPanel"><div class="panelHead">مصاريف المكتب</div><div class="panelBody"><div class="field"><label>التفاصيل</label><textarea id="officeDetails" placeholder="اكتب تفاصيل دفعة المكتب"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المكتب</label><input id="officeDate" type="date" lang="en-GB"></div><div class="field"><label>المبلغ</label><input id="officeAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="entryReceiptInline"><div class="field"><label>أرقام الوصولات</label><input id="officeReceiptNo" type="text" inputmode="text" placeholder="مثال: 1-2-3" oninput="updateKindReceiptState('office')"></div><div class="receiptActions"><button type="button" class="attachBtn" onclick="document.getElementById('officeReceiptFile').click()">📎 إضافة وصل</button><button type="button" class="attachBtn" onclick="document.getElementById('officeCameraFile').click()">📷 التقاط صورة</button></div><input id="officeCameraFile" type="file" accept="image/*" capture="environment" hidden onchange="attachKindReceipt('office',event)"><input id="officeReceiptFile" type="file" accept="image/*" multiple hidden onchange="attachKindReceipt('office',event)"><small id="officeReceiptState" class="tiny">لا توجد صور وصولات مرفقة</small><div id="officeReceiptList" class="pendingReceiptList"></div></div><button id="officeSubmitBtn" class="entrySubmit" onclick="addEntryFrom('office')">إضافة للمكتب +</button></div></section>
+<section class="entryPanel"><div class="panelHead">مصاريف المكتب</div><div class="panelBody"><div class="field"><label>التفاصيل</label><textarea id="officeDetails" placeholder="اكتب تفاصيل دفعة المكتب"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المكتب</label><input id="officeDate" type="date" lang="en-GB"></div><div class="field"><label>المبلغ</label><input id="officeAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="officeFlatRateRow"><label class="flatRateCheck"><input id="officeFlatCommission" type="checkbox"><span>نسبة مقطوعة</span></label></div><div class="entryReceiptInline"><div class="field"><label>أرقام الوصولات</label><input id="officeReceiptNo" type="text" inputmode="text" placeholder="مثال: 1-2-3" oninput="updateKindReceiptState('office')"></div><div class="receiptActions"><button type="button" class="attachBtn" onclick="document.getElementById('officeReceiptFile').click()">📎 إضافة وصل</button><button type="button" class="attachBtn" onclick="document.getElementById('officeCameraFile').click()">📷 التقاط صورة</button></div><input id="officeCameraFile" type="file" accept="image/*" capture="environment" hidden onchange="attachKindReceipt('office',event)"><input id="officeReceiptFile" type="file" accept="image/*" multiple hidden onchange="attachKindReceipt('office',event)"><small id="officeReceiptState" class="tiny">لا توجد صور وصولات مرفقة</small><div id="officeReceiptList" class="pendingReceiptList"></div></div><button id="officeSubmitBtn" class="entrySubmit" onclick="addEntryFrom('office')">إضافة للمكتب +</button></div></section>
 <section class="entryPanel ownerPanel"><button type="button" id="ownerToggle" class="ownerToggle" aria-expanded="false" aria-controls="ownerFields" onclick="toggleOwnerFields()">مصاريف المالك — اضغط لفتح الحقول ＋</button><div class="panelBody" id="ownerFields" hidden><div class="field"><label>التفاصيل</label><textarea id="ownerDetails" placeholder="اكتب تفاصيل دفعة المالك"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المالك</label><input id="ownerDate" type="date" lang="en-GB"></div><div class="field"><label>المبلغ</label><input id="ownerAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="entryReceiptInline"><div class="field"><label>أرقام الوصولات</label><input id="ownerReceiptNo" type="text" inputmode="text" placeholder="مثال: 1-2-3" oninput="updateKindReceiptState('owner')"></div><div class="receiptActions"><button type="button" class="attachBtn" onclick="document.getElementById('ownerReceiptFile').click()">📎 إضافة وصل</button><button type="button" class="attachBtn" onclick="document.getElementById('ownerCameraFile').click()">📷 التقاط صورة</button></div><input id="ownerCameraFile" type="file" accept="image/*" capture="environment" hidden onchange="attachKindReceipt('owner',event)"><input id="ownerReceiptFile" type="file" accept="image/*" multiple hidden onchange="attachKindReceipt('owner',event)"><small id="ownerReceiptState" class="tiny">لا توجد صور وصولات مرفقة</small><div id="ownerReceiptList" class="pendingReceiptList"></div></div><button id="ownerSubmitBtn" class="entrySubmit" onclick="addEntryFrom('owner')">إضافة للمالك +</button></div></section>
 <div class="internalListState" hidden><input id="receipt" type="number" min="1" max="9999"><input id="date" type="date" lang="en-GB"></div>
 </div>
@@ -3068,10 +3069,24 @@ async function migrateLegacyReceiptImages(){
 }
 
 
+function isFlatCommission(entry){return !!(entry&&entry.kind==='office'&&entry.flatCommission)}
+function percentDisplay(entry,empty='-'){return isFlatCommission(entry)?'مقطوعة':(entry&&entry.percent!=null?fmt(entry.percent)+'%':empty)}
+function commissionDisplay(entry,empty='-'){return isFlatCommission(entry)?empty:(entry&&entry.percent!=null?fmt(entry.commission):empty)}
+function benefitNote(){
+ if(entries.some(isFlatCommission))return 'تم استحصال نسبة مقطوعة';
+ return entries.some(e=>e.percent!=null)
+   ? 'تم احتساب نسبة '+fmt(Math.max(0,n(company.officePercent)))+'% لصالح المكتب'
+   : 'لم يحتسب المكتب أي فائدة لصالحه';
+}
 function normalizeEntryPercentages(){
  let changed=false;
  for(const x of entries){
-   if(x.percent!=null){
+   if(isFlatCommission(x)){
+     if(x.percent!=null||n(x.commission)!==0||n(x.net)!==n(x.amount))changed=true;
+     x.percent=null;
+     x.commission=0;
+     x.net=n(x.amount);
+   }else if(x.percent!=null){
      const p=n(x.percent);
      x.commission=n(x.amount)*p/100;
      x.net=n(x.amount)+x.commission;
@@ -3115,11 +3130,12 @@ async function addEntryFrom(kind){
   const imgs=pendingEntryReceipts[isOffice?'office':'owner'];
   const entryDate=$(isOffice?'officeDate':'ownerDate').value||today();
   const editId=editingEntryId[kind];
+  const flatCommission=isOffice&&$('officeFlatCommission').checked;
   if(editId!=null){
     const item=entries.find(x=>String(x.id)===String(editId));
     if(!item){cancelEdit(kind);alert('تعذر العثور على الإدخال المطلوب تعديله.');return}
-    item.receipt=receipt;item.receiptNo=receiptNo;item.date=entryDate;item.details=details;item.amount=amount;item.kind=isOffice?'office':'owner';
-    if(item.percent!=null){const rate=Math.max(0,n(item.percent));item.commission=amount*rate/100;item.net=amount+item.commission}else{item.commission=0;item.net=amount}
+    item.receipt=receipt;item.receiptNo=receiptNo;item.date=entryDate;item.details=details;item.amount=amount;item.kind=isOffice?'office':'owner';item.flatCommission=flatCommission;
+    if(item.flatCommission){item.percent=null;item.commission=0;item.net=amount}else if(item.percent!=null){const rate=Math.max(0,n(item.percent));item.commission=amount*rate/100;item.net=amount+item.commission}else{item.commission=0;item.net=amount}
     try{
       if(imgs.length){await putReceiptImages(item.id,imgs);item.hasReceipt=true}
       else{await deleteReceiptImage(item.id);item.hasReceipt=false}
@@ -3129,7 +3145,7 @@ async function addEntryFrom(kind){
   }
   const percent=null;
   const commission=0,net=amount;
-  const item={id:Date.now()*1000+Math.floor(Math.random()*1000),receipt,receiptNo,hasReceipt:imgs.length>0,date:entryDate,kind:isOffice?'office':'owner',details,amount,percent,commission,net,notes:''};
+  const item={id:Date.now()*1000+Math.floor(Math.random()*1000),receipt,receiptNo,hasReceipt:imgs.length>0,date:entryDate,kind:isOffice?'office':'owner',details,amount,percent,commission,net,flatCommission,notes:''};
   entries.push(item);const stored=save();if(!stored){entries=entries.filter(x=>x.id!==item.id);alert('تعذر حفظ الحركة النصية على الجهاز.');return}
   if(imgs.length){try{await putReceiptImages(item.id,imgs)}catch(e){console.error(e);alert('تم حفظ الحركة، لكن تعذر حفظ صور الوصولات.')}}
   clearEntryForm(kind);$('receipt').value=receipt;if(kind==='owner')toggleOwnerFields(false);render();
@@ -3142,6 +3158,7 @@ function clearEntryForm(kind){
  $(isOffice?'officeAmount':'ownerAmount').value='';
  $(isOffice?'officeReceiptNo':'ownerReceiptNo').value='';
  $(isOffice?'officeDate':'ownerDate').value=today();
+ if(isOffice)$('officeFlatCommission').checked=false;
  pendingEntryReceipts[kind]=[];updateKindReceiptState(kind);
 }
 function updateSubmitButton(kind){
@@ -3162,6 +3179,7 @@ async function editEntry(id){
  $(kind==='office'?'officeAmount':'ownerAmount').value=x.amount||'';
  $(kind==='office'?'officeReceiptNo':'ownerReceiptNo').value=x.receiptNo||'';
  $(kind==='office'?'officeDate':'ownerDate').value=x.date||today();
+ $('officeFlatCommission').checked=kind==='office'&&isFlatCommission(x);
  pendingEntryReceipts[kind]=await getReceiptImages(x.id);
  if(!pendingEntryReceipts[kind].length&&x.receiptImage)pendingEntryReceipts[kind]=[x.receiptImage];
  updateKindReceiptState(kind);updateSubmitButton(kind);
@@ -3172,7 +3190,7 @@ function totals(){let owner=0,office=0;for(const x of entries){if(x.kind==='owne
 
 function toggleRowPercent(id,checked){
  const x=entries.find(v=>String(v.id)===String(id));
- if(!x)return;
+ if(!x||isFlatCommission(x))return;
  const rate=Math.max(0,n(company.officePercent));
  if(checked && rate>0){
    x.percent=rate;
@@ -3217,8 +3235,8 @@ function render(){
    <td><span class="tag ${x.kind}">${x.kind==='owner'?'المالك':'المكتب'}</span></td>
    <td>${esc(x.details)}</td>
    <td><b>${fmt(x.amount)}</b></td>
-   <td><label class="rowPercentToggle"><input type="checkbox" ${x.percent!=null?'checked':''} onchange="toggleRowPercent(${x.id},this.checked)"><span>${x.percent!=null?fmt(x.percent)+'%':'النسبة'}</span></label></td>
-   <td><b>${x.percent!=null?fmt(x.commission):'0'}</b></td>
+   <td>${isFlatCommission(x)?'<span class="flatRateCheck">مقطوعة</span>':`<label class="rowPercentToggle"><input type="checkbox" ${x.percent!=null?'checked':''} onchange="toggleRowPercent(${x.id},this.checked)"><span>${x.percent!=null?fmt(x.percent)+'%':'النسبة'}</span></label>`}</td>
+   <td><b>${commissionDisplay(x,'0')}</b></td>
    <td><b>${fmt(x.net)}</b></td>
    <td class="noPrint"><div style="display:flex;gap:6px;justify-content:center;white-space:nowrap"><button class="btn" style="padding:6px 8px" onclick="editEntry(${x.id})">تعديل</button><button class="btn danger" style="padding:6px 8px" onclick="del(${x.id})">حذف</button></div></td> </tr>`;
  }).join('');
@@ -3230,12 +3248,7 @@ function render(){
  $('sumCount').textContent=entries.length;
  $('overallResult').textContent=entries.length?resultText(t.diff):'لا توجد إدخالات بعد';
  const note=$('officeBenefitNote');
- if(note){
-   const has=entries.some(e=>e.percent!=null);
-   note.textContent=has
-     ? 'تم احتساب نسبة '+fmt(Math.max(0,n(company.officePercent)))+'% لصالح المكتب'
-     : 'لم يحتسب المكتب أي فائدة لصالحه';
- }
+ if(note)note.textContent=benefitNote();
  renderEntryAttachments()
 }
 async function del(id){if(confirm('حذف هذا الإدخال؟')){for(const k of ['owner','office']){if(String(editingEntryId[k])===String(id)){editingEntryId[k]=null;clearEntryForm(k);updateSubmitButton(k)}}entries=entries.filter(x=>x.id!==id);save();await deleteReceiptImage(id);$('receipt').value=nextReceipt();render()}}
@@ -3275,7 +3288,7 @@ function saveCompany(){
 }
 function applyCompany(){
  if($('masterPayment'))$('masterPayment').innerHTML=masterPaymentHtml();
- $('companyTitle').textContent=company.name||'إدارة الفروقات والمدفوعات';
+ $('companyTitle').textContent=company.name||'إصدار وصولات';
  let hl=$('headerLogo');hl.innerHTML='';
  if(company.logo){let img=document.createElement('img');img.src=company.logo;img.alt='لوجو الشركة';hl.appendChild(img)}else{let img=document.createElement('img');img.src='app-icon.png';img.alt='شعار Receipt Pro';hl.appendChild(img)}
  updateReceiptProWelcomeBrand();
@@ -3334,7 +3347,7 @@ async function renderEntryAttachments(){
  }
  sec.hidden=!count
 }
-async function newStatement(){if(entries.length&&!confirm('بدء قائمة فروقات جديدة؟'))return;entries=[];save();await clearReceiptImages();statementMeta={client:'',site:'',work:'',date:today()};pendingEntryReceipts={owner:[],office:[]};editingEntryId={owner:null,office:null};updateSubmitButton('owner');updateSubmitButton('office');try{localStorage.setItem(MK,JSON.stringify(statementMeta))}catch(e){};$('statementClient').value='';$('statementSite').value='';$('statementWork').value='';$('statementDate').value=today();$('date').value=today();$('ownerDate').value=today();$('officeDate').value=today();$('receipt').value=1;$('ownerDetails').value='';autoGrowDetails($('ownerDetails'));$('ownerAmount').value='';$('ownerReceiptNo').value='';$('officeDetails').value='';autoGrowDetails($('officeDetails'));$('officeAmount').value='';$('officeReceiptNo').value='';updateKindReceiptState('owner');updateKindReceiptState('office');render()}
+async function newStatement(){if(entries.length&&!confirm('بدء قائمة فروقات جديدة؟'))return;entries=[];save();await clearReceiptImages();statementMeta={client:'',site:'',work:'',date:today()};pendingEntryReceipts={owner:[],office:[]};editingEntryId={owner:null,office:null};updateSubmitButton('owner');updateSubmitButton('office');try{localStorage.setItem(MK,JSON.stringify(statementMeta))}catch(e){};$('statementClient').value='';$('statementSite').value='';$('statementWork').value='';$('statementDate').value=today();$('date').value=today();$('ownerDate').value=today();$('officeDate').value=today();$('receipt').value=1;$('ownerDetails').value='';autoGrowDetails($('ownerDetails'));$('ownerAmount').value='';$('ownerReceiptNo').value='';$('officeDetails').value='';autoGrowDetails($('officeDetails'));$('officeAmount').value='';$('officeReceiptNo').value='';$('officeFlatCommission').checked=false;updateKindReceiptState('owner');updateKindReceiptState('office');render()}
 
 
 function prepareLargePrintStatementPage(){
@@ -3354,8 +3367,8 @@ function prepareLargePrintStatementPage(){
      <td>${e.kind==='owner'?'المالك':'المكتب'}</td>
      <td><b>${esc(e.details||'')}</b></td>
      <td>${fmt(e.amount)}</td>
-     <td>${e.percent==null?'-':fmt(e.percent)+'%'}</td>
-     <td>${e.percent!=null?fmt(e.commission):'-'}</td>
+     <td>${percentDisplay(e)}</td>
+     <td>${commissionDisplay(e)}</td>
      <td><b>${fmt(e.net)}</b></td>
    </tr>`).join('');
 
@@ -3411,7 +3424,7 @@ function prepareLargePrintStatementPage(){
    </section>
 
    <section class="psResult">${entries.length?esc(resultText(t.diff)):'لا توجد إدخالات بعد'}</section>
-   ${masterPaymentHtml()}<section class="psBenefitNote">${entries.some(e=>e.percent!=null)?'تم احتساب نسبة '+fmt(Math.max(0,n(company.officePercent)))+'% لصالح المكتب':'لم يحتسب المكتب أي فائدة لصالحه'}</section>
+   ${masterPaymentHtml()}<section class="psBenefitNote">${benefitNote()}</section>
    ${stamp}
  `;
 }
@@ -3720,7 +3733,7 @@ async function makeReportPages(){
    ctx.strokeStyle='#000';ctx.lineWidth=1;ctx.strokeRect(left,y,totalW,rowH);vlines(y,rowH);
 
    const vals=[
-     fmt(e.net),e.percent!=null?fmt(e.commission):'-',e.percent==null?'-':fmt(e.percent)+'%',fmt(e.amount),e.details||'',
+     fmt(e.net),commissionDisplay(e),percentDisplay(e),fmt(e.amount),e.details||'',
      e.kind==='owner'?'المالك':'المكتب',formatDate(e.date||''),String(displayedListNo(e)),String(rowIndex+1)
    ];
    vals.forEach((v,i)=>{
@@ -3762,13 +3775,13 @@ async function makeReportPages(){
  ctx.beginPath();ctx.moveTo(margin,y+72);ctx.lineTo(margin+contentW,y+72);ctx.stroke();
  pdfText(ctx,resultText(t.diff),W/2,y+101,23,true,'#ffffff','center');
  y+=130;
- const hasBenefit=entries.some(e=>e.percent!=null);
+ const noteText=benefitNote();
 
  // سطر ملاحظة النسبة بعرض كامل اللوحة
  ctx.fillStyle='#0b3d76';ctx.fillRect(margin,y,contentW,48);
  ctx.strokeStyle='#8ac8ff';ctx.lineWidth=1;
  ctx.beginPath();ctx.moveTo(margin,y);ctx.lineTo(margin+contentW,y);ctx.stroke();
- pdfText(ctx,hasBenefit?('تم احتساب نسبة '+fmt(Math.max(0,n(company.officePercent)))+'% لصالح المكتب'):'لم يحتسب المكتب أي فائدة لصالحه',W/2,y+24,18,true,'#ffffff','center');
+ pdfText(ctx,noteText,W/2,y+24,18,true,'#ffffff','center');
  y+=58;
 
  // تقريب الزوايا الأربع الخارجية فقط مع بقاء الجوانب ممتدة حتى الحد الخارجي
@@ -3897,7 +3910,7 @@ async function buildBackupJsonBlob(){
  saveStatementMeta();
  const out=[];
  for(const x of entries){out.push({...x,receiptImages:await getReceiptImages(x.id)})}
- const payload={app:'الفروقات',version:86,exportedAt:new Date().toISOString(),company:{...company,masterName:masterName(),masterNumber:masterNumber()},statementMeta,entries:out};
+ const payload={app:'Receipt Pro',version:89,exportedAt:new Date().toISOString(),company:{...company,masterName:masterName(),masterNumber:masterNumber()},statementMeta,entries:out};
  return new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
 }
 async function buildBackupPdfBlob(){
@@ -3916,7 +3929,7 @@ async function buildBackupWordBlob(){
    const x=sorted[i],base=Number(x.amount)||0,pct=x.kind==='office'?(Number(x.percent)||0):0,pctAmt=x.kind==='office'?(Number(x.commission)||0):0,total=x.kind==='office'?(Number(x.net)||base+pctAmt):base;
    if(x.kind==='owner')ownerTotal+=base;else officeTotal+=base+pctAmt;
    const rowClass=x.kind==='owner'?'ownerRow':'officeRow';
-   rows.push(`<tr class="${rowClass}"><td>${i+1}</td><td>${escWord(x.receipt||'-')}</td><td>${escWord(formatDate(x.date||'-'))}</td><td>${x.kind==='owner'?'المالك':'المكتب'}</td><td class="details">${escWord(x.details||'')}</td><td>${fmtWordAmount(base)}</td><td>${x.kind==='office'?(pct?escWord(pct)+'%':'-'):'-'}</td><td>${x.kind==='office'&&pct?fmtWordAmount(pctAmt):'-'}</td><td>${fmtWordAmount(total)}</td></tr>`);
+   rows.push(`<tr class="${rowClass}"><td>${i+1}</td><td>${escWord(x.receipt||'-')}</td><td>${escWord(formatDate(x.date||'-'))}</td><td>${x.kind==='owner'?'المالك':'المكتب'}</td><td class="details">${escWord(x.details||'')}</td><td>${fmtWordAmount(base)}</td><td>${escWord(x.kind==='office'?percentDisplay(x):'-')}</td><td>${escWord(x.kind==='office'?commissionDisplay(x):'-')}</td><td>${fmtWordAmount(total)}</td></tr>`);
  }
  const appTotals=totals(); ownerTotal=appTotals.owner; officeTotal=appTotals.office; const diff=appTotals.diff;
  let result='لا توجد إدخالات بعد';
@@ -3933,7 +3946,7 @@ async function buildBackupWordBlob(){
  .brandHead{width:100%;border-collapse:collapse;table-layout:fixed;background:#07356b;border:1.5px solid #061f3f;margin:0 0 5px 0}
  .brandHead td{background:#07356b;color:#fff;border:0;padding:4px 7px;vertical-align:middle;font-weight:900;height:42px}
  .brandLogo{width:50px;text-align:center}
- .logo{width:38px!important;height:38px!important;max-width:38px!important;max-height:38px!important;object-fit:contain;background:#fff;border:1px solid rgba(255,255,255,.55)}
+ .logo{width:38px!important;height:38px!important;max-width:38px!important;max-height:38px!important;object-fit:contain;background:transparent;border:0}
  .brandText{text-align:right}
  .brandText .company{font-size:17px;font-weight:900;line-height:1.05;color:#fff}
  .brandText .sub{font-size:10px;font-weight:900;margin-top:1px;color:#fff}
@@ -3954,6 +3967,7 @@ async function buildBackupWordBlob(){
  .summary td{border:1px solid #6e9ed0;padding:7px 5px;text-align:center;background:#0c5ea8;color:#fff;font-size:12.5px;font-weight:900}
  .summary b{font-weight:900;color:#fff}
  .result{margin-top:0;border:1px solid #6e9ed0;background:#0b3d76;color:#fff;padding:8px;text-align:center;font-size:15.5px;font-weight:900}
+ .benefit{border:1px solid #6e9ed0;background:#0b3d76;color:#fff;padding:7px;text-align:center;font-size:13px;font-weight:900}
  .receipt{page-break-before:always;text-align:center;font-weight:900}
  .receipt h2{background:#0b3d76;color:#fff;border:1.5px solid #062a51;padding:7px;font-size:15px;font-weight:900}
  .receipt img{max-width:95%;max-height:230mm;object-fit:contain;border:1px solid #000}
@@ -3967,7 +3981,7 @@ async function buildBackupWordBlob(){
  <td><span class="lbl">التاريخ</span><span class="val">${escWord(formatDate(statementMeta.date||''))}</span></td>
  </tr></table>
  <div class="title">قائمة الحساب</div><table class="accounts"><thead><tr><th>ت</th><th>القائمة</th><th>التاريخ</th><th>الجهة</th><th>التفاصيل</th><th>المبلغ</th><th>النسبة</th><th>مبلغ النسبة</th><th>المبلغ النهائي</th></tr></thead><tbody>${rows.join('')||'<tr><td colspan="9">لا توجد إدخالات</td></tr>'}</tbody></table>
- <table class="summary"><tr><td><b>مجموع المالك</b><br>${fmtWordAmount(ownerTotal)}</td><td><b>مجموع المكتب</b><br>${fmtWordAmount(officeTotal)}</td><td><b>الفرق</b><br>${fmtWordAmount(Math.abs(diff))}</td><td><b>عدد الحركات</b><br>${sorted.length}</td></tr></table><div class="result">${escWord(result)}</div>
+ <table class="summary"><tr><td><b>مجموع المالك</b><br>${fmtWordAmount(ownerTotal)}</td><td><b>مجموع المكتب</b><br>${fmtWordAmount(officeTotal)}</td><td><b>الفرق</b><br>${fmtWordAmount(Math.abs(diff))}</td><td><b>عدد الحركات</b><br>${sorted.length}</td></tr></table><div class="result">${escWord(result)}</div><div class="benefit">${escWord(benefitNote())}</div>
  ${masterPaymentHtml()}<div class="footer">${companyName}${companyPhone?' — '+companyPhone:''}</div>${receiptHtml}</body></html>`;
  return new Blob(['\ufeff',html],{type:'application/msword;charset=utf-8'});
 }
