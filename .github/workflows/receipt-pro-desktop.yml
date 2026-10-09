@@ -1,0 +1,41 @@
+name: Build Receipt Pro V90
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - 'receipt-pro/**'
+      - 'receipt-pro-desktop/**'
+      - '.github/workflows/receipt-pro-desktop.yml'
+permissions:
+  contents: read
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: receipt-pro-desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Build Windows installer
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npm run dist -- --publish never
+      - name: Verify packaged V90
+        shell: pwsh
+        run: |
+          $source = Get-FileHash ../receipt-pro/index.html
+          $packed = Get-FileHash dist/win-unpacked/resources/receipt-pro/index.html
+          if ($source.Hash -ne $packed.Hash) { throw "Packaged HTML differs from V90 source" }
+          if (!(Test-Path dist/Receipt-Pro-V90-Setup-x64.exe)) { throw "Installer missing" }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Receipt-Pro-V90-Windows-Installer
+          path: receipt-pro-desktop/dist/Receipt-Pro-V90-Setup-x64.exe
+          if-no-files-found: error
+          retention-days: 30

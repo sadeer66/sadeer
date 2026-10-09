@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Receipt Pro">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>Receipt Pro</title>
+<title>Receipt Pro V90</title>
 <style>
 
 :root{--bg:#f4ede6;--paper:#fffaf5;--card:#fffdfb;--line:#ead5c3;--ink:#4a2a18;--muted:#8e715e;--brown:#5f260d;--brown2:#8b3a12;--orange:#d96f1d;--orange2:#f0a254;--cream:#fff2e2;--danger:#b43a31;--shadow:0 18px 40px rgba(83,42,16,.10)}
@@ -2917,7 +2917,7 @@ body:before,.topbar:before,.topbar:after{display:none!important}
     <p id="phDate"></p>
   </div>
 </div>
-<div class="statementMeta"><div class="statementMetaTitle">بيانات قائمة الحساب</div><div class="field"><label>اسم العميل</label><input id="statementClient" placeholder="اسم العميل" oninput="saveStatementMeta()"></div><div class="field"><label>رقم الموقع</label><input id="statementSite" placeholder="رقم الموقع" oninput="saveStatementMeta()"></div><div class="field"><label>نوع العمل</label><input id="statementWork" placeholder="نوع العمل" oninput="saveStatementMeta()"></div><div class="field"><label>التاريخ</label><input id="statementDate" type="date" lang="en-GB" oninput="saveStatementMeta()"></div></div>
+<div class="statementMeta"><div class="statementMetaTitle">بيانات قائمة الحساب</div><div class="field"><label for="statementNumber">رقم القائمة</label><input id="statementNumber" type="number" min="1" step="1" inputmode="numeric" placeholder="تلقائي: 1" oninput="saveStatementMeta()"></div><div class="field"><label>اسم العميل</label><input id="statementClient" placeholder="اسم العميل" oninput="saveStatementMeta()"></div><div class="field"><label>رقم الموقع</label><input id="statementSite" placeholder="رقم الموقع" oninput="saveStatementMeta()"></div><div class="field"><label>نوع العمل</label><input id="statementWork" placeholder="نوع العمل" oninput="saveStatementMeta()"></div><div class="field"><label>التاريخ</label><input id="statementDate" type="date" lang="en-GB" oninput="saveStatementMeta()"></div></div>
 <div class="entryGrid">
 <section class="entryPanel"><div class="panelHead">مصاريف المكتب</div><div class="panelBody"><div class="field"><label>التفاصيل</label><textarea id="officeDetails" placeholder="اكتب تفاصيل دفعة المكتب"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المكتب</label><input id="officeDate" type="date" lang="en-GB"></div><div class="field"><label>المبلغ</label><input id="officeAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="officeFlatRateRow"><label class="flatRateCheck"><input id="officeFlatCommission" type="checkbox"><span>نسبة مقطوعة</span></label></div><div class="entryReceiptInline"><div class="field"><label>أرقام الوصولات</label><input id="officeReceiptNo" type="text" inputmode="text" placeholder="مثال: 1-2-3" oninput="updateKindReceiptState('office')"></div><div class="receiptActions"><button type="button" class="attachBtn" onclick="document.getElementById('officeReceiptFile').click()">📎 إضافة وصل</button><button type="button" class="attachBtn" onclick="document.getElementById('officeCameraFile').click()">📷 التقاط صورة</button></div><input id="officeCameraFile" type="file" accept="image/*" capture="environment" hidden onchange="attachKindReceipt('office',event)"><input id="officeReceiptFile" type="file" accept="image/*" multiple hidden onchange="attachKindReceipt('office',event)"><small id="officeReceiptState" class="tiny">لا توجد صور وصولات مرفقة</small><div id="officeReceiptList" class="pendingReceiptList"></div></div><button id="officeSubmitBtn" class="entrySubmit" onclick="addEntryFrom('office')">إضافة للمكتب +</button></div></section>
 <section class="entryPanel ownerPanel"><button type="button" id="ownerToggle" class="ownerToggle" aria-expanded="false" aria-controls="ownerFields" onclick="toggleOwnerFields()">مصاريف المالك — اضغط لفتح الحقول ＋</button><div class="panelBody" id="ownerFields" hidden><div class="field"><label>التفاصيل</label><textarea id="ownerDetails" placeholder="اكتب تفاصيل دفعة المالك"></textarea></div><div class="entryDateAmountRow"><div class="field"><label>تاريخ دفعة المالك</label><input id="ownerDate" type="date" lang="en-GB"></div><div class="field"><label>المبلغ</label><input id="ownerAmount" type="number" min="0" step="0.001" placeholder="0"></div></div><div class="entryReceiptInline"><div class="field"><label>أرقام الوصولات</label><input id="ownerReceiptNo" type="text" inputmode="text" placeholder="مثال: 1-2-3" oninput="updateKindReceiptState('owner')"></div><div class="receiptActions"><button type="button" class="attachBtn" onclick="document.getElementById('ownerReceiptFile').click()">📎 إضافة وصل</button><button type="button" class="attachBtn" onclick="document.getElementById('ownerCameraFile').click()">📷 التقاط صورة</button></div><input id="ownerCameraFile" type="file" accept="image/*" capture="environment" hidden onchange="attachKindReceipt('owner',event)"><input id="ownerReceiptFile" type="file" accept="image/*" multiple hidden onchange="attachKindReceipt('owner',event)"><small id="ownerReceiptState" class="tiny">لا توجد صور وصولات مرفقة</small><div id="ownerReceiptList" class="pendingReceiptList"></div></div><button id="ownerSubmitBtn" class="entrySubmit" onclick="addEntryFrom('owner')">إضافة للمالك +</button></div></section>
@@ -2935,7 +2935,7 @@ body:before,.topbar:before,.topbar:after{display:none!important}
 <section class="bottomActions noPrint" aria-label="أدوات قائمة الحساب">
   <button type="button" class="btn actionBtn action-settings" onclick="openCompany()">الإعدادات</button>
   <button type="button" class="btn actionBtn action-list" onclick="newStatement()">قائمة جديدة</button>
-  <button type="button" class="btn actionBtn action-owner" onclick="newStatement()">مالك جديد</button>
+  <button type="button" class="btn actionBtn action-owner" onclick="newStatement(true)">مالك جديد</button>
   <button type="button" class="btn actionBtn action-pdf" onclick="savePdf()">PDF</button>
   <button type="button" class="btn actionBtn action-print" onclick="printStatement()">طباعة</button>
   <button type="button" class="btn actionBtn action-backup" onclick="exportData()">نسخة احتياطية</button>
@@ -3115,8 +3115,8 @@ function bindAutoGrowDetails(){
  }
 }
 
-async function init(){$('date').value=today();$('ownerDate').value=today();$('officeDate').value=today();$('receipt').value=nextReceipt();$('statementClient').value=statementMeta.client||'';$('statementSite').value=statementMeta.site||'';$('statementWork').value=statementMeta.work||'';$('statementDate').value=statementMeta.date||today();applyCompany();normalizeEntryPercentages();updateKindReceiptState('owner');updateKindReceiptState('office');bindAutoGrowDetails();refreshDetailsHeights();await migrateLegacyReceiptImages();await syncReceiptFlags();render()}
-function saveStatementMeta(){statementMeta={client:$('statementClient').value.trim(),site:$('statementSite').value.trim(),work:$('statementWork').value.trim(),date:$('statementDate').value||today()};try{localStorage.setItem(MK,JSON.stringify(statementMeta))}catch(e){console.warn(e)}}
+async function init(){$('date').value=today();$('ownerDate').value=today();$('officeDate').value=today();$('receipt').value=nextReceipt();$('statementClient').value=statementMeta.client||'';$('statementSite').value=statementMeta.site||'';$('statementWork').value=statementMeta.work||'';$('statementDate').value=statementMeta.date??today();$('statementNumber').value=statementMeta.number??1;applyCompany();normalizeEntryPercentages();updateKindReceiptState('owner');updateKindReceiptState('office');bindAutoGrowDetails();refreshDetailsHeights();await migrateLegacyReceiptImages();await syncReceiptFlags();render()}
+function saveStatementMeta(){statementMeta={...statementMeta,number:$('statementNumber').value,client:$('statementClient').value.trim(),site:$('statementSite').value.trim(),work:$('statementWork').value.trim(),date:$('statementDate').value};try{localStorage.setItem(MK,JSON.stringify(statementMeta))}catch(e){console.warn(e)}}
 function setMode(m){}
 function updateCommission(){}
 async function addEntryFrom(kind){
@@ -3125,6 +3125,9 @@ async function addEntryFrom(kind){
   const amount=n($(isOffice?'officeAmount':'ownerAmount').value);
   if(receipt<=0){alert('أدخل رقم القائمة');$('receipt').focus();return}
   if(amount<=0){alert('أدخل المبلغ');$(isOffice?'officeAmount':'ownerAmount').focus();return}
+  if(!$('statementNumber').value)$('statementNumber').value=1;
+  if(!$('statementNumber').checkValidity()||!Number.isSafeInteger(Number($('statementNumber').value))){alert('أدخل رقماً صحيحاً موجباً للقائمة');$('statementNumber').focus();return}
+  saveStatementMeta();
   const details=$(isOffice?'officeDetails':'ownerDetails').value.trim();
   const receiptNo=normalizedReceiptNo($(isOffice?'officeReceiptNo':'ownerReceiptNo').value);
   const imgs=pendingEntryReceipts[isOffice?'office':'owner'];
@@ -3347,7 +3350,29 @@ async function renderEntryAttachments(){
  }
  sec.hidden=!count
 }
-async function newStatement(){if(entries.length&&!confirm('بدء قائمة فروقات جديدة؟'))return;entries=[];save();await clearReceiptImages();statementMeta={client:'',site:'',work:'',date:today()};pendingEntryReceipts={owner:[],office:[]};editingEntryId={owner:null,office:null};updateSubmitButton('owner');updateSubmitButton('office');try{localStorage.setItem(MK,JSON.stringify(statementMeta))}catch(e){};$('statementClient').value='';$('statementSite').value='';$('statementWork').value='';$('statementDate').value=today();$('date').value=today();$('ownerDate').value=today();$('officeDate').value=today();$('receipt').value=1;$('ownerDetails').value='';autoGrowDetails($('ownerDetails'));$('ownerAmount').value='';$('ownerReceiptNo').value='';$('officeDetails').value='';autoGrowDetails($('officeDetails'));$('officeAmount').value='';$('officeReceiptNo').value='';$('officeFlatCommission').checked=false;updateKindReceiptState('owner');updateKindReceiptState('office');render()}
+let statementResetInProgress=false;
+async function newStatement(newOwner=false){
+ if(statementResetInProgress)return;
+ const dirty=entries.length||['ownerDetails','ownerAmount','ownerReceiptNo','officeDetails','officeAmount','officeReceiptNo'].some(id=>$(id).value)||pendingEntryReceipts.owner.length||pendingEntryReceipts.office.length;
+ if((dirty||(newOwner&&['statementClient','statementSite','statementWork'].some(id=>$(id).value)))&&!confirm(newOwner?'بدء حساب لمالك جديد ومسح بيانات القائمة الحالية؟ احفظ نسخة احتياطية أولاً إذا احتجتها.':'بدء قائمة جديدة لنفس المالك ومسح الحركات الحالية؟ احفظ نسخة احتياطية أولاً إذا احتجتها.'))return;
+ const previous=Number($('statementNumber').value||0);
+ if(!newOwner&&(!Number.isSafeInteger(previous)||previous<0||previous>=Number.MAX_SAFE_INTEGER)){alert('أدخل رقماً صحيحاً موجباً للقائمة');$('statementNumber').focus();return}
+ statementResetInProgress=true;
+ try{
+  saveStatementMeta();
+  entries=[];save();await clearReceiptImages();
+  statementMeta=newOwner?{client:'',site:'',work:'',date:'',number:''}:{...statementMeta,date:today(),number:String(previous+1)};
+  pendingEntryReceipts={owner:[],office:[]};editingEntryId={owner:null,office:null};
+  for(const kind of ['owner','office']){clearEntryForm(kind);updateSubmitButton(kind)}
+  $('statementClient').value=statementMeta.client;$('statementSite').value=statementMeta.site;$('statementWork').value=statementMeta.work;
+  $('statementDate').value=statementMeta.date;$('statementNumber').value=statementMeta.number;
+  for(const id of ['date','ownerDate','officeDate'])$(id).value=newOwner?'':today();
+  for(const id of ['ownerReceiptFile','ownerCameraFile','officeReceiptFile','officeCameraFile','search'])$(id).value='';
+  $('receipt').value=1;$('officeFlatCommission').checked=false;
+  toggleOwnerFields(false);saveStatementMeta();render();
+ }finally{statementResetInProgress=false}
+}
+
 
 
 function prepareLargePrintStatementPage(){
@@ -3381,6 +3406,7 @@ function prepareLargePrintStatementPage(){
      </div>
    </section>
 
+   <div style="font-weight:900;margin:8px 0">رقم القائمة: ${esc(statementMeta.number||'1')}</div>
    <section class="psMeta">
      <div class="psMetaCell"><div class="psMetaLabel">اسم العميل</div><div class="psMetaValue">${esc(statementMeta.client||'—')}</div></div>
      <div class="psMetaCell"><div class="psMetaLabel">رقم الموقع</div><div class="psMetaValue">${esc(statementMeta.site||'—')}</div></div>
@@ -3643,7 +3669,7 @@ async function makeReportPages(){
  ctx.quadraticCurveTo(margin+contentW,y,margin+contentW,y+metaR);
  ctx.lineTo(margin+contentW,y+metaH);
  ctx.stroke();
- pdfText(ctx,'بيانات قائمة الحساب',W-margin-18,y+24,20,true,'#ffffff');
+ pdfText(ctx,'بيانات قائمة الحساب — رقم القائمة: '+(statementMeta.number||'1'),W-margin-18,y+24,20,true,'#ffffff');
  const meta=[
    ['اسم العميل',statementMeta.client||'—'],
    ['رقم الموقع',statementMeta.site||'—'],
@@ -3910,7 +3936,7 @@ async function buildBackupJsonBlob(){
  saveStatementMeta();
  const out=[];
  for(const x of entries){out.push({...x,receiptImages:await getReceiptImages(x.id)})}
- const payload={app:'Receipt Pro',version:89,exportedAt:new Date().toISOString(),company:{...company,masterName:masterName(),masterNumber:masterNumber()},statementMeta,entries:out};
+ const payload={app:'Receipt Pro',version:90,exportedAt:new Date().toISOString(),company:{...company,masterName:masterName(),masterNumber:masterNumber()},statementMeta,entries:out};
  return new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
 }
 async function buildBackupPdfBlob(){
@@ -3980,7 +4006,7 @@ async function buildBackupWordBlob(){
  <td><span class="lbl">نوع العمل</span><span class="val">${escWord(statementMeta.work||'')}</span></td>
  <td><span class="lbl">التاريخ</span><span class="val">${escWord(formatDate(statementMeta.date||''))}</span></td>
  </tr></table>
- <div class="title">قائمة الحساب</div><table class="accounts"><thead><tr><th>ت</th><th>القائمة</th><th>التاريخ</th><th>الجهة</th><th>التفاصيل</th><th>المبلغ</th><th>النسبة</th><th>مبلغ النسبة</th><th>المبلغ النهائي</th></tr></thead><tbody>${rows.join('')||'<tr><td colspan="9">لا توجد إدخالات</td></tr>'}</tbody></table>
+ <div class="title">قائمة الحساب — رقم القائمة: ${escWord(statementMeta.number||'1')}</div><table class="accounts"><thead><tr><th>ت</th><th>القائمة</th><th>التاريخ</th><th>الجهة</th><th>التفاصيل</th><th>المبلغ</th><th>النسبة</th><th>مبلغ النسبة</th><th>المبلغ النهائي</th></tr></thead><tbody>${rows.join('')||'<tr><td colspan="9">لا توجد إدخالات</td></tr>'}</tbody></table>
  <table class="summary"><tr><td><b>مجموع المالك</b><br>${fmtWordAmount(ownerTotal)}</td><td><b>مجموع المكتب</b><br>${fmtWordAmount(officeTotal)}</td><td><b>الفرق</b><br>${fmtWordAmount(Math.abs(diff))}</td><td><b>عدد الحركات</b><br>${sorted.length}</td></tr></table><div class="result">${escWord(result)}</div><div class="benefit">${escWord(benefitNote())}</div>
  ${masterPaymentHtml()}<div class="footer">${companyName}${companyPhone?' — '+companyPhone:''}</div>${receiptHtml}</body></html>`;
  return new Blob(['\ufeff',html],{type:'application/msword;charset=utf-8'});
@@ -4007,7 +4033,7 @@ async function exportData(){
    alert('تم تجهيز النسخة الاحتياطية: JSON + Word + PDF.\nإذا لم يدعم الجهاز اختيار المجلد، ستجد الملفات في مجلد التنزيلات/الملفات.');
  }catch(e){console.error(e);alert('تعذر حفظ النسخة الاحتياطية: '+(e&&e.message?e.message:'خطأ غير معروف'))}
 }
-function importData(ev){let f=ev.target.files[0];if(!f)return;let r=new FileReader();r.onload=async()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.entries))throw 0;if(confirm('استعادة النسخة الاحتياطية واستبدال البيانات الحالية؟')){await clearReceiptImages();entries=[];for(const src of d.entries){const x={...src};const imgs=Array.isArray(x.receiptImages)?x.receiptImages.filter(Boolean):(x.receiptImage?[x.receiptImage]:[]);delete x.receiptImage;delete x.receiptImages;entries.push(x);if(imgs.length)await putReceiptImages(x.id,imgs)}company=d.company||{};if(company.officePercent==null)company.officePercent=0;statementMeta=d.statementMeta||{};save();try{localStorage.setItem(CK,JSON.stringify(company))}catch(e){console.warn(e)}try{localStorage.setItem(MK,JSON.stringify(statementMeta))}catch(e){console.warn(e)}$('statementClient').value=statementMeta.client||'';$('statementSite').value=statementMeta.site||'';$('statementWork').value=statementMeta.work||'';$('statementDate').value=statementMeta.date||today();applyCompany();pendingEntryReceipts={owner:[],office:[]};updateKindReceiptState('owner');updateKindReceiptState('office');$('ownerDate').value=today();$('officeDate').value=today();$('receipt').value=nextReceipt();render()}}catch(e){alert('ملف النسخة الاحتياطية غير صالح')}};r.readAsText(f);ev.target.value=''}
+function importData(ev){let f=ev.target.files[0];if(!f)return;let r=new FileReader();r.onload=async()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.entries))throw 0;if(confirm('استعادة النسخة الاحتياطية واستبدال البيانات الحالية؟')){await clearReceiptImages();entries=[];for(const src of d.entries){const x={...src};const imgs=Array.isArray(x.receiptImages)?x.receiptImages.filter(Boolean):(x.receiptImage?[x.receiptImage]:[]);delete x.receiptImage;delete x.receiptImages;entries.push(x);if(imgs.length)await putReceiptImages(x.id,imgs)}company=d.company||{};if(company.officePercent==null)company.officePercent=0;statementMeta=d.statementMeta||{};save();try{localStorage.setItem(CK,JSON.stringify(company))}catch(e){console.warn(e)}try{localStorage.setItem(MK,JSON.stringify(statementMeta))}catch(e){console.warn(e)}$('statementClient').value=statementMeta.client||'';$('statementSite').value=statementMeta.site||'';$('statementWork').value=statementMeta.work||'';$('statementDate').value=statementMeta.date??today();$('statementNumber').value=statementMeta.number??1;applyCompany();pendingEntryReceipts={owner:[],office:[]};updateKindReceiptState('owner');updateKindReceiptState('office');$('ownerDate').value=today();$('officeDate').value=today();$('receipt').value=nextReceipt();render()}}catch(e){alert('ملف النسخة الاحتياطية غير صالح')}};r.readAsText(f);ev.target.value=''}
 
 function toggleOwnerFields(force){const field=$('ownerFields');const open=typeof force==='boolean'?force:field.hidden;field.hidden=!open;$('ownerToggle').setAttribute('aria-expanded',String(open));$('ownerToggle').textContent=open?'مصاريف المالك — اضغط لإغلاق الحقول −':'مصاريف المالك — اضغط لفتح الحقول ＋';if(open)refreshDetailsHeights()}
 function masterName(){return company.masterName===undefined?'SADEER Y. MOHAMMED':company.masterName}

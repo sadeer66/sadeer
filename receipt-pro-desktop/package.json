@@ -1,0 +1,56 @@
+{
+  "name": "receipt-pro",
+  "version": "1.0.90",
+  "description": "Receipt Pro - إصدار وصولات",
+  "main": "main.js",
+  "author": "Sadeer Yaseen Mohammed",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dist": "electron-builder --win nsis --x64"
+  },
+  "devDependencies": {
+    "electron": "^37.2.6",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.sadeer.receiptpro",
+    "productName": "Receipt Pro",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js"
+    ],
+    "extraResources": [
+      {
+        "from": "../receipt-pro",
+        "to": "receipt-pro",
+        "filter": ["**/*"]
+      }
+    ],
+    "extraMetadata": {
+      "name": "receipt-pro"
+    },
+    "win": {
+      "icon": "build/receipt-pro.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "artifactName": "Receipt-Pro-V90-Setup-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "Receipt Pro",
+      "uninstallDisplayName": "Receipt Pro",
+      "installerIcon": "build/receipt-pro.ico",
+      "uninstallerIcon": "build/receipt-pro.ico",
+      "installerHeaderIcon": "build/receipt-pro.ico"
+    }
+  }
+}
