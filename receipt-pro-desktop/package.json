@@ -1,6 +1,6 @@
 {
   "name": "receipt-pro",
-  "version": "1.0.91",
+  "version": "1.0.92",
   "description": "Receipt Pro - إصدار وصولات",
   "main": "main.js",
   "author": "Sadeer Yaseen Mohammed",
@@ -43,7 +43,7 @@
           ]
         }
       ],
-      "artifactName": "Receipt-Pro-V91-Setup-${arch}.${ext}"
+      "artifactName": "Receipt-Pro-V92-Setup-${arch}.${ext}"
     },
     "nsis": {
       "oneClick": false,

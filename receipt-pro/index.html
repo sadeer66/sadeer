@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Receipt Pro">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>Receipt Pro V91</title>
+<title>Receipt Pro V92</title>
 <style>
 
 :root{--bg:#f4ede6;--paper:#fffaf5;--card:#fffdfb;--line:#ead5c3;--ink:#4a2a18;--muted:#8e715e;--brown:#5f260d;--brown2:#8b3a12;--orange:#d96f1d;--orange2:#f0a254;--cream:#fff2e2;--danger:#b43a31;--shadow:0 18px 40px rgba(83,42,16,.10)}
@@ -2902,12 +2902,14 @@ body:before,.topbar:before,.topbar:after{display:none!important}
 #receiptMessageDialog button{min-width:100px;min-height:44px;padding:10px 18px;border:0;border-radius:10px;cursor:pointer;font-weight:700}
 #receiptMessageOK{background:#f8b84e;color:#102a43}#receiptMessageCancel{background:#dbeafe;color:#102a43}
 #receiptMessageDialog button:focus-visible{outline:3px solid #fff;outline-offset:3px}
-#receiptMessageCancel[hidden]{display:none!important}
+#receiptMessageCancel[hidden],#receiptMessageInput[hidden]{display:none!important}
+#receiptMessageInput{display:block;width:100%;margin:0 0 20px;padding:12px;background:#fff;color:#082a56;border:1px solid #79b8ed;border-radius:9px;direction:auto}
 </style>
 </head>
 <body>
 <dialog id="receiptMessageDialog" aria-labelledby="receiptMessageTitle" aria-describedby="receiptMessageText">
  <h2 id="receiptMessageTitle">Receipt Pro</h2><p id="receiptMessageText"></p>
+ <input id="receiptMessageInput" type="text" aria-label="اسم النسخة الاحتياطية" autocomplete="off" hidden>
  <div class="receiptMessageActions"><button type="button" id="receiptMessageCancel">إلغاء</button><button type="button" id="receiptMessageOK">موافق</button></div>
 </dialog>
 <div class="receiptProWelcome noPrint" id="receiptProWelcome" role="dialog" aria-modal="true" aria-label="الدخول إلى Receipt Pro">
@@ -2993,29 +2995,34 @@ body:before,.topbar:before,.topbar:after{display:none!important}
 // V73: auto-growing detail fields + PDF rows that expand to fit all detail text.
 // In-page dialogs keep keyboard focus in the renderer on Windows and iPad.
 let receiptMessageQueue=Promise.resolve();
-function receiptMessage(message,confirmation=false){
+function receiptMessage(message,confirmation=false,defaultValue){
  const result=receiptMessageQueue.then(()=>new Promise(resolve=>{
   const dialog=document.getElementById('receiptMessageDialog');
   const previousFocus=document.activeElement;
+  const input=document.getElementById('receiptMessageInput'),isPrompt=typeof defaultValue==='string';
+  input.hidden=!isPrompt;input.value=isPrompt?defaultValue:'';
   const ok=document.getElementById('receiptMessageOK'),cancel=document.getElementById('receiptMessageCancel');
   document.getElementById('receiptMessageText').textContent=String(message);
   document.getElementById('receiptMessageTitle').textContent=confirmation?'تأكيد العملية':'Receipt Pro';
-  cancel.hidden=!confirmation;
+  cancel.hidden=!(confirmation||isPrompt);
+  input.onkeydown=event=>{if(event.key==='Enter'&&!event.isComposing){event.preventDefault();dialog.close('ok')}};
   ok.onclick=()=>dialog.close('ok');cancel.onclick=()=>dialog.close('cancel');
   dialog.oncancel=event=>{event.preventDefault();dialog.close('cancel')};
   dialog.addEventListener('close',()=>{
    const accepted=dialog.returnValue==='ok';
    ok.onclick=null;cancel.onclick=null;dialog.oncancel=null;
    if(previousFocus&&previousFocus.isConnected)previousFocus.focus({preventScroll:true});
-   resolve(accepted);
+   input.onkeydown=null;
+   resolve(isPrompt?(accepted?input.value:null):accepted);
   },{once:true});
-  dialog.returnValue='';dialog.showModal();(confirmation?cancel:ok).focus();
+  dialog.returnValue='';dialog.showModal();(isPrompt?input:(confirmation?cancel:ok)).focus();if(isPrompt)input.select();
  }));
  receiptMessageQueue=result.catch(()=>{});
  return result;
 }
 function appConfirm(message){return receiptMessage(message,true)}
 function appNotice(message){return receiptMessage(message,false)}
+function appPrompt(message,defaultValue){return receiptMessage(message,false,String(defaultValue??''))}
 function focusStatementInput(newOwner=false){requestAnimationFrame(()=>{const input=document.getElementById(newOwner?'statementClient':'officeDetails');if(input)input.focus({preventScroll:true})})}
 const K='furoqat_entries_v2',CK='furoqat_company_v2',MK='furoqat_statement_meta_v1';
 const DB_NAME='furoqat_media_v1',DB_STORE='receipt_images';
@@ -3976,7 +3983,7 @@ async function buildBackupJsonBlob(){
  saveStatementMeta();
  const out=[];
  for(const x of entries){out.push({...x,receiptImages:await getReceiptImages(x.id)})}
- const payload={app:'Receipt Pro',version:91,exportedAt:new Date().toISOString(),company:{...company,masterName:masterName(),masterNumber:masterNumber()},statementMeta,entries:out};
+ const payload={app:'Receipt Pro',version:92,exportedAt:new Date().toISOString(),company:{...company,masterName:masterName(),masterNumber:masterNumber()},statementMeta,entries:out};
  return new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
 }
 async function buildBackupPdfBlob(){
@@ -4051,17 +4058,20 @@ async function buildBackupWordBlob(){
  ${masterPaymentHtml()}<div class="footer">${companyName}${companyPhone?' — '+companyPhone:''}</div>${receiptHtml}</body></html>`;
  return new Blob(['\ufeff',html],{type:'application/msword;charset=utf-8'});
 }
+let backupExportInProgress=false;
 async function exportData(){
+ if(backupExportInProgress)return;
+ backupExportInProgress=true;
  try{
    saveStatementMeta();
    const client=($('statementClient').value||'الفروقات').trim(),site=($('statementSite').value||'').trim();
    const suggested=safeBackupName(client+(site?' - موقع '+site:''));
-   const entered=prompt('اكتب اسم النسخة الاحتياطية:',suggested);
+   const entered=await appPrompt('اكتب اسم النسخة الاحتياطية:',suggested);
    if(entered===null)return;
    const base=safeBackupName(entered);
    const [jsonBlob,wordBlob,pdfBlob]=await Promise.all([buildBackupJsonBlob(),buildBackupWordBlob(),buildBackupPdfBlob()]);
    const files=[{name:base+'.json',blob:jsonBlob},{name:base+'.doc',blob:wordBlob},{name:base+'.pdf',blob:pdfBlob}];
-   if(typeof window.showDirectoryPicker==='function'){
+   if(!/Electron/i.test(navigator.userAgent)&&typeof window.showDirectoryPicker==='function'){
      try{
        const dir=await window.showDirectoryPicker({mode:'readwrite'});
        for(const f of files)await writeBlobToDirectory(dir,f.name,f.blob);
@@ -4071,7 +4081,7 @@ async function exportData(){
    }
    for(const f of files){downloadBlob(f.blob,f.name);await new Promise(r=>setTimeout(r,180));}
    appNotice('تم تجهيز النسخة الاحتياطية: JSON + Word + PDF.\nإذا لم يدعم الجهاز اختيار المجلد، ستجد الملفات في مجلد التنزيلات/الملفات.');
- }catch(e){console.error(e);appNotice('تعذر حفظ النسخة الاحتياطية: '+(e&&e.message?e.message:'خطأ غير معروف'))}
+ }catch(e){console.error(e);appNotice('تعذر حفظ النسخة الاحتياطية: '+(e&&e.message?e.message:'خطأ غير معروف'))}finally{backupExportInProgress=false}
 }
 function importData(ev){let f=ev.target.files[0];if(!f)return;let r=new FileReader();r.onload=async()=>{try{let d=JSON.parse(r.result);if(!Array.isArray(d.entries))throw 0;if(await appConfirm('استعادة النسخة الاحتياطية واستبدال البيانات الحالية؟')){await clearReceiptImages();entries=[];for(const src of d.entries){const x={...src};const imgs=Array.isArray(x.receiptImages)?x.receiptImages.filter(Boolean):(x.receiptImage?[x.receiptImage]:[]);delete x.receiptImage;delete x.receiptImages;entries.push(x);if(imgs.length)await putReceiptImages(x.id,imgs)}company=d.company||{};if(company.officePercent==null)company.officePercent=0;statementMeta=d.statementMeta||{};save();try{localStorage.setItem(CK,JSON.stringify(company))}catch(e){console.warn(e)}try{localStorage.setItem(MK,JSON.stringify(statementMeta))}catch(e){console.warn(e)}$('statementClient').value=statementMeta.client||'';$('statementSite').value=statementMeta.site||'';$('statementWork').value=statementMeta.work||'';$('statementDate').value=statementMeta.date??today();$('statementNumber').value=statementMeta.number??1;applyCompany();pendingEntryReceipts={owner:[],office:[]};editingEntryId={owner:null,office:null};for(const kind of ['owner','office']){clearEntryForm(kind);updateSubmitButton(kind)}$('search').value='';updateKindReceiptState('owner');updateKindReceiptState('office');$('ownerDate').value=today();$('officeDate').value=today();$('receipt').value=nextReceipt();render();focusStatementInput()}}catch(e){appNotice('ملف النسخة الاحتياطية غير صالح')}};r.readAsText(f);ev.target.value=''}
 
