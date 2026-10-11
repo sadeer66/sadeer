@@ -2995,9 +2995,9 @@ body{background:linear-gradient(180deg,#0c1628,#080f1e 55%,#060c18)!important}
 }
 </style>
 <style id="receiptProV99AmountCell">
-@media screen{
-.tableWrap #tbody tr td.entryAmountCell,
-.tableWrap #tbody tr:hover td.entryAmountCell{background:#fff!important;color:#000!important}
+#zeroAmountDialog input#zeroAmountValue.zeroValue{
+background:#fff!important;background-image:none!important;color:#15243b!important;
+box-shadow:none!important;opacity:1!important;-webkit-text-fill-color:#15243b!important;
 }
 </style>
 </head>
@@ -3451,7 +3451,7 @@ function render(){
    <td>${formatDate(x.date)}</td>
    <td><span class="tag ${x.kind}">${x.kind==='owner'?'المالك':'المكتب'}</span></td>
    <td>${esc(entryDetailsText(x))}</td>
-   <td class="entryAmountCell"><b>${fmt(x.amount)}</b></td>
+   <td><b>${fmt(x.amount)}</b></td>
    <td>${isFlatCommission(x)?'<span class="flatRateCheck">مقطوعة</span>':`<label class="rowPercentToggle"><input type="checkbox" ${x.percent!=null?'checked':''} onchange="toggleRowPercent(${x.id},this.checked)"><span>${x.percent!=null?fmt(x.percent)+'%':'النسبة'}</span></label>`}</td>
    <td><b>${commissionDisplay(x,'0')}</b></td>
    <td><b>${fmt(x.net)}</b></td>
