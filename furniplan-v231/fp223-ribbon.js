@@ -28,6 +28,7 @@
   if(installed||!document.getElementById('fp222Common'))return;
   installed=true;
   const root=document.documentElement;
+  const topRow=document.createElement('div');topRow.id='fp241TopRow';const nav=document.getElementById('fp222Tabs'),commonRow=document.getElementById('fp222Common');nav.before(topRow);topRow.append(nav,commonRow);
   const side=document.getElementById('lMove');if(side)root.style.setProperty('--fp223-side-h',side.getBoundingClientRect().height+'px');
   const panel=document.getElementById('fp222-panel-view');
   const row=document.createElement('div');row.id='fp223Visibility';row.dataset.fp222Label='1';
@@ -45,8 +46,8 @@
   document.getElementById('loadInput')?.addEventListener('change',()=>setTimeout(refresh,500));
   window.FP223Refresh=refresh;
   const style=document.createElement('style');style.id='fp223-style';style.textContent=`
-  body.fp222 #modernToolbarArea{direction:rtl!important;grid-template-columns:minmax(0,1fr) minmax(0,max-content)!important}
-  body.fp222 #fp222Common{max-width:min(1000px,56vw)!important}
+  body.fp222 #modernToolbarArea{direction:rtl!important;grid-template-columns:max-content minmax(0,1fr)!important}
+  body.fp222 #fp222Common{width:100%!important;max-width:none!important;box-sizing:border-box!important}
   body.fp222 #fp222Tabs{position:relative}
   body.fp222 #fp222Tabs #fp222-tab-library{order:-1!important;position:sticky;right:0;z-index:4;background:#d82027!important;border:1px solid #ff7b7b!important;color:white!important;font-weight:800!important;min-width:90px!important;box-shadow:0 0 0 3px #020617!important}
   body.fp222 #fp222Tabs #fp222-tab-library[aria-selected=true]{background:#f12b31!important;box-shadow:inset 0 -3px #fff,0 0 0 3px #020617!important}
@@ -83,6 +84,10 @@
   body.fp223-hide-library .app>aside,body.fp223-hide-library #sidebarScrim{display:none!important}
   body.fp223-hide-library .app{grid-template-columns:0 minmax(0,1fr)!important}
   @media(max-width:1450px){body.fp222 #modernToolbarArea{grid-template-columns:minmax(0,1fr)!important}body.fp222 #fp222Common{max-width:100%!important;grid-row:2}body.fp222 #fp222Panels{grid-row:3}}
+  body.fp222 #modernToolbarArea{grid-template-columns:minmax(0,1fr)!important}
+  body.fp222 #fp241TopRow{grid-column:1/-1;grid-row:1;display:flex;align-items:center;gap:6px;width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;direction:rtl;scrollbar-width:thin;touch-action:pan-x;box-sizing:border-box}
+  body.fp222 #fp241TopRow #fp222Tabs,body.fp222 #fp241TopRow #fp222Common{width:max-content!important;max-width:none!important;min-width:max-content!important;flex:0 0 auto!important;overflow:visible!important;grid-row:auto!important}
+  body.fp222 #fp222Panels{grid-row:2!important}
   `;document.head.append(style);
   let iconFrame=false;
   function syncControlIcons(){if(iconFrame)return;iconFrame=true;requestAnimationFrame(()=>{iconFrame=false;const wanted=parseFloat(getComputedStyle(root).getPropertyValue('--fp223-icon-size'))||17;for(const icon of document.querySelectorAll('button svg,label.modernIconBtn svg,.sliderGlyph svg')){const host=icon.closest('button,label.modernIconBtn,.sliderGlyph');const label=host.querySelector('.iconLabel');const h=host.getBoundingClientRect().height;const cs=getComputedStyle(host);const vertical=cs.flexDirection==='column';const reserved=(vertical&&label?label.getBoundingClientRect().height+(parseFloat(cs.rowGap)||0):0)+(parseFloat(cs.paddingTop)||0)+(parseFloat(cs.paddingBottom)||0)+(parseFloat(cs.borderTopWidth)||0)+(parseFloat(cs.borderBottomWidth)||0);const size=Math.max(10,Math.min(wanted,h>0&&!host.closest('#furnitureIconToolbar')&&!host.classList.contains('sliderGlyph')?h-reserved:wanted));for(const key of ['width','height','min-width','min-height','max-width','max-height'])icon.style.setProperty(key,size+'px','important');icon.style.setProperty('flex-shrink','0','important');icon.style.setProperty('margin','0','important');}for(const el of document.querySelectorAll('button')){if(el.children.length||!/^\s*[✓✔✕×✖↔↕⟳⟲＋+−–]\s*$/.test(el.textContent))continue;el.style.setProperty('font-size',Math.min(wanted,Math.max(12,el.clientHeight-8))+'px','important');}});}
