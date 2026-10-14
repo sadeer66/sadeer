@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [master]
-    paths: ['desktop-v231/**', '.github/workflows/release-v231.yml']
+    paths: ['furniplan-v231/**', 'desktop-v231/**', '.github/workflows/release-v231.yml']
 permissions:
   contents: write
 jobs:
