@@ -22,7 +22,7 @@
    panels=document.createElement('div');panels.id='fp222Panels';
    bar.before(nav);nav.after(common);area.append(panels);
    for(const [key,ar,en] of groups){
-    const tab=document.createElement('button');tab.id='fp222-tab-'+key;tab.type='button';tab.setAttribute('role','tab');tab.setAttribute('aria-controls','fp222-panel-'+key);tab.onclick=()=>select(key);nav.append(tab);
+    const tab=document.createElement('button');tab.id='fp222-tab-'+key;tab.type='button';tab.setAttribute('role','tab');tab.setAttribute('aria-controls','fp222-panel-'+key);tab.onclick=()=>{select(key);if(key==='library')window.openFullLibrary?.();};nav.append(tab);
     const panel=document.createElement('div');panel.id='fp222-panel-'+key;panel.className='fp222Panel';panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',tab.id);panels.append(panel);
    }
    nav.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();let i=groups.findIndex(g=>g[0]===selected);i=e.key==='Home'?0:e.key==='End'?groups.length-1:(i+(e.key==='ArrowRight'?1:-1)+groups.length)%groups.length;select(groups[i][0]);document.getElementById('fp222-tab-'+groups[i][0]).focus();});
