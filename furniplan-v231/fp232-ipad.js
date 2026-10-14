@@ -2,7 +2,7 @@
 'use strict';
 const compact=()=>matchMedia('(max-width:1180px)').matches;
 const css=document.createElement('style');css.textContent=`
-body.fp222.fp224 #furnitureIconToolbar{pointer-events:auto!important;touch-action:pan-y!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:contain;scrollbar-width:thin!important}
+body.fp222.fp224 #furnitureIconToolbar{height:auto!important;max-height:none!important;flex-direction:column!important;flex-wrap:nowrap!important;pointer-events:auto!important;touch-action:pan-y!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-y:contain;scrollbar-width:thin!important}
 body.fp222.fp224 #furnitureIconToolbar .modernIconBtn{height:auto!important;min-height:0!important;max-height:none!important;flex:0 0 auto!important;padding:5px 3px!important;gap:3px!important;justify-content:center!important;touch-action:pan-y!important;background:#172d43!important;color:#f1f5f9!important;border-color:#67849c!important}
 body.fp222.fp224 #furnitureIconToolbar .modernIconBtn:not(:disabled){opacity:1!important;filter:none!important;visibility:visible!important}
 body.fp222.fp224 #furnitureIconToolbar .modernIconBtn svg{opacity:1!important;visibility:visible!important;color:inherit!important;stroke:currentColor!important;fill:none!important}
