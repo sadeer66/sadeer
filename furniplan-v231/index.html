@@ -2756,12 +2756,14 @@ function getSelectedIds(){
   if(!selectedId&&selectedIds.length)selectedId=selectedIds[selectedIds.length-1];
   return selectedIds.slice();
 }
+function syncSelectedFitButton(){const button=document.getElementById('fp240Selected');if(button)button.disabled=!pxPerCm||!getSelectedIds().some(id=>items.some(it=>it.id===id));}
 function setSelection(ids,primary=null){
   selectedIds=uniqueIds(ids);
   selectedId=primary&&selectedIds.includes(primary)?primary:(selectedIds[selectedIds.length-1]||null);
   selectedMeasureId=null;selectedMapLabelId=null;
+  syncSelectedFitButton();
 }
-function clearFurnitureSelection(){selectedId=null;selectedIds=[];}
+function clearFurnitureSelection(){selectedId=null;selectedIds=[];syncSelectedFitButton();}
 function clearMapLabelSelection(){selectedMapLabelId=null;}
 function currentMapLabel(){return mapLabels.find(x=>x.id===selectedMapLabelId)||null;}
 function isItemSelected(id){return getSelectedIds().includes(id);}
@@ -5774,6 +5776,7 @@ function setSingleInspectorVisible(show){
   for(const el of controls){const host=el.closest('label');if(host)host.style.display=show?'':'none';}
 }
 function syncSelectedPanel(){
+  syncSelectedFitButton();
   updateSelectionAnimation();
   const ml=currentMapLabel(),m=currentMeasure(),ids=getSelectedIds(),list=selectedItems(),it=current();
   const multiInfo=document.getElementById('multiSelectionInfo'),lockBtn=document.getElementById('lockItemBtn');
