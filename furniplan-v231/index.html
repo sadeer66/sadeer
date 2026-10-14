@@ -1,6 +1,14 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="fp235-loading">
 <head>
+<style id="fp235-startup">
+html.fp235-loading .app{opacity:0!important;pointer-events:none!important}
+html.fp235-loading body{background:#081526!important}
+html.fp235-loading body::after{content:'FurniPlan';position:fixed;inset:0;display:grid;place-items:center;background:#081526;color:#edf6ff;font:600 26px Tahoma,Arial;z-index:999999;pointer-events:none}
+</style>
+<script>
+(()=>{let timer;function show(){clearInterval(timer);requestAnimationFrame(()=>requestAnimationFrame(()=>document.documentElement.classList.remove('fp235-loading')));}function ready(){return window.FP224Context&&document.getElementById('fp228Default')&&document.getElementById('fp226TextBtn')&&document.body.classList.contains('fp222');}document.addEventListener('DOMContentLoaded',()=>{timer=setInterval(()=>{if(ready())show();},50);setTimeout(show,10000);});})();
+</script>
 <script src="fp222-dialogs.js"></script>
 <meta charset="UTF-8" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
