@@ -51,6 +51,8 @@
   body.fp222 #modernToolbarArea .modernIconBtn{width:max-content!important;min-width:54px!important;max-width:none!important;flex:0 0 auto!important;padding-inline:9px!important;height:38px!important;min-height:38px!important}
   body.fp222 #modernToolbarArea .modernIconBtn .iconLabel{width:max-content!important;max-width:none!important;overflow:visible!important;text-overflow:clip!important;font-size:var(--fp223-text-size,9px)!important;white-space:nowrap!important}
   body.fp222 #modernToolbarArea .modernIconBtn svg{width:var(--fp223-icon-size,17px)!important;height:var(--fp223-icon-size,17px)!important;min-height:0!important;flex-shrink:1!important}
+  body.fp222 #modernToolbarArea :is(.modernIconBtn,#fp226TextBtn,#fp228Default){padding-block:0!important;gap:1px!important}
+  body.fp222 #modernToolbarArea :is(.modernIconBtn,#fp226TextBtn,#fp228Default) svg{width:min(var(--fp223-icon-size,17px),calc(34px - var(--fp223-text-size,9px)*1.05))!important;height:min(var(--fp223-icon-size,17px),calc(34px - var(--fp223-text-size,9px)*1.05))!important;flex-shrink:0!important}
   body.fp222 #fp222Tabs button{font-size:var(--fp223-tab-size,12px)!important}
   body.fp222 #furnitureIconToolbar{width:max-content!important;max-width:45vw!important}
   body.fp222 #furnitureIconToolbar .modernIconBtn{width:auto!important;min-width:max-content!important;flex:0 0 auto!important;padding-inline:9px!important;height:var(--fp223-side-h)!important;min-height:var(--fp223-side-h)!important}
@@ -59,7 +61,8 @@
   body.fp222 #modernToolbarArea .fp223SizeBox{position:relative;padding-top:13px!important;width:145px!important;min-width:145px!important;flex-basis:145px!important}
   body.fp222 .fp223SizeBox .sliderCaption{position:absolute;top:0;right:6px;font-size:9px!important;line-height:12px}
   body.fp222 .fp223SizeBox .sliderGlyph{display:none!important}
-  body.fp222 #modernToolbarArea #fp222Zoom{width:195px!important;min-width:195px!important;flex-basis:195px!important}
+  body.fp222 #modernToolbarArea #fp222Zoom{width:max-content!important;min-width:max-content!important;flex:0 0 auto!important}
+  body.fp222 #modernToolbarArea #fp222Zoom #zoomRange{width:141px!important;min-width:141px!important;max-width:141px!important;flex:0 0 141px!important}
   body.fp222 .libraryBrowser{grid-template-columns:max-content minmax(0,1fr)!important}
   body.fp222 .categoryList{min-width:0!important}
   body.fp222 .categoryList button{max-width:none!important}
@@ -78,7 +81,10 @@
   body.fp223-hide-library .app{grid-template-columns:0 minmax(0,1fr)!important}
   @media(max-width:1450px){body.fp222 #modernToolbarArea{grid-template-columns:minmax(0,1fr)!important}body.fp222 #fp222Common{max-width:100%!important;grid-row:2}body.fp222 #fp222Panels{grid-row:3}}
   `;document.head.append(style);
-  const syncScale=()=>{const is=(+document.getElementById('uiIconSizeRange').value||150)/150,ts=(+document.getElementById('uiLabelSizeRange').value||150)/150;root.style.setProperty('--fp223-text-size',Math.max(7,9*ts)+'px');root.style.setProperty('--fp223-tab-size',Math.max(10,12*ts)+'px');root.style.setProperty('--fp223-icon-size',Math.max(12,17+(is-1)*6)+'px');};
+  let iconFrame=false;
+  function syncControlIcons(){if(iconFrame)return;iconFrame=true;requestAnimationFrame(()=>{iconFrame=false;const wanted=parseFloat(getComputedStyle(root).getPropertyValue('--fp223-icon-size'))||17;for(const icon of document.querySelectorAll('button svg,label.modernIconBtn svg,.sliderGlyph svg')){const host=icon.closest('button,label.modernIconBtn,.sliderGlyph');const label=host.querySelector('.iconLabel');const h=host.getBoundingClientRect().height;const cs=getComputedStyle(host);const vertical=cs.flexDirection==='column';const reserved=(vertical&&label?label.getBoundingClientRect().height+(parseFloat(cs.rowGap)||0):0)+(parseFloat(cs.paddingTop)||0)+(parseFloat(cs.paddingBottom)||0)+(parseFloat(cs.borderTopWidth)||0)+(parseFloat(cs.borderBottomWidth)||0);const size=Math.max(10,Math.min(wanted,h>0&&!host.closest('#furnitureIconToolbar')&&!host.classList.contains('sliderGlyph')?h-reserved:wanted));for(const key of ['width','height','min-width','min-height','max-width','max-height'])icon.style.setProperty(key,size+'px','important');icon.style.setProperty('flex-shrink','0','important');icon.style.setProperty('margin','0','important');}for(const el of document.querySelectorAll('button')){if(el.children.length||!/^\s*[✓✔✕×✖↔↕⟳⟲＋+−–]\s*$/.test(el.textContent))continue;el.style.setProperty('font-size',Math.min(wanted,Math.max(12,el.clientHeight-8))+'px','important');}});}
+  new MutationObserver(syncControlIcons).observe(document.body,{childList:true,subtree:true});window.addEventListener('resize',syncControlIcons);
+  const syncScale=()=>{const is=(+document.getElementById('uiIconSizeRange').value||150)/150,ts=(+document.getElementById('uiLabelSizeRange').value||150)/150;root.style.setProperty('--fp223-text-size',Math.max(7,9*ts)+'px');root.style.setProperty('--fp223-tab-size',Math.max(10,12*ts)+'px');root.style.setProperty('--fp223-icon-size',Math.max(12,17+(is-1)*6)+'px');syncControlIcons();};
   document.getElementById('uiIconSizeRange').addEventListener('input',syncScale);document.getElementById('uiLabelSizeRange').addEventListener('input',syncScale);syncScale();refresh();
   window.addEventListener('furniplan-language-changed',()=>setTimeout(refresh,100));
  }
