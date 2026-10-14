@@ -1,10 +1,10 @@
 (function(){
  'use strict';
- let settings={size:10,strength:22};
- function normalize(s){return {size:Math.min(50,Math.max(0,Number(s.size)||0)),strength:Math.min(100,Math.max(0,Number(s.strength)||0))};}
+ let settings={size:10,strength:22,color:"#000000"};
+ function normalize(s){return {color:/^#[0-9a-f]{6}$/i.test(s.color||"")?s.color:"#000000",size:Math.min(50,Math.max(0,Number(s.size)||0)),strength:Math.min(100,Math.max(0,Number(s.strength)||0))};}
  try{const saved=JSON.parse(window.FP222Storage.getItem('furniplanShadowV197')||'null');if(saved)settings=normalize(saved);}catch(e){}
  function sync(){for(const key of ['size','strength']){const input=document.getElementById('fp197Shadow'+key),value=document.getElementById('fp197Shadow'+key+'Value');if(input)input.value=settings[key];if(value)value.textContent=settings[key]+(key==='strength'?'%':'');}}
- window.FP197Shadow={get:()=>({...settings}),set:s=>{settings=normalize(s);sync();try{window.FP222Storage.setItem('furniplanShadowV197',JSON.stringify(settings));}catch(e){}},apply:g=>{g.shadowColor='rgba(0,0,0,'+(settings.strength/100)+')';g.shadowBlur=settings.size;g.shadowOffsetX=0;g.shadowOffsetY=settings.size*.3;}};
+ window.FP197Shadow={get:()=>({...settings}),set:s=>{settings=normalize(s);sync();try{window.FP222Storage.setItem('furniplanShadowV197',JSON.stringify(settings));}catch(e){}},apply:g=>{g.shadowColor='rgba('+[1,3,5].map(i=>parseInt(settings.color.slice(i,i+2),16)).join(',')+','+(settings.strength/100)+')';g.shadowBlur=settings.size;g.shadowOffsetX=0;g.shadowOffsetY=settings.size*.3;}};
  document.addEventListener('DOMContentLoaded',function(){
   const row=document.getElementById('modernSliderRow');if(!row)return;
   for(const key of ['size','strength']){

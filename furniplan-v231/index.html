@@ -2013,7 +2013,7 @@ html:not(.fpSplashLangReady) #fpSplash{visibility:hidden!important}
 </style>
 <!-- FurniPlan V176 — four bilingual library packs -->
 <script src="fp196-visible-bounds.js?v=196"></script>
-<script src="fp197-shadow.js?v=197"></script>
+<script src="fp197-shadow.js?v=234"></script>
 <script src="fp197-labels.js?v=220"></script>
 </head>
 <body>
@@ -4553,9 +4553,9 @@ document.getElementById('saveCustomToLibrary').onclick=()=>openLibraryEditor(nul
 
 
 function cloneEditState(){
-  return {furnitureTextStyle:window.FP226Text?.get(),canvasWidth:canvas.width,canvasHeight:canvas.height,pxPerCm,items:JSON.parse(JSON.stringify(items)),measurements:JSON.parse(JSON.stringify(measurements)),mapLabels:JSON.parse(JSON.stringify(mapLabels)),areaPolygons:JSON.parse(JSON.stringify(areaPolygons)),colorLayers:window.FP201ColorLayers?.serialize()||[],selectedId,selectedIds:getSelectedIds(),selectedMeasureId,selectedMapLabelId};
+  return {shadowSettings:window.FP197Shadow?.get(),shadowEnabled:document.getElementById('shadowToggle').checked,furnitureTextStyle:window.FP226Text?.get(),canvasWidth:canvas.width,canvasHeight:canvas.height,pxPerCm,items:JSON.parse(JSON.stringify(items)),measurements:JSON.parse(JSON.stringify(measurements)),mapLabels:JSON.parse(JSON.stringify(mapLabels)),areaPolygons:JSON.parse(JSON.stringify(areaPolygons)),colorLayers:window.FP201ColorLayers?.serialize()||[],selectedId,selectedIds:getSelectedIds(),selectedMeasureId,selectedMapLabelId};
 }
-function stateSignature(s){return JSON.stringify({furnitureTextStyle:s.furnitureTextStyle,canvasWidth:s.canvasWidth,canvasHeight:s.canvasHeight,pxPerCm:s.pxPerCm,items:s.items,measurements:s.measurements,mapLabels:s.mapLabels,areaPolygons:s.areaPolygons||[],colorLayers:s.colorLayers||[]});}
+function stateSignature(s){return JSON.stringify({shadowSettings:s.shadowSettings,shadowEnabled:s.shadowEnabled,furnitureTextStyle:s.furnitureTextStyle,canvasWidth:s.canvasWidth,canvasHeight:s.canvasHeight,pxPerCm:s.pxPerCm,items:s.items,measurements:s.measurements,mapLabels:s.mapLabels,areaPolygons:s.areaPolygons||[],colorLayers:s.colorLayers||[]});}
 function updateHistoryButtons(){
   const u=document.getElementById('undoBtn'),r=document.getElementById('redoBtn');
   if(u)u.disabled=undoStack.length===0;if(r)r.disabled=redoStack.length===0;
@@ -4566,6 +4566,8 @@ function commitHistory(before){
   undoStack.push(before);if(undoStack.length>60)undoStack.shift();redoStack=[];updateHistoryButtons();
 }
 function restoreEditState(s){
+  if(s.shadowSettings)window.FP197Shadow?.set(s.shadowSettings);
+  if(typeof s.shadowEnabled==='boolean'){document.getElementById('shadowToggle').checked=s.shadowEnabled;document.getElementById('shadowToggle').dispatchEvent(new Event('change'));}
   if(s.furnitureTextStyle)window.FP226Text?.set(s.furnitureTextStyle);
   if(s.canvasWidth&&s.canvasHeight){canvas.width=s.canvasWidth;canvas.height=s.canvasHeight;pxPerCm=s.pxPerCm;updateScaleUI();updateStageSize();}
   items=JSON.parse(JSON.stringify(s.items||[]));measurements=JSON.parse(JSON.stringify(s.measurements||[]));mapLabels=JSON.parse(JSON.stringify(s.mapLabels||[]));areaPolygons=JSON.parse(JSON.stringify(s.areaPolygons||[]));
@@ -6873,7 +6875,7 @@ draw();
 <script src="fp223-ribbon.js"></script>
 <script src="fp224-context-tools.js"></script>
 <script src="fp225-footer-guide.js"></script>
-<script src="fp226-text-style.js"></script>
+<script src="fp226-text-style.js?v=234"></script>
 <script src="fp228-ui-defaults.js"></script>
 <script src="fp229-library-notice.js"></script>
 <script src="fp232-ipad.js"></script>
