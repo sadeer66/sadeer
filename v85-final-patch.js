@@ -51,7 +51,7 @@
   function install(){
     const t=document.getElementById('furnitureSummaryToggle');if(t)t.onchange=()=>{try{syncQuickDisplayButtons();syncUsedFurniturePanel(true)}catch{}};
     const grid=document.getElementById('usedFurnitureGrid');if(grid&&!grid.dataset.v85scroll){grid.dataset.v85scroll='1';let dragging=false,startX=0,startScroll=0,moved=false;grid.addEventListener('mousedown',e=>{if(e.button!==0)return;dragging=true;moved=false;startX=e.clientX;startScroll=grid.scrollLeft;e.preventDefault()});window.addEventListener('mousemove',e=>{if(!dragging)return;const dx=e.clientX-startX;if(Math.abs(dx)>3)moved=true;grid.scrollLeft=startScroll-dx});window.addEventListener('mouseup',()=>dragging=false);grid.addEventListener('click',e=>{if(moved){e.preventDefault();e.stopPropagation();moved=false}},true);grid.addEventListener('wheel',e=>{grid.scrollLeft+=Math.abs(e.deltaY)>Math.abs(e.deltaX)?e.deltaY:e.deltaX;e.preventDefault()},{passive:false})}
-    if(window.mainScroll&&!mainScroll.dataset.v85zoom){mainScroll.dataset.v85zoom='1';mainScroll.addEventListener('wheel',e=>{if(e.target?.closest?.('#usedFurniturePanel'))return;e.preventDefault();const rect=canvas.getBoundingClientRect(),ax=(e.clientX-rect.left)*(canvas.width/Math.max(1,rect.width)),ay=(e.clientY-rect.top)*(canvas.height/Math.max(1,rect.height)),factor=e.deltaY<0?1.10:.90,next=Math.min(3,Math.max(.4,zoom*factor));if(Math.abs(next-zoom)<.0001)return;setZoomPercent(next*100);requestAnimationFrame(()=>{const nr=canvas.getBoundingClientRect(),sx=nr.left+ax*(nr.width/canvas.width),sy=nr.top+ay*(nr.height/canvas.height);mainScroll.scrollLeft+=sx-e.clientX;mainScroll.scrollTop+=sy-e.clientY})},{passive:false})}
+    if(window.mainScroll&&!mainScroll.dataset.v85zoom){mainScroll.dataset.v85zoom='1';mainScroll.addEventListener('wheel',e=>{if(e.target?.closest?.('#usedFurniturePanel'))return;e.preventDefault();const rect=canvas.getBoundingClientRect(),ax=(e.clientX-rect.left)*(canvas.width/Math.max(1,rect.width)),ay=(e.clientY-rect.top)*(canvas.height/Math.max(1,rect.height)),factor=e.deltaY<0?1.18:1/1.18,next=Math.min(20,Math.max(.4,zoom*factor));if(Math.abs(next-zoom)<.0001)return;setZoomPercent(next*100);requestAnimationFrame(()=>{const nr=canvas.getBoundingClientRect(),sx=nr.left+ax*(nr.width/canvas.width),sy=nr.top+ay*(nr.height/canvas.height);mainScroll.scrollLeft+=sx-e.clientX;mainScroll.scrollTop+=sy-e.clientY})},{passive:false})}
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
@@ -146,6 +146,7 @@
       let dragging=false, moved=false, startX=0, startScroll=0, pointerId=null;
       el.addEventListener('pointerdown',ev=>{
         if(ev.pointerType==='touch' || ev.button!==0) return;
+        if(ev.target.closest('input,select,textarea'))return;
         if(el.scrollWidth<=el.clientWidth+2) return;
         dragging=true; moved=false; startX=ev.clientX; startScroll=el.scrollLeft; pointerId=ev.pointerId;
       });
@@ -267,6 +268,7 @@
     let drag=false,moved=false,startX=0,startLeft=0,pid=null;
     el.addEventListener('pointerdown',ev=>{
       if(ev.pointerType==='touch' || ev.button!==0)return;
+      if(ev.target.closest('input,select,textarea'))return;
       if(el.scrollWidth<=el.clientWidth+2)return;
       drag=true;moved=false;startX=ev.clientX;startLeft=el.scrollLeft;pid=ev.pointerId;
     });
@@ -291,6 +293,7 @@
     // iPhone/iPad: explicit horizontal finger drag, including when starting on an icon.
     let tActive=false,tMoved=false,tStartX=0,tStartY=0,tLeft=0;
     el.addEventListener('touchstart',ev=>{
+      if(ev.target.closest('input,select,textarea')){tActive=false;tMoved=false;return;}
       if(ev.touches.length!==1 || el.scrollWidth<=el.clientWidth+2)return;
       const t=ev.touches[0];
       tActive=true;tMoved=false;tStartX=t.clientX;tStartY=t.clientY;tLeft=el.scrollLeft;
@@ -412,6 +415,7 @@
   let vpPan=null;
   mainScroll.addEventListener('pointerdown',ev=>{
     if(ev.pointerType==='touch'||ev.button!==0)return;
+    if(mode!=='select'||libraryDragActive||touchLibraryDrag||v99LibraryPointerDrag||drag||window.FP199DragLocked)return;
     if(ev.target.closest('.usedFurniturePanel,.bottomInspector'))return;
     if(document.getElementById('mapLockToggle')?.checked)return;
     const canX=mainScroll.scrollWidth>mainScroll.clientWidth+2;
@@ -430,6 +434,7 @@
   },true);
   mainScroll.addEventListener('pointermove',ev=>{
     if(!vpPan||vpPan.id!==ev.pointerId)return;
+    if(libraryDragActive||touchLibraryDrag||v99LibraryPointerDrag||drag||window.FP199DragLocked){vpPan=null;return;}
     const dx=ev.clientX-vpPan.x,dy=ev.clientY-vpPan.y;
     if(Math.hypot(dx,dy)>4){
       vpPan.moved=true;
@@ -530,7 +535,7 @@
     el.classList.add('ready');
     const t=el.querySelector('.fpSplashOfflineTextV112');
     if(t)t.textContent='البرنامج لا يحتاج الإنترنت ليعمل';
-    try{localStorage.setItem(READY_KEY,'1')}catch(_){}
+    try{window.FP222Storage.setItem(READY_KEY,'1')}catch(_){}
   }
 
   function setPreparing(){
@@ -554,7 +559,7 @@
   function init(){
     if(!ensureStatus()) return;
     let saved=false;
-    try{saved=localStorage.getItem(READY_KEY)==='1'}catch(_){}
+    try{saved=window.FP222Storage.getItem(READY_KEY)==='1'}catch(_){}
     if(saved)setReady(); else setPreparing();
     verify();
     navigator.serviceWorker?.addEventListener?.('controllerchange',()=>setTimeout(verify,80));
@@ -828,7 +833,7 @@
     'سرير مفرد':'Single Bed','سرير مزدوج':'Double Bed','سرير كينغ':'King Bed','كومودينو':'Nightstand',
     'دولاب ملابس 1 متر':'Wardrobe 1 m','دولاب ملابس 1.5 متر':'Wardrobe 1.5 m','دولاب ملابس 2 متر':'Wardrobe 2 m',
     'دولاب ملابس 2.6 متر':'Wardrobe 2.6 m','دولاب ملابس 3 متر':'Wardrobe 3 m',
-    'كنبة مقعدين':'2-Seat Sofa','كنبة 3 مقاعد':'3-Seat Sofa','كنبة زاوية L':'L-Shaped Sofa','شيزلونج':'Chaise Lounge',
+    'أريكة مقعدين':'2-Seat Sofa','أريكة 3 مقاعد':'3-Seat Sofa','أريكة زاوية L':'L-Shaped Sofa','شيزلونج':'Chaise Lounge',
     'كرسي مكتب':'Office Chair','مكتب وكرسي كامل':'Desk & Chair Set','كرسي مفرد أخضر':'Green Armchair','كرسي مفرد فاتح':'Light Armchair',
     'طاولة قهوة دائرية':'Round Coffee Table','طاولة قهوة مستطيلة':'Rectangular Coffee Table',
     'طاولة طعام مستطيلة حديثة':'Modern Rectangular Dining Table','طاولة طعام دائرية 4 كراسي':'Round Dining Table – 4 Chairs',
@@ -919,9 +924,9 @@
     'Hide Labels':'إخفاء المسميات','Hide Measurements':'إخفاء القياسات',
     'Hide Measurement Arrows':'إخفاء أسهم القياس','Hide Guide':'إخفاء الدليل',
     'Upload a plan to begin':'ارفع مخططًا للبدء','Press «Calibrate» then Choose on plan.':'اضغط «معايرة» ثم اختر نقطتين على الخارطة.',
-    '3-Seat Sofa':'كنبة 3 مقاعد','Seat Sofa-3':'كنبة 3 مقاعد',
-    '2-Seat Sofa':'كنبة مقعدين','Seat Sofa-2':'كنبة مقعدين',
-    'L-Shaped Sofa':'كنبة زاوية L','Light Armchair':'كرسي مفرد فاتح',
+    '3-Seat Sofa':'أريكة 3 مقاعد','Seat Sofa-3':'أريكة 3 مقاعد',
+    '2-Seat Sofa':'أريكة مقعدين','Seat Sofa-2':'أريكة مقعدين',
+    'L-Shaped Sofa':'أريكة زاوية L','Light Armchair':'كرسي مفرد فاتح',
     'Bedroom':'غرفة نوم','Dining Room':'غرفة طعام','Living Room':'صالة','Kitchen':'مطبخ',
     'Bathroom':'حمام','Office':'مكتب','Laundry & Utility':'الغسيل والخدمات',
     'Entry & Storage':'مدخل وتخزين','Garage & Cars':'الكراج والسيارات',
@@ -975,6 +980,7 @@
   }
 
   function applyNode(n, lang){
+    if((n.nodeType === Node.ELEMENT_NODE ? n : n.parentElement)?.closest?.('[data-fp-bilingual]'))return;
     if (n.nodeType === Node.TEXT_NODE) {
       rememberNode(n);
       {
@@ -986,7 +992,7 @@
       return;
     }
     if (n.nodeType !== Node.ELEMENT_NODE) return;
-    if (n.id === 'fpLanguageToggle') return;
+    if (n.id === 'fpLanguageToggle' || n.id === 'fp222Tabs' || n.dataset?.fp222Label) return;
     rememberNode(n);
     for (const a of ['title','placeholder','aria-label','alt']) {
       const k='__fpArabicAttr_'+a;
@@ -1025,7 +1031,7 @@
     btn.type = 'button';
     btn.addEventListener('click', () => applyLanguage(currentLang === 'en' ? 'ar' : 'en', true));
     const placeInToolbar = () => {
-      const toolbar = document.getElementById('modernTopToolbar') || document.querySelector('.mainToolbar') || document.querySelector('.workToolbar');
+      const toolbar = document.getElementById('fp222Common') || document.getElementById('modernTopToolbar') || document.querySelector('.mainToolbar') || document.querySelector('.workToolbar');
       if (!toolbar) return false;
       if (btn.parentElement !== toolbar) toolbar.prepend(btn);
       toolbar.style.overflowX = 'auto';
@@ -1041,7 +1047,7 @@
     [100,300,700,1200].forEach(ms => setTimeout(placeInToolbar, ms));
     setInterval(() => {
       try {
-        const toolbar = document.getElementById('modernTopToolbar') || document.querySelector('.mainToolbar') || document.querySelector('.workToolbar');
+        const toolbar = document.getElementById('fp222Common') || document.getElementById('modernTopToolbar') || document.querySelector('.mainToolbar') || document.querySelector('.workToolbar');
         if (toolbar && btn.parentElement !== toolbar) {
           toolbar.prepend(btn);
           toolbar.scrollLeft = 0;
@@ -1082,10 +1088,11 @@
     }
     applying = false;
     updateToggle();
-    if (save) { try { localStorage.setItem(STORAGE_KEY,currentLang); } catch(_){} }
+    if (save) { try { window.FP222Storage.setItem(STORAGE_KEY,currentLang); } catch(_){} }
     window.dispatchEvent(new CustomEvent('furniplan-language-changed',{detail:{language:currentLang}}));
   }
 
+  window.FP222Translate = msg => currentLang === 'en' ? translateArText(String(msg)) : msg;
   const nativeAlert = window.alert.bind(window);
   const nativeConfirm = window.confirm.bind(window);
   const nativePrompt = window.prompt.bind(window);
@@ -1112,7 +1119,7 @@
   function init(){
     ensureToggle();
     let saved = null;
-    try { saved = localStorage.getItem(STORAGE_KEY); } catch(_){}
+    try { saved = window.FP222Storage.getItem(STORAGE_KEY); } catch(_){}
     currentLang = saved === 'ar' ? 'ar' : 'en';
     applyLanguage(currentLang,false);
     // No continuous MutationObserver: it caused Electron renderer instability.
@@ -1192,7 +1199,7 @@
     if(!lib.parentElement){
       if(langBtn&&langBtn.parentElement===bar)langBtn.insertAdjacentElement('afterend',lib);else bar.prepend(lib);
     }
-    const areaBtn=document.getElementById('v65Area');
+    const areaBtn=document.getElementById('v44Measure');
     if(!clr.parentElement){
       if(areaBtn&&areaBtn.parentElement)areaBtn.insertAdjacentElement('afterend',clr);
       else lib.insertAdjacentElement('afterend',clr);
@@ -1205,7 +1212,7 @@
       const aside=document.querySelector('aside'),scrim=document.getElementById('sidebarScrim');
       aside?.classList.add('open');scrim?.classList.add('show');
     };
-    clr.onclick=()=>{
+    clr.onclick=async()=>{
       if(typeof selectedMeasureId!=='undefined'&&selectedMeasureId){
         document.getElementById('deleteMeasureBtn')?.click();
         return;
@@ -1214,7 +1221,7 @@
         try{setStatus(t('There are no measurements to delete','لا توجد قياسات للحذف'));}catch(_){}
         return;
       }
-      if(confirm(t('Delete all measurements from the plan?','حذف جميع القياسات من الخارطة؟'))){
+      if(await FP222Dialog.confirm(t('Delete all measurements from the plan?','حذف جميع القياسات من الخارطة؟'))){
         document.getElementById('clearMeasuresBtn')?.click();
       }
     };
@@ -1264,7 +1271,7 @@
   function areaLabelHit(p){
     try{
       for(let i=areaPolygons.length-1;i>=0;i--){
-        const a=areaPolygons[i];if(!a.points||a.points.length<3)continue;
+        const a=areaPolygons[i];if(a.kind==='surface')continue;if(!a.points||a.points.length<3)continue;
         const cx=a.points.reduce((s,q)=>s+q.x,0)/a.points.length,cy=a.points.reduce((s,q)=>s+q.y,0)/a.points.length;
         const txt=(a.name||'')+'  '+Number(a.areaM2||0).toFixed(2)+' م² • '+Number(a.perimeterM||0).toFixed(2)+' م';
         const fs=Math.max(10,13/zoom);ctx.save();ctx.font='700 '+fs+'px Tahoma';const tw=ctx.measureText(txt).width;ctx.restore();
@@ -1284,13 +1291,13 @@
     }
     if(typeof finishAreaTool==='function'&&!finishAreaTool.__fpV116){
       const coreFinish=finishAreaTool;
-      const wrapped=function(){
+      const wrapped=async function(){
         const beforeCount=typeof areaPolygons!=='undefined'?areaPolygons.length:0;
         coreFinish();
         if(typeof areaPolygons!=='undefined'&&areaPolygons.length>beforeCount){
           const a=areaPolygons[areaPolygons.length-1];
           const def=lang()==='ar'?'غرفة '+areaPolygons.length:'Room '+areaPolygons.length;
-          const n=prompt(t('Enter the room or area name:','اكتب اسم الغرفة أو المساحة:'),def);
+          const n=await FP222Dialog.prompt(t('Enter the room or area name:','اكتب اسم الغرفة أو المساحة:'),def);
           if(n!==null&&String(n).trim())a.name=String(n).trim();else if(!a.name)a.name=def;
           fpSelectedAreaId=null;
           try{draw();}catch(_){}
@@ -1333,25 +1340,7 @@
 
 // ===== FurniPlan V124 iPhone Portrait Library + Labels Fix =====
 (function(){
-  function startMapLabelPlacementV124(){
-    try{
-      if(typeof hasPlan==='function' && !hasPlan()){alert('ارفع الخارطة أولاً.');return;}
-      const value=prompt('اكتب المسمى الذي تريد وضعه على الخارطة:','');
-      if(value===null)return;
-      const clean=String(value).trim();
-      if(!clean){if(typeof setStatus==='function')setStatus('اكتب نص المسمى أولاً');return;}
-      pendingMapLabelText=clean;
-      activateWorkingTool('labelPlace');
-      points=[];
-      selectedMeasureId=null;
-      selectedMapLabelId=null;
-      if(typeof clearFurnitureSelection==='function')clearFurnitureSelection();
-      if(typeof syncSelectedPanel==='function')syncSelectedPanel();
-      if(typeof updateInteractionCursor==='function')updateInteractionCursor();
-      if(typeof setStatus==='function')setStatus((typeof isTouchDevice==='function'&&isTouchDevice())?`اضغط ضغطة واحدة على مكان «${clean}» لإضافته`:`انقر مكان «${clean}» لإضافته`);
-      if(typeof draw==='function')draw();
-    }catch(e){console.error('V124 label fix',e);}
-  }
+  function startMapLabelPlacementV124(){window.FP209Labels?.custom();}
   window.startMapLabelPlacementV124=startMapLabelPlacementV124;
 
   function installV124Fix(){
@@ -1462,7 +1451,7 @@
     wrapped.__v124badgepatched=true;
     activateWorkingTool=wrapped; window.activateWorkingTool=wrapped;
   }
-  function install(){installStyle();patchAreaBadge();patchToolSwitch();}
+  function install(){patchAreaBadge();patchToolSwitch();}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
 // ===== End FurniPlan V124 Portrait Sheet + Area Badge Fix =====
@@ -1810,7 +1799,7 @@
     window.__fpV136Installed=true;
 
     /* Replace the real area finishing behavior used by the desktop toolbar. */
-    finishAreaTool=function(){
+    finishAreaTool=async function(){
       if(mode!=='areaMeasure')return;
 
       if(areaDraft.length<3){
@@ -1822,7 +1811,7 @@
 
       const st=polygonAreaStats(areaDraft);
       const defaultName='غرفة '+(areaPolygons.length+1);
-      let name=prompt('اكتب اسم الغرفة أو المساحة:',defaultName);
+      let name=await FP222Dialog.prompt('اكتب اسم الغرفة أو المساحة:',defaultName);
       if(name===null)name=defaultName;
       name=String(name||defaultName).trim()||defaultName;
 
@@ -1880,24 +1869,7 @@
     };
     window.toggleAreaTool=toggleAreaTool;
 
-    function beginLabel(){
-      if(!hasPlan()){alert('ارفع الخارطة أولاً.');return;}
-      const value=prompt('اكتب المسمى الذي تريد وضعه على الخارطة:','');
-      if(value===null)return;
-      const clean=String(value).trim();
-      if(!clean)return;
-
-      pendingMapLabelText=clean;
-      activateWorkingTool('labelPlace');
-      points=[];
-      selectedMeasureId=null;
-      selectedMapLabelId=null;
-      clearFurnitureSelection();
-      syncSelectedPanel();
-      updateInteractionCursor();
-      setStatus('انقر مكان «'+clean+'» على الخارطة');
-      draw();
-    }
+    function beginLabel(){window.FP209Labels?.custom();}
 
     /* Desktop T shortcut: capture phase so it runs before the original keyboard handler. */
     window.addEventListener('keydown',function(e){

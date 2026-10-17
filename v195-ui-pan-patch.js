@@ -131,10 +131,8 @@
         const dx = left - priorLeft;
         const dy = top - priorTop;
         if (dx || dy) {
-          requestAnimationFrame(() => {
-            scroller.scrollLeft = Math.max(0, scroller.scrollLeft + dx);
-            scroller.scrollTop = Math.max(0, scroller.scrollTop + dy);
-          });
+          scroller.scrollLeft = Math.max(0, scroller.scrollLeft + dx);
+          scroller.scrollTop = Math.max(0, scroller.scrollTop + dy);
         }
         try { window.updatePanState?.(); } catch (_) {}
         return result;
@@ -142,54 +140,8 @@
       window.updateStageSize();
     }
 
-    let touchPan = null;
-    const canStartTouchPan = event => {
-      if (event.pointerType !== 'touch' || event.button !== 0) return false;
-      if (document.getElementById('mapLockToggle')?.checked) return false;
-      if (document.getElementById('fullLibraryModal')?.classList.contains('open')) return false;
-      try {
-        if (typeof pendingFurnitureDef !== 'undefined' && pendingFurnitureDef) return false;
-        if (typeof mode !== 'undefined' && mode !== 'select') return false;
-      } catch (_) {}
-      const canMove = scroller.scrollWidth > scroller.clientWidth + 2 || scroller.scrollHeight > scroller.clientHeight + 2;
-      if (!canMove) return false;
-      if (event.target === plan) {
-        try {
-          const p = typeof toCanvasPos === 'function' ? toCanvasPos(event) : null;
-          const hasObject = typeof hitTest === 'function' && hitTest(p);
-          const hasMeasurement = typeof hitTestMeasurement === 'function' && hitTestMeasurement(p);
-          const hasLabel = typeof hitTestMapLabel === 'function' && hitTestMapLabel(p);
-          if (p && (hasObject || hasMeasurement || hasLabel)) return false;
-        } catch (_) {}
-      }
-      return true;
-    };
-    scroller.addEventListener('pointerdown', event => {
-      if (!canStartTouchPan(event)) return;
-      touchPan = { id:event.pointerId, x:event.clientX, y:event.clientY, left:scroller.scrollLeft, top:scroller.scrollTop, active:false };
-    }, true);
-    scroller.addEventListener('pointermove', event => {
-      if (!touchPan || touchPan.id !== event.pointerId) return;
-      const dx = event.clientX - touchPan.x;
-      const dy = event.clientY - touchPan.y;
-      if (!touchPan.active && Math.hypot(dx, dy) < 7) return;
-      touchPan.active = true;
-      try { scroller.setPointerCapture(event.pointerId); } catch (_) {}
-      scroller.scrollLeft = touchPan.left - dx;
-      scroller.scrollTop = touchPan.top - dy;
-      scroller.classList.add('panning');
-      event.preventDefault();
-      event.stopPropagation();
-    }, {capture:true, passive:false});
-    const endTouchPan = event => {
-      if (!touchPan || touchPan.id !== event.pointerId) return;
-      try { scroller.releasePointerCapture(event.pointerId); } catch (_) {}
-      touchPan = null;
-      scroller.classList.remove('panning');
-    };
-    scroller.addEventListener('pointerup', endTouchPan, true);
-    scroller.addEventListener('pointercancel', endTouchPan, true);
-    scroller.addEventListener('lostpointercapture', endTouchPan, true);
+    // Pointer navigation is owned by the canvas and fp242-touch.js.
+
   }
 
   const css = document.createElement('style');

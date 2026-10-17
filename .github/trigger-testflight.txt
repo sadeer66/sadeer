@@ -1,1 +1,0 @@
-Trigger TestFlight build 196 retry — opaque sofa icon
