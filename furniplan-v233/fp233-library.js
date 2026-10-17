@@ -58,3 +58,14 @@
  rail.addEventListener('pointerdown',e=>{e.preventDefault();const r=thumb.getBoundingClientRect();drag={id:e.pointerId,offset:e.clientY>=r.top&&e.clientY<=r.bottom?e.clientY-r.top:r.height/2};rail.setPointerCapture(e.pointerId);move(e)});rail.addEventListener('pointermove',e=>{if(drag?.id===e.pointerId){e.preventDefault();move(e)}});for(const t of ['pointerup','pointercancel','lostpointercapture'])rail.addEventListener(t,()=>drag=null);
  rail.addEventListener('keydown',e=>{if(e.key==='ArrowDown')grid.scrollTop+=80;if(e.key==='ArrowUp')grid.scrollTop-=80;if(e.key==='End')grid.scrollTop=grid.scrollHeight;if(e.key==='Home')grid.scrollTop=0;sync()});grid.addEventListener('scroll',sync,{passive:true});new ResizeObserver(sync).observe(grid);new MutationObserver(sync).observe(grid,{childList:true});new MutationObserver(sync).observe(document.getElementById('fullLibraryModal'),{attributes:true,attributeFilter:['class']});sync();
 })();
+(()=>{const s=document.createElement('style');s.textContent=`
+ body.fp222 .app{direction:rtl!important}
+ body.fp222 #fp242Scales input::-webkit-slider-thumb{background:#e0ae53!important;border:0!important;box-shadow:none!important;width:15px!important;height:15px!important}
+ body.fp222 #fp242Scales input::-moz-range-thumb{background:#e0ae53!important;border:0!important;width:15px!important;height:15px!important}
+ body .fullLibraryShell{grid-template-columns:minmax(0,1fr) 220px!important}
+ body .fullLibControls{width:220px!important;max-width:220px!important}
+ body #fullLibGrid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(120px,1fr))!important;grid-auto-rows:166px!important;gap:7px!important;overflow-x:hidden!important;min-width:0!important;box-sizing:border-box!important}
+ body.fp222 #fullLibGrid .fullLibCard{width:100%!important;min-width:0!important;max-width:100%!important;height:166px!important;min-height:0!important;box-sizing:border-box!important;overflow:hidden!important;white-space:normal!important}
+ body #fullLibGrid .fullLibCard img{max-width:100%!important;object-fit:contain!important}
+ @media(max-width:1180px){body .fullLibraryShell{grid-template-columns:minmax(0,1fr) 60px!important}body .fullLibControls{width:60px!important;max-width:60px!important}}
+ `;document.head.append(s)})();
