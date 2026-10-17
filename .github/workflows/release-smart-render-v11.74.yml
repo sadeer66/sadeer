@@ -1,0 +1,27 @@
+name: Smart Render V11.74 desktop release
+on:
+  push:
+    branches: [master]
+    paths: ['smart-render-v11.74/**', 'desktop-smart-render-v11.74/**', '.github/workflows/release-smart-render-v11.74.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  windows-installer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install NSIS
+        run: sudo apt-get update -qq && sudo apt-get install -y nsis
+      - name: Download Electron runtime
+        run: curl -fL --retry 3 https://github.com/electron/electron/releases/download/v44.4.5/electron-v44.4.5-win32-x64.zip -o /tmp/electron.zip
+      - name: Build installer
+        run: python3 desktop-smart-render-v11.74/build.py
+      - name: Publish downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          zip -qr SmartRender-V11.74-Complete.zip smart-render-v11.74 desktop-smart-render-v11.74 -x '*/runtime/*' '*/uninstall-files.nsh'
+          sha256sum SmartRender-V11.74-Setup.exe SmartRender-V11.74-Complete.zip > SHA256-SmartRender-V11.74.txt
+          gh release view smart-render-v11.74 >/dev/null 2>&1 || gh release create smart-render-v11.74 --title 'Smart Render V11.74' --notes 'Complete supplied app with embedded textures. Windows installer with application icon, maximized native window and translation disabled.'
+          gh release upload smart-render-v11.74 SmartRender-V11.74-Setup.exe SmartRender-V11.74-Complete.zip SHA256-SmartRender-V11.74.txt --clobber
