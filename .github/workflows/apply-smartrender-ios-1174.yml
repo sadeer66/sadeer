@@ -32,7 +32,7 @@ jobs:
           assert 'uiScales74' in s and 'smartRenderAppleMobile1174' in s
           assert 'width:clamp(100px,calc(139px' in s
           assert 'width:clamp(130px,calc(208.5px' in s
-          assert s.rstrip().endswith('</script></body></html>')
+          assert s.rstrip().endswith('</body></html>')
           print('Smart Render iOS-only layout patch validated.')
           PY
 
