@@ -6885,5 +6885,13 @@ draw();
 <script src="fp232-ipad.js?v=239"></script>
 <script src="fp242-touch.js?v=233"></script>
 <script src="fp233-library.js?v=2332"></script>
+<script>
+/* V233.3: keep the empty-workspace logo centered in the visible viewport, independent of map scrolling. */
+(()=>{const view=document.getElementById('mainScroll'),brand=document.getElementById('workspaceBrand');if(!view||!brand)return;
+brand.style.cssText='position:fixed;z-index:3;pointer-events:none;transform:translate(-50%,-50%);direction:ltr';
+function sync(){const r=view.getBoundingClientRect();brand.style.left=(r.left+view.clientLeft+view.clientWidth/2)+'px';brand.style.top=(r.top+view.clientTop+view.clientHeight/2)+'px';brand.style.display=view.classList.contains('has-plan')?'none':'flex';brand.style.maxWidth=Math.max(0,view.clientWidth-24)+'px';}
+new ResizeObserver(sync).observe(view);new MutationObserver(sync).observe(view,{attributes:true,attributeFilter:['class']});window.addEventListener('resize',sync);window.addEventListener('scroll',sync,true);sync();
+})();
+</script>
 </body>
 </html>
