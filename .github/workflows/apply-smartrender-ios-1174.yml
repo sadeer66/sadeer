@@ -1,0 +1,50 @@
+name: Update Smart Render V11.74 iPad iPhone toolbar and side panel
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/apply-smartrender-ios-1174.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply the mobile-only layout fix
+        run: python3 .github/scripts/fix_smartrender_mobile_1174.py
+
+      - name: Validate content and preserved application
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('smart-render-v11.74/index.html').read_text(encoding='utf-8')
+          assert s.count('id="mobileDockCSS1174"')==1
+          assert s.count('id="mobileDockJS1174"')==1
+          assert 'uiScales74' in s and 'smartRenderAppleMobile1174' in s
+          assert 'width:clamp(100px,calc(139px' in s
+          assert 'width:clamp(130px,calc(208.5px' in s
+          assert s.rstrip().endswith('</script></body></html>')
+          print('Smart Render iOS-only layout patch validated.')
+          PY
+
+      - name: Commit updated page to the same GitHub Pages URL
+        run: |
+          git config user.name "Smart Render Build"
+          git config user.email "actions@users.noreply.github.com"
+          git add smart-render-v11.74/index.html
+          if git diff --cached --quiet; then
+            echo "Page already up to date."
+            exit 0
+          fi
+          git commit -m "Fix pinned iOS toolbar controls and orientation-based sidebar width"
+          git pull --rebase origin master
+          git push origin master
