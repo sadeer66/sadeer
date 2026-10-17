@@ -2024,4 +2024,29 @@ let resizeUI74=0;
 function applyUIScale74(save=true){const icon=+$('uiIcon74').value,text=+$('uiText74').value;document.documentElement.style.setProperty('--ui-icon74',icon/100);document.documentElement.style.setProperty('--ui-text74',text/100);$('uiIconValue74').textContent=icon+'%';$('uiTextValue74').textContent=text+'%';if(save)try{localStorage.setItem('smartRender.uiScale74',JSON.stringify({icon,text}))}catch{}if(!resizeUI74)resizeUI74=requestAnimationFrame(()=>{resizeUI74=0;resize()})}
 for(const id of ['uiIcon74','uiText74']){$(id).oninput=()=>applyUIScale74();$(id).addEventListener('pointerdown',e=>e.stopPropagation());$(id).addEventListener('pointermove',e=>e.stopPropagation())}
 try{const p=JSON.parse(localStorage.getItem('smartRender.uiScale74')||'{}');if(p.icon)$('uiIcon74').value=Math.max(80,Math.min(160,p.icon));if(p.text)$('uiText74').value=Math.max(85,Math.min(160,p.text))}catch{}applyUIScale74(false);
+</script><script>// Keep Apple mobile size controls outside the horizontally scrolling toolbar.
+(function(){
+ const appleMobile=/iPad|iPhone|iPod/.test(navigator.userAgent)||(/Mac/.test(navigator.platform)&&navigator.maxTouchPoints>1);
+ if(!appleMobile)return;
+ const top=document.querySelector('.top'),scales=document.getElementById('uiScales74');
+ if(!top||!scales)return;
+ document.documentElement.classList.add('smart-apple-mobile');
+ const style=document.createElement('style');style.id='smart-mobile-layout-fix';style.textContent=`
+ .smart-apple-mobile #smartHeader74{display:flex;direction:rtl;align-items:flex-start;flex:0 0 auto;min-width:0;max-width:100%;background:var(--night)}
+ .smart-apple-mobile #smartHeader74>.top{flex:1 1 0;min-width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+ .smart-apple-mobile #smartHeader74>#uiScales74{position:relative;right:auto;flex:0 0 min(184px,44vw);width:min(184px,44vw);margin:4px 0 4px 4px;padding:6px;box-sizing:border-box}
+ .smart-apple-mobile #uiScales74 label{grid-template-columns:45px minmax(0,1fr) 28px;gap:3px}
+ .smart-apple-mobile #side{min-width:0;box-sizing:border-box;padding:5px;overflow-x:hidden;overflow-y:auto;overflow-wrap:anywhere}
+ .smart-apple-mobile #side .group{min-width:0;padding:5px}
+ .smart-apple-mobile #side :is(input,select,textarea,button){min-width:0;max-width:100%;box-sizing:border-box}
+ .smart-apple-mobile #side .buttons{grid-template-columns:minmax(0,1fr)}
+ .smart-apple-mobile #side .row{flex-wrap:wrap}
+ .smart-apple-mobile #side h3,.smart-apple-mobile #side .sidepanel-title{padding:6px 3px}
+ @media(orientation:portrait){.smart-apple-mobile #side{width:clamp(139px,calc(139px * var(--ui-text74)),21vw)!important}}
+ @media(orientation:landscape){.smart-apple-mobile #side{width:clamp(208.5px,calc(208.5px * var(--ui-text74)),31.5vw)!important}}
+ `;
+ document.head.appendChild(style);
+ const header=document.createElement('div');header.id='smartHeader74';top.before(header);header.append(scales,top);
+ requestAnimationFrame(()=>{if(typeof resize==='function')resize()});
+})();
 </script></body></html>
