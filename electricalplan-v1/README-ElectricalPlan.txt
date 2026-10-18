@@ -1,0 +1,1 @@
+ElectricalPlan — independent experimental build derived from SewerPlan V128. SewerPlan source folder is untouched. Electrical library integration is in progress; this is not yet a complete electrical-routing engine.

@@ -1,0 +1,240 @@
+[
+  {
+    "key": "part-01",
+    "name": "صليب تقسيم",
+    "nameEn": "Cross",
+    "pixelWidth": 1329,
+    "pixelHeight": 1183,
+    "pipeBodyPixels": 490,
+    "originalFile": "تقسيم.png",
+    "anchorPixels": [
+      664,
+      591
+    ]
+  },
+  {
+    "key": "part-02",
+    "name": "وصلة مستقيمة",
+    "nameEn": "Straight Coupling",
+    "pixelWidth": 1156,
+    "pixelHeight": 1360,
+    "pipeBodyPixels": 565,
+    "originalFile": "توصاله.png",
+    "anchorPixels": [
+      560,
+      650
+    ]
+  },
+  {
+    "key": "part-03",
+    "name": "وصلة تي",
+    "nameEn": "Tee",
+    "pixelWidth": 1156,
+    "pixelHeight": 1360,
+    "pipeBodyPixels": 582,
+    "originalFile": "تي.png",
+    "anchorPixels": [
+      465,
+      680
+    ]
+  },
+  {
+    "key": "part-04",
+    "name": "صليب بفتحة تنظيف — مياه ثقيلة",
+    "nameEn": "Cross with Cleanout — Soil",
+    "pixelWidth": 1329,
+    "pixelHeight": 1183,
+    "pipeBodyPixels": 480,
+    "originalFile": "صليب  مع فتحه تنظيف ماء ثقيل.png",
+    "anchorPixels": [
+      664,
+      439
+    ]
+  },
+  {
+    "key": "part-05",
+    "name": "صليب بفتحة تنظيف — مياه خفيفة",
+    "nameEn": "Cross with Cleanout — Waste",
+    "pixelWidth": 1329,
+    "pixelHeight": 1183,
+    "pipeBodyPixels": 480,
+    "originalFile": "صليب  مع فتحه تنظيف ماء خفيف.png",
+    "anchorPixels": [
+      664,
+      439
+    ]
+  },
+  {
+    "key": "part-06",
+    "name": "كوع بفتحة مفتوحة",
+    "nameEn": "Open Elbow",
+    "pixelWidth": 1269,
+    "pixelHeight": 1240,
+    "pipeBodyPixels": 482,
+    "originalFile": "صورة ChatGPT 8 أكتوبر 2026، 05_52_07 م.png",
+    "anchorPixels": [
+      632,
+      525
+    ]
+  },
+  {
+    "key": "part-07",
+    "name": "حلقة توصيل",
+    "nameEn": "Coupling Ring",
+    "pixelWidth": 1254,
+    "pixelHeight": 1254,
+    "pipeBodyPixels": 790,
+    "originalFile": "صورة ChatGPT 8 أكتوبر 2026، 05_57_55 م.png",
+    "anchorPixels": [
+      627,
+      638
+    ]
+  },
+  {
+    "key": "part-08",
+    "name": "كوع 45°",
+    "nameEn": "45° Elbow",
+    "pixelWidth": 1306,
+    "pixelHeight": 1205,
+    "pipeBodyPixels": 580,
+    "originalFile": "عكس 45.png",
+    "anchorPixels": [
+      589,
+      645
+    ]
+  },
+  {
+    "key": "part-09",
+    "name": "كوع 90°",
+    "nameEn": "90° Elbow",
+    "pixelWidth": 1319,
+    "pixelHeight": 1193,
+    "pipeBodyPixels": 560,
+    "originalFile": "عكس 90.png",
+    "anchorPixels": [
+      480,
+      410
+    ]
+  },
+  {
+    "key": "part-10",
+    "name": "كوع مياه ثقيلة",
+    "nameEn": "Soil Elbow",
+    "pixelWidth": 1329,
+    "pixelHeight": 1183,
+    "pipeBodyPixels": 455,
+    "originalFile": "عكس مياه ثقيله.png",
+    "anchorPixels": [
+      664,
+      439
+    ]
+  },
+  {
+    "key": "part-11",
+    "name": "كوع مياه خفيفة",
+    "nameEn": "Waste Elbow",
+    "pixelWidth": 1329,
+    "pixelHeight": 1183,
+    "pipeBodyPixels": 455,
+    "originalFile": "عكس مياه خفيفه.png",
+    "anchorPixels": [
+      664,
+      439
+    ]
+  },
+  {
+    "key": "part-12",
+    "name": "قسام واي مزدوج",
+    "nameEn": "Double Wye",
+    "pixelWidth": 1271,
+    "pixelHeight": 1299,
+    "pipeBodyPixels": 359,
+    "originalFile": "قسام واي.png",
+    "anchorPixels": [
+      639,
+      649
+    ]
+  },
+  {
+    "key": "part-13",
+    "name": "مانع روائح مستقيم",
+    "nameEn": "Straight Trap",
+    "pixelWidth": 1329,
+    "pixelHeight": 1448,
+    "pipeBodyPixels": 440,
+    "originalFile": "كلي مانع روائح 2.png",
+    "anchorPixels": [
+      664,
+      704
+    ]
+  },
+  {
+    "key": "part-14",
+    "name": "مانع روائح بكوع",
+    "nameEn": "Elbow Trap",
+    "pixelWidth": 1329,
+    "pixelHeight": 1183,
+    "pipeBodyPixels": 455,
+    "originalFile": "كلي مانع روائح.png",
+    "anchorPixels": [
+      664,
+      439
+    ]
+  },
+  {
+    "key": "part-15",
+    "name": "مانع روائح شجرة — نموذج 1",
+    "nameEn": "Tree Trap — Model 1",
+    "pixelWidth": 1039,
+    "pixelHeight": 1090,
+    "pipeBodyPixels": 198,
+    "originalFile": "مانع روائح شجره 2 انج.png",
+    "anchorPixels": [
+      517,
+      525
+    ],
+    "branchTrap": true,
+    "chamberRadiusPixels": 300
+  },
+  {
+    "key": "part-16",
+    "name": "مانع روائح شجرة — نموذج 2",
+    "nameEn": "Tree Trap — Model 2",
+    "pixelWidth": 1039,
+    "pixelHeight": 1090,
+    "pipeBodyPixels": 275,
+    "originalFile": "مانع روائح شجره 3 انج.png",
+    "anchorPixels": [
+      517,
+      525
+    ],
+    "branchTrap": true,
+    "chamberRadiusPixels": 300
+  },
+  {
+    "key": "part-17",
+    "name": "وصلة واي",
+    "nameEn": "Wye",
+    "pixelWidth": 1211,
+    "pixelHeight": 1299,
+    "pipeBodyPixels": 359,
+    "originalFile": "واي.png",
+    "anchorPixels": [
+      465,
+      649
+    ]
+  },
+  {
+    "key": "part-18",
+    "name": "وصلة نحو الأعلى",
+    "nameEn": "Upward Outlet",
+    "pixelWidth": 1254,
+    "pixelHeight": 1254,
+    "pipeBodyPixels": 790,
+    "originalFile": "نحو الاعلى .png",
+    "anchorPixels": [
+      627,
+      642
+    ]
+  }
+]
