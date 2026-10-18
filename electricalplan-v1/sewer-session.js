@@ -82,6 +82,7 @@ function boot(){
   }
  },true);
  window.addEventListener('pointerdown',e=>{
+  if(e.target.closest?.('.elGlowCheck'))return;
   if(e.button>0||ending)return;
   if(e.pointerType==='touch'&&e.target.closest?.('#sewerContinue')){const ref=window.SewerPlan.selectionReference();if(window.SewerPlan.canContinueRoute(ref))continueTap={id:e.pointerId,x:e.clientX,y:e.clientY,ref};return;}
 

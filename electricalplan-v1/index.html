@@ -5662,7 +5662,7 @@ function drawItem(it){
   ctx.rotate(it.rot*Math.PI/180);
   ctx.scale(it.flipH?-1:1,it.flipV?-1:1);
   ctx.save();if(window.SewerOpacity)ctx.globalAlpha*=window.SewerOpacity.alpha(it);
-  window.ElectricalEffects?.halo(ctx,it,w,h);
+
   if(it.archType==='door')drawDoor(it,w,h); else if(it.archType==='doubleDoor')drawDoubleDoor(it,w,h); else if(it.archType==='slidingDoor')drawSlidingDoor(it,w,h); else if(it.archType==='window')drawWindow(it,w,h); else if(it.archType==='slidingWindow')drawSlidingWindow(it,w,h); else if(it.archType==='fixedWindow')drawFixedWindow(it,w,h); else if(it.archType==='opening')drawOpening(it,w,h); else if(it.src){ drawSprite(it,w,h); } else switch(it.type){
     case 'sofa': drawSofa(it,w,h); break;
     case 'armchair': drawArmchair(it,w,h); break;
@@ -5951,6 +5951,7 @@ function draw(){
   if(typeof window.renderSewerNetwork==='function')window.renderSewerNetwork();
   if(pxPerCm&&visibleFurniture())items.filter(aboveSewer).forEach(drawItem);
   if(window.SewerPlan?.toolState().editing&&visibleFurniture())selectedItems().filter(it=>!it.archType).forEach(it=>{ctx.save();ctx.translate(it.x,it.y);ctx.rotate((it.rot||0)*Math.PI/180);ctx.scale(it.flipH?-1:1,it.flipV?-1:1);drawSelectionOutline(it.w*pxPerCm,it.h*pxPerCm);ctx.restore();});
+  if(pxPerCm&&visibleFurniture())window.ElectricalEffects?.renderLights(ctx,items);
   if(window.SewerQuantities&&visibleFurniture())window.SewerQuantities.render(ctx);
   if(visibleFurniture())drawSnapGuides();
   if(visibleFurniture())drawAutoDistances();
@@ -12251,7 +12252,7 @@ html.sewer-phone-ui body.sewer-ribbon-ui #furnitureIconToolbar{z-index:450!impor
 </script>
 <script src="sewer-navigation.js?v=105"></script>
 <script src="sewer-project-dialog.js?v=105"></script>
-<script src="sewer-session.js?v=107"></script>
+<script src="sewer-session.js?v=108"></script>
 <script src="sewer-selected-view.js?v=108"></script>
 <script src="sewer-rail-layout.js?v=121"></script>
 <script src="sewer-piece-popovers.js?v=125"></script>
@@ -12280,7 +12281,7 @@ setInterval(fix,900);
 <style id="electrical-library-v20">#se61Library{display:none!important}</style>
 <script src="electrical-layout.js?v=25"></script>
 <script src="electrical-map-appearance.js?v=25"></script>
-<script src="electrical-right-panel.js?v=26"></script>
-<script src="electrical-effects.js?v=27"></script>
+<script src="electrical-right-panel.js?v=28"></script>
+<script src="electrical-effects.js?v=28"></script>
 </body>
 </html>
