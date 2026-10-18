@@ -351,3 +351,35 @@ html body.sewer-ribbon-ui #sewerPrimaryScroll>#sewerModeDock{position:static!imp
  html body.sewer-ribbon-ui #sewerHeaderBrand{font-size:17px!important}
  html body.sewer-ribbon-ui #modernToolbarArea #sewerRibbonHeader{gap:4px!important}
 }
+
+
+/* ElectricalPlan V10: override V128's strong selector sizing; no changes to SewerPlan. */
+html body.sewer-ribbon-ui #modernToolbarArea #sewerRibbonHeader,
+html.sewer-phone-ui body.sewer-ribbon-ui #modernToolbarArea #sewerRibbonHeader,
+html.sewer-handset-ui body.sewer-ribbon-ui #modernToolbarArea #sewerRibbonHeader{
+ grid-template-columns:132px max-content minmax(0,1fr)!important;gap:5px!important;
+}
+html body.sewer-ribbon-ui #modernToolbarArea #sewerRibbonHeader>#sewerInterfacePanel{
+ width:132px!important;min-width:132px!important;max-width:132px!important;
+ height:54px!important;padding:3px 4px!important;gap:1px!important;
+}
+html body.sewer-ribbon-ui #modernToolbarArea #sewerRibbonHeader>#sewerInterfacePanel .modernSliderBox{
+ grid-template-columns:38px minmax(0,1fr) 28px!important;
+ width:122px!important;min-width:122px!important;max-width:122px!important;
+ height:22px!important;min-height:22px!important;max-height:22px!important;gap:2px!important;
+}
+html body.sewer-ribbon-ui #modernToolbarArea #sewerRibbonHeader>#sewerInterfacePanel .modernSliderBox>span:first-child{
+ font:8px Tahoma,Arial!important;letter-spacing:-.4px!important;
+}
+html body.sewer-ribbon-ui #modernToolbarArea #sewerRibbonHeader>#sewerInterfacePanel .sliderValue{
+ width:28px!important;font:8px Arial!important;
+}
+html body.sewer-ribbon-ui #sewerHeaderBrand{
+ font:bold 12px Arial,Tahoma,sans-serif!important;max-width:none!important;
+ width:max-content!important;min-width:max-content!important;overflow:visible!important;
+ white-space:nowrap!important;letter-spacing:-.3px!important;
+}
+html body.sewer-ribbon-ui #sewerHeaderBrand b{font:inherit!important}
+@media(max-width:600px){
+ html body.sewer-ribbon-ui #sewerHeaderBrand{font-size:11px!important}
+}
