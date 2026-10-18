@@ -6419,27 +6419,7 @@ document.getElementById('doPrintBtn').onclick=async()=>{
   page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...
 
 
-<style id="electrical-v18-css">
-#electricalMovingBrand{display:inline-flex!important;align-items:center!important;gap:3px!important;flex:0 0 auto!important;white-space:nowrap!important;font:bold 12px Tahoma,Arial!important;color:#fff!important;padding:4px 6px!important;direction:rtl!important}
-#electricalMovingBrand b{color:#d8a148!important}
-#sewerHeaderBrand{display:none!important}
-html body.sewer-ribbon-ui #modernToolbarArea #sewerRibbonHeader{grid-template-columns:132px minmax(0,1fr)!important}
-html body.sewer-ribbon-ui #modernToolbarArea #sewerRibbonHeader>#sewerPrimaryScroll{grid-column:2!important;grid-row:1!important;min-width:0!important}
-</style><script id="electrical-v18-fix">
-(function(){
-function fix(){
-try{
-const scroll=document.getElementById('sewerPrimaryScroll');
-if(scroll&&!document.getElementById('electricalMovingBrand')){
-const title=document.createElement('span');title.id='electricalMovingBrand';title.innerHTML='<b>كهرباء</b><span>Electric</span>';scroll.insertBefore(title,scroll.firstChild)}
-const old=document.getElementById('sewerHeaderBrand');if(old)old.style.display='none';
-const wb=document.querySelector('.workspaceBrand .wbName');if(wb&&wb.textContent.includes('Sewer'))wb.innerHTML='<span class="furni">كهرباء</span><span class="plan">Electric</span>';
-}catch(e){console.warn('Electrical brand',e)}
-}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fix);else fix();
-setInterval(fix,900);
-})();
-</script></body></html>`);
+</body></html>`);
   page.document.close();
   try{
     const sheet=await buildBrandedSheet({paper,orient,title:projectMeta.name,mapTitle:projectMeta.mapTitle,client:projectMeta.client,location:projectMeta.location});
@@ -12297,5 +12277,26 @@ html.sewer-phone-ui body.sewer-ribbon-ui #furnitureIconToolbar{z-index:450!impor
 <script src="sewer-rail-layout.js?v=121"></script>
 <script src="sewer-piece-popovers.js?v=125"></script>
 <script src="sewer-color-guide.js?v=127"></script>
+<style id="electrical-v18-css">
+#electricalMovingBrand{display:inline-flex!important;align-items:center!important;gap:3px!important;flex:0 0 auto!important;white-space:nowrap!important;font:bold 12px Tahoma,Arial!important;color:#fff!important;padding:4px 6px!important;direction:rtl!important}
+#electricalMovingBrand b{color:#d8a148!important}
+#sewerHeaderBrand{display:none!important}
+html body.sewer-ribbon-ui #modernToolbarArea #sewerRibbonHeader{grid-template-columns:132px minmax(0,1fr)!important}
+html body.sewer-ribbon-ui #modernToolbarArea #sewerRibbonHeader>#sewerPrimaryScroll{grid-column:2!important;grid-row:1!important;min-width:0!important}
+</style><script id="electrical-v18-fix">
+(function(){
+function fix(){
+try{
+const scroll=document.getElementById('sewerPrimaryScroll');
+if(scroll&&!document.getElementById('electricalMovingBrand')){
+const title=document.createElement('span');title.id='electricalMovingBrand';title.innerHTML='<b>كهرباء</b><span>Electric</span>';scroll.insertBefore(title,scroll.firstChild)}
+const old=document.getElementById('sewerHeaderBrand');if(old)old.style.display='none';
+const wb=document.querySelector('.workspaceBrand .wbName');if(wb&&wb.textContent.includes('Sewer'))wb.innerHTML='<span class="furni">كهرباء</span><span class="plan">Electric</span>';
+}catch(e){console.warn('Electrical brand',e)}
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fix);else fix();
+setInterval(fix,900);
+})();
+</script>
 </body>
 </html>
