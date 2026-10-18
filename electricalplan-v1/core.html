@@ -2558,10 +2558,10 @@ html.sewer-mobile-device body #sewerOrientationScreen p{color:#493b2b!important;
         <path d="M39 119l-5 15m92-15 5 15" stroke="#c78b2b" stroke-width="9" stroke-linecap="round" />
         <path d="M31 136h98" stroke="#c78b2b" stroke-width="7" stroke-linecap="round" />
       </svg>
-    </div><div class="fpBrand"><span>Sewer</span><b>Plan</b></div><div class="fpSub">SMART DRAINAGE PLANNING</div><p>ادر الجهاز للوضع الافقي لطفا</p></div></div>
+    </div><div class="fpBrand"><span>كهرباء</span><b>Electric</b></div><div class="fpSub">SMART ELECTRICAL PLANNING</div><p>ادر الجهاز للوضع الافقي لطفا</p></div></div>
 
 
-<div id="fpSplash" role="status" aria-label="SewerPlan loading">
+<div id="fpSplash" role="status" aria-label="ElectricalPlan loading">
   <div class="fpSplashBg"></div>
   <div class="fpDecor fpDecorLeft"></div>
   <div class="fpDecor fpDecorRight"></div>
@@ -2579,8 +2579,8 @@ html.sewer-mobile-device body #sewerOrientationScreen p{color:#493b2b!important;
       </svg>
     </div>
 
-    <div class="fpBrand"><span>Sewer</span><b>Plan</b></div>
-    <div class="fpSub">SMART DRAINAGE PLANNING</div>
+    <div class="fpBrand"><span>كهرباء</span><b>Electric</b></div>
+    <div class="fpSub">SMART ELECTRICAL PLANNING</div>
     <div class="fpArabic">تخطيط مسارات المجاري بدقة</div>
 
     <div class="fpFeatures" aria-hidden="true">
@@ -2800,9 +2800,9 @@ html.sewer-mobile-device body #sewerOrientationScreen p{color:#493b2b!important;
           <path d="M39 119l-5 15m92-15 5 15" stroke="#d39a39" stroke-width="9" stroke-linecap="round"/>
           <path d="M31 136h98" stroke="#d39a39" stroke-width="7" stroke-linecap="round"/>
         </svg>
-        <div class="wbName"><span class="furni">Sewer</span><span class="plan">Plan</span></div>
-        <div class="wbSub">SMART DRAINAGE ROUTING</div>
-        <div class="wbAr">ارسم التمديدات والعكوس تلقائيًا</div>
+        <div class="wbName"><span class="furni">كهرباء</span><span class="plan">Electric</span></div>
+        <div class="wbSub">SMART ELECTRICAL PLANNING</div>
+        <div class="wbAr">خطط التمديدات الكهربائية والإنارة بدقة</div>
       </div>
       <div class="canvasWrap">
         <div class="stage" id="stage"><canvas id="canvas" width="1100" height="750"></canvas></div>
@@ -6419,7 +6419,9 @@ document.getElementById('doPrintBtn').onclick=async()=>{
   page.document.write(`<!doctype html><html dir="rtl"><head><meta charset="utf-8"><title>جاري تجهيز الطباعة</title><style>body{font-family:Tahoma,Arial;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}</style></head><body>جاري تجهيز صفحة الطباعة...
 
 
-</body></html>`);
+<style id="electrical-direct-fix">.wbName{font-size:clamp(28px,5vw,68px)!important;letter-spacing:0!important}.wbName .furni{color:#d39a39!important}.wbName .plan{color:#fff!important}.fpBrand{font-size:clamp(35px,5vw,70px)!important;letter-spacing:0!important}</style><script>
+(function(){const fix=()=>{let brand=document.getElementById('sewerHeaderBrand');if(brand){if(brand.dataset.electricalFixed!=='yes'){brand.innerHTML='<b>كهرباء</b> <span style="color:#fff">Electric</span>';brand.dataset.electricalFixed='yes'}brand.style.setProperty('font-size','12px','important');brand.style.setProperty('white-space','nowrap','important');brand.style.setProperty('min-width','max-content','important')}document.querySelectorAll('.wbName').forEach(el=>{if(el.textContent.includes('Sewer'))el.innerHTML='<span class="furni">كهرباء</span><span class="plan">Electric</span>'})};document.addEventListener('DOMContentLoaded',()=>{fix();new MutationObserver(fix).observe(document.body,{childList:true,subtree:true});setInterval(fix,2000)})})();
+</script></body></html>`);
   page.document.close();
   try{
     const sheet=await buildBrandedSheet({paper,orient,title:projectMeta.name,mapTitle:projectMeta.mapTitle,client:projectMeta.client,location:projectMeta.location});
