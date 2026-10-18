@@ -1,0 +1,3 @@
+package main
+import("os";"os/exec";"path/filepath";"syscall";"unsafe")
+func main(){exe,e:=os.Executable();if e!=nil{return};root:=filepath.Dir(exe);cmd:=exec.Command(filepath.Join(root,"runtime","electron.exe"),filepath.Join(root,"resources","app"));cmd.Dir=root;cmd.SysProcAttr=&syscall.SysProcAttr{HideWindow:true};if e=cmd.Run();e!=nil{p,_:=syscall.UTF16PtrFromString("Smart Render could not start. Please reinstall the full application.\n"+e.Error());t,_:=syscall.UTF16PtrFromString("Smart Render");syscall.NewLazyDLL("user32.dll").NewProc("MessageBoxW").Call(0,uintptr(unsafe.Pointer(p)),uintptr(unsafe.Pointer(t)),16)}}

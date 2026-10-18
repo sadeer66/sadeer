@@ -1,0 +1,43 @@
+name: Smart Render V11.81 desktop download
+on:
+  push:
+    paths:
+      - 'desktop-v1181/**'
+      - '.github/workflows/smart-render-v1181-release.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: smart-render-v1181-release
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install packaging tools
+        run: sudo apt-get update && sudo apt-get install -y nsis binutils-mingw-w64-x86-64 p7zip-full
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.12'
+      - name: Prepare verified runtime and approved application
+        run: python3 desktop-v1181/build.py
+      - name: Compile icon-bearing launcher
+        run: |
+          cd desktop-v1181/source
+          x86_64-w64-mingw32-windres --preprocessor=cat -i app.rc -O coff -o resource.syso
+          cd ../..
+          GOOS=windows GOARCH=amd64 CGO_ENABLED=0 GO111MODULE=off go build -trimpath -ldflags='-H windowsgui -s -w' -o desktop-v1181/app/SmartRender.exe ./desktop-v1181/source
+          node --check desktop-v1181/app/resources/app/main.cjs
+      - name: Create and verify installer and complete archive
+        run: |
+          makensis -V2 desktop-v1181/setup.nsi
+          7z t output/SmartRender-V11.81-Setup.exe
+          7z x -y output/SmartRender-V11.81-Setup.exe -overify
+          python3 desktop-v1181/package.py
+      - name: Publish direct downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create smartrender-v11.81 output/SmartRender-V11.81-Setup.exe output/SmartRender-V11.81-Complete.zip output/SHA256SUMS.txt --target "$GITHUB_SHA" --title 'Smart Render V11.81 — Windows Desktop' --notes 'Independent desktop runtime. Standard Next/Finish installer, program icon, maximized window with native window controls. No Microsoft Edge account-sync screen. Full archive includes the application, runtime, and source files. Archive and installer integrity verified automatically; on-device Windows testing is still required.' --latest=false

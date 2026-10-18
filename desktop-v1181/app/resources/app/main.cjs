@@ -1,0 +1,18 @@
+const {app,BrowserWindow,Menu,dialog,shell}=require('electron');
+const http=require('http'),fs=require('fs'),path=require('path');
+const desktopData=path.join(process.env.LOCALAPPDATA,'SmartRender','DesktopData');fs.mkdirSync(desktopData,{recursive:true});app.setName('SmartRender');app.setPath('userData',desktopData);app.setAppUserModelId('com.sadeer.smartrender');app.commandLine.appendSwitch('disable-features','Translate,TranslateUI');
+let win,server;const root=path.join(__dirname,'web');
+const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.webmanifest':'application/manifest+json','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.woff':'font/woff','.woff2':'font/woff2','.ico':'image/x-icon'};
+if(!app.requestSingleInstanceLock())app.quit();else{
+app.on('second-instance',()=>{if(win){if(win.isMinimized())win.restore();win.show();win.focus();}});
+const profile=app.getPath('userData'), marker=path.join(profile,'storage-migration-v1181');
+if(!fs.existsSync(marker)){
+  const old=path.join(process.env.LOCALAPPDATA,'SmartRender','BrowserProfile','Default');
+  for(const name of ['Local Storage','IndexedDB']){
+    const src=path.join(old,name),dst=path.join(profile,name);
+    if(fs.existsSync(src)&&!fs.existsSync(dst))fs.cpSync(src,dst,{recursive:true,filter:f=>path.basename(f)!=='LOCK'});
+  }
+  fs.mkdirSync(profile,{recursive:true});fs.writeFileSync(marker,'Application storage copied; original retained.');
+}
+app.whenReady().then(async()=>{Menu.setApplicationMenu(null);server=http.createServer((req,res)=>{let rel;try{rel=decodeURIComponent(new URL(req.url,'http://localhost').pathname);}catch{res.writeHead(400);return res.end();}const f=path.resolve(root,'.'+(rel==='/'?'/index.html':rel));if(!f.startsWith(root+path.sep)){res.writeHead(403);return res.end();}fs.stat(f,(err,s)=>{if(err||!s.isFile()){res.writeHead(404);return res.end();}res.writeHead(200,{'Content-Type':mime[path.extname(f)]||'application/octet-stream','Cache-Control':'no-store'});const stream=fs.createReadStream(f);stream.on('error',()=>res.destroy());stream.pipe(res);});});await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(19467,'127.0.0.1',resolve);});
+win=new BrowserWindow({show:false,frame:true,titleBarStyle:'default',width:1440,height:940,minWidth:800,minHeight:600,title:'Smart Render Desktop',icon:path.join(root,'favicon.ico'),backgroundColor:'#0f172a',autoHideMenuBar:true,webPreferences:{nodeIntegration:false,contextIsolation:true,sandbox:true,spellcheck:false}});win.setMenu(null);win.on('page-title-updated',event=>event.preventDefault());win.once('ready-to-show',()=>{win.maximize();win.show();win.focus();});win.webContents.setWindowOpenHandler(({url})=>{if(/^https?:\/\//.test(url))shell.openExternal(url);return {action:'deny'};});win.webContents.on('will-navigate',(event,url)=>{if(!url.startsWith('http://127.0.0.1:19467/'))event.preventDefault();});win.webContents.session.on('will-download',(_event,item)=>item.setSaveDialogOptions({title:'Save / حفظ',defaultPath:path.join(app.getPath('downloads'),path.basename(item.getFilename()))}));await win.loadURL('http://127.0.0.1:19467/');}).catch(e=>{dialog.showErrorBox('SmartRender',String(e));app.quit();});app.on('window-all-closed',()=>{server?.close();app.quit();});}
