@@ -11,7 +11,8 @@ const server=http.createServer((req,res)=>{const f=path.join(root,decodeURICompo
  assert(sizes.head.h<90,'Compact toolbar height');assert(sizes.scroll<=sizes.body.w+2,'Panel contents fit its width');assert(sizes.main.w>width*.65,'Map should retain most of the width');assert(sizes.head.h-sizes.ribbon.h<12,'No tall empty toolbar padding');assert(Math.abs(sizes.main.y-sizes.head.b)<3,'Map starts directly below toolbar');assert(sizes.controls.x>=0&&sizes.controls.x+sizes.controls.w<=width+1,'Fixed controls remain inside viewport');
  }
 
- const summary=page.locator('#sewerPane_library .sewerLibrarySection>summary').first();
+ console.log('UI',name,await page.evaluate(()=>({active:window.ElectricalRightPanel.active,summaries:[...document.querySelectorAll('#sewerPane_library summary')].map(e=>({text:e.textContent,display:getComputedStyle(e).display,visibility:getComputedStyle(e).visibility,rect:e.getBoundingClientRect().toJSON()}))})));
+ const summary=page.locator('#sewerPane_library .sewerLibrarySection>summary:visible').first();
  const wasOpen=await summary.evaluate(e=>e.parentElement.open);await summary.tap({timeout:10000});
  assert.equal(await summary.evaluate(e=>e.parentElement.open),!wasOpen,'Touch opens library section');
  await summary.tap();
