@@ -1,7 +1,7 @@
-const {chromium}=require('playwright-core'),http=require('http'),fs=require('fs'),path=require('path'),assert=require('assert');
+const {chromium,webkit}=require('playwright-core'),http=require('http'),fs=require('fs'),path=require('path'),assert=require('assert');
 const root=process.cwd(),mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.webmanifest':'application/manifest+json','.png':'image/png','.webp':'image/webp'};
 const server=http.createServer((req,res)=>{const f=path.join(root,decodeURIComponent(req.url.split('?')[0]));const p=fs.existsSync(f)&&fs.statSync(f).isDirectory()?path.join(f,'index.html'):f;if(!fs.existsSync(p)){res.writeHead(404);res.end();return;}res.setHeader('Content-Type',mime[path.extname(p)]||'application/octet-stream');fs.createReadStream(p).pipe(res);});
-(async()=>{await new Promise(r=>server.listen(8765,'127.0.0.1',r));const browser=await chromium.launch({executablePath:process.env.CHROME_BIN||'/usr/bin/google-chrome',args:['--no-sandbox']});fs.mkdirSync('mobile-qa',{recursive:true});
+(async()=>{await new Promise(r=>server.listen(8765,'127.0.0.1',r));const isWebKit=process.env.BROWSER==='webkit';const browser=await (isWebKit?webkit.launch():chromium.launch({executablePath:process.env.CHROME_BIN||'/usr/bin/google-chrome',args:['--no-sandbox']}));fs.mkdirSync('mobile-qa',{recursive:true});
  try{for(const [name,width,height,phone] of [['iphone-portrait',393,852,true],['iphone-landscape',852,393,true],['ipad-landscape',1024,768,false],['ipad-portrait',768,1024,false]]){
  const context=await browser.newContext({viewport:{width,height},isMobile:true,hasTouch:true,userAgent:phone?'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1':'Mozilla/5.0 (iPad; CPU OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1'});const page=await context.newPage();await page.goto('http://127.0.0.1:8765/electricalplan-v53/',{waitUntil:'load'});await page.waitForSelector('body.elUnifiedUI');await page.waitForTimeout(5500);
  for(const pane of ['file','library']){await page.locator('#sewerTab_'+pane).tap({timeout:10000});await page.waitForTimeout(200);
@@ -19,10 +19,12 @@ const server=http.createServer((req,res)=>{const f=path.join(root,decodeURICompo
  const toggle=page.locator('#v54Furniture');const before=await toggle.getAttribute('class');await toggle.tap({timeout:10000});assert.notEqual(await toggle.getAttribute('class'),before,'Touch changes furniture visibility');await toggle.tap();
  const category=page.locator('#library .sewerLibrarySection>summary').first();if(!await category.evaluate(e=>e.parentElement.open))await category.tap();
  await page.evaluate(()=>document.querySelector('#elRightBody').scrollTop=0);
+ if(!isWebKit){
  const rect=await page.locator('#elRightBody').boundingBox();const cdp=await context.newCDPSession(page),x=rect.x+rect.width/2,y=rect.y+Math.min(rect.height-30,220);
  await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
  for(let step=1;step<=10;step++){await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x,y:y-step*12}]});await page.waitForTimeout(25);}
  await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await page.waitForTimeout(300);
+ }else{const r=await page.locator('#elRightBody').boundingBox();await page.mouse.move(r.x+r.width/2,r.y+100);await page.mouse.wheel(0,160);await page.waitForTimeout(500);}
  const scrollTop=await page.locator('#elRightBody').evaluate(e=>e.scrollTop);assert(scrollTop>20,'Finger swipe scrolls right panel');
  await page.locator('.elDockHead button').tap();assert.equal(await page.evaluate(()=>window.ElectricalRightPanel.active),'','Touch closes panel');
  assert.equal(await page.locator('#sewerOrientationScreen').evaluate(e=>getComputedStyle(e).display),'none','No legacy orientation splash');

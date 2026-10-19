@@ -10,6 +10,10 @@ permissions:
   contents: read
 jobs:
   mobile-layout:
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -18,12 +22,16 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --prefix /tmp/electrical-qa playwright-core
+      - name: Install WebKit
+        if: matrix.browser == 'webkit'
+        run: /tmp/electrical-qa/node_modules/.bin/playwright-core install --with-deps webkit
       - name: Check phone and tablet layouts
         env:
+          BROWSER: ${{ matrix.browser }}
           NODE_PATH: /tmp/electrical-qa/node_modules
         run: node tests/electrical-mobile-layout.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: electrical-mobile-layout
+          name: electrical-mobile-layout-${{ matrix.browser }}
           path: mobile-qa/
