@@ -1,0 +1,438 @@
+/* SewerPlan V2 — dedicated drainage routing workspace */
+:root{
+  --sewer-navy:#0b2c4d;
+  --sewer-blue:#1677c8;
+  --sewer-sky:#59b8ff;
+  --sewer-mist:#e8f5ff;
+  --sewer-line:#c9e4f8;
+  --sewer-ink:#102a43;
+  --sewer-muted:#59738c;
+  --sewer-success:#15a66b;
+}
+
+.sewerPlannerPanel{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(89,184,255,.62)!important;
+  background:
+    radial-gradient(circle at 100% 0,rgba(89,184,255,.28),transparent 40%),
+    linear-gradient(145deg,#f7fcff 0%,#e8f5ff 100%)!important;
+  box-shadow:0 10px 24px rgba(11,44,77,.12);
+}
+.sewerPlannerPanel::after{
+  content:"";
+  position:absolute;
+  inset:auto -50px -72px auto;
+  width:160px;
+  height:160px;
+  border:22px solid rgba(22,119,200,.10);
+  border-radius:50%;
+  pointer-events:none;
+}
+.sewerPanelHeading{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:5px;
+}
+.sewerPanelHeading h3{
+  margin:0!important;
+  color:var(--sewer-navy)!important;
+  font-size:17px!important;
+}
+.sewerEyebrow{
+  display:block;
+  margin-bottom:2px;
+  color:#2476ae;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.14em;
+}
+.sewerLiveDot{
+  flex:0 0 auto;
+  width:11px;
+  height:11px;
+  margin:6px 2px 0 0;
+  border-radius:50%;
+  background:#9fb9cc;
+  box-shadow:0 0 0 4px rgba(159,185,204,.23);
+  transition:.2s ease;
+}
+.sewerPlannerPanel.isDrawing .sewerLiveDot{
+  background:#f59e0b;
+  box-shadow:0 0 0 4px rgba(245,158,11,.20),0 0 18px rgba(245,158,11,.6);
+}
+.sewerPlannerPanel.hasRoutes .sewerLiveDot{
+  background:var(--sewer-success);
+  box-shadow:0 0 0 4px rgba(21,166,107,.18);
+}
+.sewerIntro{
+  position:relative;
+  z-index:1;
+  margin:0 0 10px!important;
+  color:#355a78;
+  font-size:12px;
+  line-height:1.55;
+}
+.sewerStepRail{
+  display:flex;
+  align-items:center;
+  gap:0;
+  margin:4px 7px 1px;
+  direction:ltr;
+}
+.sewerStepRail span{
+  display:grid;
+  place-items:center;
+  width:20px;
+  height:20px;
+  border:2px solid #3992d3;
+  border-radius:50%;
+  background:#fff;
+  color:#17649e;
+  font-size:10px;
+  font-weight:900;
+}
+.sewerStepRail i{
+  flex:1;
+  height:2px;
+  background:linear-gradient(90deg,#3992d3,#8bcaf5);
+}
+.sewerStepLabels{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  margin:0 1px 10px;
+  color:#527490;
+  font-size:10px;
+  font-weight:800;
+  text-align:center;
+}
+.sewerFields{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.sewerFields .field{
+  color:#355a78;
+  font-size:11px;
+  font-weight:800;
+}
+.sewerFields select{
+  width:100%;
+  min-height:33px;
+  margin-top:4px;
+  border:1px solid #add8f5;
+  border-radius:8px;
+  background:#fff;
+  color:var(--sewer-ink);
+  font:700 12px Tahoma,Arial,sans-serif;
+}
+.sewerToggle{
+  position:relative;
+  z-index:1;
+  display:flex!important;
+  align-items:center;
+  gap:7px;
+  margin-top:8px;
+  color:#274965;
+  font-size:11px!important;
+  font-weight:800;
+}
+.sewerToggle input{accent-color:#1677c8}
+.sewerActions,.sewerSecondaryActions{
+  position:relative;
+  z-index:1;
+  display:grid;
+  gap:7px;
+  margin-top:11px;
+}
+.sewerActions{grid-template-columns:1.25fr 1fr}
+.sewerSecondaryActions{grid-template-columns:1fr 1fr;margin-top:7px}
+.sewerPlannerPanel button{
+  min-height:36px;
+  padding:6px 8px;
+  border-radius:9px;
+  font-size:11px;
+  font-weight:900;
+}
+.sewerPrimary{
+  color:#fff!important;
+  border-color:#1264a7!important;
+  background:linear-gradient(135deg,#1478c7,#0b4f86)!important;
+  box-shadow:0 6px 14px rgba(20,120,199,.25);
+}
+.sewerFinish{
+  color:#fff!important;
+  border-color:#0a8257!important;
+  background:linear-gradient(135deg,#14a56b,#087d53)!important;
+}
+.sewerPlannerPanel button:disabled{
+  cursor:not-allowed;
+  color:#7890a4!important;
+  border-color:#d5e5f0!important;
+  background:#edf4f8!important;
+  box-shadow:none!important;
+}
+.sewerVisibility{
+  margin-top:10px;
+  padding-top:8px;
+  border-top:1px dashed #b8d9ee;
+}
+.sewerRouteInfo{
+  position:relative;
+  z-index:1;
+  min-height:39px;
+  margin-top:9px;
+  padding:8px 9px;
+  border:1px solid #bfdef1;
+  border-radius:9px;
+  background:rgba(255,255,255,.78);
+  color:#355a78;
+  font-size:11px;
+  font-weight:700;
+  line-height:1.55;
+}
+.sewerRouteInfo strong{color:#0b548e}
+
+/* Four direct controls in the upper toolbar: show/hide the pipe centre line
+   and independently show/hide the elbow-angle labels. */
+#modernTopToolbar .sewerTopTools{background:rgba(8,71,116,.06)!important}
+#modernTopToolbar .sewerTopButton svg{stroke:#0b5f9d!important;stroke-width:1.8!important;fill:none!important}
+#modernTopToolbar .sewerTopButton.active{background:linear-gradient(145deg,#0d77bd,#0a4e81)!important;color:#fff!important;border-color:#0a4e81!important}
+#modernTopToolbar .sewerTopButton.active svg{stroke:#fff!important}
+
+#mainScroll.sewer-drawing,
+#mainScroll.sewer-drawing canvas{
+  cursor:crosshair!important;
+  touch-action:none!important;
+}
+#mainScroll.sewer-drawing .canvasWrap{
+  box-shadow:inset 0 0 0 2px rgba(22,119,200,.28),0 8px 24px rgba(2,6,23,.18)!important;
+}
+#mainScroll.sewer-drawing .stage{
+  outline:3px solid rgba(89,184,255,.58);
+  outline-offset:4px;
+}
+
+/* The secondary programme is deliberately limited to visual kitchen/bathroom aids. */
+#sewerPlannerPanel ~ .section .libraryTools,
+#sewerPlannerPanel ~ .section .editLibBtn{
+  display:none!important;
+}
+
+@media(max-width:1180px){
+  .sewerPlannerPanel{margin-bottom:8px!important}
+  .sewerPlannerPanel button{min-height:42px;font-size:12px}
+  .sewerFields select{min-height:38px}
+}
+@media(max-width:640px){
+  .sewerPlannerPanel{padding:11px!important;border-radius:12px!important}
+  .sewerFields{gap:6px}
+  .sewerFields select{font-size:11px}
+  .sewerActions{grid-template-columns:1fr}
+  .sewerSecondaryActions{gap:6px}
+}
+
+/* V4 contextual editing toolbar */
+#sewerActionBar{display:flex;align-items:center;gap:8px;overflow-x:auto;max-width:100%;padding:6px 3px;direction:rtl;flex-shrink:0;background:#e4eef7;border-radius:10px;box-sizing:border-box}
+#sewerActionBar[hidden],#sewerPieceTools[hidden]{display:none!important}
+#sewerActionBar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:62px;min-height:58px;flex-shrink:0;border:1px solid #abc0d0;border-radius:9px;color:#16385b;font-weight:900;font-size:12px;padding:4px 9px;background:#fff;touch-action:manipulation}
+#sewerActionBar button b{font-size:26px;line-height:1.1}
+#sewerActionBar .sewerOk{background:#16a34a;color:white;border-color:#15803d}
+#sewerActionBar .sewerCancel{background:#dc2626;color:white;border-color:#b91c1c}
+#sewerActionBar .sewerEdit{background:#facc15;color:#292400;border-color:#eab308}
+#sewerActionBar button.active{outline:3px solid #0b639e;outline-offset:-3px}
+#sewerPieceTools{display:flex;align-items:center;gap:7px;flex-shrink:0}
+#sewerPieceTools label{display:flex;flex-direction:column;align-items:center;font-weight:900;color:#16385b;font-size:12px;gap:3px}
+#sewerPieceTools select{min-width:70px;height:36px;font-size:16px;font-weight:900;background:white;color:#16385b;border:1px solid #abc0d0;border-radius:6px}
+.sewerShadowControls{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.sewerShadowControls label{display:flex;flex-direction:column;align-items:center;gap:2px;white-space:nowrap;font-size:12px;font-weight:900;color:#0b4f86}
+.sewerShadowControls input{width:95px;accent-color:#0b77bd}
+.sewerShadowControls button.active{background:#0b77bd!important;color:white!important}
+#mainScroll.sewer-drawing canvas{touch-action:none!important}
+
+/* V5 fixed compact left editing rail */
+#sewerActionBar{position:fixed;left:7px;right:auto;top:120px;z-index:350;display:flex!important;flex-direction:column;gap:5px;width:52px;max-width:52px;max-height:calc(100dvh - 160px);overflow-y:auto;overflow-x:hidden;padding:4px;background:rgba(229,239,248,.95);border:1px solid #adc7dd;border-radius:10px;box-shadow:0 3px 10px #0002}
+#sewerActionBar[hidden]{display:flex!important}
+#sewerActionBar button{min-width:42px;width:42px;min-height:44px;height:44px;padding:3px 1px;gap:0;font-size:10px;border-radius:7px}
+#sewerActionBar button b{font-size:23px;line-height:1.1}
+#sewerActionBar button:disabled{opacity:.58}
+#sewerPieceTools{flex-direction:column;gap:5px;border-top:1px solid #aac0d4;padding-top:5px}
+#sewerPieceTools label{font-size:10px;gap:2px}
+#sewerPieceTools select{min-width:42px;width:42px;height:31px;font-size:12px;padding:0;border-radius:5px}
+
+/* V6 navy rail, always visible controls */
+#sewerActionBar{width:47px;max-width:47px;padding:3px;gap:4px;background:#101d30!important;border-color:#29445e;max-height:calc(100dvh - 120px);scrollbar-width:none}
+#sewerActionBar::-webkit-scrollbar{display:none}
+#sewerActionBar button{width:39px;min-width:39px;height:39px;min-height:39px;background:#18324c!important;color:#f1f6fb!important;border-color:#355774;font-size:9px}
+#sewerActionBar button b{font-size:21px}
+#sewerActionBar .sewerEdit{background:#facc15!important;color:#302800!important;border-color:#dba90c}
+#sewerActionBar .sewerOk:not(:disabled){background:#16a34a!important;color:white!important}
+#sewerActionBar .sewerCancel:not(:disabled){background:#dc2626!important;color:white!important}
+#sewerActionBar button:disabled{opacity:1;background:#132336!important;color:#526478!important;border-color:#263b50;box-shadow:none;outline:none}
+#sewerActionBar button.active:not(.sewerEdit){background:#235e89!important;outline:2px solid #71b9ef}
+#sewerPieceTools{display:flex!important;gap:4px;border-color:#355774;padding-top:4px}
+#sewerActionBar .sewerAngle{font-size:15px;font-weight:900;height:30px;min-height:30px}
+@media(max-height:600px){
+ #sewerActionBar{width:86px;max-width:86px;display:grid!important;grid-template-columns:1fr 1fr;gap:3px}
+ #sewerActionEdit{grid-column:1 / -1;justify-self:center}
+ #sewerPieceTools{grid-column:1 / -1;display:grid!important;grid-template-columns:1fr 1fr;gap:3px}
+ #sewerActionBar button{height:32px;min-height:32px}
+ #sewerActionBar button b{font-size:18px}
+ #sewerActionBar .sewerAngle{height:28px;min-height:28px}
+}
+
+/* Equal slider tracks, with visible icons on every screen size. */
+#modernSliderRow{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;gap:6px!important;}
+#modernSliderRow .modernSliderBox{box-sizing:border-box!important;flex:0 0 224px!important;width:224px!important;min-width:224px!important;display:grid!important;grid-template-columns:20px 20px 90px 20px 38px!important;gap:3px!important;padding:4px 6px!important;}
+#modernSliderRow .sliderGlyph{display:flex!important;grid-column:1!important;grid-row:1!important;width:20px!important;min-width:20px!important;}
+#modernSliderRow input[type=range]{grid-column:3!important;grid-row:1!important;width:90px!important;min-width:90px!important;max-width:90px!important;margin:0!important;}
+#modernSliderRow .sliderValue{grid-column:5!important;grid-row:1!important;min-width:0!important;font-size:10px!important;}
+#modernSliderRow .sliderCaption{display:none!important;}
+#modernSliderRow #zoomOutBtn{grid-column:2!important;grid-row:1!important;}
+#modernSliderRow #zoomInBtn{grid-column:4!important;grid-row:1!important;}
+#modernSliderRow .zoomStep{width:20px!important;min-width:20px!important;}
+
+.colorLayerTools svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.colorLayerTools{align-items:center;}
+.colorLayerTools button:disabled{opacity:.35;cursor:default;}
+.colorLayerTools button.active{background:#155e75!important;border-color:#38bdf8!important;}
+.colorLayerTools select{max-width:140px;background:#10243a;color:#e2e8f0;border:1px solid #475569;border-radius:6px;padding:6px;font-size:12px;}
+.layerColorPicker{width:35px;height:35px;padding:2px;background:#10243a;border:1px solid #64748b;border-radius:6px;cursor:pointer;}
+#colorConfirm{color:#4ade80;}#colorCancel{color:#f87171;}
+
+html body #modernTopToolbar .topToolGroup{border:1px solid var(--group-border,#64748b)!important;border-radius:10px!important;background:var(--group-bg,#172435)!important;padding:5px!important;gap:4px!important;margin:2px!important;}
+/* Alternate only the existing interface background shades. */
+#modernTopToolbar .topToolGroup{--group-border:#64748b;}
+#modernTopToolbar .topToolGroup:nth-child(odd){--group-bg:var(--panel2,#1f2937);}
+#modernTopToolbar .topToolGroup:nth-child(even){--group-bg:#11161c;}
+#modernSliderRow input[type=range]{touch-action:none!important;}
+
+/* Each vertical surface owns its right-hand scrollbar; Arabic content stays RTL. */
+html body .app > aside{
+ direction:ltr!important;overflow-y:auto!important;overflow-x:hidden!important;
+ min-height:0;scrollbar-gutter:stable!important;
+}
+html body .app > aside > *{direction:rtl;}
+html body #mainScroll.mapViewport{
+ direction:ltr!important;overflow:auto!important;scrollbar-gutter:stable!important;
+ min-height:0;overscroll-behavior:contain;
+}
+html body #furnitureIconToolbar,html body #sewerActionBar{
+ direction:ltr!important;scrollbar-width:auto!important;scrollbar-gutter:stable;
+ overscroll-behavior:contain;
+}
+html body #sewerActionBar{width:66px;max-width:66px;}
+html body #sewerActionBar > *{direction:rtl;}
+html body .app > aside,html body #furnitureIconToolbar,
+html body #sewerActionBar,html body #mainScroll{
+ scrollbar-color:#64748b #111827!important;scrollbar-width:auto!important;
+}
+html body .app > aside::-webkit-scrollbar,
+html body #furnitureIconToolbar::-webkit-scrollbar,
+html body #sewerActionBar::-webkit-scrollbar,
+html body #mainScroll::-webkit-scrollbar{display:block!important;width:12px!important;height:12px!important;}
+html body .app > aside::-webkit-scrollbar-track,
+html body #furnitureIconToolbar::-webkit-scrollbar-track,
+html body #sewerActionBar::-webkit-scrollbar-track,
+html body #mainScroll::-webkit-scrollbar-track{background:#111827;}
+html body .app > aside::-webkit-scrollbar-thumb,
+html body #furnitureIconToolbar::-webkit-scrollbar-thumb,
+html body #sewerActionBar::-webkit-scrollbar-thumb,
+html body #mainScroll::-webkit-scrollbar-thumb{background:#64748b;border:3px solid #111827;border-radius:9px;}
+@media (hover:hover) and (pointer:fine){
+ html body #furnitureIconToolbar{width:calc(var(--tool-side-width,97px) + 14px)!important;overflow-y:auto!important;overflow-x:hidden!important;}
+}
+
+/* V18 grouped catalogue: collapsed until explicitly opened. */
+html body .sewerLibraryBrowser{display:block!important;}
+html body .sewerLibraryBrowser > #categoryList{display:none!important;}
+html body #library.sewerGroupedLibrary{display:block!important;}
+.sewerLibrarySection{margin:8px 0;border:1px solid #475569;border-radius:9px;background:var(--panel,#111827);overflow:hidden;}
+.sewerLibrarySection > summary{padding:12px;cursor:pointer;font-weight:700;color:var(--text,#f8fafc);background:var(--panel2,#1f2937);}
+.sewerLibrarySection > summary:focus-visible{outline:2px solid #94a3b8;outline-offset:-3px;}
+.sewerLibraryCards{padding:8px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+
+/* V19: group panels alternate; every button keeps one shared neutral surface. */
+html body #modernTopToolbar .topToolGroup{
+ padding:9px!important;gap:5px!important;border:1px solid #94a3b8!important;
+ background:#11161c!important;border-radius:9px!important;
+}
+html body #modernTopToolbar .topToolGroup.sewerGroupLight{background:#334155!important;}
+html body #modernTopToolbar .topToolGroup.sewerGroupDark{background:#11161c!important;}
+html body #modernTopToolbar .topToolGroup .modernIconBtn{
+ background:linear-gradient(180deg,#242b33,#171c22)!important;
+ border:1px solid #64748b!important;border-radius:8px!important;
+ box-shadow:none!important;
+}
+html body #modernTopToolbar .topToolGroup .modernIconBtn:hover{
+ background:linear-gradient(180deg,#303a44,#202730)!important;
+ border-color:#cbd5e1!important;
+}
+html body #modernTopToolbar .topToolGroup .modernIconBtn.active{
+ border-color:#cbd5e1!important;box-shadow:inset 0 -3px 0 #94a3b8!important;
+}
+#sewerArchitectureSection .archGrid{padding:8px;}
+#sewerArchitectureSection .hint{padding:8px 10px 0;}
+
+/* Superseded controls shown in the supplied reference; pipe summary remains visible. */
+#sewerPlannerPanel .sewerSecondaryActions,
+#sewerPlannerPanel .sewerVisibility{display:none!important;}
+.sewerLibrarySection > .sewerLibrarySection{margin:8px;}
+
+/* Keep catalogue and placed 45-degree fittings at the same neutral PVC brightness. */
+img[src*="assets/sanitary/part-08.png"]{filter:brightness(1.08);}
+
+/* Compact route colour chooser beside the drawing controls. */
+.sewerRouteColor{grid-column:1/-1;direction:rtl;border:1px solid #b7cedf;border-radius:9px;background:#fff;color:#23445b;padding:7px 9px;min-width:0}
+.sewerRouteColor summary{display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;font-size:13px;list-style:none}
+.sewerRouteColor summary::-webkit-details-marker{display:none}
+.sewerColorDot{display:inline-block;width:23px;height:23px;border:1px solid #7892a5;border-radius:5px;background:#fff}
+.sewerColorChoices{padding-top:9px}
+.sewerCustomColor{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;margin-bottom:10px;cursor:pointer}
+.sewerCustomColor input{width:46px;height:30px;padding:0;border:1px solid #8ca7ba;border-radius:4px;background:transparent}
+.sewerColorSwatches{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.sewerColorSwatches button{aspect-ratio:1;min-width:0;min-height:32px;padding:0;border:1px solid #8ca7ba;border-radius:5px;cursor:pointer}
+.sewerColorSwatches button[aria-pressed="true"]{outline:2px solid #0f172a;outline-offset:2px}
+
+/* Editing colours use the same palette beside the narrow action rail. */
+#sewerActionColor[hidden],#sewerEditColorPanel[hidden]{display:none!important}
+#sewerActionBar #sewerActionColor b{width:20px;height:17px;min-height:17px;margin-bottom:3px}
+#sewerEditColorPanel{position:fixed;z-index:360;width:210px;max-width:calc(100vw - 95px);box-sizing:border-box;padding:12px;background:#fff;color:#23445b;border:1px solid #8ca7ba;border-radius:9px;box-shadow:0 4px 18px #0003;direction:rtl}
+
+.sewerOutlineControls{display:flex;flex-direction:column;align-items:center;flex-shrink:0;padding:3px 7px;border-inline-start:1px solid #355774;min-width:105px;color:#e5edf5}
+.sewerOutlineControls label{display:flex;align-items:center;flex-wrap:wrap;justify-content:center;gap:3px;font-size:11px;max-width:110px}
+.sewerOutlineControls input{width:100%;margin:0;accent-color:#38bdf8}
+#sewerEditOutline{display:flex;flex-direction:column;align-items:center;width:50px;color:#e5edf5;font-size:10px;gap:3px;padding:6px 0}
+#sewerEditOutline[hidden]{display:none!important}
+#sewerEditOutline input{width:48px;accent-color:#38bdf8;margin:0}
+#sewerEditOutline input:disabled{opacity:.3}
+
+.sewerCreationOutline{padding:6px 10px;border:1px solid #bfd2e0;border-radius:8px;margin:6px 0;direction:rtl}
+.sewerCreationOutline>label:last-child{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px}
+.sewerCreationOutline input[type=range]{width:100%;accent-color:#258aca}
+#sewerEditOutlineButton[hidden]{display:none!important}
+#sewerEditOutline{position:fixed;z-index:365;width:240px;max-width:calc(100vw - 85px);box-sizing:border-box;padding:12px;background:#132c45;border:1px solid #527591;border-radius:8px;box-shadow:0 3px 14px #0003;font-size:13px;flex-direction:row;flex-wrap:wrap;justify-content:space-between;gap:8px}
+#sewerEditOutline input{width:100%;height:24px}
+
+#sewerEditOutline .sewerEnableGroupOutline{display:flex;align-items:center;gap:7px;width:100%;font-size:12px}
+#sewerEditOutline input[type=checkbox]{width:17px;height:17px;flex-shrink:0}
+
+.sewerOpacityLayer{display:flex;align-items:center;gap:7px;flex-shrink:0;min-width:300px;padding:3px 8px;border:1px solid #355774;border-radius:9px;color:#e5edf5;direction:rtl}
+.sewerOpacityLayer select{background:#18324c;color:white;border:1px solid #58728b;border-radius:5px;padding:3px;max-width:100px}
+.sewerOpacityLayer label{font-size:11px;display:flex;align-items:center;gap:5px}
+.sewerOpacityLayer input{width:95px;accent-color:#38bdf8}
+#sewerItemTransparencyTool{box-sizing:border-box;width:100%;padding:6px 3px;color:#e5edf5;background:#18324c;border:1px solid #58728b;border-radius:7px;flex-shrink:0}
+#sewerItemTransparencyTool label{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px}
+#sewerItemTransparencyTool input{width:100%;min-width:0;accent-color:#38bdf8}
+#sewerItemTransparencyTool input:disabled{opacity:.35}
+
+.sewerLibraryLayerBox{display:block;grid-column:1/-1;width:100%;box-sizing:border-box;border:1px solid #557694;border-radius:10px;padding:8px;margin:4px 0 12px;background:#10243a}
+.sewerLibraryLayerBox>h3{margin:0 0 8px;padding:7px 9px;border-radius:6px;background:#214666;color:#fff;font-size:15px;text-align:right}
+
+
+/* Desktop rail uses the entire available viewport height. */
+html:not(.sewer-mobile-device) body #sewerActionBar{bottom:32px!important;height:auto!important;max-height:none!important;overflow-y:auto!important;align-items:center;}
+html:not(.sewer-mobile-device) body #sewerActionBar>*{flex-shrink:0!important;}
+html:not(.sewer-mobile-device) body #sewerPieceTools{flex:0 0 auto!important;}

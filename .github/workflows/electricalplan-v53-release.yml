@@ -1,0 +1,44 @@
+name: ElectricalPlan V53 desktop release
+on:
+  push:
+    paths:
+      - 'desktop-electricalplan-v53/**'
+      - 'electricalplan-v53/**'
+      - '.github/workflows/electricalplan-v53-release.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: electricalplan-v53-release
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install packaging tools
+        run: sudo apt-get update && sudo apt-get install -y nsis binutils-mingw-w64-x86-64 p7zip-full
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.12'
+      - name: Prepare verified runtime and approved V52 application
+        run: python3 desktop-electricalplan-v53/build.py
+      - name: Compile icon-bearing launcher
+        run: |
+          cd desktop-electricalplan-v53/source
+          x86_64-w64-mingw32-windres --preprocessor=cat -i app.rc -O coff -o resource.syso
+          cd ../..
+          GOOS=windows GOARCH=amd64 CGO_ENABLED=0 GO111MODULE=off go build -trimpath -ldflags='-H windowsgui -s -w' -o desktop-electricalplan-v53/app/ElectricalPlan.exe ./desktop-electricalplan-v53/source
+          node --check desktop-electricalplan-v53/app/resources/app/main.cjs
+      - name: Create and verify installer and complete archive
+        run: |
+          makensis -V2 desktop-electricalplan-v53/setup.nsi
+          7z t output/ElectricalPlan-V53.0-Setup.exe
+          7z x -y output/ElectricalPlan-V53.0-Setup.exe -overify
+          python3 desktop-electricalplan-v53/package.py
+      - name: Publish direct downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create electricalplan-v53 output/ElectricalPlan-V53.0-Setup.exe output/ElectricalPlan-V53-Complete.zip output/SHA256SUMS.txt --target "$GITHUB_SHA" --title 'ElectricalPlan V53 — Windows Desktop' --notes 'Approved V52 with icon 1. Independent desktop runtime. Next/Finish installer, maximized native window, no browser translation or sign-in prompts. Full archive includes runtime and sources. Installer payload and ZIP integrity verified; physical Windows/iPad testing remains to be done.' --latest=false
