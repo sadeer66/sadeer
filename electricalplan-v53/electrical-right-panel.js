@@ -38,3 +38,54 @@ html body.elRightOpen #electricalApp{grid-template-columns:300px minmax(0,1fr)!i
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
+/* V53 mobile layout: one compact toolbar row and a narrower property dock. */
+(function(){
+ 'use strict';
+ const root=document.documentElement;
+ function mobileLayout(){
+  const ua=navigator.userAgent,phone=/iPhone|iPod/i.test(ua)||(/Android/i.test(ua)&&Math.min(screen.width,screen.height)<600);
+  const touch=phone||/iPad|Android/i.test(ua)||(navigator.maxTouchPoints>1&&/Mac/i.test(navigator.platform))||matchMedia('(pointer:coarse)').matches;
+  root.classList.toggle('elCompactTouch',touch);
+  if(!touch)return;
+  const w=window.innerWidth,h=window.innerHeight,base=w<=600?Math.min(235,w*.64):w<=1000?270:300;
+  const narrowPhone=phone&&h>w;
+  root.classList.toggle('elNarrowPhone',narrowPhone);
+  root.style.setProperty('--el-mobile-panel-width',(base/(narrowPhone?3:2)).toFixed(2)+'px');
+ }
+ const style=document.createElement('style');style.id='electrical-mobile-layout-v53-1';
+ style.textContent=`
+ html.elCompactTouch body.elUnifiedUI.elRightOpen #electricalApp{grid-template-columns:var(--el-mobile-panel-width) minmax(0,1fr)!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp{grid-template-rows:max-content minmax(0,1fr) auto!important;gap:0!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp>header{height:auto!important;min-height:0!important;max-height:none!important;flex-basis:auto!important;padding:3px 4px!important;margin:0!important;align-items:center!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp>header #modernToolbarArea,
+ html.elCompactTouch body.elUnifiedUI #electricalApp>header #sewerRibbonHeader,
+ html.elCompactTouch body.elUnifiedUI #electricalApp>header #sewerPrimaryScroll{height:auto!important;min-height:0!important;max-height:none!important;flex-basis:auto!important;margin-block:0!important;padding-block:0!important;gap:3px!important;align-content:center!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp>header #modernToolbarArea{display:block!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp>header #sewerRibbonHeader{grid-template-rows:auto!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp>main{margin-top:0!important;padding-top:0!important;gap:0!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp>main .mapPanel{padding-top:0!important;padding-bottom:0!important;gap:0!important;margin-top:0!important}
+ html.elCompactTouch body.elUnifiedUI #elRightDock{min-width:0!important;max-width:100%!important}
+ html.elCompactTouch body.elUnifiedUI #elRightDock .elDockHead{padding:4px!important;gap:3px!important;font-size:12px!important}
+ html.elCompactTouch body.elUnifiedUI #elRightDock .elDockHead button{padding:2px 5px!important;min-width:26px!important;min-height:28px!important;font-size:18px!important}
+ html.elCompactTouch body.elUnifiedUI #elRightDock #elRightBody{padding:3px!important}
+ html.elCompactTouch body.elUnifiedUI #elRightDock #sewerSubRibbon #modernTopToolbar :is(#fpPhoneLibraryBtn,#fpPhoneGuideBtn){display:none!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #sewerPane_library #elLibraryActions{grid-template-columns:minmax(0,1fr)!important;gap:4px!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #sewerPane_library #elLibraryActions button,
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #sewerPane_library .sewerLibrarySection>summary{white-space:normal!important;overflow-wrap:anywhere!important;min-width:0!important;max-width:100%!important;padding:7px 4px!important;gap:4px!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #sewerSubRibbon #modernTopToolbar #sewerPane_library #se61Library{padding:3px!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #sewerSubRibbon #modernTopToolbar #sewerPane_library #se61Library #se61Items,
+ html.elCompactTouch body.elUnifiedUI #elRightDock .sewerLibraryCards{grid-template-columns:minmax(0,1fr)!important}
+ html.elCompactTouch body.elUnifiedUI #elRightDock :is(input,select){min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+ html.elCompactTouch body.elUnifiedUI #elRightDock .field{min-width:0!important;max-width:100%!important}
+ html.elNarrowPhone body.elUnifiedUI #electricalApp #elRightDock #sewerSubRibbon #modernTopToolbar .sewerRibbonPane > :is(button,.modernIconBtn){padding:6px 2px!important;gap:3px!important;flex-direction:column!important;font-size:10px!important}
+ html.elNarrowPhone body.elUnifiedUI #electricalApp #elRightDock #sewerSubRibbon #modernTopToolbar .sewerRibbonPane > :is(button,.modernIconBtn) :is(span,.iconLabel,.lbl,.label,.toolLabel){font-size:10px!important;text-align:center!important}
+ html.elNarrowPhone body.elUnifiedUI #elRightDock .elDockHead{flex-wrap:wrap!important;font-size:10px!important}
+ html.elNarrowPhone body.elUnifiedUI #electricalApp #elRightDock #sewerPane_library #elLibraryActions button,
+ html.elNarrowPhone body.elUnifiedUI #electricalApp #elRightDock #sewerPane_library .sewerLibrarySection>summary{font-size:10px!important;flex-wrap:wrap!important}
+ html.elNarrowPhone body.elUnifiedUI #elRightDock :is(.inlineField,.sewerFields){flex-direction:column!important;align-items:stretch!important}
+ html.elNarrowPhone body.elUnifiedUI #elRightDock .modernSliderBox{padding:4px!important}
+ `;
+ document.head.append(style);mobileLayout();
+ window.addEventListener('resize',mobileLayout,{passive:true});
+ window.addEventListener('orientationchange',()=>requestAnimationFrame(mobileLayout),{passive:true});
+})();
