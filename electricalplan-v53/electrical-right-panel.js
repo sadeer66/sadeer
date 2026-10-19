@@ -76,6 +76,10 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #elRightBody .section{padding:3px!important}
  html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #sewerContextHelper{overflow-wrap:anywhere!important}
  html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #sewerContextHelper span{white-space:normal!important;min-width:0!important;max-width:100%!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #elRightBody #modernTopToolbar :is(.sewerOpacityLayer,.sewerOpacityLayer label){display:flex!important;flex-direction:column!important;align-items:stretch!important;width:100%!important;min-width:0!important;max-width:100%!important;height:auto!important;box-sizing:border-box!important;white-space:normal!important;gap:3px!important;padding:3px!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #elRightBody #modernTopToolbar :is(button,.archGroupTitle){min-width:0!important;max-width:100%!important;box-sizing:border-box!important;white-space:normal!important;overflow-wrap:anywhere!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #elRightBody #modernTopToolbar .archGroupTitle{padding:4px 2px!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #elRightBody #modernTopToolbar #sewerLayerTransparency{width:100%!important;min-width:0!important;max-width:100%!important;margin:0!important}
  html.elCompactTouch body.elUnifiedUI #elRightDock{min-width:0!important;max-width:100%!important}
  html.elCompactTouch body.elUnifiedUI #elRightDock .elDockHead{padding:4px!important;gap:3px!important;font-size:12px!important}
  html.elCompactTouch body.elUnifiedUI #elRightDock .elDockHead button{padding:2px 5px!important;min-width:26px!important;min-height:28px!important;font-size:18px!important}
