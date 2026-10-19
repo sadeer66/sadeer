@@ -80,6 +80,15 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #elRightBody #modernTopToolbar :is(button,.archGroupTitle){min-width:0!important;max-width:100%!important;box-sizing:border-box!important;white-space:normal!important;overflow-wrap:anywhere!important}
  html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #elRightBody #modernTopToolbar .archGroupTitle{padding:4px 2px!important}
  html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #elRightBody #modernSliderRow #sewerLayerTransparency{width:100%!important;min-width:0!important;max-width:100%!important;margin:0!important}
+ html.elCompactTouch body.elUnifiedUI.elRightOpen #electricalApp>aside#elRightAside{pointer-events:auto!important;touch-action:pan-y!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock,
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #elRightBody,
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #sewerSubRibbon,
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #sewerSubRibbon #modernTopToolbar,
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #sewerSubRibbon #modernSliderRow{touch-action:pan-y!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #elRightBody{overflow-y:auto!important;-webkit-overflow-scrolling:touch!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock :is(.fcard,.archCard,.se61-symbol-card){touch-action:pan-y!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock :is(.touchDragHandle,.se61-drag-handle,input[type=range]){touch-action:none!important}
  html.elCompactTouch body.elUnifiedUI #elRightDock{min-width:0!important;max-width:100%!important}
  html.elCompactTouch body.elUnifiedUI #elRightDock .elDockHead{padding:4px!important;gap:3px!important;font-size:12px!important}
  html.elCompactTouch body.elUnifiedUI #elRightDock .elDockHead button{padding:2px 5px!important;min-width:26px!important;min-height:28px!important;font-size:18px!important}

@@ -2468,14 +2468,8 @@ html:not(.fpSplashLangReady) #fpSplash{visibility:hidden!important}
  if(/iPhone|iPod/i.test(navigator.userAgent)||(/Android/i.test(navigator.userAgent)&&Math.min(screen.width,screen.height)<600))document.documentElement.classList.add('sewer-phone-ui');
 })();
 </script>
-<style id="sewer-landscape-only">
-#sewerOrientationScreen{display:none}
-@media screen and (orientation:portrait){
- html.sewer-mobile-device:not(.sewer-phone-ui) body> :not(#sewerOrientationScreen){visibility:hidden!important;pointer-events:none!important}
- html.sewer-mobile-device:not(.sewer-phone-ui) #sewerOrientationScreen{display:flex!important;visibility:visible!important;position:fixed;inset:0;z-index:2147483647;align-items:center;justify-content:center;flex-direction:column;gap:24px;box-sizing:border-box;padding:32px;background:#0b1f38;color:white;text-align:center;direction:rtl;touch-action:none}
- #sewerOrientationScreen img{display:block;width:160px;max-width:38vw;height:auto;border-radius:28px}
- #sewerOrientationScreen p{margin:0;font:600 22px/1.7 Tahoma,Arial,sans-serif;color:#fff}
-}
+<style id="electrical-all-orientations">
+#sewerOrientationScreen{display:none!important}
 </style>
 <style>
 /* Same desktop surfaces on touch devices, with a modestly narrower right library. */
@@ -12339,7 +12333,7 @@ body.se61-engineering #sewerPane_library>.section:not(#se61Library){display:none
 </style>
 <script src="electrical-layout.js?v=36"></script>
 <script src="electrical-map-appearance.js?v=39"></script>
-<script src="electrical-right-panel.js?v=28"></script>
+<script src="electrical-right-panel.js?v=53-touch2"></script>
 <script src="electrical-effects.js?v=30"></script>
 <script>
 (function(){function boot(){const shelf=document.getElementById('se61Library'),pane=document.getElementById('sewerPane_library');if(shelf&&pane)pane.prepend(shelf);const E=window.SewerEngineering;if(!E)return;const old=E.changeMode;E.changeMode=function(on){old(on);if(on)document.getElementById('sewerTab_library')?.click();};document.getElementById('se61Eng').onclick=()=>E.changeMode(true);document.getElementById('se61Real').onclick=()=>E.changeMode(false);document.title='ElectricalPlan V53';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();})();
