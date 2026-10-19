@@ -62,8 +62,20 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  html.elCompactTouch body.elUnifiedUI #electricalApp>header #sewerPrimaryScroll{height:auto!important;min-height:0!important;max-height:none!important;flex-basis:auto!important;margin-block:0!important;padding-block:0!important;gap:3px!important;align-content:center!important}
  html.elCompactTouch body.elUnifiedUI #electricalApp>header #modernToolbarArea{display:block!important}
  html.elCompactTouch body.elUnifiedUI #electricalApp>header #sewerRibbonHeader{grid-template-rows:auto!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elGlobalLightGlow{height:54px!important;min-height:0!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;justify-content:center!important;gap:2px!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elGlobalLightGlow .elEffectField{display:grid!important;grid-template-columns:65px minmax(0,1fr) 25px!important;grid-template-rows:22px!important;gap:3px!important;margin:0!important;height:22px!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elGlobalLightGlow .elEffectField>span{grid-column:1!important;grid-row:1!important;font:9px Tahoma!important;white-space:normal!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elGlobalLightGlow .elEffectField>input{grid-column:2!important;grid-row:1!important;height:20px!important;min-height:0!important;margin:0!important;}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elGlobalLightGlow .elEffectField>output{grid-column:3!important;grid-row:1!important;font-size:9px!important}
  html.elCompactTouch body.elUnifiedUI #electricalApp>main{margin-top:0!important;padding-top:0!important;gap:0!important}
  html.elCompactTouch body.elUnifiedUI #electricalApp>main .mapPanel{padding-top:0!important;padding-bottom:0!important;gap:0!important;margin-top:0!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #elRightBody #sewerSubRibbon,
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #elRightBody #sewerSubRibbon #modernTopToolbar,
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #elRightBody #sewerSubRibbon #modernSliderRow{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important;align-items:stretch!important;padding-inline:0!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #elRightBody :is(.section,.libraryBrowser,#library,.sewerLibrarySection,.elCategoryTitle){min-width:0!important;max-width:100%!important;box-sizing:border-box!important;overflow-wrap:anywhere!important;white-space:normal!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #elRightBody .section{padding:3px!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #sewerContextHelper{overflow-wrap:anywhere!important}
+ html.elCompactTouch body.elUnifiedUI #electricalApp #elRightDock #sewerContextHelper span{white-space:normal!important;min-width:0!important;max-width:100%!important}
  html.elCompactTouch body.elUnifiedUI #elRightDock{min-width:0!important;max-width:100%!important}
  html.elCompactTouch body.elUnifiedUI #elRightDock .elDockHead{padding:4px!important;gap:3px!important;font-size:12px!important}
  html.elCompactTouch body.elUnifiedUI #elRightDock .elDockHead button{padding:2px 5px!important;min-width:26px!important;min-height:28px!important;font-size:18px!important}
