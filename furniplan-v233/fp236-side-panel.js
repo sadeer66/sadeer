@@ -10,13 +10,14 @@ function init(){
  const title=document.createElement('div');title.id='fp236PanelTitle';aside.prepend(title);
  const brand=document.getElementById('workspaceBrand'),view=document.getElementById('mainScroll');document.body.append(brand);
  function center(){const r=view.getBoundingClientRect();brand.style.setProperty('position','fixed','important');brand.style.setProperty('left',(r.left+view.clientWidth/2)+'px','important');brand.style.setProperty('top',(r.top+view.clientHeight/2)+'px','important');brand.style.setProperty('max-width',Math.max(0,view.clientWidth-20)+'px','important');brand.style.setProperty('display',view.classList.contains('has-plan')?'none':'flex','important');}
- function sync(){const tab=document.querySelector('#fp222Tabs [aria-selected=true]');const library=tab?.id==='fp222-tab-library';aside.classList.toggle('fp236Library',library);for(const child of libraryChildren)child.style.setProperty('display',library?'':'none','important');title.textContent=tab?.textContent||'';document.title='FurniPlan V236';center();}
+ function sync(){const tab=document.querySelector('#fp222Tabs [aria-selected=true]');const library=tab?.id==='fp222-tab-library';aside.classList.toggle('fp236Library',library);for(const child of libraryChildren)child.style.setProperty('display',library?'':'none','important');title.textContent=tab?.textContent||'';document.title='FurniPlan V237';center();}
  new MutationObserver(sync).observe(document.getElementById('fp222Tabs'),{subtree:true,attributes:true,attributeFilter:['aria-selected'],childList:true});
  new ResizeObserver(center).observe(view);new MutationObserver(center).observe(view,{attributes:true,attributeFilter:['class']});window.addEventListener('resize',center);view.addEventListener('scroll',center,{passive:true});
  document.getElementById('fp222Tabs').addEventListener('click',()=>requestAnimationFrame(sync));
  // Vertical gestures in the side dock must not be claimed by old horizontal ribbons.
  for(const event of ['touchstart','touchmove','touchend'])aside.addEventListener(event,e=>{if(!e.target.closest('input[type=range],.touchDragHandle,.fp233Rail'))e.stopPropagation();},{passive:true});
  const style=document.createElement('style');style.textContent=`
+ html body.fp236 #fp222Tabs #fp222-tab-surfaces,html body.fp236 #fp222Panels #fp222-panel-surfaces{display:none!important}
  html body.fp236 .app{display:grid!important;direction:rtl!important;grid-template-columns:var(--fp236-side,280px) minmax(0,1fr)!important;grid-template-rows:auto minmax(0,1fr) auto!important;height:100dvh!important;width:100%!important;min-width:0!important}
  html body.fp236 .app>header{grid-row:1!important;grid-column:1/-1!important;position:relative!important;inset:auto!important;width:100%!important}
  html body.fp236 .app>main{grid-row:2!important;grid-column:2!important;position:relative!important;inset:auto!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;margin:0!important;padding:6px!important;overflow:hidden!important}

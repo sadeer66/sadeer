@@ -25,7 +25,7 @@
     const tab=document.createElement('button');tab.id='fp222-tab-'+key;tab.type='button';tab.setAttribute('role','tab');tab.setAttribute('aria-controls','fp222-panel-'+key);tab.onclick=()=>{select(key);};nav.append(tab);
     const panel=document.createElement('div');panel.id='fp222-panel-'+key;panel.className='fp222Panel';panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',tab.id);panels.append(panel);
    }
-   nav.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();let i=groups.findIndex(g=>g[0]===selected);i=e.key==='Home'?0:e.key==='End'?groups.length-1:(i+(e.key==='ArrowRight'?1:-1)+groups.length)%groups.length;select(groups[i][0]);document.getElementById('fp222-tab-'+groups[i][0]).focus();});
+   nav.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();const available=groups.filter(g=>g[0]!=='surfaces');let i=available.findIndex(g=>g[0]===selected);i=e.key==='Home'?0:e.key==='End'?available.length-1:(i+(e.key==='ArrowRight'?1:-1)+available.length)%available.length;select(available[i][0]);document.getElementById('fp222-tab-'+available[i][0]).focus();});
   }
   for(const [key,ar,en,ids] of groups){const panel=document.getElementById('fp222-panel-'+key);document.getElementById('fp222-tab-'+key).textContent=english()?en:ar;for(const id of ids){const el=document.getElementById(id);if(el&&el.parentElement!==panel)panel.append(el);}}
   for(const id of ['v44Undo','v44Redo','v44Fit','v44Actual','fpLanguageToggle']){const el=document.getElementById(id);if(el&&el.parentElement!==common)common.append(el);}
@@ -35,7 +35,7 @@
   for(const child of [...bar.children]){if(child.classList.contains('topToolGroup')){for(const el of [...child.children])document.getElementById('fp222-panel-settings').append(el);child.remove();}else document.getElementById('fp222-panel-settings').append(child);}
   for(const [id,ar,en] of [['v44Calibrate','معايرة','Scale'],['fp198BoundaryBtn','حدود','Bounds'],['fp197LabelStyleBtn','تنسيق','Style'],['fp206MeasureStyleBtn','تنسيق','Style'],['v54Labels','المسميات','Labels'],['v54LockLabels','قفل','Lock'],['v54LockMeasures','قفل','Lock'],['v54Measures','القياسات','Measures'],['v54MeasureLine','خط القياس','Lines'],['v54Furniture','الأثاث','Furniture'],['v54Map','الخارطة','Plan'],['v44New','جديد','New'],['v44Fit','ملاءمة','Fit'],['v44Redo','إعادة','Redo'],['v44Undo','تراجع','Undo']]){const label=document.querySelector('#'+id+' .iconLabel');if(label){label.dataset.fp222Label='1';label.textContent=english()?en:ar;}}
   const search=document.getElementById('fp209LabelSearch');if(search)search.placeholder=english()?'Search labels':'ابحث عن مسمى';
-  select(selected);document.title='FurniPlan V236';window.FP223Refresh?.();
+  select(selected);document.title='FurniPlan V237';window.FP223Refresh?.();
  }
  function init(){
  const style=document.createElement('style');style.id='fp222-ribbon-style';style.textContent=`
