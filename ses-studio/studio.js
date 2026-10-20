@@ -1,0 +1,20 @@
+'use strict';
+const base='https://sadeer66.github.io/sadeer/';
+const programs=[
+ {id:'color',name:'ColorPlan',ar:'تلوين المخطط',version:'V11.86',path:'smart-render-v11.74/?v=1186',crop:'100 155 840 340',icon:'350 155 275 235',desc:'التلوين والخامات والإضاءة والإظهار'},
+ {id:'furni',name:'FurniPlan',ar:'تخطيط الأثاث',version:'V240',path:'furniplan-v233/?v=240',crop:'1165 140 590 350',icon:'1310 145 250 220',desc:'توزيع الأثاث وتنظيم المساحات'},
+ {id:'sewer',name:'SewerPlan',ar:'تمديدات المجاري',version:'V137',path:'sewerplan-v128/?v=137',crop:'1165 620 590 350',icon:'1310 625 255 235',desc:'شبكات الأنابيب والتوصيلات والملحقات'},
+ {id:'electric',name:'ElectricalPlan',ar:'مخطط الكهرباء',version:'V61',path:'electricalplan-v53/?v=61',crop:'220 630 555 330',icon:'365 635 260 240',desc:'توزيع الكهرباء والإنارة والتجهيزات'}
+];
+const $=id=>document.getElementById(id),frames=new Map();let active=null,timeout;
+const cropSvg=(p,icon=false)=>`<svg viewBox="${icon?p.icon:p.crop}" role="img" aria-label="${p.name}" preserveAspectRatio="xMidYMid meet"><image href="assets/programs.png" width="1919" height="1080"/></svg>`;
+programs.forEach(p=>{const tab=document.createElement('button');tab.className='app-tab';tab.dataset.program=p.id;tab.setAttribute('aria-pressed','false');tab.innerHTML=`${cropSvg(p,true)}<span><b dir="ltr">${p.name}</b>${p.ar}</span>`;tab.onclick=()=>openProgram(p.id);$('appTabs').append(tab);const card=document.createElement('button');card.className='program-card';card.dataset.program=p.id;card.innerHTML=`${cropSvg(p)}<div class="card-copy"><strong>${p.ar}</strong><small>${p.desc}</small><span class="open-label">فتح البرنامج <b aria-hidden="true">←</b></span></div>`;card.onclick=()=>openProgram(p.id);$('programGrid').append(card)});
+function home(){active=null;clearTimeout(timeout);document.body.classList.remove('in-app');$('home').hidden=false;$('workspace').hidden=true;$('loading').hidden=true;$('connectionNotice').hidden=true;for(const tab of $('appTabs').children)tab.setAttribute('aria-pressed','false');document.title='SES — Sadeer Engineering Studio';$('activeLabel').textContent='SES · النسخة الكاملة';}
+function openProgram(id){const p=programs.find(p=>p.id===id);if(!p)return;active=id;clearTimeout(timeout);document.body.classList.add('in-app');$('home').hidden=true;$('workspace').hidden=false;$('connectionNotice').hidden=true;document.title=p.name+' | SES';$('activeLabel').textContent=p.name+' · '+p.version;for(const t of $('appTabs').children){t.setAttribute('aria-pressed',String(t.dataset.program===id));if(t.dataset.program===id)t.scrollIntoView({block:'nearest',inline:'nearest'});}for(const [key,entry]of frames)entry.frame.hidden=key!==id;
+ if(!frames.has(id)){const frame=document.createElement('iframe');frame.title=p.ar+' — '+p.name;frame.allow='fullscreen; clipboard-read; clipboard-write';frame.setAttribute('allowfullscreen','');const entry={frame,ready:false};frames.set(id,entry);frame.onload=()=>{entry.ready=true;document.querySelector(`.app-tab[data-program="${id}"]`).classList.add('loaded');if(active===id){clearTimeout(timeout);$('loading').hidden=true;$('connectionNotice').hidden=true;}};frame.src=base+p.path;$('frames').append(frame);}
+ const entry=frames.get(id);entry.frame.hidden=false;$('loadingText').textContent='جارٍ فتح '+p.name+'…';$('loading').hidden=entry.ready;if(!entry.ready)timeout=setTimeout(()=>{if(active===id&&!entry.ready){$('loading').hidden=true;$('connectionNotice').hidden=false;}},45000);
+}
+$('homeButton').onclick=home;$('backHome').onclick=home;$('retry').onclick=()=>{if(!active)return;const id=active,entry=frames.get(id);if(entry&&!entry.ready){entry.frame.remove();frames.delete(id);}openProgram(id)};
+if(!document.fullscreenEnabled)$('fullscreen').hidden=true;else $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{}};
+window.addEventListener('beforeunload',event=>{if(frames.size){event.preventDefault();event.returnValue='';}});
+home();
