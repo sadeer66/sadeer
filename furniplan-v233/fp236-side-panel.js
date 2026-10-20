@@ -10,7 +10,7 @@ function init(){
  const title=document.createElement('div');title.id='fp236PanelTitle';aside.prepend(title);
  const brand=document.getElementById('workspaceBrand'),view=document.getElementById('mainScroll');document.body.append(brand);
  function center(){const r=view.getBoundingClientRect();brand.style.setProperty('position','fixed','important');brand.style.setProperty('left',(r.left+view.clientWidth/2)+'px','important');brand.style.setProperty('top',(r.top+view.clientHeight/2)+'px','important');brand.style.setProperty('max-width',Math.max(0,view.clientWidth-20)+'px','important');brand.style.setProperty('display',view.classList.contains('has-plan')?'none':'flex','important');}
- function sync(){const tab=document.querySelector('#fp222Tabs [aria-selected=true]');const library=tab?.id==='fp222-tab-library';aside.classList.toggle('fp236Library',library);for(const child of libraryChildren)child.style.setProperty('display',library?'':'none','important');title.textContent=tab?.textContent||'';document.title='FurniPlan V238';center();}
+ function sync(){const tab=document.querySelector('#fp222Tabs [aria-selected=true]');const library=tab?.id==='fp222-tab-library';aside.classList.toggle('fp236Library',library);for(const child of libraryChildren)child.style.setProperty('display',library?'':'none','important');title.textContent=tab?.textContent||'';document.title='FurniPlan V239';center();}
  new MutationObserver(sync).observe(document.getElementById('fp222Tabs'),{subtree:true,attributes:true,attributeFilter:['aria-selected'],childList:true});
  new ResizeObserver(center).observe(view);new MutationObserver(center).observe(view,{attributes:true,attributeFilter:['class']});window.addEventListener('resize',center);view.addEventListener('scroll',center,{passive:true});
  document.getElementById('fp222Tabs').addEventListener('click',()=>requestAnimationFrame(sync));
@@ -73,9 +73,9 @@ function init(){
  const mobile=()=>matchMedia('(pointer:coarse)').matches||navigator.maxTouchPoints>0;
  const actions=document.createElement('div');actions.id='fp238LibraryActions';
  for(const id of ['addLibraryItemBtn','resetLibraryBtn']){const source=document.getElementById(id),b=document.createElement('button');b.type='button';b.className=source.className;b.onclick=()=>source.click();b.dataset.source=id;actions.append(b);}
- function labels(){for(const b of actions.children)b.textContent=document.getElementById(b.dataset.source).textContent;}
+ function labels(){for(const b of actions.children){const text=document.getElementById(b.dataset.source).textContent;if(b.textContent!==text)b.textContent=text;}}
  function attach(){if(mobile()&&actions.parentElement!==lib)lib.append(actions);else if(!mobile()&&actions.parentElement)actions.remove();labels();}
- function layout(){document.body.classList.toggle('fp238Mobile',mobile());document.body.classList.toggle('fp238Bottom',mobile()&&innerHeight>innerWidth&&aside.classList.contains('fp236Library'));attach();}
+ function layout(){const m=mobile(),bottom=m&&innerHeight>innerWidth&&aside.classList.contains('fp236Library');if(document.body.classList.contains('fp238Mobile')!==m)document.body.classList.toggle('fp238Mobile',m);if(document.body.classList.contains('fp238Bottom')!==bottom)document.body.classList.toggle('fp238Bottom',bottom);attach();}
  new MutationObserver(()=>{if(mobile()&&actions.parentElement!==lib)lib.append(actions);}).observe(lib,{childList:true});
  new MutationObserver(layout).observe(aside,{attributes:true,attributeFilter:['class']});window.addEventListener('resize',layout);window.addEventListener('furniplan-language-changed',()=>setTimeout(labels,200));
  lib.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'&&!e.target.closest('.touchDragHandle'))e.stopPropagation();},true);
@@ -114,3 +114,14 @@ function init(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(init,500));else setTimeout(init,500);
 })();
+
+(()=>{const s=document.createElement('style');s.textContent=`
+html body.fp236.fp238Bottom.fp238 .app>aside #library{display:grid!important;grid-auto-flow:column!important;grid-template-columns:none!important;grid-auto-columns:94px!important;grid-template-rows:repeat(3,minmax(0,1fr))!important;align-content:stretch!important;gap:4px!important}
+html body.fp236.fp238Bottom.fp238 .app>aside #library>.fcard{width:94px!important;min-width:94px!important;max-width:94px!important;height:100%!important;padding:3px!important;gap:1px!important;contain:layout paint!important}
+html body.fp236.fp238Bottom.fp238 .app>aside #library>.fcard img{flex:1 1 0!important;min-height:0!important;height:0!important;max-height:65px!important;object-fit:contain!important}
+html body.fp236.fp238Bottom.fp238 .app>aside #library>.fcard b{font-size:9px!important;line-height:10px!important;max-height:20px!important;overflow:hidden!important;padding-left:23px!important}
+html body.fp236.fp238Bottom.fp238 .app>aside #library>.fcard>span{font-size:8px!important;line-height:10px!important;padding-left:23px!important}
+html body.fp236.fp238Bottom.fp238 .app>aside #library .touchDragHandle{width:24px!important;min-width:24px!important;max-width:24px!important;height:24px!important;min-height:24px!important;max-height:24px!important;right:auto!important;left:2px!important;bottom:2px!important;font-size:14px!important}
+html body.fp236.fp238Bottom.fp238 #library #fp238LibraryActions{grid-column:auto!important;grid-row:1/-1!important;width:94px!important;min-width:94px!important;padding:3px!important}
+@media(max-width:600px){html body.fp236.fp238Bottom.fp238 .app>aside #library{grid-template-rows:repeat(2,minmax(0,1fr))!important;grid-auto-columns:90px!important}html body.fp236.fp238Bottom.fp238 .app>aside #library>.fcard{width:90px!important;min-width:90px!important;max-width:90px!important}}
+`;document.head.append(s);})();
