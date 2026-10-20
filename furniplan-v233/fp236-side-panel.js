@@ -10,7 +10,7 @@ function init(){
  const title=document.createElement('div');title.id='fp236PanelTitle';aside.prepend(title);
  const brand=document.getElementById('workspaceBrand'),view=document.getElementById('mainScroll');document.body.append(brand);
  function center(){const r=view.getBoundingClientRect();brand.style.setProperty('position','fixed','important');brand.style.setProperty('left',(r.left+view.clientWidth/2)+'px','important');brand.style.setProperty('top',(r.top+view.clientHeight/2)+'px','important');brand.style.setProperty('max-width',Math.max(0,view.clientWidth-20)+'px','important');brand.style.setProperty('display',view.classList.contains('has-plan')?'none':'flex','important');}
- function sync(){const tab=document.querySelector('#fp222Tabs [aria-selected=true]');const library=tab?.id==='fp222-tab-library';aside.classList.toggle('fp236Library',library);for(const child of libraryChildren)child.style.setProperty('display',library?'':'none','important');title.textContent=tab?.textContent||'';document.title='FurniPlan V239';center();}
+ function sync(){const tab=document.querySelector('#fp222Tabs [aria-selected=true]');const library=tab?.id==='fp222-tab-library';aside.classList.toggle('fp236Library',library);for(const child of libraryChildren)child.style.setProperty('display',library?'':'none','important');title.textContent=tab?.textContent||'';document.title='FurniPlan V240';center();}
  new MutationObserver(sync).observe(document.getElementById('fp222Tabs'),{subtree:true,attributes:true,attributeFilter:['aria-selected'],childList:true});
  new ResizeObserver(center).observe(view);new MutationObserver(center).observe(view,{attributes:true,attributeFilter:['class']});window.addEventListener('resize',center);view.addEventListener('scroll',center,{passive:true});
  document.getElementById('fp222Tabs').addEventListener('click',()=>requestAnimationFrame(sync));
@@ -125,3 +125,26 @@ html body.fp236.fp238Bottom.fp238 .app>aside #library .touchDragHandle{width:24p
 html body.fp236.fp238Bottom.fp238 #library #fp238LibraryActions{grid-column:auto!important;grid-row:1/-1!important;width:94px!important;min-width:94px!important;padding:3px!important}
 @media(max-width:600px){html body.fp236.fp238Bottom.fp238 .app>aside #library{grid-template-rows:repeat(2,minmax(0,1fr))!important;grid-auto-columns:90px!important}html body.fp236.fp238Bottom.fp238 .app>aside #library>.fcard{width:90px!important;min-width:90px!important;max-width:90px!important}}
 `;document.head.append(s);})();
+
+(()=>{const style=document.createElement('style');style.textContent=`
+@media(max-width:600px) and (orientation:portrait){
+html body.fp236.fp238Bottom.fp238 .app>aside #library{grid-auto-columns:72px!important;grid-template-rows:repeat(3,minmax(0,1fr))!important;gap:3px!important}
+html body.fp236.fp238Bottom.fp238 .app>aside #library>.fcard{width:72px!important;min-width:72px!important;max-width:72px!important;padding:2px!important}
+html body.fp236.fp238Bottom.fp238 .app>aside #library>.fcard b{font-size:8px!important;line-height:9px!important;max-height:18px!important;padding-left:21px!important}
+html body.fp236.fp238Bottom.fp238 .app>aside #library>.fcard>span{font-size:7px!important;line-height:8px!important;padding-left:21px!important}
+html body.fp236.fp238Bottom.fp238 .app>aside #library .touchDragHandle{width:22px!important;min-width:22px!important;max-width:22px!important;height:22px!important;min-height:22px!important;max-height:22px!important;font-size:13px!important}
+html body.fp236.fp238Bottom.fp238 .app>aside .libraryBrowser{grid-template-rows:31px minmax(0,1fr)!important}
+html body.fp236.fp238Bottom.fp238 .app>aside #categoryList{height:30px!important;max-height:30px!important;gap:3px!important}
+html body.fp236.fp238Bottom.fp238 .app>aside #categoryList button{flex-basis:28px!important;width:28px!important;min-width:28px!important;height:27px!important;min-height:27px!important;font-size:18px!important}
+}
+@media(orientation:landscape) and (max-height:500px){
+html body.fp236.fp238Mobile.fp238 .app>aside #library{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:4px!important}
+html body.fp236.fp238Mobile.fp238 .app>aside #library>.fcard{height:100px!important;min-height:100px!important;max-height:100px!important;min-width:0!important;padding:3px 3px 22px!important}
+html body.fp236.fp238Mobile.fp238 .app>aside #library>.fcard img{height:50px!important;min-height:50px!important;max-height:50px!important}
+html body.fp236.fp238Mobile.fp238 .app>aside #library>.fcard b{font-size:8px!important;line-height:9px!important}
+html body.fp236.fp238Mobile.fp238 .app>aside #library>.fcard>span{font-size:7px!important}
+html body.fp236.fp238Mobile.fp238 .app>aside #library .touchDragHandle{width:22px!important;min-width:22px!important;max-width:22px!important;height:22px!important;min-height:22px!important;max-height:22px!important;font-size:13px!important}
+html body.fp236.fp238Mobile.fp238 .app>aside .categoryList{max-height:31px!important}
+html body.fp236.fp238Mobile.fp238 .app>aside .categoryList button{height:27px!important;min-height:27px!important;font-size:18px!important}
+}
+`;document.head.append(style);})();
