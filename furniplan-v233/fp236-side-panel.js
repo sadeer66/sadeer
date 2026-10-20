@@ -10,7 +10,7 @@ function init(){
  const title=document.createElement('div');title.id='fp236PanelTitle';aside.prepend(title);
  const brand=document.getElementById('workspaceBrand'),view=document.getElementById('mainScroll');document.body.append(brand);
  function center(){const r=view.getBoundingClientRect();brand.style.setProperty('position','fixed','important');brand.style.setProperty('left',(r.left+view.clientWidth/2)+'px','important');brand.style.setProperty('top',(r.top+view.clientHeight/2)+'px','important');brand.style.setProperty('max-width',Math.max(0,view.clientWidth-20)+'px','important');brand.style.setProperty('display',view.classList.contains('has-plan')?'none':'flex','important');}
- function sync(){const tab=document.querySelector('#fp222Tabs [aria-selected=true]');const library=tab?.id==='fp222-tab-library';aside.classList.toggle('fp236Library',library);for(const child of libraryChildren)child.style.setProperty('display',library?'':'none','important');title.textContent=tab?.textContent||'';document.title='FurniPlan V237';center();}
+ function sync(){const tab=document.querySelector('#fp222Tabs [aria-selected=true]');const library=tab?.id==='fp222-tab-library';aside.classList.toggle('fp236Library',library);for(const child of libraryChildren)child.style.setProperty('display',library?'':'none','important');title.textContent=tab?.textContent||'';document.title='FurniPlan V238';center();}
  new MutationObserver(sync).observe(document.getElementById('fp222Tabs'),{subtree:true,attributes:true,attributeFilter:['aria-selected'],childList:true});
  new ResizeObserver(center).observe(view);new MutationObserver(center).observe(view,{attributes:true,attributeFilter:['class']});window.addEventListener('resize',center);view.addEventListener('scroll',center,{passive:true});
  document.getElementById('fp222Tabs').addEventListener('click',()=>requestAnimationFrame(sync));
@@ -63,4 +63,54 @@ function init(){
  `;document.head.append(style);sync();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(init,350));else setTimeout(init,350);
+})();
+/* V238: mobile library uses a horizontal bottom strip in portrait. */
+(()=>{
+function init(){
+ const aside=document.querySelector('.app>aside'),lib=document.getElementById('library');
+ if(!document.body.classList.contains('fp236')){setTimeout(init,50);return;}
+ document.body.classList.add('fp238');
+ const mobile=()=>matchMedia('(pointer:coarse)').matches||navigator.maxTouchPoints>0;
+ const actions=document.createElement('div');actions.id='fp238LibraryActions';
+ for(const id of ['addLibraryItemBtn','resetLibraryBtn']){const source=document.getElementById(id),b=document.createElement('button');b.type='button';b.className=source.className;b.onclick=()=>source.click();b.dataset.source=id;actions.append(b);}
+ function labels(){for(const b of actions.children)b.textContent=document.getElementById(b.dataset.source).textContent;}
+ function attach(){if(mobile()&&actions.parentElement!==lib)lib.append(actions);else if(!mobile()&&actions.parentElement)actions.remove();labels();}
+ function layout(){document.body.classList.toggle('fp238Mobile',mobile());document.body.classList.toggle('fp238Bottom',mobile()&&innerHeight>innerWidth&&aside.classList.contains('fp236Library'));attach();}
+ new MutationObserver(()=>{if(mobile()&&actions.parentElement!==lib)lib.append(actions);}).observe(lib,{childList:true});
+ new MutationObserver(layout).observe(aside,{attributes:true,attributeFilter:['class']});window.addEventListener('resize',layout);window.addEventListener('furniplan-language-changed',()=>setTimeout(labels,200));
+ lib.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'&&!e.target.closest('.touchDragHandle'))e.stopPropagation();},true);
+ const css=document.createElement('style');css.textContent=`
+ html body.fp238Mobile .app>aside #library .touchDragHandle{width:30px!important;min-width:30px!important;max-width:30px!important;height:30px!important;min-height:30px!important;max-height:30px!important;padding:0!important;font-size:16px!important;border-radius:7px!important;right:4px!important;bottom:4px!important}
+ html body.fp238Mobile .app>aside .mobileLibraryFooter,html body.fp238Mobile .app>aside .sectionTitleRow .libraryTools{display:none!important}
+ html body.fp238Mobile #library #fp238LibraryActions{position:static!important;grid-column:1/-1!important;display:flex!important;flex-direction:column!important;gap:6px!important;padding:8px!important;width:100%!important;height:auto!important;min-height:90px!important;box-sizing:border-box!important}
+ html body.fp238Mobile #fp238LibraryActions button{position:static!important;width:100%!important;min-width:0!important;white-space:normal!important;min-height:36px!important;font:11px Tahoma!important}
+ html body.fp238Mobile #library .fcard b{font-size:10px!important;line-height:1.25!important;white-space:normal!important}
+ html body.fp238Mobile #library .fcard>span{font-size:9px!important}
+ html body.fp236.fp238Bottom .app{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto minmax(0,1fr) 33.333dvh 36px!important}
+ html body.fp236.fp238Bottom .app>main{grid-column:1!important;grid-row:2!important}
+ html body.fp236.fp238Bottom .app>aside,html body.fp236.fp238Bottom .app>aside.open{grid-column:1!important;grid-row:3!important;width:100%!important;height:100%!important;padding:4px!important;gap:2px!important;border-top:1px solid #58708d!important}
+ html body.fp236.fp238Bottom .app>.appRights{grid-row:4!important}
+ html body.fp236.fp238Bottom #fp236PanelTitle,html body.fp236.fp238Bottom .app>aside .sectionTitleRow,html body.fp236.fp238Bottom .app>aside .fp233More,html body.fp236.fp238Bottom .app>aside .fp233CategoryName{display:none!important}
+ html body.fp236.fp238Bottom .app>aside .libraryBrowser{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:38px minmax(0,1fr)!important;gap:4px!important;min-height:0!important}
+ html body.fp236.fp238Bottom .app>aside #categoryList{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;grid-column:1!important;grid-row:1!important;height:38px!important;max-height:38px!important;overflow-x:auto!important;overflow-y:hidden!important;touch-action:pan-x!important;gap:4px!important}
+ html body.fp236.fp238Bottom .app>aside #categoryList button{flex:0 0 34px!important;width:34px!important;min-width:34px!important;height:32px!important;min-height:32px!important;touch-action:pan-x!important}
+ html body.fp236.fp238Bottom .app>aside #library{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:stretch!important;gap:7px!important;grid-column:1!important;grid-row:2!important;height:100%!important;min-height:0!important;overflow-x:auto!important;overflow-y:hidden!important;touch-action:pan-x!important;padding:3px 4px 8px!important;scrollbar-width:thin!important;direction:rtl!important}
+ html body.fp236.fp238Bottom .app>aside #library::-webkit-scrollbar{display:block!important;height:5px!important}
+ html body.fp236.fp238Bottom .app>aside #library>.fcard{display:flex!important;flex-direction:column!important;flex:0 0 145px!important;width:145px!important;min-width:145px!important;max-width:145px!important;height:100%!important;min-height:0!important;max-height:100%!important;padding:5px 5px 33px!important;touch-action:pan-x!important;overflow:hidden!important}
+ html body.fp236.fp238Bottom .app>aside #library>.fcard img{flex:1 1 0!important;min-height:0!important;height:0!important;width:100%!important;max-height:none!important;object-fit:contain!important}
+ html body.fp236.fp238Bottom .app>aside .fp233Rail{display:none!important}
+ html body.fp236.fp238Bottom #library #fp238LibraryActions{flex:0 0 145px!important;width:145px!important;min-width:145px!important;justify-content:center!important}
+ @media(max-width:600px){html body.fp236.fp238Bottom .app>aside #library>.fcard{flex-basis:120px!important;width:120px!important;min-width:120px!important;max-width:120px!important}}
+ @media(orientation:landscape) and (max-height:500px){
+ html body.fp238Mobile{--fp236-side:230px!important}
+ html body.fp236.fp238Mobile .app>aside #fp236PanelTitle,html body.fp236.fp238Mobile .app>aside .fp233CategoryName{display:none!important}
+ html body.fp236.fp238Mobile .app>aside .categoryList{max-height:38px!important;grid-template-columns:repeat(6,minmax(0,1fr))!important}
+ html body.fp236.fp238Mobile .app>aside .fp233More{display:none!important}
+ html body.fp236.fp238Mobile .app>aside #library{grid-template-columns:1fr!important;padding:3px 29px 5px 3px!important}
+ html body.fp236.fp238Mobile .app>aside #library>.fcard{height:170px!important;min-height:170px!important;max-height:170px!important;padding:6px 6px 31px!important}
+ html body.fp236.fp238Mobile .app>aside #library>.fcard img{height:100px!important;min-height:100px!important;max-height:100px!important;width:100%!important;object-fit:contain!important}
+ }
+ `;document.head.append(css);layout();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(init,500));else setTimeout(init,500);
 })();
