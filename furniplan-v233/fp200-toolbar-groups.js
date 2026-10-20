@@ -10,7 +10,7 @@
  ['library','المكتبة','Library',['v101Library','fpPhoneLibraryBtn']],
  ['settings','الإعدادات','Settings',['v44Info','v58Assistant']]
  ];
- let selected='file',nav,panels,common;
+ let selected='library',nav,panels,common;
  const english=()=>window.FurniPlanLanguage?.get?.()==='en';
  function select(key){selected=key;for(const [k] of groups){const tab=document.getElementById('fp222-tab-'+k),panel=document.getElementById('fp222-panel-'+k);tab?.setAttribute('aria-selected',String(k===key));if(panel)panel.hidden=k!==key;}window.dispatchEvent(new Event('resize'));}
  function setup(){
@@ -22,7 +22,7 @@
    panels=document.createElement('div');panels.id='fp222Panels';
    bar.before(nav);nav.after(common);area.append(panels);
    for(const [key,ar,en] of groups){
-    const tab=document.createElement('button');tab.id='fp222-tab-'+key;tab.type='button';tab.setAttribute('role','tab');tab.setAttribute('aria-controls','fp222-panel-'+key);tab.onclick=()=>{select(key);if(key==='library')window.openFullLibrary?.();};nav.append(tab);
+    const tab=document.createElement('button');tab.id='fp222-tab-'+key;tab.type='button';tab.setAttribute('role','tab');tab.setAttribute('aria-controls','fp222-panel-'+key);tab.onclick=()=>{select(key);};nav.append(tab);
     const panel=document.createElement('div');panel.id='fp222-panel-'+key;panel.className='fp222Panel';panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',tab.id);panels.append(panel);
    }
    nav.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();let i=groups.findIndex(g=>g[0]===selected);i=e.key==='Home'?0:e.key==='End'?groups.length-1:(i+(e.key==='ArrowRight'?1:-1)+groups.length)%groups.length;select(groups[i][0]);document.getElementById('fp222-tab-'+groups[i][0]).focus();});
@@ -35,7 +35,7 @@
   for(const child of [...bar.children]){if(child.classList.contains('topToolGroup')){for(const el of [...child.children])document.getElementById('fp222-panel-settings').append(el);child.remove();}else document.getElementById('fp222-panel-settings').append(child);}
   for(const [id,ar,en] of [['v44Calibrate','معايرة','Scale'],['fp198BoundaryBtn','حدود','Bounds'],['fp197LabelStyleBtn','تنسيق','Style'],['fp206MeasureStyleBtn','تنسيق','Style'],['v54Labels','المسميات','Labels'],['v54LockLabels','قفل','Lock'],['v54LockMeasures','قفل','Lock'],['v54Measures','القياسات','Measures'],['v54MeasureLine','خط القياس','Lines'],['v54Furniture','الأثاث','Furniture'],['v54Map','الخارطة','Plan'],['v44New','جديد','New'],['v44Fit','ملاءمة','Fit'],['v44Redo','إعادة','Redo'],['v44Undo','تراجع','Undo']]){const label=document.querySelector('#'+id+' .iconLabel');if(label){label.dataset.fp222Label='1';label.textContent=english()?en:ar;}}
   const search=document.getElementById('fp209LabelSearch');if(search)search.placeholder=english()?'Search labels':'ابحث عن مسمى';
-  select(selected);document.title='FurniPlan V231 — Approved / معتمدة';window.FP223Refresh?.();
+  select(selected);document.title='FurniPlan V236';window.FP223Refresh?.();
  }
  function init(){
  const style=document.createElement('style');style.id='fp222-ribbon-style';style.textContent=`
