@@ -29,8 +29,8 @@ function boot(){
  for(const id of ['v44Undo','v44Redo','unifiedOk','unifiedCancel'])if($(id))fixed.append($(id));
  // Relocate the existing controls so their listeners and file inputs remain intact.
  const panes={},tabButtons={};let active='file',busy=false,lastSelection='';
- const names={file:'ملف',map:'خارطة',measure:'قياس',text:'عناوين',color:'تلوين الخارطة',visibility:'إظهار وإخفاء',pipes:'الأنابيب',library:'المكتبة',settings:'الإعدادات'};
- const english={file:'File',map:'Plan',measure:'Measure',text:'Titles',color:'Plan colours',visibility:'Show / hide',pipes:'Pipes',library:'Library',settings:'Settings'};
+ const names={file:'ملف',map:'خارطة',measure:'قياس',text:'عناوين',color:'تلوين الخارطة',visibility:'إظهار وإخفاء',pipes:'الأنابيب',library:'مكتبة جانبية',settings:'الإعدادات'};
+ const english={file:'File',map:'Plan',measure:'Measure',text:'Titles',color:'Plan colours',visibility:'Show / hide',pipes:'Pipes',library:'Side library',settings:'Settings'};
  const definitions={
  file:['v44New','v44Open','v44Save','v44Upload','v60Dxf','v44Png','v44Pdf','v44Print'],
  map:['v44Calibrate','resetScaleBtn','v54Map','v44Grid'],
@@ -66,15 +66,15 @@ function boot(){
  // Full-library activation is independent of the category menu and ribbon drag state.
  const fullLibraryButton=$('v101Library');
  if(fullLibraryButton){fullLibraryButton.classList.remove('fpV195PrimaryLibrary');fullLibraryButton.onclick=e=>{e.preventDefault();const menu=$('sewerCategoryMenu');if(menu)menu.hidden=true;$('sewerTab_library')?.setAttribute('aria-expanded','false');window.openFullLibrary?.();};}
- tabButtons.library.onclick=()=>{activate('library');window.openFullLibrary?.();};
+ tabButtons.library.onclick=()=>activate('library');
  const guideGrid=$('usedFurnitureGrid'),guidePanel=$('usedFurniturePanel');
  const guideScroll=document.createElement('input');guideScroll.id='sewerGuideScroll';guideScroll.type='range';guideScroll.min='0';guideScroll.max='1000';guideScroll.value='0';guideScroll.setAttribute('aria-label',tr('تمرير الدليل','Scroll guide'));guidePanel.append(guideScroll);
  guideScroll.oninput=()=>{guideGrid.scrollTop=(guideGrid.scrollHeight-guideGrid.clientHeight)*Number(guideScroll.value)/1000;};
  function syncGuideScroll(){const max=guideGrid.scrollHeight-guideGrid.clientHeight;guideScroll.hidden=max<=1;if(max>1)guideScroll.value=String(Math.round(guideGrid.scrollTop/max*1000));}
  guideGrid.addEventListener('scroll',syncGuideScroll,{passive:true});new ResizeObserver(syncGuideScroll).observe(guideGrid);new MutationObserver(()=>requestAnimationFrame(syncGuideScroll)).observe(guideGrid,{childList:true,subtree:true});
  const uiPanel=document.createElement('div');uiPanel.id='sewerInterfacePanel';uiPanel.hidden=false;fixed.append(uiPanel);
- for(const [id,label] of [['uiIconSizeRange','الأيقونات'],['uiLabelSizeRange','الكتابة']]){const input=$(id);if(input){const box=input.closest('.modernSliderBox');if(box){const name=document.createElement('span');name.textContent=label;box.prepend(name);uiPanel.append(box);}}}
- button('sewerResetInterface','تهيئة',()=>{for(const id of ['uiIconSizeRange','uiLabelSizeRange']){const el=$(id);if(el){el.value=150;el.dispatchEvent(new Event('input',{bubbles:true}));}}},panes.settings);
+ for(const [id,label] of [['uiIconSizeRange','الأزرار والأيقونات'],['uiLabelSizeRange','كتابة الواجهة']]){const input=$(id);if(input){const box=input.closest('.modernSliderBox');if(box){const name=document.createElement('span');name.textContent=label;box.prepend(name);uiPanel.append(box);}}}
+ button('sewerResetInterface','تهيئة',()=>{for(const id of ['uiIconSizeRange','uiLabelSizeRange']){const el=$(id);if(el){el.value=window.SewerDeviceUIDefaults?.[id==='uiIconSizeRange'?'icon':'label']??150;el.dispatchEvent(new Event('input',{bubbles:true}));}}},panes.settings);
  const resetAppearance=$('sewerResetInterface');resetAppearance.classList.add('modernIconBtn');resetAppearance.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></svg><span class="iconLabel">تهيئة</span>';
  const visibilityLinks=[];
  function mirror(id,ar,en){const original=$(id);if(!original)return;const label=document.createElement('label');label.className='sewerRibbonCheck';const input=document.createElement('input');input.type='checkbox';input.id='sewerVisibility_'+id;const text=document.createElement('span');text.textContent=ar;label.append(input,text);panes.visibility.append(label);input.onchange=()=>{original.checked=input.checked;original.dispatchEvent(new Event('change',{bubbles:true}));sync();};visibilityLinks.push({input,text,ar,en,read:()=>!!original.checked});}
@@ -82,13 +82,10 @@ function boot(){
  for(const [key,id,ar,en] of [['innerLine','sewerHideInnerLine','الخط الداخلي للأنابيب','Pipe centreline'],['shadow','sewerShadowToggle','ظل الأنابيب','Pipe shadows'],['outline','sewerOutlineToggle','الحد الخارجي للأنابيب','Pipe outline']]){const label=document.createElement('label');label.className='sewerRibbonCheck';const input=document.createElement('input');input.type='checkbox';input.id='sewerVisibility_'+key;const text=document.createElement('span');text.textContent=ar;label.append(input,text);panes.visibility.append(label);input.onchange=()=>{const current=window.SewerPlan.getDisplay()[key];if(current!==input.checked)$(id)?.click();sync();};visibilityLinks.push({input,text,ar,en,read:()=>!!window.SewerPlan.getDisplay()[key]});}
  const uiVisibility={library:true,helper:true,sliders:true};
  for(const [key,ar,en] of [['library','المكتبة الجانبية','Library sidebar'],['helper','المساعد السفلي','Bottom assistant'],['sliders','منزلقات القسم','Section sliders']]){const label=document.createElement('label');label.className='sewerRibbonCheck';const input=document.createElement('input');input.type='checkbox';input.checked=true;const text=document.createElement('span');label.append(input,text);panes.visibility.append(label);input.onchange=()=>{uiVisibility[key]=input.checked;document.body.classList.toggle('sewer-hide-'+key,!input.checked);sync();};visibilityLinks.push({input,text,ar,en,read:()=>uiVisibility[key]});}
- function activate(key){if(document.documentElement.classList.contains('sewer-phone-ui')&&key!=='library'){document.body.classList.remove('sewer-phone-drawer-open');document.getElementById('sewerCategoryMenu')?.setAttribute('hidden','');}active=key;for(const [name,pane] of Object.entries(panes)){pane.style.setProperty('display',name===key?'flex':'none','important');tabButtons[name].classList.toggle('active',name===key);tabButtons[name].setAttribute('aria-pressed',String(name===key));}sync();}
+ function activate(key){if(document.documentElement.classList.contains('sewer-phone-ui')&&key!=='library'){document.body.classList.remove('sewer-phone-drawer-open');document.getElementById('sewerCategoryMenu')?.setAttribute('hidden','');}active=key;for(const [name,pane] of Object.entries(panes)){pane.style.setProperty('display',name===key?'flex':'none','important');tabButtons[name].classList.toggle('active',name===key);tabButtons[name].setAttribute('aria-pressed',String(name===key));}sync();window.SewerSideUI?.show(key,true);}
  const helper=document.createElement('div');helper.id='sewerContextHelper';helper.className='bottomInspector';helper.dir=isEnglish()?'ltr':'rtl';helper.innerHTML='<strong></strong><span></span>';$('selectedPanel')?.parentElement.append(helper);
  const phone=/iPhone|iPod|iPad|Android/i.test(navigator.userAgent)||(navigator.maxTouchPoints>1&&/Macintosh/i.test(navigator.userAgent));
  const primary=$('sewerPrimaryScroll');if(primary)primary.append(language);
- // V128: stable sizing dock, two-tone brand, then the scrolling ribbon.
- const brand=document.createElement('div');brand.id='sewerHeaderBrand';brand.dir='ltr';brand.setAttribute('aria-label','SewerPlan');brand.innerHTML='<span>Sewer</span><b>Plan</b>';
- header.prepend(uiPanel,brand);primary.prepend(modes);
  const handset=/iPhone|iPod/i.test(navigator.userAgent)||(/Android/i.test(navigator.userAgent)&&Math.min(screen.width,screen.height)<600);
  if(handset&&primary){document.documentElement.classList.add('sewer-handset-ui');primary.prepend(modes);}
  if(phone){document.documentElement.classList.add('sewer-phone-ui');const rights=document.querySelector('.appRights');if(rights){const copy=document.createElement('span');copy.className='sewerRightsCopy';while(rights.firstChild)copy.append(rights.firstChild);rights.append(copy,helper);}}
@@ -136,7 +133,7 @@ function boot(){
  let interfaceSignature="";
  function setText(el,text){if(el.textContent!==text)el.textContent=text;}
  function sync(){if(window.SewerNavigation?.active||window.SewerAppearanceUI?.draggingRange)return;if(busy)return;busy=true;try{
- const api=window.SewerPlan;if(!api)return;const en=window.FurniPlanLanguage?.get?.()==='en';for(const key in tabButtons)setText(tabButtons[key],en?english[key]:names[key]);setText(language,en?'العربية':'English');for(const link of visibilityLinks){link.input.checked=link.read();setText(link.text,en?link.en:link.ar);}const eng=!!window.SewerEngineering?.isActive(),state=eng?window.SewerEngineering.toolState():api.toolState();let ref=eng?window.SewerEngineering.selectionReference():api.selectionReference();const selected=typeof selectedItems==='function'?selectedItems():[];if(!ref&&selected.length===1)ref={type:'furniture',id:selected[0].id};const data=info(ref),special=currentMapLabel()||currentMeasure(),hasSelection=!!ref||selected.length>0,part=!!state.piece||!!state.editable||(!state.editing&&selected.length>0),ordinary=!data&&selected.length>0;
+ const api=window.SewerPlan;if(!api)return;const en=window.FurniPlanLanguage?.get?.()==='en';for(const key in tabButtons)setText(tabButtons[key].querySelector('.sewerTabLabel')||tabButtons[key],en?english[key]:names[key]);setText(language,en?'العربية':'English');for(const link of visibilityLinks){link.input.checked=link.read();setText(link.text,en?link.en:link.ar);}const eng=!!window.SewerEngineering?.isActive(),state=eng?window.SewerEngineering.toolState():api.toolState();let ref=eng?window.SewerEngineering.selectionReference():api.selectionReference();const selected=typeof selectedItems==='function'?selectedItems():[];if(!ref&&selected.length===1)ref={type:'furniture',id:selected[0].id};const data=info(ref),special=currentMapLabel()||currentMeasure(),hasSelection=!!ref||selected.length>0,part=!!state.piece||!!state.editable||(!state.editing&&selected.length>0),ordinary=!data&&selected.length>0;
  selectedView.disabled=!window.SewerSelectedView?.bounds();setText(selectedView.querySelector('.iconLabel'),en?'Selected':'المختار');setText($('sewerResetInterface').querySelector('.iconLabel'),en?'Reset':'تهيئة');
  const signature=JSON.stringify([en,active,eng,state,ref,selected.map(it=>[it.id,it.locked]),data,special?.id,hasPlan(),visibilityLinks.map(link=>link.read()),uiVisibility]);if(signature===interfaceSignature)return;interfaceSignature=signature;
  const sig=JSON.stringify(ref||{})+'|'+(special?.id||'');if(sig!==lastSelection){lastSelection=sig;const next=data?'pipes':currentMapLabel()?'text':currentMeasure()?'measure':ordinary?'library':null;if(next&&next!==active){active=next;for(const key in panes){panes[key].style.setProperty('display',key===active?'flex':'none','important');tabButtons[key].classList.toggle('active',key===active);}}}
@@ -155,6 +152,7 @@ function boot(){
  for(const id of ['se61Lengths','se61Diameters','se61Black'])if($(id))$(id).parentElement.style.display=eng?'flex':'none';
  const ready=typeof hasPlan==='function'&&hasPlan();for(const id of ['v44Calibrate','v44Measure','v65Area','resetScaleBtn'])if($(id))$(id).disabled=!ready;
  document.body.classList.toggle('sewer-context-active',!!data||(!ordinary&&!special));helper.dir=en?'ltr':'rtl';setText(helper.querySelector('strong'),data?.title||(en?english[active]:names[active]));setText(helper.querySelector('span'),data?data.details.join(' • '):(en?helpEnglish[active]:help[active]));
+ window.SewerSideUI?.show(active);
  }finally{busy=false;}}
  window.SewerContextUI.refresh=sync;window.SewerContextUI.activate=activate;
  let pending=false;function schedule(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;sync();});}
