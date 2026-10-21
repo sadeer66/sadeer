@@ -14,7 +14,15 @@ const cropSvg=(p)=>{const [x,y,w,h]=p.icon.split(' ');return `<svg viewBox="${p.
 programs.forEach((p,index)=>{const tab=document.createElement('button');tab.className='app-tab';tab.dataset.program=p.id;tab.setAttribute('aria-pressed','false');tab.innerHTML=`${cropSvg(p,true)}<span><b dir="ltr">${p.name}</b>${p.ar}</span>`;tab.onclick=()=>openProgram(p.id);$('appTabs').append(tab);const card=document.createElement('button');card.className='program-card';card.dataset.program=p.id;card.innerHTML=`<span class="program-number" aria-label="البرنامج ${index+1}">${index+1}</span>${cropSvg(p)}<div class="card-copy"><b class="program-name" dir="ltr">${p.name}</b><strong>${p.ar}</strong><small>${p.desc}</small><span class="open-label">فتح البرنامج <b aria-hidden="true">←</b></span></div>`;card.onclick=()=>openProgram(p.id);$('programGrid').append(card)});
 function applyDescriptionLanguage(){
  const english=descriptionLanguage==='en';
- for(const p of programs){const text=document.querySelector('.program-card[data-program="'+p.id+'"] .card-copy small');text.textContent=english?englishDescriptions[p.id]:p.desc;text.dir=english?'ltr':'rtl';text.lang=english?'en':'ar';}
+ for(const p of programs){const text=document.querySelector('.program-card[data-program="'+p.id+'"] .card-copy small');text.textContent=english?englishDescriptions[p.id]:p.desc;text.dir=english?'ltr':'rtl';text.lang=english?'en':'ar';
+ const card=text.closest('.program-card');
+ card.querySelector('.program-name').hidden=!english;
+ card.querySelector('strong').hidden=english;
+ card.querySelector('.open-label').innerHTML=(english?'Open program':'فتح البرنامج')+' <b aria-hidden="true">←</b>';
+ document.querySelector('.app-tab[data-program="'+p.id+'"] span').innerHTML='<b dir="'+(english?'ltr':'rtl')+'">'+(english?p.name:p.ar)+'</b>';
+ }
+ document.querySelector('.eyebrow').hidden=!english;
+ document.querySelector('.intro-copy h1').hidden=english;
  $('descriptionLanguage').textContent=english?'عربي':'English';
  $('descriptionLanguage').setAttribute('aria-label',english?'عرض الشرح بالعربية':'Show descriptions in English');
  $('descriptionLanguage').setAttribute('aria-pressed',String(english));
