@@ -66,7 +66,7 @@
     }
     dialog.showModal();get('sesDesktopNavClose').focus();
   }
-  window.SESDesktop = {command, open};
+  window.SESDesktop = {command, open, get busy() { return navigating; }};
   const homeFiles=document.createElement('div');homeFiles.id='sesDesktopHomeFiles';
   const save=document.createElement('button');save.type='button';save.dataset.save='1';save.onclick=()=>command('save');
   const restore=document.createElement('button');restore.type='button';restore.onclick=()=>command('open');

@@ -47,6 +47,7 @@ module.exports = async function smoke(window, root) {
     await window.SESProject.restore(window.SESCore.validate(JSON.parse(JSON.stringify(collected))));
     window.SESDesktop.open('electric');document.querySelector('#sesDesktopNavGrid [data-stage="color"]').click();
     await until(()=>[...document.querySelectorAll('#frames iframe')].some(f=>!f.hidden&&f.src.includes('/color/')));
+    await until(()=>!window.SESDesktop.busy);
     check(!document.getElementById('sesDesktopNavigator').open,'Program tile navigation works');
     window.SESDesktop.open('electric');document.querySelector('#sesDesktopNavGrid [data-home]').click();
     await until(()=>!document.body.classList.contains('in-app'));

@@ -6,7 +6,7 @@
   const english = () => window.FurniPlanLanguage?.get?.() === 'en' || document.documentElement.lang === 'en';
   const style = document.createElement('style');
   style.textContent = `
-    html body #sesDesktopSwitch{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;flex:0 0 auto!important;order:-3!important;width:auto!important;min-width:78px!important;height:38px!important;min-height:38px!important;padding:3px 9px!important;border:1px solid #d4ad62!important;border-radius:8px!important;background:#b77e2a!important;color:#fff!important;box-shadow:inset 0 1px #fff4!important;cursor:pointer!important;white-space:nowrap!important;font:800 14px Arial,Tahoma!important}
+    html body #sesDesktopSwitch{display:inline-flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;gap:6px!important;flex:0 0 auto!important;order:-3!important;width:auto!important;min-width:78px!important;height:38px!important;min-height:38px!important;padding:3px 9px!important;border:1px solid #d4ad62!important;border-radius:8px!important;background:#b77e2a!important;color:#fff!important;box-shadow:inset 0 1px #fff4!important;cursor:pointer!important;white-space:nowrap!important;font:800 14px Arial,Tahoma!important}
     html body #sesDesktopSwitch img{width:29px!important;height:29px!important;object-fit:contain!important;border-radius:5px!important}
     html body #sesDesktopSwitch:hover{background:#d0983f!important}
     html body .ses-desktop-file-actions{display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:7px!important;padding:5px 0!important;flex:0 0 auto!important;max-width:100%!important}
