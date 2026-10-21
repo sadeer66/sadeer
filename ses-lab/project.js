@@ -3,6 +3,11 @@
  const by=id=>document.getElementById(id),stages=['color','furni'],frames=new Map();
  let active=null,lastStage=null,busy=false,dirty=false,title='مشروعي',lastSaved=null,recovery=null;
  const empty=()=>({schema:'ses-project',version:1,title,updatedAt:new Date().toISOString(),activeStage:active||lastStage,stages:{}});
+ function setMenu(open){const visible=!!open&&document.body.classList.contains('in-app');document.body.classList.toggle('ses-menu-open',visible);by('sesMenuToggle').setAttribute('aria-expanded',String(visible));by('sesMenuBackdrop').hidden=!visible;}
+ by('sesMenuToggle').onclick=()=>setMenu(!document.body.classList.contains('ses-menu-open'));
+ by('sesMenuClose').onclick=()=>setMenu(false);
+ by('sesMenuBackdrop').onclick=()=>setMenu(false);
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false)});
  const status=(message,error=false)=>{by('projectStatus').textContent=message;by('projectStatus').classList.toggle('error',error)};
  async function database(){return new Promise((resolve,reject)=>{const r=indexedDB.open(new URLSearchParams(location.search).has('qa')?'ses-lab-qa-v1':'ses-lab-projects-v1',1);r.onupgradeneeded=()=>r.result.createObjectStore('drafts');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
  async function draftWrite(doc){const db=await database();try{await new Promise((resolve,reject)=>{const tx=db.transaction('drafts','readwrite');tx.objectStore('drafts').put(doc,'current');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}finally{db.close()}}
@@ -22,7 +27,7 @@
   const target=await stage(id);
   if(previous&&previous!==id){const before=await target.api.capture(false);await SESCore.exchange(source.api,target.api,sourceState,before)}
   for(const [key,e]of frames)e.frame.hidden=key!==id;
-  active=id;lastStage=id;by('workspace').hidden=false;by('home').hidden=true;document.body.classList.add('in-app');target.api.refresh();
+  active=id;lastStage=id;by('workspace').hidden=false;by('home').hidden=true;document.body.classList.add('in-app');target.api.refresh();setMenu(false);
   for(const b of document.querySelectorAll('[data-program]'))b.setAttribute('aria-pressed',String(b.dataset.program===id));
   dirty=true;status(sourceState?.map?'تم فتح المرحلة ونقل الخارطة والمعايرة؛ بيانات كل مرحلة محفوظة':'افتح خارطة وعايرها داخل المرحلة، ثم انتقل من الشريط العلوي');
  }
@@ -36,7 +41,7 @@
   const id=stages.includes(doc.activeStage)&&doc.stages[doc.activeStage]?doc.activeStage:stages.find(x=>doc.stages[x]);
   if(id)await switchTo(id);else showHome();lastSaved=doc;dirty=false;try{await draftWrite(doc)}catch{}status('تم فتح مشروع SES بمراحل التلوين والأثاث');
  }
- function showHome(){if(active)lastStage=active;for(const e of frames.values())e.frame.hidden=true;by('home').hidden=false;by('workspace').hidden=true;document.body.classList.remove('in-app');active=null}
+ function showHome(){setMenu(false);if(active)lastStage=active;for(const e of frames.values())e.frame.hidden=true;by('home').hidden=false;by('workspace').hidden=true;document.body.classList.remove('in-app');active=null}
  window.SESProject={stage,switchTo,collect,restore};
  document.querySelectorAll('[data-program]').forEach(button=>button.onclick=()=>run(()=>switchTo(button.dataset.program)));
  if(!document.fullscreenEnabled)by('fullscreen').hidden=true;else by('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){status(e.message,true)}};

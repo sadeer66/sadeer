@@ -23,3 +23,16 @@
 #projectBar{flex:0 0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#eadcc5;padding:9px 15px;border-bottom:1px solid #c9b591;font-size:12px}
 .lab-badge{font-weight:bold;color:#694b23}#projectBar input:not([type=file]){width:145px;min-width:80px;padding:7px;border:1px solid #bcaa8d;border-radius:6px;background:#faf4e8;font:inherit;color:#302518}#projectBar button{padding:7px 10px;border:1px solid #ae9163;border-radius:7px;background:#faf4e8;color:#3b2c19;font:inherit}#projectStatus{flex:1;min-width:180px;font-size:11px;line-height:1.6;color:#514530}#projectStatus.error{color:#a71e24}.project-busy #projectBar button,.project-busy [data-program]{pointer-events:none;opacity:.65}.program-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-width:760px;margin:auto}
 @media(max-width:600px){#projectBar{padding:7px;gap:5px;font-size:10px}.lab-badge{width:100%}#projectBar input:not([type=file]){width:110px;padding:6px}#projectBar button{padding:6px}#projectStatus{flex-basis:100%;font-size:10px}}
+
+/* Workspace chrome is an overlay; neither menu nor trigger takes canvas height. */
+#sesControls{display:contents}
+#sesMenuToggle,#sesMenuClose{display:none}
+#sesMenuBackdrop{position:fixed;inset:0;width:100%;height:100%;border:0;background:#07121e80;z-index:39;cursor:default}
+body.in-app #studioFooter{display:none}
+body.in-app #sesControls{display:none}
+body.in-app #sesMenuToggle{display:block;position:fixed;left:max(10px,env(safe-area-inset-left));bottom:max(8px,env(safe-area-inset-bottom));z-index:41;border:1px solid #bf9a60;border-radius:20px;background:#142235;color:#f3eadb;box-shadow:0 3px 12px #0004;padding:7px 13px;font:600 12px/1.3 Arial,Tahoma,sans-serif;min-height:32px;touch-action:manipulation}
+body.in-app.ses-menu-open #sesControls{display:block;position:fixed;top:max(10px,env(safe-area-inset-top));left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));z-index:40;max-height:calc(100dvh - 70px);overflow:auto;border:1px solid #bfa37b;border-radius:12px;background:#eadcc5;box-shadow:0 12px 40px #0005;padding-top:34px}
+body.in-app #sesMenuClose{display:block;position:absolute;top:5px;left:8px;border:0;border-radius:5px;background:transparent;color:#40301c;padding:4px 9px;font:600 12px Tahoma,Arial,sans-serif}
+body.in-app.ses-menu-open #studioHeader{height:54px}
+body.in-app.ses-menu-open #projectBar{padding:12px}
+@media(max-width:600px){body.in-app #sesMenuToggle{font-size:11px;min-height:30px;padding:6px 11px}body.in-app.ses-menu-open #sesControls{left:6px;right:6px;top:6px}body.in-app.ses-menu-open #projectBar{padding:9px}}
