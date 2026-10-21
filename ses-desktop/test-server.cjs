@@ -7,7 +7,7 @@ const crypto = require('node:crypto');
 const {createServer} = require('./server.cjs');
 const root = path.resolve(process.argv[2] || path.join(__dirname, 'Web'));
 test('All original media URLs resolve byte-for-byte to one central copy', async () => {
-  const server = createServer(root);
+  const server = createServer(root,{authorize:()=>true});
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   const origin = `http://127.0.0.1:${server.address().port}`;
   try {
@@ -32,4 +32,9 @@ test('All original media URLs resolve byte-for-byte to one central copy', async 
     assert.equal((await fetch(origin + '/', {method:'POST', body:'x'})).status, 405);
     console.log(JSON.stringify({verified_media_urls:entries.length, unique_physical_media:Object.keys(index.assets).length}));
   } finally { await new Promise(resolve => server.close(resolve)); }
+});
+test('Desktop server denies all application files unless activation explicitly authorizes them',async()=>{
+  const server=createServer(root);
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  try{const origin=`http://127.0.0.1:${server.address().port}`;assert.equal((await fetch(origin+'/')).status,403);assert.equal((await fetch(origin+'/apps/furni/engine.html')).status,403);}finally{await new Promise(resolve=>server.close(resolve));}
 });
