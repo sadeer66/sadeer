@@ -1,9 +1,7 @@
 'use strict';
 const programs=[
- {id:'color',name:'ColorPlan',ar:'تلوين المخطط',version:'V11.86',path:'smart-render-v11.74/?v=1186',crop:'100 155 840 340',icon:'350 155 275 235',desc:'لوّن مخططك، وأضف الخامات والإضاءة لتحوّله إلى عرض جميل وواضح.'},
- {id:'furni',name:'FurniPlan',ar:'تخطيط الأثاث',version:'V240',path:'furniplan-v233/?v=240',crop:'1165 140 590 350',icon:'1310 145 250 220',desc:'رتّب الأثاث على مخططك، واضبط مقاساته لتختار أفضل توزيع للمساحات.'},
- {id:'sewer',name:'SewerPlan',ar:'تمديدات المجاري',version:'V137',path:'sewerplan-v128/?v=137',crop:'1165 620 590 350',icon:'1310 625 255 235',desc:'خطّط شبكة المجاري، ووزّع التوصيلات مع حساب أطوال الأنابيب وأعداد الملحقات.'},
- {id:'electric',name:'ElectricalPlan',ar:'مخطط الكهرباء',version:'V61',path:'electricalplan-v53/?v=61',crop:'220 630 555 330',icon:'365 635 260 240',desc:'وزّع نقاط الكهرباء والإنارة والأجهزة على المخطط لتوضيح أماكنها وتنظيمها.'}
+ {id:'color',name:'ColorPlan',ar:'تلوين المخطط',version:'V11.86',path:'apps/color/',crop:'100 155 840 340',icon:'350 155 275 235',desc:'لوّن مخططك، وأضف الخامات والإضاءة لتحوّله إلى عرض جميل وواضح.'},
+ {id:'furni',name:'FurniPlan',ar:'تخطيط الأثاث',version:'V240',path:'apps/furni/',crop:'1165 140 590 350',icon:'1310 145 250 220',desc:'رتّب الأثاث على مخططك، واضبط مقاساته لتختار أفضل توزيع للمساحات.'},
 ].filter(p=>['color','furni'].includes(p.id));
 const englishDescriptions={"color":"Color your plan with finishes and lighting for a clear, polished view.","furni":"Place and size furniture to find the best layout for your space.","sewer":"Plan drainage routes, place fittings, and count pipes and accessories.","electric":"Position power points, lights, and devices clearly on your plan."};
 let descriptionLanguage='ar';
