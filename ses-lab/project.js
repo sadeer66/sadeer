@@ -3,6 +3,8 @@
  const by=id=>document.getElementById(id),stages=['color','furni'],frames=new Map();
  let active=null,lastStage=null,busy=false,dirty=false,title='مشروعي',lastSaved=null,recovery=null;
  const empty=()=>({schema:'ses-project',version:1,title,updatedAt:new Date().toISOString(),activeStage:active||lastStage,stages:{}});
+ function placeMenu(){if(!active)return;const e=frames.get(active);if(!e)return;const doc=e.frame.contentDocument,header=doc?.getElementById('fp236Header')||doc?.getElementById('cpHeader83');const y=header?e.frame.getBoundingClientRect().top+header.getBoundingClientRect().bottom+6:12;document.documentElement.style.setProperty('--ses-menu-top',Math.max(6,Math.min(innerHeight-44,y))+'px');}
+ window.addEventListener('resize',placeMenu);
  function setMenu(open){const visible=!!open&&document.body.classList.contains('in-app');document.body.classList.toggle('ses-menu-open',visible);by('sesMenuToggle').setAttribute('aria-expanded',String(visible));by('sesMenuBackdrop').hidden=!visible;}
  by('sesMenuToggle').onclick=()=>setMenu(!document.body.classList.contains('ses-menu-open'));
  by('sesMenuClose').onclick=()=>setMenu(false);
@@ -16,7 +18,7 @@
   if(frames.has(id))return frames.get(id);
   const frame=document.createElement('iframe');frame.title=id==='color'?'التلوين — نسخة تجريبية مستقلة':'الأثاث — نسخة تجريبية مستقلة';frame.allow='fullscreen; clipboard-read; clipboard-write';frame.hidden=true;frame.src='apps/'+id+'/?v=2'+(new URLSearchParams(location.search).has('qa')?'&qa=1':'');by('frames').append(frame);
   const api=await new Promise((resolve,reject)=>{const deadline=Date.now()+90000;const timer=setInterval(()=>{if(frame.contentWindow?.SESStage){clearInterval(timer);resolve(frame.contentWindow.SESStage)}else if(Date.now()>deadline){clearInterval(timer);frame.remove();reject(Error('لم يكتمل فتح المرحلة. تحقق من الاتصال ثم أعد المحاولة'))}},150)});
-  const entry={frame,api};frames.set(id,entry);return entry;
+  const entry={frame,api};frames.set(id,entry);const header=frame.contentDocument.getElementById('fp236Header')||frame.contentDocument.getElementById('cpHeader83');if(header){entry.headerObserver=new ResizeObserver(()=>{if(active===id)placeMenu()});entry.headerObserver.observe(header)}return entry;
  }
  async function collect(preview=false){const doc=empty();for(const [id,e]of frames){const state=await e.api.capture(preview);state.native.sharedKey=state.map?.key||null;doc.stages[id]=state}return doc}
  async function autosave(){if(busy||!frames.size)return;try{const doc=await collect(false);await draftWrite(doc);lastSaved=doc;dirty=false;by('restoreDraft').hidden=false;status('حُفظت نسخة استعادة على هذا الجهاز · '+new Date().toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'}))}catch(e){status('لم يكتمل الحفظ التلقائي: '+e.message,true)}}
@@ -27,7 +29,7 @@
   const target=await stage(id);
   if(previous&&previous!==id){const before=await target.api.capture(false);await SESCore.exchange(source.api,target.api,sourceState,before)}
   for(const [key,e]of frames)e.frame.hidden=key!==id;
-  active=id;lastStage=id;by('workspace').hidden=false;by('home').hidden=true;document.body.classList.add('in-app');target.api.refresh();setMenu(false);
+  active=id;lastStage=id;by('workspace').hidden=false;by('home').hidden=true;document.body.classList.add('in-app');target.api.refresh();setMenu(false);requestAnimationFrame(placeMenu);
   for(const b of document.querySelectorAll('[data-program]'))b.setAttribute('aria-pressed',String(b.dataset.program===id));
   dirty=true;status(sourceState?.map?'تم فتح المرحلة ونقل الخارطة والمعايرة؛ بيانات كل مرحلة محفوظة':'افتح خارطة وعايرها داخل المرحلة، ثم انتقل من الشريط العلوي');
  }

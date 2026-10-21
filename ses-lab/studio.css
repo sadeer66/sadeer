@@ -36,3 +36,7 @@ body.in-app #sesMenuClose{display:block;position:absolute;top:5px;left:8px;borde
 body.in-app.ses-menu-open #studioHeader{height:54px}
 body.in-app.ses-menu-open #projectBar{padding:12px}
 @media(max-width:600px){body.in-app #sesMenuToggle{font-size:11px;min-height:30px;padding:6px 11px}body.in-app.ses-menu-open #sesControls{left:6px;right:6px;top:6px}body.in-app.ses-menu-open #projectBar{padding:9px}}
+
+/* Yellow SES handle sits below each copied application's toolbar. */
+body.in-app #sesMenuToggle{top:var(--ses-menu-top,90px);bottom:auto;background:#f4c84d;color:#322510;border-color:#b48826;box-shadow:0 3px 10px #0003}
+body.in-app #sesMenuToggle:hover{background:#ffda63}
