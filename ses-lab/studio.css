@@ -57,3 +57,7 @@ body.in-app #sesMenuToggle{top:auto;left:max(6px,env(safe-area-inset-left));bott
 #sesTransition.load-error #sesLoadTitle{color:#9c3232}
 @media(max-width:600px){#sesLoadTitle{font-size:17px}.ses-load-content>img{width:min(270px,75vw);margin-bottom:24px}#sesLoadDetail{font-size:11px}}
 @media(prefers-reduced-motion:reduce){#sesLoadFill{transition:none}}
+
+/* Approved engraved SES identity; shadows follow its transparent silhouette. */
+.brand img,.ses-load-content>img{filter:drop-shadow(0 12px 20px rgba(67,44,17,.22)) drop-shadow(0 3px 5px rgba(67,44,17,.10))}
+.home-button img{filter:drop-shadow(0 3px 4px rgba(35,24,13,.22))}

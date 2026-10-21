@@ -19,3 +19,7 @@
 #descriptionLanguage:hover{background:#decbad}
 .card-copy small[dir=ltr]{text-align:left;font-family:Arial,sans-serif;line-height:1.65}
 @media(max-width:600px){.intro-actions{justify-content:center}#descriptionLanguage{font-size:11px;padding:6px 14px}.card-copy small[dir=ltr]{line-height:1.75}}
+
+/* Approved engraved SES identity; shadows follow its transparent silhouette. */
+.brand img,.ses-load-content>img{filter:drop-shadow(0 12px 20px rgba(67,44,17,.22)) drop-shadow(0 3px 5px rgba(67,44,17,.10))}
+.home-button img{filter:drop-shadow(0 3px 4px rgba(35,24,13,.22))}
