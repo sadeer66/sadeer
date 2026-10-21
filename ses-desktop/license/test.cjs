@@ -24,5 +24,6 @@ test('Owner registry persists licenses, re-exports identical tokens, and merges 
   assert.equal(registry.list()[0].token,undefined);assert.ok(!registry.backup().includes('PRIVATE KEY'));
   const restored=new Registry(path.join(folder,'restored.dat'));assert.equal(restored.restore(registry.backup()).added,1);assert.equal(restored.restore(registry.backup()).added,0);assert.equal(restored.find(record.licenseId).token,token);
   const before=restored.backup();const corrupt=JSON.parse(before);const parsed=JSON.parse(corrupt.licenses[0].token);parsed.signature=Buffer.alloc(64).toString('base64url');corrupt.licenses[0].token=JSON.stringify(parsed);assert.throws(()=>restored.restore(JSON.stringify(corrupt)));assert.equal(restored.backup(),before);
+  fs.writeFileSync(restored.file,'broken');assert.throws(()=>restored.list());assert.equal(restored.restore(before).recovered,true);assert.equal(restored.find(record.licenseId).token,token);assert.ok(fs.readdirSync(folder).some(x=>x.includes('.unreadable-')));
  }finally{fs.rmSync(folder,{recursive:true,force:true});}
 });
