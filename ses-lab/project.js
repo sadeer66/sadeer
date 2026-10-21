@@ -9,7 +9,7 @@
  async function draftRead(){const db=await database();try{return await new Promise((resolve,reject)=>{const r=db.transaction('drafts').objectStore('drafts').get('current');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}finally{db.close()}}
  async function stage(id){
   if(frames.has(id))return frames.get(id);
-  const frame=document.createElement('iframe');frame.title=id==='color'?'التلوين — نسخة تجريبية مستقلة':'الأثاث — نسخة تجريبية مستقلة';frame.allow='fullscreen; clipboard-read; clipboard-write';frame.hidden=true;frame.src='apps/'+id+'/'+(new URLSearchParams(location.search).has('qa')?'?qa=1':'');by('frames').append(frame);
+  const frame=document.createElement('iframe');frame.title=id==='color'?'التلوين — نسخة تجريبية مستقلة':'الأثاث — نسخة تجريبية مستقلة';frame.allow='fullscreen; clipboard-read; clipboard-write';frame.hidden=true;frame.src='apps/'+id+'/?v=2'+(new URLSearchParams(location.search).has('qa')?'&qa=1':'');by('frames').append(frame);
   const api=await new Promise((resolve,reject)=>{const deadline=Date.now()+90000;const timer=setInterval(()=>{if(frame.contentWindow?.SESStage){clearInterval(timer);resolve(frame.contentWindow.SESStage)}else if(Date.now()>deadline){clearInterval(timer);frame.remove();reject(Error('لم يكتمل فتح المرحلة. تحقق من الاتصال ثم أعد المحاولة'))}},150)});
   const entry={frame,api};frames.set(id,entry);return entry;
  }
