@@ -1,29 +1,9 @@
-# SES Lab — تجربة الربط الأولى
+# SES isolated four-stage preview
 
-نسخة تطوير مستقلة بتاريخ 2026-10-21، مأخوذة من commit `6adc826ddf96f4dfddc6395355c59f8370d07201`.
+All four applications are copied independently under apps/: ColorPlan, FurniPlan, SewerPlan, and ElectricalPlan. Approved standalone program directories and ses-studio remain unchanged.
 
-لا تُعدّل هذه النسخة ملفات SES المعتمدة أو البرامج المستقلة. ملفات التطبيقين ومكتبتهما داخل `apps/color` و`apps/furni` نسخ كاملة في مسارات مستقلة. اسم `engine.html` يحتفظ بملف التطبيق الأصلي، وتضيف ملفات التحميل وعزل الإعدادات و`ses-adapter.js` وظائف الربط للنسخة التجريبية فقط.
+The shared .ses format retains each stage native editable data, base map, pixel dimensions and calibration. The menu is a yellow floating button at the bottom left. Programs initialize only when opened. Local preferences and IndexedDB backups are isolated per stage.
 
-## المتاح
+Run browser checks at tests/four-stages.html. Apple wrapper, unsigned simulator build instructions, and device acceptance checklist are in apple/README.md. Bundle preparation extracts large inline images into deduplicated local files, updates actual progress weights, and writes an integrity manifest.
 
-- فتح التلوين والأثاث من الواجهة التجريبية.
-- نقل نتيجة التلوين كخلفية مصورة بنفس أبعاد الإحداثيات ومعايرة السنتيمتر.
-- الاحتفاظ بطبقات التلوين وقطع الأثاث كبيانات مستقلة قابلة للتعديل عند التنقل.
-- الرجوع عبر الرئيسية دون فقد بيانات المرحلتين.
-- حفظ وفتح ملف `.ses` يحتوي بيانات المرحلتين.
-- حفظ نسخة استعادة في IndexedDB كل 30 ثانية عندما لا توجد عملية رسم غير مثبتة.
-- عزل إعدادات النسخ التجريبية عن مفاتيح البرامج الثابتة.
-- تأكيد قبل استبدال خارطة مختلفة كي لا تُمسح بيانات مرحلة دون علم المستخدم.
-
-## حدود هذه المرحلة
-
-- المجاري والكهرباء لم تُربطا بعد؛ النسخة التجريبية تعرض التلوين والأثاث فقط.
-- النقل بين المرحلتين خلفية مصورة، وليس دمجًا للكائنات المتجهة. بيانات DXF الأصلية تبقى في مشروع مرحلتها.
-- لا تزامن حي أثناء الرسم: تنتقل النتيجة عند تبديل المرحلة.
-- تغيير حدود الخارطة أو نسب محاورها يجعلها خارطة مختلفة ويحتاج تأكيد الاستبدال.
-- ملف المشروع يحفظ القطع الموضوعة وخاماتها؛ مكتبة الأثاث الكاملة موجودة في نسخة التطبيق المنفصلة.
-- عمليات الرسم غير المثبتة يجب تثبيتها قبل التبديل أو الحفظ.
-
-## التحقق
-
-صفحة `tests/bridge-check.html` تنفذ اختبارات الربط والحفظ والاستعادة والعزل داخل قاعدة اختبار منفصلة. لا تُستخدم الصفحة للعمل الفعلي. فحوص المنطق تشمل إلغاء استبدال الخارطة والتحقق من مخطط ملف المشروع وأبعاده.
+No TestFlight upload or Apple signing is part of the unsigned preview build.

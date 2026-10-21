@@ -1,0 +1,31 @@
+// !$*UTF8*$!
+{ archiveVersion = 1; classes = {}; objectVersion = 56; objects = {
+FB30EBEDBEC74B6FC07F1FD3 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SESApp.swift; sourceTree = "<group>"; };
+D91F0ADA9744BEFBF341EFF3 = { isa = PBXBuildFile; fileRef = FB30EBEDBEC74B6FC07F1FD3; };
+D906FFBC10507703725F0246 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudioController.swift; sourceTree = "<group>"; };
+54B599036DE0F9B86DBF3D57 = { isa = PBXBuildFile; fileRef = D906FFBC10507703725F0246; };
+ADA40884C5E672C06BB1B321 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalServer.swift; sourceTree = "<group>"; };
+BF2DD265ABC88E0BEF8D098A = { isa = PBXBuildFile; fileRef = ADA40884C5E672C06BB1B321; };
+D2D7FEA71AEDB232B36D3BF6 = { isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+27C21A5B2B693466911459F8 = { isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+4D41DD372D8E0FAD9BCA5A62 = { isa = PBXBuildFile; fileRef = 27C21A5B2B693466911459F8; };
+3D9C034DEADFF47588DBB4E1 = { isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+993A6F0DC816349E9715E5C7 = { isa = PBXBuildFile; fileRef = 3D9C034DEADFF47588DBB4E1; };
+BB59F4E16A7F5461100B1B8D = { isa = PBXFileReference; lastKnownFileType = folder; path = Web; sourceTree = "<group>"; };
+6B54E17105CE16D6902A7B8E = { isa = PBXBuildFile; fileRef = BB59F4E16A7F5461100B1B8D; };
+38A007151ABE87CC01A5B6E9 = { isa = PBXFileReference; explicitFileType = wrapper.application; path = SES.app; sourceTree = BUILT_PRODUCTS_DIR; };
+BCE16DD0260827ECF338C787 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (D91F0ADA9744BEFBF341EFF3, 54B599036DE0F9B86DBF3D57, BF2DD265ABC88E0BEF8D098A,); runOnlyForDeploymentPostprocessing = 0; };
+0189424A5A60FED329FA868E = { isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (4D41DD372D8E0FAD9BCA5A62, 993A6F0DC816349E9715E5C7, 6B54E17105CE16D6902A7B8E,); runOnlyForDeploymentPostprocessing = 0; };
+7561BFB015D8F536760CB671 = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+5ED9CFB4AF122CD83E6B3E42 = { isa = PBXGroup; children = (FB30EBEDBEC74B6FC07F1FD3, D906FFBC10507703725F0246, ADA40884C5E672C06BB1B321, D2D7FEA71AEDB232B36D3BF6, 27C21A5B2B693466911459F8, 3D9C034DEADFF47588DBB4E1, BB59F4E16A7F5461100B1B8D,); path = SES; sourceTree = "<group>"; };
+FBDC4F23F93125BBEEAE800C = { isa = PBXGroup; children = (38A007151ABE87CC01A5B6E9,); name = Products; sourceTree = "<group>"; };
+B28B7AF69320201D1CF206EB = { isa = PBXGroup; children = (5ED9CFB4AF122CD83E6B3E42, FBDC4F23F93125BBEEAE800C,); sourceTree = "<group>"; };
+A5B807C14840D402FB18504C = { isa = XCBuildConfiguration; name = Debug; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 15.0; CLANG_ENABLE_MODULES = YES; SWIFT_VERSION = 5.0; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; }; };
+B9C3D9F7698D5A4A74B8CD8E = { isa = XCBuildConfiguration; name = Debug; buildSettings = { ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = SES/Info.plist; INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES; INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES; MARKETING_VERSION = 0.1; PRODUCT_BUNDLE_IDENTIFIER = com.sadeerengineering.ses.preview; PRODUCT_NAME = "$(TARGET_NAME)"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2"; }; };
+D5BBF416BE741FE12D902D89 = { isa = XCBuildConfiguration; name = Release; buildSettings = { SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 15.0; CLANG_ENABLE_MODULES = YES; SWIFT_VERSION = 5.0; SWIFT_OPTIMIZATION_LEVEL = "-O"; }; };
+9C26231157F80DE209CE8B3D = { isa = XCBuildConfiguration; name = Release; buildSettings = { ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = SES/Info.plist; INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES; INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES; MARKETING_VERSION = 0.1; PRODUCT_BUNDLE_IDENTIFIER = com.sadeerengineering.ses.preview; PRODUCT_NAME = "$(TARGET_NAME)"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2"; }; };
+01DF1D3A7F02866ECA6BB742 = { isa = XCConfigurationList; buildConfigurations = (A5B807C14840D402FB18504C, D5BBF416BE741FE12D902D89,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+8D8B67C81BE4F695571BC034 = { isa = XCConfigurationList; buildConfigurations = (B9C3D9F7698D5A4A74B8CD8E, 9C26231157F80DE209CE8B3D,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+0E8A3AD980EC179856012B7E = { isa = PBXNativeTarget; buildConfigurationList = 8D8B67C81BE4F695571BC034; buildPhases = (BCE16DD0260827ECF338C787, 7561BFB015D8F536760CB671, 0189424A5A60FED329FA868E,); buildRules = (); dependencies = (); name = SES; productName = SES; productReference = 38A007151ABE87CC01A5B6E9; productType = "com.apple.product-type.application"; };
+98F54143AB4E86B28C3AFEE0 = { isa = PBXProject; attributes = { BuildIndependentTargetsInParallel = YES; LastUpgradeCheck = 1600; }; buildConfigurationList = 01DF1D3A7F02866ECA6BB742; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, ar, Base,); mainGroup = B28B7AF69320201D1CF206EB; productRefGroup = FBDC4F23F93125BBEEAE800C; projectDirPath = ""; projectRoot = ""; targets = (0E8A3AD980EC179856012B7E,); };
+}; rootObject = 98F54143AB4E86B28C3AFEE0; }

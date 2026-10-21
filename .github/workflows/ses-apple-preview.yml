@@ -1,0 +1,42 @@
+name: SES Apple preview build
+on:
+  push:
+    paths:
+      - 'ses-lab/**'
+      - '.github/workflows/ses-apple-preview.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ses-apple-preview
+  cancel-in-progress: true
+jobs:
+  bundle-and-simulator:
+    runs-on: macos-14
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: ses-lab
+          fetch-depth: 1
+      - name: Prepare all four local programs
+        run: |
+          python3 ses-lab/tools/prepare_bundle.py "$RUNNER_TEMP/SES-Web"
+          python3 ses-lab/tools/prepare_bundle.py "$RUNNER_TEMP/SES-Web" --verify
+          cp -R "$RUNNER_TEMP/SES-Web" ses-lab/apple/SES/Web
+          cd "$RUNNER_TEMP"
+          ditto -c -k --keepParent SES-Web SES-Offline-Web-four7.zip
+      - name: Build unsigned iOS Simulator application
+        run: |
+          xcodebuild -project ses-lab/apple/SES.xcodeproj -scheme SES -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath "$RUNNER_TEMP/SES-Build" CODE_SIGNING_ALLOWED=NO build > "$RUNNER_TEMP/SES-build.log" 2>&1 || { tail -n 100 "$RUNNER_TEMP/SES-build.log"; exit 1; }
+          ditto -c -k --keepParent "$RUNNER_TEMP/SES-Build/Build/Products/Debug-iphonesimulator/SES.app" "$RUNNER_TEMP/SES-Simulator-four7.zip"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: SES-Apple-Preview-four7
+          path: |
+            ${{ runner.temp }}/SES-Offline-Web-four7.zip
+            ${{ runner.temp }}/SES-Simulator-four7.zip
+            ${{ runner.temp }}/SES-build.log
+          if-no-files-found: error
+          retention-days: 30

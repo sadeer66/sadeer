@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict>
+<key>CFBundleDisplayName</key><string>SES</string>
+<key>NSAppTransportSecurity</key><dict><key>NSAllowsLocalNetworking</key><true/></dict>
+<key>UIFileSharingEnabled</key><true/><key>LSSupportsOpeningDocumentsInPlace</key><true/>
+<key>UISupportedInterfaceOrientations</key><array><string>UIInterfaceOrientationPortrait</string><string>UIInterfaceOrientationLandscapeLeft</string><string>UIInterfaceOrientationLandscapeRight</string></array>
+<key>UISupportedInterfaceOrientations~ipad</key><array><string>UIInterfaceOrientationPortrait</string><string>UIInterfaceOrientationPortraitUpsideDown</string><string>UIInterfaceOrientationLandscapeLeft</string><string>UIInterfaceOrientationLandscapeRight</string></array>
+<key>UILaunchScreen</key><dict/>
+<key>NSCameraUsageDescription</key><string>التقاط صورة خارطة لاستخدامها في مشروعك داخل SES.</string>
+<key>NSPhotoLibraryUsageDescription</key><string>اختيار صورة خارطة لإضافتها إلى مشروعك داخل SES.</string>
+<key>NSPhotoLibraryAddUsageDescription</key><string>حفظ صورة المخطط المصدّر إلى مكتبة الصور.</string>
+</dict></plist>
