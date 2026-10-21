@@ -2,8 +2,11 @@
 (async()=>{try{
  let html=await fetch('engine.html').then(r=>{if(!r.ok)throw Error('تعذر تحميل ملفات المرحلة');return r.text()});
  html=html.replace('<html','<html data-ses-stage="color"');
+ // Start external script downloads together; execution keeps the engine's original order.
+ const urls=[...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["']/gi)].map(m=>m[1]);
+ const preloads=[...new Set(urls)].map(src=>'<link rel="preload" as="script" href="'+src.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">').join('');
  const head=html.indexOf('>',html.indexOf('<head'))+1;
- html=html.slice(0,head)+'<script src="../../isolate.js?v=2"><\/script>'+html.slice(head);
+ html=html.slice(0,head)+preloads+'<style>#fpSplash,#splash{display:none!important}</style><script src="../../isolate.js?v=2"><\/script>'+html.slice(head);
  // This legacy cleanup targets stable app caches; disable it in the isolated copy.
  html=html.replace("if('caches' in window)","if(false)");
  const end=html.lastIndexOf('</body>');

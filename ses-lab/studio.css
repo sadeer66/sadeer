@@ -40,3 +40,6 @@ body.in-app.ses-menu-open #projectBar{padding:12px}
 /* Yellow SES handle sits below each copied application's toolbar. */
 body.in-app #sesMenuToggle{top:var(--ses-menu-top,90px);bottom:auto;background:#f4c84d;color:#322510;border-color:#b48826;box-shadow:0 3px 10px #0003}
 body.in-app #sesMenuToggle:hover{background:#ffda63}
+
+/* Fixed yellow handle at the bottom-left of the active application. */
+body.in-app #sesMenuToggle{top:auto;left:max(6px,env(safe-area-inset-left));bottom:max(6px,env(safe-area-inset-bottom))}
