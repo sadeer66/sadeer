@@ -1,0 +1,46 @@
+{
+  "name": "ses-license-manager",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Offline SES owner license manager",
+  "author": "Sadeer Yaseen Mohammed",
+  "main": "main.cjs",
+  "build": {
+    "appId": "com.sadeer.ses.licensemanager",
+    "productName": "SES License Manager",
+    "asar": true,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.cjs",
+      "preload.cjs",
+      "issuer.cjs",
+      "core.cjs",
+      "manager.html",
+      "manager.js",
+      "package.json",
+      "registry.cjs"
+    ],
+    "win": {
+      "icon": "../icon.ico",
+      "signAndEditExecutable": true,
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "artifactName": "SES-License-Manager-Setup.${ext}"
+    },
+    "electronVersion": "44.9.2"
+  }
+}

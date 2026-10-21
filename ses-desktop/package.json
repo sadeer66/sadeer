@@ -1,26 +1,32 @@
 {
-  "name": "ses-desktop-central-preview",
-  "version": "0.1.0",
+  "name": "ses-desktop-activation-preview",
+  "version": "0.2.0",
   "private": true,
   "description": "Isolated offline SES desktop preview with a central asset library",
   "author": "Sadeer Yaseen Mohammed",
   "main": "main.cjs",
   "scripts": {
     "start": "electron .",
-    "package": "electron-builder --win nsis --x64"
+    "package": "node license/check-key.cjs && electron-builder --win nsis --x64"
   },
   "devDependencies": {
     "electron": "44.9.2",
     "electron-builder": "26.0.12"
   },
   "build": {
-    "appId": "com.sadeer.ses.centralpreview",
-    "productName": "SES Central Preview",
+    "appId": "com.sadeer.ses.activationpreview",
+    "productName": "SES Activation Preview",
     "asar": true,
     "files": [
       "main.cjs",
       "server.cjs",
-      "package.json"
+      "package.json",
+      "license/core.cjs",
+      "license/controller.cjs",
+      "license/preload.cjs",
+      "license/public-keys.json",
+      "license/activation.html",
+      "license/activation.js"
     ],
     "extraResources": [
       {
@@ -48,8 +54,8 @@
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "shortcutName": "SES Central Preview",
-      "artifactName": "SES-Central-Preview-${version}-Setup.${ext}"
+      "shortcutName": "SES Activation Preview",
+      "artifactName": "SES-Activation-Preview-${version}-Setup.${ext}"
     }
   }
 }

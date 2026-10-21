@@ -25,7 +25,7 @@
   dialog.id = 'sesDesktopNavigator'; dialog.setAttribute('aria-labelledby','sesDesktopNavTitle');
   dialog.innerHTML = '<div class="ses-desktop-dialog-head"><div><h2 id="sesDesktopNavTitle"></h2><p id="sesDesktopNavHint"></p></div><button id="sesDesktopNavClose" type="button" aria-label="إغلاق">×</button></div><div id="sesDesktopNavGrid"></div>';
   document.body.append(dialog);
-  let returnFocus = null, navigating = false;
+  let returnFocus = null, navigating = false, licensedPrograms=null;
   get('sesDesktopNavClose').onclick = () => dialog.close();
   dialog.addEventListener('click', event => { if (event.target === dialog) { const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close(); } });
   dialog.addEventListener('close', () => { if (returnFocus?.isConnected) returnFocus.focus(); });
@@ -63,6 +63,7 @@
       const art=document.querySelector('#appTabs [data-program="'+id+'"] svg')?.cloneNode(true);
       if (art) { art.innerHTML=art.innerHTML.replaceAll('art-','desktop-nav-art-');button.append(art); }
       button.append(document.createTextNode(english?en[id]:ar[id]));button.onclick=()=>navigate(id);grid.append(button);
+      if(licensedPrograms&&!licensedPrograms.includes(id)){button.disabled=true;button.title=english?'Not included in your license':'غير مشمول بترخيصك';button.style.opacity='.45';}
     }
     dialog.showModal();get('sesDesktopNavClose').focus();
   }
@@ -74,4 +75,9 @@
   function labels(){const en=get('descriptionLanguage').getAttribute('aria-pressed')==='true';save.textContent=en?'Save SES project':'حفظ مشروع SES';restore.textContent=en?'Open SES project':'استرجاع مشروع SES';}
   get('descriptionLanguage').addEventListener('click',labels);labels();
   document.querySelector('.home-bottom p').textContent='اختر برنامجًا للبدء، وانتقل بين البرامج من زر SES في الشريط العلوي.';
+  if(window.SESActivation)window.SESActivation.info().then(info=>{
+    licensedPrograms=info.license?.programs||[];
+    for(const button of document.querySelectorAll('[data-program]')){if(!licensedPrograms.includes(button.dataset.program)){button.disabled=true;button.style.opacity='.5';button.title='غير مشمول بترخيصك';}}
+    const status=document.createElement('p');status.textContent=info.license?'مفعّل باسم '+info.license.customer+' · ترخيص دائم':'غير مفعّل';status.style.cssText='text-align:center;color:#705328;font:12px Tahoma';homeFiles.after(status);
+  }).catch(()=>{});
 })();

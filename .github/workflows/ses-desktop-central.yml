@@ -1,7 +1,7 @@
-name: SES Windows central library preview
+name: SES Windows offline activation
 on:
   push:
-    branches: ['development/ses-desktop-central-library']
+    branches: ['development/ses-desktop-activation']
     paths: ['ses-desktop/**', '.github/workflows/ses-desktop-central.yml']
   workflow_dispatch:
 permissions:
@@ -39,13 +39,33 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Copy-Item ses-lab/assets/icons/ses-v9.ico ses-desktop/icon.ico
           Copy-Item ses-desktop/Web/central-library-report.json ses-desktop/central-library-report.json
+      - name: Verify licensing and prepare owner tool
+        run: |
+          Copy-Item ses-desktop/license/core.cjs ses-desktop/license-manager/core.cjs
+          node ses-desktop/license/test.cjs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Install desktop build dependencies
         working-directory: ses-desktop
         run: npm install --no-audit --no-fund
       - name: Open all four apps and test shared images and native state
         working-directory: ses-desktop
         run: npx electron . --smoke-test
-      - name: Package independent Windows installer
+      - name: Test and package owner license manager
+        working-directory: ses-desktop
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: |
+          npx electron license-manager --smoke-test
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          npx electron-builder --projectDir license-manager --win nsis --x64 --publish never
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Check whether owner public key is configured
+        id: ownerkey
+        run: |
+          $count = (Get-Content ses-desktop/license/public-keys.json | ConvertFrom-Json).keys.PSObject.Properties.Count
+          if ($count -gt 0) { "configured=true" >> $env:GITHUB_OUTPUT } else { "configured=false" >> $env:GITHUB_OUTPUT }
+      - name: Package protected customer installer
+        if: steps.ownerkey.outputs.configured == 'true'
         working-directory: ses-desktop
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
@@ -53,9 +73,10 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: SES-Windows-Central-Preview
+          name: SES-Windows-Offline-Activation
           path: |
             ses-desktop/dist/*.exe
+            ses-desktop/license-manager/dist/*.exe
             ses-desktop/central-library-report.json
             ses-desktop/package-lock.json
           if-no-files-found: error
