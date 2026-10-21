@@ -1,0 +1,56 @@
+name: SES Windows central library preview
+on:
+  push:
+    branches: ['development/ses-desktop-central-library']
+    paths: ['ses-desktop/**', '.github/workflows/ses-desktop-central.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ses-desktop-central-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  windows-preview:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            ses-lab
+            ses-desktop
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare isolated programs and shared library
+        run: |
+          python ses-desktop/prepare.py ses-desktop/Web
+          python ses-desktop/prepare.py ses-desktop/Web --verify
+          node ses-desktop/test-server.cjs ses-desktop/Web
+          Copy-Item ses-lab/assets/icons/ses-v9.ico ses-desktop/icon.ico
+          Copy-Item ses-desktop/Web/central-library-report.json ses-desktop/central-library-report.json
+      - name: Install desktop build dependencies
+        working-directory: ses-desktop
+        run: npm install --no-audit --no-fund
+      - name: Open all four apps and test shared images and native state
+        working-directory: ses-desktop
+        run: npx electron . --smoke-test
+      - name: Package independent Windows installer
+        working-directory: ses-desktop
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npm run package -- --publish never
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: SES-Windows-Central-Preview
+          path: |
+            ses-desktop/dist/*.exe
+            ses-desktop/central-library-report.json
+            ses-desktop/package-lock.json
+          if-no-files-found: error
+          retention-days: 30
