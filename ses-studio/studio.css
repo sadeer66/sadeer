@@ -2,3 +2,14 @@
 @media(max-width:900px){#home{padding:20px}.intro{gap:24px}.brand{flex-basis:270px}.intro-copy h1{font-size:25px}.program-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-width:700px}.program-card svg{height:135px}.card-copy{min-height:100px;padding:12px}.intro-copy p{font-size:14px}#studioHeader{gap:8px}.app-tab{min-width:128px;padding:4px 8px}}
 @media(max-width:600px){#studioHeader{height:54px;flex-basis:54px;padding:5px 7px;gap:6px}.home-button{width:49px;height:40px}.app-tab{height:40px;min-width:102px;gap:5px;padding:3px 6px}.app-tab svg{width:29px;height:30px}.app-tab b{font-size:10px}.app-tab span{font-size:9px}#fullscreen{width:30px;height:34px;font-size:20px}#home{padding:18px 12px}.intro{flex-direction:column;gap:15px;text-align:center;margin-bottom:18px}.brand{width:210px;flex:0 0 auto}.intro-copy{flex:0 0 auto}.eyebrow{font-size:10px;letter-spacing:1px}.intro-copy h1{font-size:22px;margin:6px 0}.intro-copy p{font-size:12px;margin:6px 0 12px}.edition{font-size:9px;padding:6px 10px}.program-grid{gap:9px}.program-card svg{height:112px}.card-copy{padding:10px;min-height:102px;gap:6px}.card-copy strong{font-size:12px}.card-copy small{font-size:10px}.open-label{font-size:10px}#studioFooter{padding:4px 8px;font-size:8px}#activeLabel{display:none}body.in-app #studioHeader{height:49px;flex-basis:49px}body.in-app .home-button{height:36px}body.in-app .app-tab{height:38px}body.in-app .app-tab svg{height:27px;width:27px}.home-bottom p{font-size:10px}.home-bottom small{font-size:9px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* SES card sizing alignment — presentation only; original artwork and lettering unchanged */
+.program-grid{align-items:stretch;grid-auto-rows:1fr}
+.program-card{display:grid;grid-template-rows:160px minmax(0,1fr);height:100%;min-width:0}
+.program-card>svg{width:100%;height:100%;min-width:0;object-fit:contain}
+.program-card .card-copy{height:100%;min-height:126px;display:grid;grid-template-rows:minmax(24px,auto) minmax(36px,1fr) 24px;align-content:stretch;gap:8px}
+.program-card .card-copy strong{line-height:1.5;align-self:center}
+.program-card .card-copy small{align-self:start}
+.program-card .open-label{align-self:end;margin-top:0}
+@media(max-width:900px){.program-card{grid-template-rows:135px minmax(0,1fr)}}
+@media(max-width:600px){.program-card{grid-template-rows:112px minmax(0,1fr)}.program-card .card-copy{min-height:116px;grid-template-rows:minmax(22px,auto) minmax(42px,1fr) 22px;gap:5px}}
