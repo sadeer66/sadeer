@@ -43,3 +43,17 @@ body.in-app #sesMenuToggle:hover{background:#ffda63}
 
 /* Fixed yellow handle at the bottom-left of the active application. */
 body.in-app #sesMenuToggle{top:auto;left:max(6px,env(safe-area-inset-left));bottom:max(6px,env(safe-area-inset-bottom))}
+
+/* Real progress, driven by downloaded engine bytes and completed script loads. */
+#sesTransition{position:fixed;inset:0;z-index:1000;background:#f3eadb;display:grid;place-items:center;padding:24px;overflow:auto;text-align:center;color:#302b24}
+.ses-load-content{width:min(100%,480px);margin:auto}
+.ses-load-content>img{display:block;width:min(320px,75vw);height:auto;margin:0 auto 28px;filter:drop-shadow(0 10px 12px #63432124)}
+#sesLoadTitle{font:600 20px/1.8 Tahoma,Arial,sans-serif;margin:0 0 22px}
+#sesLoadTrack{height:11px;border:1px solid #bfa578;background:#e0d3bd;border-radius:20px;overflow:hidden;direction:ltr;width:min(100%,400px);margin:0 auto 12px}
+#sesLoadFill{height:100%;width:0;background:#b8852c;border-radius:20px;transition:width .12s linear}
+#sesLoadPercent{display:block;font:600 15px Arial,sans-serif;color:#755021}
+#sesLoadDetail{min-height:42px;margin:14px 0 0;font:12px/1.8 Tahoma,Arial,sans-serif;color:#75644b}
+#sesLoadBack{margin:16px auto 0;padding:9px 20px;border:1px solid #ad8a51;border-radius:8px;background:#e7d6b9;color:#3e2d17;font:600 12px Tahoma,Arial,sans-serif}
+#sesTransition.load-error #sesLoadTitle{color:#9c3232}
+@media(max-width:600px){#sesLoadTitle{font-size:17px}.ses-load-content>img{width:min(270px,75vw);margin-bottom:24px}#sesLoadDetail{font-size:11px}}
+@media(prefers-reduced-motion:reduce){#sesLoadFill{transition:none}}

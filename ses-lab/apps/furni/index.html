@@ -1,16 +1,28 @@
-<!doctype html><html lang="ar" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SES — furni</title><body style="background:#f3eadb;font-family:Tahoma;text-align:center"><p id="boot">جارٍ فتح النسخة التجريبية المستقلة…</p><script>
+<!doctype html><html lang="ar" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SES — furni</title><body style="background:#f3eadb;font-family:Tahoma;text-align:center"><p id="boot">جارٍ تحميل البرنامج…</p><script>
 (async()=>{try{
- let html=await fetch('engine.html').then(r=>{if(!r.ok)throw Error('تعذر تحميل ملفات المرحلة');return r.text()});
- html=html.replace('<html','<html data-ses-stage="furni"');
- // Start external script downloads together; execution keeps the engine's original order.
+ const id='furni',spec={"engine":2759950,"files":{"fp222-dialogs.js":4714,"fp196-visible-bounds.js":2252,"fp197-shadow.js":2015,"fp197-labels.js":9864,"fp239-thumbnails.js":2418541,"v85-final-patch.js":108320,"v174-assets/assets_1.js":3800533,"v174-assets/assets_2.js":419581,"v174-assets/assets_3.js":889874,"v174-assets/assets_4.js":448521,"v174-assets/assets_5.js":455290,"v174-assets/assets_6.js":394844,"v174-assets/assets_7.js":502435,"library_v185.js":36234,"v186-ipad-memory-fix.js":4161,"v191-library-pager-safe.js":3096,"v195-ui-pan-patch.js":9825,"fp198-boundary-calibration.js":6770,"fp197-hires.js":3101,"fp199-surfaces.js":16502,"fp203-materials.js":9388,"fp214-tiles.js":2343,"fp201-color-layers.js":34907,"fp214-export.js":6650,"fp200-toolbar-groups.js":9613,"fp201-single-action.js":3595,"fp209-label-catalog.js":13126,"fp210-mobile-layout.js":4762,"fp219-furniture.js":3819,"fp223-ribbon.js":17084,"fp224-context-tools.js":12041,"fp225-footer-guide.js":5503,"fp226-text-style.js":15841,"fp228-ui-defaults.js":3115,"fp229-library-notice.js":842,"fp232-ipad.js":3887,"fp242-touch.js":3293,"fp233-library.js":14294,"fp236-side-panel.js":22741,"../../isolate.js":754,"ses-adapter.js":5061}},total=spec.engine+Object.values(spec.files).reduce((a,b)=>a+b,0);
+ const report=loaded=>parent.postMessage({type:'ses-load-progress',stage:id,loaded,total},location.origin);
+ let received=0;report(0);
+ const response=await fetch('engine.html');if(!response.ok)throw Error('تعذّر تحميل ملف البرنامج');
+ let html='';
+ if(response.body?.getReader){const reader=response.body.getReader(),decoder=new TextDecoder();while(true){const part=await reader.read();if(part.done)break;received+=part.value.byteLength;html+=decoder.decode(part.value,{stream:true});report(Math.min(received,spec.engine));}html+=decoder.decode();}
+ else{html=await response.text();received=spec.engine;report(received)}
+ function installTracking(id,spec,received){
+  const weights=new Map(Object.entries(spec.files).map(([path,size])=>[new URL(path,location.href).pathname,size])),done=new Set(),total=spec.engine+Object.values(spec.files).reduce((a,b)=>a+b,0);let loaded=Math.min(received,spec.engine);
+  const report=()=>parent.postMessage({type:'ses-load-progress',stage:id,loaded,total},location.origin);
+  document.addEventListener('load',event=>{const el=event.target;if(el.tagName!=='SCRIPT'||!el.src)return;const key=new URL(el.src,location.href).pathname;if(weights.has(key)&&!done.has(key)){done.add(key);loaded+=weights.get(key);report()}},true);
+  document.addEventListener('error',event=>{if(event.target.tagName==='SCRIPT'&&event.target.src&&weights.has(new URL(event.target.src,location.href).pathname))parent.postMessage({type:'ses-load-error',stage:id,message:'تعذّر تحميل أحد ملفات البرنامج. تحقق من الاتصال ثم أعد المحاولة.'},location.origin)},true);
+  report();
+ }
+ html=html.replace('<html','<html data-ses-stage="'+id+'"');
  const urls=[...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["']/gi)].map(m=>m[1]);
  const preloads=[...new Set(urls)].map(src=>'<link rel="preload" as="script" href="'+src.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">').join('');
+ const tracking='<script>('+installTracking.toString()+')('+JSON.stringify(id)+','+JSON.stringify(spec)+','+received+');<\/script>';
  const head=html.indexOf('>',html.indexOf('<head'))+1;
- html=html.slice(0,head)+preloads+'<style>#fpSplash,#splash{display:none!important}</style><script src="../../isolate.js?v=2"><\/script>'+html.slice(head);
- // This legacy cleanup targets stable app caches; disable it in the isolated copy.
+ html=html.slice(0,head)+preloads+tracking+'<style>#fpSplash,#splash{display:none!important}</style><script src="../../isolate.js?v=2"><\/script>'+html.slice(head);
  html=html.replace("if('caches' in window)","if(false)");
  const end=html.lastIndexOf('</body>');
  html=html.slice(0,end)+'<script src="ses-adapter.js?v=2"><\/script><script>for(const ev of ["input","change","pointerup"])document.addEventListener(ev,()=>parent.postMessage("ses-dirty",location.origin),{passive:true});<\/script>'+html.slice(end);
  document.open();document.write(html);document.close();
-}catch(e){document.getElementById('boot').textContent=e.message}})();
+}catch(error){parent.postMessage({type:'ses-load-error',stage:'furni',message:error.message},location.origin);const boot=document.getElementById('boot');if(boot)boot.textContent=error.message}})();
 </script></body></html>

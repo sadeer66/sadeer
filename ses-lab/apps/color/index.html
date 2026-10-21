@@ -1,16 +1,28 @@
-<!doctype html><html lang="ar" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SES — color</title><body style="background:#f3eadb;font-family:Tahoma;text-align:center"><p id="boot">جارٍ فتح النسخة التجريبية المستقلة…</p><script>
+<!doctype html><html lang="ar" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SES — color</title><body style="background:#f3eadb;font-family:Tahoma;text-align:center"><p id="boot">جارٍ تحميل البرنامج…</p><script>
 (async()=>{try{
- let html=await fetch('engine.html').then(r=>{if(!r.ok)throw Error('تعذر تحميل ملفات المرحلة');return r.text()});
- html=html.replace('<html','<html data-ses-stage="color"');
- // Start external script downloads together; execution keeps the engine's original order.
+ const id='color',spec={"engine":7159779,"files":{"../../isolate.js":754,"ses-adapter.js":3278}},total=spec.engine+Object.values(spec.files).reduce((a,b)=>a+b,0);
+ const report=loaded=>parent.postMessage({type:'ses-load-progress',stage:id,loaded,total},location.origin);
+ let received=0;report(0);
+ const response=await fetch('engine.html');if(!response.ok)throw Error('تعذّر تحميل ملف البرنامج');
+ let html='';
+ if(response.body?.getReader){const reader=response.body.getReader(),decoder=new TextDecoder();while(true){const part=await reader.read();if(part.done)break;received+=part.value.byteLength;html+=decoder.decode(part.value,{stream:true});report(Math.min(received,spec.engine));}html+=decoder.decode();}
+ else{html=await response.text();received=spec.engine;report(received)}
+ function installTracking(id,spec,received){
+  const weights=new Map(Object.entries(spec.files).map(([path,size])=>[new URL(path,location.href).pathname,size])),done=new Set(),total=spec.engine+Object.values(spec.files).reduce((a,b)=>a+b,0);let loaded=Math.min(received,spec.engine);
+  const report=()=>parent.postMessage({type:'ses-load-progress',stage:id,loaded,total},location.origin);
+  document.addEventListener('load',event=>{const el=event.target;if(el.tagName!=='SCRIPT'||!el.src)return;const key=new URL(el.src,location.href).pathname;if(weights.has(key)&&!done.has(key)){done.add(key);loaded+=weights.get(key);report()}},true);
+  document.addEventListener('error',event=>{if(event.target.tagName==='SCRIPT'&&event.target.src&&weights.has(new URL(event.target.src,location.href).pathname))parent.postMessage({type:'ses-load-error',stage:id,message:'تعذّر تحميل أحد ملفات البرنامج. تحقق من الاتصال ثم أعد المحاولة.'},location.origin)},true);
+  report();
+ }
+ html=html.replace('<html','<html data-ses-stage="'+id+'"');
  const urls=[...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["']/gi)].map(m=>m[1]);
  const preloads=[...new Set(urls)].map(src=>'<link rel="preload" as="script" href="'+src.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">').join('');
+ const tracking='<script>('+installTracking.toString()+')('+JSON.stringify(id)+','+JSON.stringify(spec)+','+received+');<\/script>';
  const head=html.indexOf('>',html.indexOf('<head'))+1;
- html=html.slice(0,head)+preloads+'<style>#fpSplash,#splash{display:none!important}</style><script src="../../isolate.js?v=2"><\/script>'+html.slice(head);
- // This legacy cleanup targets stable app caches; disable it in the isolated copy.
+ html=html.slice(0,head)+preloads+tracking+'<style>#fpSplash,#splash{display:none!important}</style><script src="../../isolate.js?v=2"><\/script>'+html.slice(head);
  html=html.replace("if('caches' in window)","if(false)");
  const end=html.lastIndexOf('</body>');
  html=html.slice(0,end)+'<script src="ses-adapter.js?v=2"><\/script><script>for(const ev of ["input","change","pointerup"])document.addEventListener(ev,()=>parent.postMessage("ses-dirty",location.origin),{passive:true});<\/script>'+html.slice(end);
  document.open();document.write(html);document.close();
-}catch(e){document.getElementById('boot').textContent=e.message}})();
+}catch(error){parent.postMessage({type:'ses-load-error',stage:'color',message:error.message},location.origin);const boot=document.getElementById('boot');if(boot)boot.textContent=error.message}})();
 </script></body></html>

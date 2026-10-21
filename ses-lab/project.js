@@ -1,6 +1,6 @@
 'use strict';
 (()=>{
- const by=id=>document.getElementById(id),stages=['color','furni'],frames=new Map();
+ const by=id=>document.getElementById(id),stages=['color','furni'],frames=new Map(),pending=new Map();
  let active=null,lastStage=null,busy=false,dirty=false,title='مشروعي',lastSaved=null,recovery=null;
  const empty=()=>({schema:'ses-project',version:1,title,updatedAt:new Date().toISOString(),activeStage:active||lastStage,stages:{}});
  function setMenu(open){const visible=!!open&&document.body.classList.contains('in-app');document.body.classList.toggle('ses-menu-open',visible);by('sesMenuToggle').setAttribute('aria-expanded',String(visible));by('sesMenuBackdrop').hidden=!visible;}
@@ -14,23 +14,35 @@
  async function draftRead(){const db=await database();try{return await new Promise((resolve,reject)=>{const r=db.transaction('drafts').objectStore('drafts').get('current');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}finally{db.close()}}
  async function stage(id){
   if(frames.has(id))return frames.get(id);
-  const frame=document.createElement('iframe');frame.title=id==='color'?'التلوين — نسخة تجريبية مستقلة':'الأثاث — نسخة تجريبية مستقلة';frame.allow='fullscreen; clipboard-read; clipboard-write';frame.hidden=true;frame.src='apps/'+id+'/?v=bottom-fast5'+(new URLSearchParams(location.search).has('qa')?'&qa=1':'');by('frames').append(frame);
-  const api=await new Promise((resolve,reject)=>{const deadline=Date.now()+90000;const timer=setInterval(()=>{if(frame.contentWindow?.SESStage){clearInterval(timer);resolve(frame.contentWindow.SESStage)}else if(Date.now()>deadline){clearInterval(timer);frame.remove();reject(Error('لم يكتمل فتح المرحلة. تحقق من الاتصال ثم أعد المحاولة'))}},150)});
-  const entry={frame,api};frames.set(id,entry);return entry;
+  if(pending.has(id))return pending.get(id).promise;
+  SESLoading.show(id);
+  const frame=document.createElement('iframe');frame.title=id==='color'?'التلوين — نسخة تجريبية مستقلة':'الأثاث — نسخة تجريبية مستقلة';frame.allow='fullscreen; clipboard-read; clipboard-write';frame.hidden=true;frame.src='apps/'+id+'/?v=progress6'+(new URLSearchParams(location.search).has('qa')?'&qa=1':'');
+  const entry={frame,fail:null,promise:null};
+  entry.promise=new Promise((resolve,reject)=>{const deadline=Date.now()+180000;let timer;
+   entry.fail=error=>{clearInterval(timer);pending.delete(id);frame.remove();reject(error)};
+   timer=setInterval(()=>{if(frame.contentWindow?.SESStage){clearInterval(timer);pending.delete(id);const ready={frame,api:frame.contentWindow.SESStage};frames.set(id,ready);resolve(ready)}else if(Date.now()>deadline)entry.fail(Error('لم يكتمل فتح البرنامج. تحقق من الاتصال ثم أعد المحاولة'))},100);
+  });
+  pending.set(id,entry);by('frames').append(frame);return entry.promise;
  }
+ window.addEventListener('message',e=>{
+  if(e.origin!==location.origin||!e.data||typeof e.data!=='object')return;
+  const entry=pending.get(e.data.stage);if(!entry||entry.frame.contentWindow!==e.source)return;
+  if(e.data.type==='ses-load-progress')SESLoading.update(e.data.stage,e.data);
+  if(e.data.type==='ses-load-error')entry.fail(Error(e.data.message||'تعذر تحميل ملفات البرنامج'));
+ });
  async function collect(preview=false){const doc=empty();for(const [id,e]of frames){const state=await e.api.capture(preview);state.native.sharedKey=state.map?.key||null;doc.stages[id]=state}return doc}
  async function autosave(){if(busy||!frames.size)return;try{const doc=await collect(false);await draftWrite(doc);lastSaved=doc;dirty=false;by('restoreDraft').hidden=false;status('حُفظت نسخة استعادة على هذا الجهاز · '+new Date().toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'}))}catch(e){status('لم يكتمل الحفظ التلقائي: '+e.message,true)}}
- async function run(action){if(busy)return;busy=true;document.body.classList.add('project-busy');try{await action()}catch(e){status(e.message,true)}finally{busy=false;document.body.classList.remove('project-busy')}}
- async function switchTo(id){
+ async function run(action){if(busy)return;busy=true;document.body.classList.add('project-busy');try{await action()}catch(e){status(e.message,true);SESLoading.fail(e.message)}finally{busy=false;document.body.classList.remove('project-busy')}}
+ async function switchTo(id){SESLoading.show(id,frames.has(id));try{
   const previous=frames.has(active||lastStage)?active||lastStage:null,source=previous&&frames.get(previous);status('جارٍ فتح المرحلة وتجهيز الخارطة…');
   let sourceState=source?await source.api.capture(false):null;
-  const target=await stage(id);
+  const target=await stage(id);SESLoading.preparing();
   if(previous&&previous!==id){const before=await target.api.capture(false);if(sourceState?.map&&(id==='furni'||!before.map||before.map.key!==sourceState.map.key))sourceState=await source.api.capture(true);await SESCore.exchange(source.api,target.api,sourceState,before)}
   for(const [key,e]of frames)e.frame.hidden=key!==id;
   active=id;lastStage=id;by('workspace').hidden=false;by('home').hidden=true;document.body.classList.add('in-app');target.api.refresh();setMenu(false);
   for(const b of document.querySelectorAll('[data-program]'))b.setAttribute('aria-pressed',String(b.dataset.program===id));
-  dirty=true;status(sourceState?.map?'تم فتح المرحلة ونقل الخارطة والمعايرة؛ بيانات كل مرحلة محفوظة':'افتح خارطة وعايرها داخل المرحلة، ثم انتقل من الشريط العلوي');
- }
+  await SESLoading.finish(target.frame);dirty=true;status(sourceState?.map?'تم فتح المرحلة ونقل الخارطة والمعايرة؛ بيانات كل مرحلة محفوظة':'افتح خارطة وعايرها داخل المرحلة، ثم انتقل من الشريط العلوي');
+ }catch(error){SESLoading.fail(error.message);throw error}}
  async function restore(doc){
   SESCore.validate(doc);const before=await collect(false);const created=[];
   try{
