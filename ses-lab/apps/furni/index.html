@@ -1,0 +1,13 @@
+<!doctype html><html lang="ar" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SES — furni</title><body style="background:#f3eadb;font-family:Tahoma;text-align:center"><p id="boot">جارٍ فتح النسخة التجريبية المستقلة…</p><script>
+(async()=>{try{
+ let html=await fetch('engine.html').then(r=>{if(!r.ok)throw Error('تعذر تحميل ملفات المرحلة');return r.text()});
+ html=html.replace('<html','<html data-ses-stage="furni"');
+ const head=html.indexOf('>',html.indexOf('<head'))+1;
+ html=html.slice(0,head)+'<script src="../../isolate.js"><\/script>'+html.slice(head);
+ // This legacy cleanup targets stable app caches; disable it in the isolated copy.
+ html=html.replace("if('caches' in window)","if(false)");
+ const end=html.lastIndexOf('</body>');
+ html=html.slice(0,end)+'<script src="ses-adapter.js"><\/script><script>for(const ev of ["input","change","pointerup"])document.addEventListener(ev,()=>parent.postMessage("ses-dirty",location.origin),{passive:true});<\/script>'+html.slice(end);
+ document.open();document.write(html);document.close();
+}catch(e){document.getElementById('boot').textContent=e.message}})();
+</script></body></html>
