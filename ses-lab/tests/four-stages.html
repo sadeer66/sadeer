@@ -1,0 +1,30 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>SES four-stage integration checks</title><style>body{font:15px sans-serif;background:#f3eadb}iframe{width:1100px;height:750px}pre{white-space:pre-wrap}</style><h1>SES — four-stage verification</h1><pre id="result">Running…</pre><iframe id="shell" src="../index.html?qa=1&v=four7"></iframe><script>
+(async()=>{
+ const shell=document.getElementById('shell'),out=document.getElementById('result'),lines=[];
+ const check=(v,t)=>{if(!v)throw Error(t);lines.push('PASS '+t);out.textContent=lines.join('\n')};
+ const until=async fn=>{for(let i=0;i<1800;i++){if(fn())return;await new Promise(r=>setTimeout(r,100))}throw Error('Initialization timed out')};
+ try{
+  await until(()=>shell.contentWindow.SESProject);const app=shell.contentWindow,project=app.SESProject,core=app.SESCore;
+  check(app.document.querySelectorAll('.program-card').length===4,'Four program cards in the required order');
+  const a=await project.stage('color'),b=await project.stage('furni'),c=await project.stage('sewer'),d=await project.stage('electric');
+  check([a,b,c,d].every(e=>e.frame.src.includes('/ses-lab/apps/')),'All four apps use independent copies');
+  const fixture=document.createElement('canvas');fixture.width=400;fixture.height=300;const q=fixture.getContext('2d');q.fillStyle='#fff';q.fillRect(0,0,400,300);q.strokeRect(30,30,340,240);
+  let state=await a.api.capture(false);state.native.project.image=fixture.toDataURL();state.native.project.width=400;state.native.project.height=300;state.native.project.dxfLines=[];state.native.project.polys=[{layerId:'base-3',points:[{x:60,y:60},{x:320,y:60},{x:320,y:240},{x:60,y:240}],material:'plain',color:'#d4bea0',opacity:100,tile:80}];state.native.project.settings.tileCmPerUnit=2;state.native.project.settings.tileCalibration={a:{x:0,y:0},b:{x:100,y:0},cm:200};await a.api.restore(state.native);
+  let shared=await a.api.capture(true);
+  for(const [entry,label]of [[b,'furniture'],[c,'sewer'],[d,'electrical']]){await core.exchange(a.api,entry.api,shared,await entry.api.capture(false));const got=await entry.api.capture(false);check(got.native.canvas.width===400&&got.native.canvas.height===300&&got.native.pxPerCm===.5,label+' receives exact dimensions and calibration')}
+  let f=await b.api.capture(false);f.native.sharedKey=shared.map.key;f.native.items=[{id:'ses-chair',name:'Test chair',x:140,y:120,w:60,h:60,rot:45,type:'generic',src:null,color:'#ba915b',locked:false}];await b.api.restore(f.native);
+  let s=await c.api.capture(false);s.native.sharedKey=shared.map.key;s.native.sewerPlan.routes=[{id:'ses-pipe',material:'UPVC',diameter:4,color:'#ffffff',outlineWidth:.5,snap45:true,autoElbows:true,points:[{x:60,y:60},{x:300,y:60}],removedElbows:{},couplingLengths:{},elbowColors:{},couplingColors:{}}];await c.api.restore(s.native);check((await c.api.capture(false)).native.sewerPlan.routes.length===1,'Sewer pipes remain editable native routes');
+  let e=await d.api.capture(false);e.native.sharedKey=shared.map.key;e.native.items=[{id:'ses-light',name:'Test light',x:200,y:160,w:25,h:25,rot:90,type:'generic',src:null,color:'#ffffff',category:'الإنارة'}];e.native.electricalLayout={rooms:[{id:'ses-room',name:'Test room',points:[{x:40,y:40},{x:340,y:40},{x:340,y:250},{x:40,y:250}],edges:[],visible:true,dimensions:true}],snapEnabled:true};await d.api.restore(e.native);check((await d.api.capture(false)).native.electricalLayout.rooms.length===1,'Electrical lighting-room geometry is included');
+  for(const id of ['color','furni','sewer','electric','color'])await project.switchTo(id);
+  check((await b.api.capture(false)).native.items[0].rot===45,'Furniture survives all four transitions');check((await c.api.capture(false)).native.sewerPlan.routes[0].id==='ses-pipe','Sewer route survives all four transitions');check((await d.api.capture(false)).native.items[0].id==='ses-light','Electrical piece survives all four transitions');
+  d.api.setCalibration(.25);await core.exchange(d.api,a.api,await d.api.capture(true),await a.api.capture(false));state=await a.api.capture(false);check(state.map.pxPerCm===.25&&state.native.project.polys.length===1,'Reverse calibration transfer preserves editable color regions');
+  const saved=JSON.stringify(await project.collect(false));await project.restore(core.validate(JSON.parse(saved)));
+  check((await b.api.capture(false)).native.items[0].id==='ses-chair','Unified save restores furniture');check((await c.api.capture(false)).native.sewerPlan.routes[0].id==='ses-pipe','Unified save restores sewer routes');check((await d.api.capture(false)).native.electricalLayout.rooms[0].id==='ses-room','Unified save restores electrical room layout');
+  check(app.document.getElementById('sesTransition').hidden&&app.document.getElementById('sesLoadTrack').getAttribute('aria-valuenow')==='100','Loading screen completes only after app readiness');
+  const mark='ses-qa-sentinel';app.localStorage.setItem(mark,'stable');c.frame.contentWindow.localStorage.setItem(mark,'trial');d.frame.contentWindow.localStorage.setItem(mark,'electrical');check(app.localStorage.getItem(mark)==='stable'&&c.frame.contentWindow.localStorage.getItem(mark)==='trial','Storage is isolated from stable apps and other stages');app.localStorage.removeItem(mark);c.frame.contentWindow.localStorage.removeItem(mark);d.frame.contentWindow.localStorage.removeItem(mark);
+  const request=d.frame.contentWindow.indexedDB.open('ses-qa-check',1);await new Promise((ok,no)=>{request.onsuccess=ok;request.onerror=no});check(request.result.name.includes('ses-lab-20261021:electric:qa:'),'Electrical backup database is isolated');request.result.close();d.frame.contentWindow.indexedDB.deleteDatabase('ses-qa-check');
+  check(!app.document.body.classList.contains('ses-menu-open'),'SES menu does not reduce the working space');
+  out.textContent=lines.join('\n')+'\nALL CHECKS PASSED';
+ }catch(error){out.textContent=lines.join('\n')+'\nFAIL '+error.message;console.error(error)}
+})();
+</script></html>

@@ -1,0 +1,137 @@
+{
+  "reducer": {
+    "src": "assets/engineering-real-v88/reducer.webp",
+    "w": 25.0,
+    "h": 25.0
+  },
+  "endcap": {
+    "src": "assets/engineering-real-v88/endcap.webp",
+    "w": 25.0,
+    "h": 16.667
+  },
+  "offset": {
+    "src": "assets/engineering-real-v88/offset.webp",
+    "w": 25.0,
+    "h": 16.667
+  },
+  "flex": {
+    "src": "assets/engineering-real-v88/flex.webp",
+    "w": 25.0,
+    "h": 16.667
+  },
+  "manhole": {
+    "src": "assets/engineering-real-v88/manhole.webp",
+    "w": 25.0,
+    "h": 25.0
+  },
+  "inspection": {
+    "src": "assets/engineering-real-v88/inspection.webp",
+    "w": 25.0,
+    "h": 25.0
+  },
+  "rodding": {
+    "src": "assets/engineering-real-v88/rodding.webp",
+    "w": 25.0,
+    "h": 24.409
+  },
+  "floorclean": {
+    "src": "assets/engineering-real-v88/floorclean.webp",
+    "w": 25.0,
+    "h": 25.0
+  },
+  "grease": {
+    "src": "assets/engineering-real-v88/grease.webp",
+    "w": 25.0,
+    "h": 16.667
+  },
+  "catch": {
+    "src": "assets/engineering-real-v88/catch.webp",
+    "w": 25.0,
+    "h": 25.0
+  },
+  "strainer": {
+    "src": "assets/engineering-real-v88/strainer.webp",
+    "w": 25.0,
+    "h": 23.436
+  },
+  "sump": {
+    "src": "assets/engineering-real-v88/sump.webp",
+    "w": 25.0,
+    "h": 25.0
+  },
+  "septic": {
+    "src": "assets/engineering-real-v88/septic.webp",
+    "w": 25.0,
+    "h": 16.667
+  },
+  "nonreturn": {
+    "src": "assets/engineering-real-v88/nonreturn.webp",
+    "w": 25.0,
+    "h": 16.667
+  },
+  "gate": {
+    "src": "assets/engineering-real-v88/gate.webp",
+    "w": 25.0,
+    "h": 16.667
+  },
+  "airgap": {
+    "src": "assets/engineering-real-v88/airgap.webp",
+    "w": 25.0,
+    "h": 23.436
+  },
+  "urinal": {
+    "src": "assets/engineering-real-v88/urinal.webp",
+    "w": 25.0,
+    "h": 22.847
+  },
+  "flow": {
+    "src": "assets/engineering-real-v88/flow.webp",
+    "w": 25.0,
+    "h": 8.333
+  },
+  "slope": {
+    "src": "assets/engineering-real-v88/slope.webp",
+    "w": 25.0,
+    "h": 16.667
+  },
+  "diameter": {
+    "src": "assets/engineering-real-v88/diameter.webp",
+    "w": 25.0,
+    "h": 23.436
+  },
+  "invert": {
+    "src": "assets/engineering-real-v88/invert.webp",
+    "w": 25.0,
+    "h": 20.833
+  },
+  "level": {
+    "src": "assets/engineering-real-v88/level.webp",
+    "w": 25.0,
+    "h": 24.061
+  },
+  "section": {
+    "src": "assets/engineering-real-v88/section.webp",
+    "w": 25.0,
+    "h": 8.333
+  },
+  "detail": {
+    "src": "assets/engineering-real-v88/detail.webp",
+    "w": 25.0,
+    "h": 23.568
+  },
+  "break": {
+    "src": "assets/engineering-real-v88/break.webp",
+    "w": 25.0,
+    "h": 8.333
+  },
+  "north": {
+    "src": "assets/engineering-real-v88/north.webp",
+    "w": 23.269,
+    "h": 25.0
+  },
+  "note": {
+    "src": "assets/engineering-real-v88/note.webp",
+    "w": 25.0,
+    "h": 16.667
+  }
+}

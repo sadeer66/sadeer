@@ -2,7 +2,9 @@
 const programs=[
  {id:'color',name:'ColorPlan',ar:'تلوين المخطط',version:'V11.86',path:'apps/color/',crop:'100 155 840 340',icon:'350 155 275 235',desc:'لوّن مخططك، وأضف الخامات والإضاءة لتحوّله إلى عرض جميل وواضح.'},
  {id:'furni',name:'FurniPlan',ar:'تخطيط الأثاث',version:'V240',path:'apps/furni/',crop:'1165 140 590 350',icon:'1310 145 250 220',desc:'رتّب الأثاث على مخططك، واضبط مقاساته لتختار أفضل توزيع للمساحات.'},
-].filter(p=>['color','furni'].includes(p.id));
+ {id:'sewer',name:'SewerPlan',ar:'تمديدات المجاري',path:'apps/sewer/',crop:'0 0 1 1',icon:'1310 625 255 235',desc:'ارسم مسارات المجاري والمياه، وحدّد الوصلات والأقطار واحسب أطوال الأنابيب وكميات القطع.'},
+ {id:'electric',name:'ElectricalPlan',ar:'تمديدات الكهرباء',path:'apps/electric/',crop:'0 0 1 1',icon:'365 635 260 240',desc:'وزّع نقاط الكهرباء والإنارة والأجهزة، ونظّم دوائر التوصيل لتقديم مخطط واضح وسهل التنفيذ.'},
+];
 const englishDescriptions={"color":"Color your plan with finishes and lighting for a clear, polished view.","furni":"Place and size furniture to find the best layout for your space.","sewer":"Plan drainage routes, place fittings, and count pipes and accessories.","electric":"Position power points, lights, and devices clearly on your plan."};
 let descriptionLanguage='ar';
 try{descriptionLanguage=localStorage.getItem('ses-lab-description-language')==='en'?'en':'ar';}catch{}

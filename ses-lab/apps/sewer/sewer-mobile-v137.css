@@ -1,0 +1,15 @@
+html.sewer-mobile-v137 body.sewer-ribbon-ui .app>aside{height:100%!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:pan-y!important}
+html.sewer-mobile-v137 body.sewer-ribbon-ui .app>aside :is(#sewerSidePanel,#sewerSubRibbon,#modernTopToolbar,.topToolGroup,.section){height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;flex-shrink:0!important;touch-action:pan-y!important}
+html.sewer-mobile-v137 body.sewer-ribbon-ui .app>aside *{touch-action:pan-y!important}
+html.sewer-mobile-v137 body.sewer-ribbon-ui .app>aside :is(input[type=range],.touchDragHandle){touch-action:none!important}
+html.sewer-mobile-v137 body.sewer-ribbon-ui #sewerPrimaryScroll{touch-action:pan-x!important;overflow-x:auto!important;min-width:0!important}
+html.sewer-mobile-v137 body.sewer-ribbon-ui #sewerPrimaryScroll>#sewerCompactBrand{position:static!important;align-self:center!important;order:-10!important;flex:0 0 132px!important;width:132px!important;height:28px!important}
+html.sewer-phone-v137 body.sewer-ribbon-ui #sewerPrimaryScroll>#sewerCompactBrand{flex-basis:66px!important;width:66px!important;height:14px!important}
+html.sewer-phone-v137 body.sewer-ribbon-ui #sewerRibbonHeader{--phone-button-size:max(42px,var(--tool-btn-h,42px))}
+html.sewer-phone-v137 body.sewer-ribbon-ui #sewerRibbonHeader :is(#sewerRibbonTabs button,#sewerModeDock button,#sewerFixedTools>.modernIconBtn,#sewerLanguage){box-sizing:border-box!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;flex:0 0 var(--phone-button-size)!important;width:var(--phone-button-size)!important;min-width:var(--phone-button-size)!important;max-width:var(--phone-button-size)!important;height:var(--phone-button-size)!important;min-height:var(--phone-button-size)!important;max-height:var(--phone-button-size)!important;padding:3px!important;gap:3px!important;font-size:var(--tool-label-size,9px)!important;line-height:1.15!important;white-space:normal!important}
+html.sewer-phone-v137 body.sewer-ribbon-ui #sewerRibbonHeader :is(.sewerTabLabel,.iconLabel){font-size:var(--tool-label-size,9px)!important;line-height:1.15!important;white-space:normal!important;text-align:center!important}
+html.sewer-phone-v137 body.sewer-ribbon-ui #sewerRibbonHeader :is(#sewerRibbonTabs button,#sewerFixedTools>.modernIconBtn) svg{width:var(--tool-icon-size,18px)!important;height:var(--tool-icon-size,18px)!important;flex:none!important}
+html.sewer-mobile-v137 body.sewer-ribbon-ui .app>aside #sewerSidePanel #sewerSubRibbon #modernTopToolbar *,
+html.sewer-mobile-v137 body.sewer-ribbon-ui .app>aside :is(#library,#se61Library) *{touch-action:pan-y!important}
+html.sewer-mobile-v137 body.sewer-ribbon-ui .app>aside #sewerSidePanel #sewerSubRibbon #modernTopToolbar :is(input[type=range],.touchDragHandle),
+html.sewer-mobile-v137 body.sewer-ribbon-ui .app>aside :is(#library,#se61Library) .touchDragHandle{touch-action:none!important}

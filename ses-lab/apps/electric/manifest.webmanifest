@@ -1,0 +1,32 @@
+{
+  "name": "ElectricalPlan",
+  "short_name": "ElectricalPlan",
+  "description": "مخططات الكهرباء والإنارة",
+  "id": "./",
+  "start_url": "./?v=53-icon1",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#09254b",
+  "theme_color": "#09254b",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icons/icon-192.png?v=53-icon1",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png?v=53-icon1",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-1024.png?v=53-icon1",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

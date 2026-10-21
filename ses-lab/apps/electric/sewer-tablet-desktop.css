@@ -1,0 +1,67 @@
+/* Same desktop surfaces on touch devices, with a modestly narrower right library. */
+html.sewer-mobile-device body #sewerOrientationScreen{background:#efe8df!important;color:#30271f!important;overflow:hidden}
+#sewerOrientationScreen .sewerRotateContent{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:20px;max-width:90vw}
+#sewerOrientationScreen .fpSofaLogo{width:150px;height:150px;margin:0}
+#sewerOrientationScreen .fpSofaLogo svg{width:100%;height:100%}
+#sewerOrientationScreen .fpBrand{font-size:48px;line-height:1.1;color:#24201c}
+#sewerOrientationScreen .fpBrand b{color:#b17a32}
+#sewerOrientationScreen .fpSub{font-size:13px;letter-spacing:2px;color:#725637}
+html.sewer-mobile-device body #sewerOrientationScreen p{color:#493b2b!important;font-size:23px!important;margin-top:16px!important}
+@media screen and (orientation:landscape){
+ html.sewer-mobile-device{--sewer-library-width:250px;--tool-header-h:98px!important;--tool-btn-w:48px!important;--tool-btn-h:42px!important;--tool-icon-size:22px!important;--tool-label-size:9px!important;--tool-label-short-size:8px!important}
+ html.sewer-mobile-device body{margin:0!important;overflow:hidden!important}
+ html.sewer-mobile-device body .app{display:grid!important;direction:rtl!important;grid-template-columns:var(--sewer-library-width) minmax(0,1fr)!important;grid-template-rows:98px minmax(0,1fr) auto!important;width:100vw!important;height:100vh!important;height:100dvh!important;min-width:0!important}
+ html.sewer-mobile-device body .app>header{grid-column:1/-1!important;grid-row:1!important;display:flex!important;flex-direction:row!important;align-items:stretch!important;width:100%!important;height:98px!important;min-height:98px!important;max-height:98px!important;padding:3px 5px!important;gap:0!important;overflow:hidden!important;box-sizing:border-box!important}
+ html.sewer-mobile-device body .headerBrand{display:none!important}
+ html.sewer-mobile-device body #modernToolbarArea{display:flex!important;flex-direction:column!important;flex:1!important;width:100%!important;min-width:0!important;height:92px!important;gap:3px!important;overflow:hidden!important}
+ html.sewer-mobile-device body #modernTopToolbar{display:flex!important;flex-wrap:nowrap!important;flex:0 0 49px!important;min-width:0!important;width:100%!important;height:49px!important;min-height:49px!important;max-height:49px!important;padding:2px!important;box-sizing:border-box!important;overflow-x:auto!important;overflow-y:hidden!important;touch-action:pan-x!important;-webkit-overflow-scrolling:touch!important}
+ html.sewer-mobile-device body #modernTopToolbar .topToolGroup{flex:0 0 auto!important;margin:0 2px!important;padding:2px 4px!important;gap:3px!important;border-radius:6px!important}
+ html.sewer-mobile-device body #modernTopToolbar .modernIconBtn{display:flex!important;width:48px!important;min-width:48px!important;height:40px!important;min-height:40px!important;flex:0 0 48px!important;padding:2px!important;gap:1px!important}
+ html.sewer-mobile-device body #modernTopToolbar .modernIconBtn svg{width:21px!important;height:21px!important}
+ html.sewer-mobile-device body #modernTopToolbar .iconLabel{font-size:9px!important;line-height:11px!important}
+ html.sewer-mobile-device body #modernSliderRow{display:flex!important;flex:0 0 40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;width:100%!important;min-width:0!important;overflow-x:auto!important;overflow-y:hidden!important;padding:0!important;gap:4px!important;box-sizing:border-box!important}
+ html.sewer-mobile-device body #modernSliderRow .modernSliderBox{height:36px!important;min-height:36px!important;max-height:36px!important;grid-template-rows:28px!important;align-items:center!important;padding:3px 4px!important}
+ html.sewer-mobile-device body #modernSliderRow .sewerOpacityLayer{height:36px!important;min-height:36px!important;align-items:center!important;box-sizing:border-box!important;padding:1px 5px!important}
+ html.sewer-mobile-device body .app>aside{display:block!important;position:relative!important;grid-column:1!important;grid-row:2!important;inset:auto!important;transform:none!important;width:100%!important;max-width:none!important;height:100%!important;max-height:none!important;min-height:0!important;margin:0!important;padding:7px!important;overflow-y:auto!important;overflow-x:hidden!important;box-sizing:border-box!important;z-index:10!important;border-radius:0!important;box-shadow:none!important;background:#111827!important}
+ html.sewer-mobile-device body .app>aside>.section{display:block!important;position:relative!important;width:100%!important;height:auto!important;max-height:none!important;min-height:0!important;margin:0 0 8px!important;padding:8px!important;overflow:visible!important;box-sizing:border-box!important}
+ html.sewer-mobile-device body .app>aside .libraryBrowser{display:block!important;height:auto!important;max-height:none!important;overflow:visible!important;min-height:0!important}
+ html.sewer-mobile-device body .app>aside #library{display:block!important;height:auto!important;max-height:none!important;overflow:visible!important}
+ html.sewer-mobile-device body .app>aside .sewerLibraryLayerBox{padding:5px!important;margin-bottom:7px!important}
+ html.sewer-mobile-device body .app>aside .sewerLibraryCards{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ html.sewer-mobile-device body .app>aside .mobileLibraryFooter{display:none!important}
+ html.sewer-mobile-device body #sewerPlannerPanel .sewerIntro,html.sewer-mobile-device body #sewerPlannerPanel .sewerStepRail,html.sewer-mobile-device body #sewerPlannerPanel .sewerStepLabels{display:none!important}
+ html.sewer-mobile-device body #sewerPlannerPanel h3{font-size:15px!important}
+ html.sewer-mobile-device body #sewerPlannerPanel .sewerActions{grid-template-columns:1fr 1fr!important;gap:5px!important}
+ html.sewer-mobile-device body #sewerPlannerPanel button{font-size:11px!important;padding:6px 3px!important;min-height:34px!important}
+ html.sewer-mobile-device body #sewerPlannerPanel .sewerToggle{font-size:11px!important}
+ html.sewer-mobile-device body .app>main{position:relative!important;grid-column:2!important;grid-row:2!important;display:flex!important;flex-direction:column!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;padding:5px 5px 5px 108px!important;box-sizing:border-box!important;overflow:hidden!important}
+ html.sewer-mobile-device body .app>main .mapPanel{display:flex!important;flex-direction:column!important;flex:1!important;min-width:0!important;min-height:0!important;height:100%!important}
+ html.sewer-mobile-device body #mainScroll{flex:1!important;min-height:0!important;min-width:0!important}
+ html.sewer-mobile-device body #furnitureIconToolbar{position:absolute!important;left:56px!important;right:auto!important;top:5px!important;bottom:5px!important;width:47px!important;height:auto!important;max-height:none!important;padding:3px!important;gap:3px!important;box-sizing:border-box!important;overflow-y:auto!important}
+ html.sewer-mobile-device body #furnitureIconToolbar .modernIconBtn{width:39px!important;min-width:39px!important;height:39px!important;min-height:39px!important;flex:0 0 39px!important;padding:2px!important}
+ html.sewer-mobile-device body #furnitureIconToolbar .iconLabel{font-size:8px!important;line-height:10px!important}
+ html.sewer-mobile-device body #furnitureIconToolbar svg{width:20px!important;height:20px!important}
+ html.sewer-mobile-device body #sewerActionBar{position:fixed!important;left:4px!important;right:auto!important;top:103px!important;bottom:22px!important;width:48px!important;max-width:48px!important;max-height:none!important;display:flex!important;flex-direction:column!important;overflow-y:auto!important;gap:3px!important;box-sizing:border-box!important;padding:3px!important}
+ html.sewer-mobile-device body #sewerActionBar button{width:38px!important;min-width:38px!important;min-height:35px!important;height:35px!important;padding:2px!important;font-size:8px!important}
+ html.sewer-mobile-device body #sewerPieceTools{display:flex!important;flex-direction:column!important}
+ html.sewer-mobile-device body .app>footer{grid-column:1/-1!important;grid-row:3!important;max-height:20px!important;padding:2px!important;font-size:9px!important}
+ html.sewer-mobile-device body .sidebarScrim,html.sewer-mobile-device body #sidebarToggle{display:none!important}
+}
+@media screen and (orientation:landscape) and (max-width:950px){html.sewer-mobile-device{--sewer-library-width:210px}}
+@media screen and (orientation:landscape){
+ html.sewer-mobile-device body #modernTopToolbar .sewerOutlineControls{flex-direction:row!important;gap:4px!important;height:40px!important;padding:2px 4px!important;min-width:145px!important;box-sizing:border-box!important}
+ html.sewer-mobile-device body #modernTopToolbar .sewerOutlineControls label{font-size:9px!important;max-width:80px!important}
+ html.sewer-mobile-device body #modernTopToolbar .sewerOutlineControls input{height:14px!important}
+}
+
+/* V60: bound native form controls as well as their containers on Safari. */
+@media screen and (orientation:landscape){
+ html.sewer-mobile-device body #modernSliderRow{align-items:center!important;touch-action:pan-x;-webkit-overflow-scrolling:touch}
+ html.sewer-mobile-device body #modernSliderRow input[type="range"]{height:24px!important;min-height:0!important;max-height:24px!important;padding:0!important;margin:0!important;border:0!important;box-sizing:border-box!important;align-self:center!important}
+ html.sewer-mobile-device body #modernSliderRow .zoomStep{height:24px!important;min-height:24px!important;max-height:24px!important;line-height:20px!important;padding:0!important;box-sizing:border-box!important}
+ html.sewer-mobile-device body #modernSliderRow .sewerOpacityLayer select{height:28px!important;min-height:0!important;padding:1px 4px!important;box-sizing:border-box!important}
+ html.sewer-mobile-device body #modernSliderRow .sewerOpacityLayer label{display:flex!important;align-items:center!important;gap:4px!important;white-space:nowrap!important}
+ html.sewer-mobile-device body #sewerActionBar{visibility:visible!important;opacity:1!important;transform:none!important;z-index:350!important;overflow-x:hidden!important}
+ html.sewer-mobile-device body #sewerActionBar button{flex-shrink:0!important}
+ html.sewer-mobile-device body #sewerActionBar button b{font-size:19px!important;line-height:20px!important}
+}

@@ -1,6 +1,6 @@
 'use strict';
 (()=>{
- const by=id=>document.getElementById(id),stages=['color','furni'],frames=new Map(),pending=new Map();
+ const by=id=>document.getElementById(id),stages=['color','furni','sewer','electric'],frames=new Map(),pending=new Map();
  let active=null,lastStage=null,busy=false,dirty=false,title='مشروعي',lastSaved=null,recovery=null;
  const empty=()=>({schema:'ses-project',version:1,title,updatedAt:new Date().toISOString(),activeStage:active||lastStage,stages:{}});
  function setMenu(open){const visible=!!open&&document.body.classList.contains('in-app');document.body.classList.toggle('ses-menu-open',visible);by('sesMenuToggle').setAttribute('aria-expanded',String(visible));by('sesMenuBackdrop').hidden=!visible;}
@@ -13,10 +13,11 @@
  async function draftWrite(doc){const db=await database();try{await new Promise((resolve,reject)=>{const tx=db.transaction('drafts','readwrite');tx.objectStore('drafts').put(doc,'current');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}finally{db.close()}}
  async function draftRead(){const db=await database();try{return await new Promise((resolve,reject)=>{const r=db.transaction('drafts').objectStore('drafts').get('current');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}finally{db.close()}}
  async function stage(id){
+  if(!stages.includes(id))throw Error('برنامج غير معروف');
   if(frames.has(id))return frames.get(id);
   if(pending.has(id))return pending.get(id).promise;
   SESLoading.show(id);
-  const frame=document.createElement('iframe');frame.title=id==='color'?'التلوين — نسخة تجريبية مستقلة':'الأثاث — نسخة تجريبية مستقلة';frame.allow='fullscreen; clipboard-read; clipboard-write';frame.hidden=true;frame.src='apps/'+id+'/?v=progress6'+(new URLSearchParams(location.search).has('qa')?'&qa=1':'');
+  const frame=document.createElement('iframe');frame.title=({color:'التلوين',furni:'الأثاث',sewer:'المجاري',electric:'الكهرباء'}[id])+' — نسخة تجريبية مستقلة';frame.allow='fullscreen; clipboard-read; clipboard-write';frame.hidden=true;frame.src='apps/'+id+'/?v=four7'+(new URLSearchParams(location.search).has('qa')?'&qa=1':'');
   const entry={frame,fail:null,promise:null};
   entry.promise=new Promise((resolve,reject)=>{const deadline=Date.now()+180000;let timer;
    entry.fail=error=>{clearInterval(timer);pending.delete(id);frame.remove();reject(error)};
@@ -37,11 +38,11 @@
   const previous=frames.has(active||lastStage)?active||lastStage:null,source=previous&&frames.get(previous);status('جارٍ فتح المرحلة وتجهيز الخارطة…');
   let sourceState=source?await source.api.capture(false):null;
   const target=await stage(id);SESLoading.preparing();
-  if(previous&&previous!==id){const before=await target.api.capture(false);if(sourceState?.map&&(id==='furni'||!before.map||before.map.key!==sourceState.map.key))sourceState=await source.api.capture(true);await SESCore.exchange(source.api,target.api,sourceState,before)}
+  if(previous&&previous!==id){const before=await target.api.capture(false);if(sourceState?.map&&(id!=='color'||!before.map||before.map.key!==sourceState.map.key))sourceState=await source.api.capture(true);await SESCore.exchange(source.api,target.api,sourceState,before)}
   for(const [key,e]of frames)e.frame.hidden=key!==id;
   active=id;lastStage=id;by('workspace').hidden=false;by('home').hidden=true;document.body.classList.add('in-app');target.api.refresh();setMenu(false);
   for(const b of document.querySelectorAll('[data-program]'))b.setAttribute('aria-pressed',String(b.dataset.program===id));
-  await SESLoading.finish(target.frame);dirty=true;status(sourceState?.map?'تم فتح المرحلة ونقل الخارطة والمعايرة؛ بيانات كل مرحلة محفوظة':'افتح خارطة وعايرها داخل المرحلة، ثم انتقل من الشريط العلوي');
+  await SESLoading.finish(target.frame);dirty=true;status(sourceState?.map?'تم فتح المرحلة ونقل الخارطة والمعايرة؛ بيانات كل مرحلة محفوظة':'افتح خارطة وعايرها داخل المرحلة، ثم انتقل من زر SES أسفل اليسار');
  }catch(error){SESLoading.fail(error.message);throw error}}
  async function restore(doc){
   SESCore.validate(doc);const before=await collect(false);const created=[];
@@ -51,7 +52,7 @@
   for(const [id,e]of frames)if(!doc.stages[id]){e.frame.remove();frames.delete(id)}
   title=doc.title||'مشروعي';by('projectName').value=title;active=null;lastStage=null;
   const id=stages.includes(doc.activeStage)&&doc.stages[doc.activeStage]?doc.activeStage:stages.find(x=>doc.stages[x]);
-  if(id)await switchTo(id);else showHome();lastSaved=doc;dirty=false;try{await draftWrite(doc)}catch{}status('تم فتح مشروع SES بمراحل التلوين والأثاث');
+  if(id)await switchTo(id);else showHome();lastSaved=doc;dirty=false;try{await draftWrite(doc)}catch{}status('تم فتح مشروع SES بمراحله المحفوظة');
  }
  function showHome(){setMenu(false);if(active)lastStage=active;for(const e of frames.values())e.frame.hidden=true;by('home').hidden=false;by('workspace').hidden=true;document.body.classList.remove('in-app');active=null}
  window.SESProject={stage,switchTo,collect,restore};
@@ -59,11 +60,11 @@
  if(!document.fullscreenEnabled)by('fullscreen').hidden=true;else by('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){status(e.message,true)}};
  by('homeButton').onclick=()=>run(async()=>{if(active)await frames.get(active).api.capture(false);showHome()});
  by('projectName').onchange=()=>{title=by('projectName').value.trim()||'مشروعي';dirty=true};
- by('saveUnified').onclick=()=>run(async()=>{const doc=await collect(false);let localSaved=true;try{await draftWrite(doc)}catch{localSaved=false}const blob=new Blob([JSON.stringify(doc)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(title.replace(/[\\/:*?"<>|]/g,'-')||'SES-Project')+'.ses';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);lastSaved=doc;dirty=false;status(localSaved?'تم تجهيز ملف المشروع الموحّد وحفظ نسخة استعادة على الجهاز':'تم تجهيز ملف المشروع الموحّد؛ تعذّر الحفظ التلقائي على هذا الجهاز')});
+ by('saveUnified').onclick=()=>run(async()=>{const doc=await collect(false);let localSaved=true;try{await draftWrite(doc)}catch{localSaved=false}const filename=(title.replace(/[\\/:*?"<>|]/g,'-')||'SES-Project')+'.ses';if(window.SESNative)await SESNative.save(filename,JSON.stringify(doc));else{const blob=new Blob([JSON.stringify(doc)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};lastSaved=doc;dirty=false;status(localSaved?'تم تجهيز ملف المشروع الموحّد وحفظ نسخة استعادة على الجهاز':'تم تجهيز ملف المشروع الموحّد؛ تعذّر الحفظ التلقائي على هذا الجهاز')});
  by('openUnified').onclick=()=>by('unifiedFile').click();
  by('unifiedFile').onchange=()=>{const file=by('unifiedFile').files[0];if(file)run(async()=>{const doc=SESCore.validate(JSON.parse(await file.text()));if(frames.size&&!confirm('فتح المشروع يستبدل العمل الحالي في النسخة التجريبية. احفظه أولًا إذا لزم. متابعة؟'))return;await restore(doc)});by('unifiedFile').value=''};
  by('restoreDraft').onclick=()=>run(async()=>{const doc=recovery||lastSaved||await draftRead();if(!doc)throw Error('لا توجد نسخة استعادة');if(frames.size&&!confirm('استعادة آخر حفظ تلقائي واستبدال العمل الحالي؟'))return;await restore(doc);recovery=null});
- by('newUnified').onclick=()=>run(async()=>{if(frames.size&&!confirm('إنشاء مشروع تجريبي جديد؟ احفظ المشروع الحالي أولًا.'))return;for(const e of frames.values())e.frame.remove();frames.clear();active=null;lastStage=null;title='مشروعي';by('projectName').value=title;showHome();dirty=false;status('مشروع جديد — اختر التلوين أو الأثاث للبدء')});
+ by('newUnified').onclick=()=>run(async()=>{if(frames.size&&!confirm('إنشاء مشروع تجريبي جديد؟ احفظ المشروع الحالي أولًا.'))return;for(const e of frames.values())e.frame.remove();frames.clear();active=null;lastStage=null;title='مشروعي';by('projectName').value=title;showHome();dirty=false;status('مشروع جديد — اختر أحد البرامج الأربعة للبدء')});
  window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
  window.addEventListener('message',e=>{if(e.origin===location.origin&&[...frames.values()].some(x=>x.frame.contentWindow===e.source)&&e.data==='ses-dirty')dirty=true});
  setInterval(autosave,30000);

@@ -1,7 +1,7 @@
 'use strict';
 (()=>{
  const get=id=>document.getElementById(id);let current=null,completed=false;
- const names={color:'تلوين المخطط',furni:'تخطيط الأثاث'};
+ const names={color:'تلوين المخطط',furni:'تخطيط الأثاث',sewer:'تمديدات المجاري',electric:'تمديدات الكهرباء'};
  function setPercent(value){const n=Math.max(0,Math.min(100,Math.floor(value)));get('sesLoadFill').style.width=n+'%';get('sesLoadTrack').setAttribute('aria-valuenow',String(n));get('sesLoadPercent').textContent=n+'%';}
  window.SESLoading={
   show(id,cached=false){current=id;completed=false;get('sesTransition').setAttribute('aria-busy','true');get('sesTransition').dataset.stage=id;get('sesTransition').hidden=false;get('sesTransition').classList.remove('load-error');get('sesLoadBack').hidden=true;get('sesLoadTitle').textContent='جارٍ الانتقال إلى برنامج '+(names[id]||'SES');get('sesLoadDetail').textContent=cached?'البرنامج محمّل؛ جارٍ تجهيز مشروعك…':'جارٍ تحميل ملفات البرنامج…';setPercent(cached?99:0);},

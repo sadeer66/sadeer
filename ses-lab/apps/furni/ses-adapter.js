@@ -6,6 +6,7 @@
  const identity=()=>JSON.stringify([bgData,dxfModel,canvas.width,canvas.height]);
  function guard(){if(points.length||areaDraft.length||window.FP198Boundary?.isActive()||drag||measureDrag||mapLabelDrag)throw Error('ثبّت القياس أو العملية الحالية في الأثاث أولًا');}
  function baseRaster(){
+  if(bgData&&!dxfModel)return bgData;
   const out=document.createElement('canvas');out.width=canvas.width;out.height=canvas.height;
   const q=out.getContext('2d');q.fillStyle='#fff';q.fillRect(0,0,out.width,out.height);
   if(bgImage)q.drawImage(bgImage,0,0,out.width,out.height);
