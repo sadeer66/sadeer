@@ -1,4 +1,4 @@
-<!doctype html><meta charset="utf-8"><title>SES isolated integration checks</title><style>body{font:16px sans-serif;background:#f3eadb}iframe{width:1100px;height:750px;border:1px solid #ccc}pre{white-space:pre-wrap}</style><h1>SES integration verification</h1><pre id="result">Running…</pre><iframe id="shell" src="../index.html"></iframe><script>
+<!doctype html><meta charset="utf-8"><title>SES isolated integration checks</title><style>body{font:16px sans-serif;background:#f3eadb}iframe{width:1100px;height:750px;border:1px solid #ccc}pre{white-space:pre-wrap}</style><h1>SES integration verification</h1><pre id="result">Running…</pre><iframe id="shell" src="../index.html?qa=1"></iframe><script>
 (async()=>{
  const output=document.getElementById('result'),shell=document.getElementById('shell'),lines=[];
  const check=(value,message)=>{if(!value)throw Error(message);lines.push('PASS '+message);output.textContent=lines.join('\n')};
@@ -7,7 +7,7 @@
   await until(()=>shell.contentWindow.SESProject);const app=shell.contentWindow,core=app.SESCore;
   const a=await app.SESProject.stage('color'),b=await app.SESProject.stage('furni');
   const fixture=document.createElement('canvas');fixture.width=400;fixture.height=300;const q=fixture.getContext('2d');q.fillStyle='white';q.fillRect(0,0,400,300);q.strokeStyle='black';q.strokeRect(30,30,340,240);
-  const c=await a.api.capture(false);c.native.project.image=fixture.toDataURL();c.native.project.width=400;c.native.project.height=300;c.native.project.dxfLines=[];c.native.project.polys=[];c.native.project.settings.tileCmPerUnit=2;c.native.project.settings.tileCalibration={a:{x:0,y:0},b:{x:100,y:0},cm:200};
+  const c=await a.api.capture(false);c.native.project.image=fixture.toDataURL();c.native.project.width=400;c.native.project.height=300;c.native.project.dxfLines=[];c.native.project.polys=[{layerId:'base-3',points:[{x:60,y:60},{x:320,y:60},{x:320,y:240},{x:60,y:240}],material:'plain',color:'#d4bea0',opacity:100,tile:80}];c.native.project.settings.tileCmPerUnit=2;c.native.project.settings.tileCalibration={a:{x:0,y:0},b:{x:100,y:0},cm:200};
   await a.api.restore(c.native);const first=await a.api.capture(true);check(first.map.pxPerCm===.5,'Color calibration converted to pixels per centimeter');
   await core.exchange(a.api,b.api,first,await b.api.capture(false));let f=await b.api.capture(false);
   check(f.native.canvas.width===400&&f.native.canvas.height===300,'Canvas dimensions preserved without image rescaling');check(f.native.pxPerCm===.5,'Furniture receives the same calibration');
@@ -15,9 +15,10 @@
   const same=await a.api.capture(true);await core.exchange(a.api,b.api,same,await b.api.capture(false));f=await b.api.capture(false);
   check(f.native.items.length===1&&f.native.items[0].x===140&&f.native.items[0].rot===45,'Returning from color preserves furniture position and rotation');
   b.api.setCalibration(.25);await core.exchange(b.api,a.api,await b.api.capture(true),await a.api.capture(false));const returned=await a.api.capture(false);
-  check(returned.map.pxPerCm===.25,'Calibration changes return from furniture to color');
+  check(returned.map.pxPerCm===.25,'Calibration changes return from furniture to color');check(returned.native.project.polys.length===1,'Editable color polygons survive a round trip through furniture');
   const doc=await app.SESProject.collect(false),saved=JSON.stringify(doc);core.validate(JSON.parse(saved));await app.SESProject.restore(JSON.parse(saved));const restored=await b.api.capture(false);
   check(restored.native.items[0].id==='test-chair'&&restored.native.pxPerCm===.25,'Unified project JSON save and reload retains furniture and scale');
+  await app.SESProject.switchTo('color');app.document.getElementById('homeButton').click();await until(()=>!app.document.getElementById('home').hidden);await app.SESProject.switchTo('furni');check((await b.api.capture(false)).native.items[0].x===140,'Home screen navigation preserves the shared map and furniture');
   const mark='ses-isolation-check';app.localStorage.setItem(mark,'stable-sentinel');b.frame.contentWindow.localStorage.setItem(mark,'trial-only');check(app.localStorage.getItem(mark)==='stable-sentinel','Copied apps cannot overwrite stable preference keys');app.localStorage.removeItem(mark);b.frame.contentWindow.localStorage.removeItem(mark);
   check(!shell.contentDocument.querySelector('iframe[src*="furniplan-v233"]'),'Shell loads copied applications, not stable application URLs');
   output.textContent=lines.join('\n')+'\nALL CHECKS PASSED';

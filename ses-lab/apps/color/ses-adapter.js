@@ -18,13 +18,14 @@
    if(p.gapTolerance!==undefined)gapSlider.value=p.gapTolerance;
    normalizeLayerColors();layerOptions();renderLayers();syncAdvancedRealismUI();syncTilesUI();refreshList();showEffectControls();$('empty').style.display=img||dxfLines.length?'none':'';fit();
    if(state.camera){scale=state.camera.scale;offsetX=state.camera.offsetX;offsetY=state.camera.offsetY;view=state.camera.view||'real';draw()}
+   $('fileinfo').textContent='مشروع SES — '+imgW+' × '+imgH+' · '+(settings.tileCalibration?'المعايرة محفوظة':'يحتاج معايرة');
    inherited=state.sharedKey?{key:state.sharedKey,signature:identity()}:null;
   },
   async applyShared(map){
    if(!map?.image)throw Error('لا توجد صورة خارطة للنقل');
    const loaded=await image(map.image);img=loaded;imgUrl=map.image;imgW=map.width;imgH=map.height;dxfLines=[];polys=[];selected=-1;drawing=[];undoStack=[];redoStack=[];
    settings=copy(cleanSettings);this.setCalibration(map.pxPerCm);inherited={key:map.key,signature:identity()};
-   refreshList();syncAdvancedRealismUI();syncTilesUI();$('empty').style.display='none';fit();show('تم نقل الخارطة والمعايرة من مشروع SES التجريبي');
+   $('fileinfo').textContent='خارطة SES — '+imgW+' × '+imgH;refreshList();syncAdvancedRealismUI();syncTilesUI();$('empty').style.display='none';fit();show('تم نقل الخارطة والمعايرة من مشروع SES التجريبي');
   },
   setCalibration(ppcm){if(ppcm>0){settings.tileCmPerUnit=1/ppcm;settings.tileCalibration={a:{x:0,y:0},b:{x:100,y:0},cm:100/ppcm}}else settings.tileCalibration=null;syncTilesUI();draw()},
   refresh(){fit()},
