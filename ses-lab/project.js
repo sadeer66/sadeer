@@ -39,6 +39,7 @@
  function showHome(){if(active)lastStage=active;for(const e of frames.values())e.frame.hidden=true;by('home').hidden=false;by('workspace').hidden=true;document.body.classList.remove('in-app');active=null}
  window.SESProject={stage,switchTo,collect,restore};
  document.querySelectorAll('[data-program]').forEach(button=>button.onclick=()=>run(()=>switchTo(button.dataset.program)));
+ if(!document.fullscreenEnabled)by('fullscreen').hidden=true;else by('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){status(e.message,true)}};
  by('homeButton').onclick=()=>run(async()=>{if(active)await frames.get(active).api.capture(false);showHome()});
  by('projectName').onchange=()=>{title=by('projectName').value.trim()||'مشروعي';dirty=true};
  by('saveUnified').onclick=()=>run(async()=>{const doc=await collect(false);let localSaved=true;try{await draftWrite(doc)}catch{localSaved=false}const blob=new Blob([JSON.stringify(doc)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(title.replace(/[\\/:*?"<>|]/g,'-')||'SES-Project')+'.ses';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);lastSaved=doc;dirty=false;status(localSaved?'تم تجهيز ملف المشروع الموحّد وحفظ نسخة استعادة على الجهاز':'تم تجهيز ملف المشروع الموحّد؛ تعذّر الحفظ التلقائي على هذا الجهاز')});
