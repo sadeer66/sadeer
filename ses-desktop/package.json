@@ -5,16 +5,51 @@
   "description": "Isolated offline SES desktop preview with a central asset library",
   "author": "Sadeer Yaseen Mohammed",
   "main": "main.cjs",
-  "scripts": {"start":"electron .", "package":"electron-builder --win nsis --x64"},
-  "devDependencies": {"electron":"44.9.2", "electron-builder":"26.0.12"},
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-builder --win nsis --x64"
+  },
+  "devDependencies": {
+    "electron": "44.9.2",
+    "electron-builder": "26.0.12"
+  },
   "build": {
     "appId": "com.sadeer.ses.centralpreview",
     "productName": "SES Central Preview",
     "asar": true,
-    "files": ["main.cjs", "server.cjs", "package.json"],
-    "extraResources": [{"from":"Web", "to":"Web"}],
-    "directories": {"output":"dist"},
-    "win": {"icon":"icon.ico", "signAndEditExecutable":false, "target":[{"target":"nsis", "arch":["x64"]}]},
-    "nsis": {"oneClick":false, "perMachine":false, "allowToChangeInstallationDirectory":true, "createDesktopShortcut":true, "shortcutName":"SES Central Preview", "artifactName":"SES-Central-Preview-${version}-Setup.${ext}"}
+    "files": [
+      "main.cjs",
+      "server.cjs",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "Web",
+        "to": "Web"
+      }
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "icon": "icon.ico",
+      "signAndEditExecutable": true,
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "SES Central Preview",
+      "artifactName": "SES-Central-Preview-${version}-Setup.${ext}"
+    }
   }
 }
