@@ -31,3 +31,7 @@ All four programs and assets are bundled locally. The desktop shell blocks exter
 `central-library-report.json` records media savings and verifies source files were not modified. `bundle-manifest.json` contains complete byte lengths and checksums. The preview validates each file on first access. This detects accidental corruption, not deliberate tampering by an attacker able to modify the app.
 
 For reliable use, launch the desktop app. Opening the HTML through `file://` bypasses URL alias resolution and is unsupported.
+
+## Desktop-only controls
+
+The preparer injects two desktop integration scripts into the generated copy only. Each native File panel gains a bronze Save SES project button and a teal Open SES project button. Both invoke the existing unified project implementation, preserving all four stages. Each native top toolbar gains an SES button opening an internal keyboard-accessible dialog with the other three program icons and Home. The old floating SES controls are hidden in this generated desktop copy. Web, Apple, and approved standalone sources are unchanged.

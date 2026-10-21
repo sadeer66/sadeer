@@ -7,6 +7,7 @@ import json
 import pathlib
 import re
 import subprocess
+import shutil
 
 STAGES = ('color', 'furni', 'sewer', 'electric')
 MEDIA = {'.png', '.webp', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.otf', '.mp3', '.wav'}
@@ -28,6 +29,30 @@ def prepare(source, destination):
     source_state = inventory(source)
     module.prepare(destination)
     module.verify(destination)
+    desktop_source = pathlib.Path(__file__).resolve().parent
+    (destination / 'desktop').mkdir()
+    for name in ['ui-shell.js', 'ui-stage.js']:
+        shutil.copy2(desktop_source / name, destination / 'desktop' / name)
+    path = destination / 'index.html'
+    text = path.read_text(encoding='utf-8')
+    text = text.replace('</body>', '<script src="desktop/ui-shell.js"></script></body>')
+    path.write_text(text, encoding='utf-8')
+    for stage in STAGES:
+        folder = destination / 'apps' / stage
+        engine = folder / 'engine.html'
+        text = engine.read_text(encoding='utf-8')
+        end = text.lower().rfind('</body>')
+        if end < 0:
+            raise ValueError('Missing engine body: ' + stage)
+        text = text[:end] + '<script src="../../desktop/ui-stage.js"></script>' + text[end:]
+        engine.write_text(text, encoding='utf-8')
+        loader = folder / 'index.html'
+        text = loader.read_text(encoding='utf-8')
+        match = re.search(r'spec=(\{[^\n]+?\}),total=spec\.engine', text)
+        weights = json.loads(match[1])
+        weights['engine'] = engine.stat().st_size
+        weights['files']['../../desktop/ui-stage.js'] = (destination / 'desktop/ui-stage.js').stat().st_size
+        loader.write_text(text[:match.start(1)] + json.dumps(weights, ensure_ascii=False, separators=(',', ':')) + text[match.end(1):], encoding='utf-8')
     prepared_bytes = sum(p.stat().st_size for p in destination.rglob('*') if p.is_file())
     assets = [p for p in sorted(destination.rglob('*')) if p.is_file() and p.suffix.lower() in MEDIA]
     library = destination / 'shared-library/files'
@@ -108,6 +133,8 @@ def verify(root):
                 assert relative in aliases, relative
             if path.suffix == '.js':
                 subprocess.run(['node', '--check', str(path)], check=True)
+    for name in ['ui-shell.js', 'ui-stage.js']:
+        subprocess.run(['node', '--check', str(root / 'desktop' / name)], check=True)
     print('Central library integrity, aliases, loader sizes, and JavaScript checks passed.')
 
 if __name__ == '__main__':
