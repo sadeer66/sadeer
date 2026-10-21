@@ -16,6 +16,8 @@ npx electron . --smoke-test
 npm run package
 ```
 
+On Windows, set `PYTHONUTF8=1` before preparation so the retained Arabic source is read consistently. The Windows workflow sets this automatically.
+
 The Windows workflow produces a separate installer named SES Central Preview. Its app ID, shortcut, data profile, and installation name differ from production. It never registers `.ses` file associations. Existing standalone apps and projects remain unchanged.
 
 ## Shared library

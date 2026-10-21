@@ -13,6 +13,9 @@ jobs:
   windows-preview:
     runs-on: windows-latest
     timeout-minutes: 25
+    env:
+      PYTHONUTF8: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,8 +32,11 @@ jobs:
       - name: Prepare isolated programs and shared library
         run: |
           python ses-desktop/prepare.py ses-desktop/Web
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python ses-desktop/prepare.py ses-desktop/Web --verify
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           node ses-desktop/test-server.cjs ses-desktop/Web
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Copy-Item ses-lab/assets/icons/ses-v9.ico ses-desktop/icon.ico
           Copy-Item ses-desktop/Web/central-library-report.json ses-desktop/central-library-report.json
       - name: Install desktop build dependencies
