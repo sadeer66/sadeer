@@ -1,23 +1,76 @@
 <!doctype html><html lang="ar" dir="rtl"><head><base href="https://sadeer66.github.io/sadeer/ses-studio/"><style>
-#rotaryDock{position:absolute;right:8px;top:8px;z-index:35;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;direction:rtl}
-.rotGroup{width:clamp(148px,19vw,200px);pointer-events:auto;text-align:center}
-.rotTitle{font-size:11px;font-weight:700;color:#58452e;background:#faf2e9e8;border-radius:8px;padding:4px}
-.rotWheel{width:clamp(142px,18vw,190px);height:clamp(142px,18vw,190px);margin:5px auto 0;border-radius:50%;position:relative;touch-action:none;user-select:none;cursor:grab;background:radial-gradient(circle,#ffffff08 35%,#bbc6d21c 95%);border:5px ridge #b0a28b;box-shadow:inset 0 0 0 2px #f6efe3,inset 0 0 0 4px #8c8379,0 7px 16px #1c2b3c55}
-.rotWheel:before{content:'';position:absolute;inset:28%;border-radius:50%;background:repeating-conic-gradient(#a9a8a5 0deg,#f5f4f0 14deg,#8e969c 26deg);border:6px solid #4a4d51;box-shadow:inset 0 0 0 2px #e5e2d8,0 0 0 3px #b98c50,0 0 0 6px #333b43,0 0 9px 6px #0878ed6a;pointer-events:none}
-.rotWheel:after{content:'';position:absolute;inset:38%;border-radius:50%;background:conic-gradient(#fafafa,#7c8389,#fafafa,#a6a7a6,#fafafa);pointer-events:none}
-.rotSegment{position:absolute;left:50%;top:50%;width:60px;margin-left:-30px;min-height:26px;display:grid;place-items:center;text-align:center;font:600 10px Tahoma,Arial;color:#3a3024;text-shadow:0 1px #fff;pointer-events:none;border-radius:8px}
-.rotSegment.active{color:white;background:linear-gradient(140deg,#0053b9,#1684ef);box-shadow:0 0 8px #0579eea0;text-shadow:0 1px #00335a}
-.rotSegment.dim{opacity:.38}
-.rotPointer{position:absolute;z-index:6;top:5px;left:50%;transform:translateX(-50%);color:#e9a65b;font-size:22px;text-shadow:0 0 5px #222}
-.rotBtns{display:flex;justify-content:center;gap:12px;margin-top:2px}.rotBtns button{background:linear-gradient(#fff8ec,#b4a38c);color:#3b3026;border:1px solid #8e7b61;border-radius:8px;padding:3px 11px}
-#rotStatus{max-width:200px;background:#faf4e6ed;border:1px solid #c4a879;border-radius:8px;padding:7px;text-align:center;color:#493723;font-size:12px;font-weight:bold}
-#rotAdd{display:block;width:100%;margin-top:5px;background:#165e9a;color:white;border:0;border-radius:7px;padding:7px;pointer-events:auto}
-@media(max-height:700px){#rotaryDock{gap:2px}.rotWheel{width:120px;height:120px}.rotGroup{width:130px}.rotSegment{font-size:9px}}
+#rotaryDock{position:absolute;right:8px;top:10px;z-index:35;display:flex;flex-direction:column;align-items:center;gap:12px;pointer-events:none;direction:rtl}
+.rotGroup{width:154px;pointer-events:auto;text-align:center}
+.rotTitle{background:#f6eee3ee;border-radius:8px;padding:5px;font:bold 12px Tahoma;color:#4d3926}
+.rotWheel{width:132px;height:132px;margin:5px auto;border-radius:50%;position:relative;touch-action:none;user-select:none;cursor:grab;border:5px ridge #b8a58a;background:radial-gradient(circle,#ffffff0a 30%,#d0d8e018);box-shadow:inset 0 0 0 3px #776d60,0 5px 13px #17233477}
+.rotWheel:before{content:'';position:absolute;inset:20%;border-radius:50%;background:repeating-conic-gradient(#a0a3a5 0deg,#f7f7f3 12deg,#7b8288 24deg);border:6px solid #414b56;box-shadow:0 0 0 3px #ba925d,0 0 10px 5px #147be27a}
+.rotWheel:after{content:'';position:absolute;inset:32%;border-radius:50%;background:conic-gradient(#fefefe,#828c91,#fdfdfd,#9ba4a9,#fefefe);box-shadow:inset 0 0 7px #0004}
+.rotPointer{position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:4;color:#f0a13f;text-shadow:0 1px 3px #000;font-size:19px}
+.rotWheel .rotSegment{display:none}
+.rotWheel .tick{position:absolute;top:5px;left:50%;width:2px;height:8px;background:#ad8753;transform-origin:1px 57px;pointer-events:none}
+.rotSelected{border:1px solid #b5a17f;border-radius:10px;background:#f9f3e8f2;padding:8px 5px;margin:5px auto;min-height:65px;box-shadow:0 2px 8px #0002}
+.rotSelected .pic{display:block;font-size:28px;line-height:34px}
+.rotSelected .name{font:bold 13px Tahoma;color:#3b332a;line-height:1.5}
+.rotSelected .count{display:block;font:10px Arial;color:#766a59;margin-top:3px}
+.rotBtns{display:flex;justify-content:center;gap:10px}.rotBtns button{background:linear-gradient(#fff8ed,#b3a18a);color:#352b23;border:1px solid #9d8667;border-radius:8px;padding:6px 15px}
+#rotStatus{display:none}#rotAdd{width:154px;background:#1469a5;color:#fff;border:0;border-radius:8px;padding:9px;pointer-events:auto;font-weight:bold}
+@media(max-height:700px){#rotaryDock{gap:4px;top:3px}.rotWheel{width:105px;height:105px}.rotWheel .tick{transform-origin:1px 43px}.rotSelected{padding:3px;min-height:45px}.rotSelected .pic{font-size:20px;line-height:23px}}
 </style><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101826"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>SES — Sadeer Engineering Studio</title><link rel="stylesheet" href="studio.css?v=brand8"><link rel="icon" type="image/x-icon" href="assets/icons/ses-v9.ico"><link rel="icon" type="image/png" sizes="32x32" href="assets/icons/ses-32-v9.png"><link rel="apple-touch-icon" sizes="152x152" href="assets/icons/ses-152-v9.png"><link rel="apple-touch-icon" sizes="167x167" href="assets/icons/ses-167-v9.png"><link rel="apple-touch-icon" sizes="180x180" href="assets/icons/ses-180-v9.png"><link rel="manifest" href="manifest.webmanifest?v=icon9"><meta name="apple-mobile-web-app-title" content="SES"><meta name="mobile-web-app-capable" content="yes"></head><body>
 <header id="studioHeader"><button id="homeButton" class="home-button" aria-label="الرئيسية" title="الرئيسية"><img src="assets/ses-logo-approved-v8.png" alt="SES"></button><nav id="appTabs" aria-label="البرامج الأربعة"></nav><button id="fullscreen" title="ملء الشاشة" aria-label="ملء الشاشة"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button></header>
 <main id="home"><section class="intro"><div class="brand"><img src="assets/ses-logo-approved-v8.png" alt="SES — Sadeer Engineering Studio"></div><div class="intro-copy"><span class="eyebrow" dir="ltr">Sadeer Engineering Studio</span><h1>استوديو سدير الهندسي</h1><p>أربع أدوات. مساحة عمل واحدة.</p><div class="intro-actions"><button id="descriptionLanguage" type="button" aria-pressed="false">English</button><span class="edition">النسخة الكاملة <i></i> SES 1.0</span></div></div></section><section class="program-grid" id="programGrid" aria-label="اختيار البرنامج"></section><div class="home-bottom"><p>اختر برنامجًا للبدء، وتنقّل بينها من الشريط العلوي.</p><small>احفظ مشاريعك من داخل كل برنامج قبل إغلاق الصفحة.</small></div></main>
-<section id="workspace" hidden aria-label="مساحة العمل"><div id="frames"></div><div id="rotaryDock" hidden aria-label="الأقراص الدوارة"><div class="rotGroup"><div class="rotTitle">القرص العلوي · الأقسام</div><div class="rotWheel" id="rotA"><span class="rotPointer">◆</span></div><div class="rotBtns"><button id="rotAL" type="button">◀</button><button id="rotAR" type="button">▶</button></div></div><div class="rotGroup"><div class="rotTitle">القرص السفلي · المحتويات</div><div class="rotWheel" id="rotB"><span class="rotPointer">◆</span></div><div class="rotBtns"><button id="rotBL" type="button">◀</button><button id="rotBR" type="button">▶</button></div></div><div id="rotStatus">اسحب القرص للتدوير</div><button id="rotAdd" type="button">اختيار القطعة</button></div><div id="loading" hidden role="status"><span class="spinner"></span><strong id="loadingText">جارٍ فتح البرنامج…</strong></div><div id="connectionNotice" hidden><p>لم يكتمل فتح البرنامج. تحقق من الاتصال ثم أعد المحاولة.</p><button id="retry">إعادة المحاولة</button><button id="backHome">الرئيسية</button></div></section>
+<section id="workspace" hidden aria-label="مساحة العمل"><div id="frames"></div><div id="rotaryDock" hidden aria-label="الأقراص الدوارة"><div class="rotGroup"><div class="rotTitle">القرص العلوي · الأقسام</div><div class="rotWheel" id="rotA"><span class="rotPointer">◆</span></div><div class="rotSelected" id="selectedA"></div><div class="rotBtns"><button id="rotAL" type="button">◀</button><button id="rotAR" type="button">▶</button></div></div><div class="rotGroup"><div class="rotTitle">القرص السفلي · المحتويات</div><div class="rotWheel" id="rotB"><span class="rotPointer">◆</span></div><div class="rotSelected" id="selectedB"></div><div class="rotBtns"><button id="rotBL" type="button">◀</button><button id="rotBR" type="button">▶</button></div></div><div id="rotStatus">اسحب القرص للتدوير</div><button id="rotAdd" type="button">اختيار القطعة</button></div><div id="loading" hidden role="status"><span class="spinner"></span><strong id="loadingText">جارٍ فتح البرنامج…</strong></div><div id="connectionNotice" hidden><p>لم يكتمل فتح البرنامج. تحقق من الاتصال ثم أعد المحاولة.</p><button id="retry">إعادة المحاولة</button><button id="backHome">الرئيسية</button></div></section>
 <footer id="studioFooter"><span>© 2026 سدير ياسين محمد — جميع الحقوق محفوظة</span><span id="activeLabel">SES · النسخة الكاملة</span></footer><script src="studio.js?v=studio5-lang"></script><script>(function(){
+const cats=['🛋️ أثاث','💡 إنارة','🚪 أبواب','🪟 شبابيك','🌱 نباتات','🔌 أجهزة','👥 أشخاص','🧶 سجاد'];
+const sets=[['🛋️ أريكة','🪑 كرسي','🛏️ سرير','🍽️ طاولة','🗄️ خزانة','🪑 مكتب','🛋️ ركنة','🪑 مقعد'],['💡 سبوت','✨ ثريا','🔦 كشاف','💡 متدلية','🟡 شريط','💡 جداري','💡 سقفي','🔆 أرضي'],['🚪 مفرد','🚪 مزدوج','🚪 منزلق','🚪 خارجي','🚪 داخلي','🚪 زجاج','🚪 خشب','🚪 قوس'],['🪟 مفرد','🪟 مزدوج','🪟 منزلق','🪟 طويل','🪟 عريض','🪟 قوس','🪟 زجاج','🪟 صغير'],['🌴 نخلة','🪴 أصيص','🌳 شجرة','🌿 شجيرة','🌱 عشب','🌺 زهور','🌲 صنوبر','🍃 ورق'],['❄️ تكييف','📺 تلفاز','☕ قهوة','🧊 ثلاجة','🍳 فرن','🔌 راوتر','🌀 مروحة','🔊 سماعة'],['🚶 شخص','🧍 واقف','🪑 جالس','👫 زوجان','🚶‍♀️ امرأة','👶 طفل','🧑‍🤝‍🧑 مجموعة','🧍‍♂️ رجل'],['🧶 مربع','🧶 دائري','🧶 مستطيل','🧶 كبير','🧶 صغير','🧶 ملون','🧶 سادة','🧶 نقش']];
+const s={A:{angle:0,items:cats},B:{angle:0,items:sets[0]}};
+const mod=(n,m)=>(n%m+m)%m;
+function idx(id){const n=s[id].items.length;return mod(Math.round(-s[id].angle/(360/n)),n)}
+function draw(id){
+ const w=document.getElementById('rot'+id),v=s[id],n=v.items.length,r=w.clientWidth*.37,selected=idx(id);
+ w.querySelectorAll('.rotSegment').forEach(e=>e.remove());
+ // Only the selected item and its two immediate neighbors remain visible.
+ for(let offset=-1;offset<=1;offset++){
+  const i=mod(selected+offset,n),a=(i*360/n+v.angle)*Math.PI/180;
+  const el=document.createElement('div');el.className='rotSegment'+(offset===0?' active':' dim');
+  el.style.transform='translate('+Math.sin(a)*r+'px,'+(-Math.cos(a)*r)+'px) translateY(-50%)';
+  el.textContent=id==='B'?(v.items[i].split(' ')[0]):v.items[i];w.appendChild(el);
+ }
+ document.getElementById('rotStatus').textContent='القسم: '+s.A.items[idx('A')]+'\nالقطعة: '+s.B.items[idx('B')];
+}
+function change(id){if(id==='A'){s.B.items=sets[idx('A')];s.B.angle=0}draw('A');draw('B')}
+function step(id,d){s[id].angle-=d*360/s[id].items.length;change(id)}
+function init(id){
+ const w=document.getElementById('rot'+id);let start=null,origin=0;
+ function at(e){const r=w.getBoundingClientRect();return Math.atan2(e.clientY-r.top-r.height/2,e.clientX-r.left-r.width/2)*180/Math.PI}
+ w.addEventListener('pointerdown',e=>{start=at(e);origin=s[id].angle;w.setPointerCapture(e.pointerId);e.preventDefault()});
+ w.addEventListener('pointermove',e=>{if(start===null)return;let d=at(e)-start;if(d>180)d-=360;if(d< -180)d+=360;s[id].angle=origin+d;draw(id)});
+ function end(){if(start===null)return;start=null;const t=360/s[id].items.length;s[id].angle=Math.round(s[id].angle/t)*t;change(id)}
+ w.addEventListener('pointerup',end);w.addEventListener('pointercancel',end);
+ document.getElementById('rot'+id+'L').onclick=()=>step(id,-1);
+ document.getElementById('rot'+id+'R').onclick=()=>step(id,1);
+}
+init('A');init('B');
+document.getElementById('rotAdd').onclick=()=>{document.getElementById('rotStatus').textContent='تم اختيار: '+s.B.items[idx('B')]+' (معاينة فقط، لم تُضف إلى المخطط)'};
+const workspace=document.getElementById('workspace'),dock=document.getElementById('rotaryDock');
+new MutationObserver(()=>{dock.hidden=workspace.hidden;if(!dock.hidden){draw('A');draw('B')}}).observe(workspace,{attributes:true,attributeFilter:['hidden']});
+draw('A');draw('B');
+})();</script></body></html><script>(function(){
+const cats=['🛋️ أثاث','💡 إنارة','🚪 أبواب','🪟 شبابيك','🌱 نباتات','🔌 أجهزة','👥 أشخاص','🧶 سجاد'];
+const sets=[['🛋️ أريكة','🪑 كرسي','🛏️ سرير','🍽️ طاولة','🗄️ خزانة','🪑 مكتب','🛋️ ركنة','🪑 مقعد'],['💡 سبوت','✨ ثريا','🔦 كشاف','💡 متدلية','🟡 شريط','💡 جداري','💡 سقفي','🔆 أرضي'],['🚪 مفرد','🚪 مزدوج','🚪 منزلق','🚪 خارجي','🚪 داخلي','🚪 زجاج','🚪 خشب','🚪 قوس'],['🪟 مفرد','🪟 مزدوج','🪟 منزلق','🪟 طويل','🪟 عريض','🪟 قوس','🪟 زجاج','🪟 صغير'],['🌴 نخلة','🪴 أصيص','🌳 شجرة','🌿 شجيرة','🌱 عشب','🌺 زهور','🌲 صنوبر','🍃 ورق'],['❄️ تكييف','📺 تلفاز','☕ قهوة','🧊 ثلاجة','🍳 فرن','🔌 راوتر','🌀 مروحة','🔊 سماعة'],['🚶 شخص','🧍 واقف','🪑 جالس','👫 زوجان','🚶‍♀️ امرأة','👶 طفل','🧑‍🤝‍🧑 مجموعة','🧍‍♂️ رجل'],['🧶 مربع','🧶 دائري','🧶 مستطيل','🧶 كبير','🧶 صغير','🧶 ملون','🧶 سادة','🧶 نقش']];
+const s={A:{angle:0,items:cats},B:{angle:0,items:sets[0]}};const mod=(a,n)=>(a%n+n)%n;
+function idx(id){return mod(Math.round(-s[id].angle/(360/s[id].items.length)),s[id].items.length)}
+function draw(id){const w=document.getElementById('rot'+id),v=s[id];w.querySelectorAll('.tick').forEach(e=>e.remove());const n=v.items.length;for(let i=0;i<n;i++){const t=document.createElement('i');t.className='tick';t.style.transform='translateX(-50%) rotate('+(i*360/n+v.angle)+'deg)';w.appendChild(t)}const item=v.items[idx(id)],parts=item.split(' ');document.getElementById('selected'+id).innerHTML='<span class="pic">'+parts[0]+'</span><span class="name">'+parts.slice(1).join(' ')+'</span><span class="count">'+(idx(id)+1)+' / '+n+'</span>'}
+function change(id){if(id==='A'){s.B.items=sets[idx('A')];s.B.angle=0}draw('A');draw('B')}
+function step(id,d){s[id].angle-=d*360/s[id].items.length;change(id)}
+function init(id){const w=document.getElementById('rot'+id);let start=null,origin=0;function at(e){const r=w.getBoundingClientRect();return Math.atan2(e.clientY-r.top-r.height/2,e.clientX-r.left-r.width/2)*180/Math.PI}
+w.addEventListener('pointerdown',e=>{start=at(e);origin=s[id].angle;w.setPointerCapture(e.pointerId);e.preventDefault()});
+w.addEventListener('pointermove',e=>{if(start===null)return;let d=at(e)-start;if(d>180)d-=360;if(d< -180)d+=360;s[id].angle=origin+d;draw(id)});
+function end(){if(start===null)return;start=null;const t=360/s[id].items.length;s[id].angle=Math.round(s[id].angle/t)*t;change(id)}
+w.addEventListener('pointerup',end);w.addEventListener('pointercancel',end);
+document.getElementById('rot'+id+'L').onclick=()=>step(id,-1);document.getElementById('rot'+id+'R').onclick=()=>step(id,1)}
+init('A');init('B');document.getElementById('rotAdd').onclick=()=>{document.getElementById('rotAdd').textContent='المحدد: '+s.B.items[idx('B')];setTimeout(()=>document.getElementById('rotAdd').textContent='اختيار القطعة',1800)};
+const workspace=document.getElementById('workspace'),dock=document.getElementById('rotaryDock');new MutationObserver(()=>{dock.hidden=workspace.hidden;if(!dock.hidden){draw('A');draw('B')}}).observe(workspace,{attributes:true,attributeFilter:['hidden']});draw('A');draw('B');
+})();</script><script>(function(){
 const cats=['🛋️ أثاث','💡 إنارة','🚪 أبواب','🪟 شبابيك','🌱 نباتات','🔌 أجهزة','👥 أشخاص','🧶 سجاد'];
 const sets=[['🛋️ أريكة','🪑 كرسي','🛏️ سرير','🍽️ طاولة','🗄️ خزانة','🪑 مكتب','🛋️ ركنة','🪑 مقعد'],['💡 سبوت','✨ ثريا','🔦 كشاف','💡 متدلية','🟡 شريط','💡 جداري','💡 سقفي','🔆 أرضي'],['🚪 مفرد','🚪 مزدوج','🚪 منزلق','🚪 خارجي','🚪 داخلي','🚪 زجاج','🚪 خشب','🚪 قوس'],['🪟 مفرد','🪟 مزدوج','🪟 منزلق','🪟 طويل','🪟 عريض','🪟 قوس','🪟 زجاج','🪟 صغير'],['🌴 نخلة','🪴 أصيص','🌳 شجرة','🌿 شجيرة','🌱 عشب','🌺 زهور','🌲 صنوبر','🍃 ورق'],['❄️ تكييف','📺 تلفاز','☕ قهوة','🧊 ثلاجة','🍳 فرن','🔌 راوتر','🌀 مروحة','🔊 سماعة'],['🚶 شخص','🧍 واقف','🪑 جالس','👫 زوجان','🚶‍♀️ امرأة','👶 طفل','🧑‍🤝‍🧑 مجموعة','🧍‍♂️ رجل'],['🧶 مربع','🧶 دائري','🧶 مستطيل','🧶 كبير','🧶 صغير','🧶 ملون','🧶 سادة','🧶 نقش']];
 const s={A:{angle:0,items:cats},B:{angle:0,items:sets[0]}};
